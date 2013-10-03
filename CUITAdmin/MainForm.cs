@@ -51,13 +51,31 @@ namespace CUITAdmin
 
         private void btnAccountAdminNew_Click(object sender, EventArgs e)
         {
-            Form newAccount = new NewAccountForm();
-            newAccount.Show();
-        }
+            string addNewCase = cboAccountAdminNew.Text;
+            switch (addNewCase)
+            {
+                case "Account":
+                    Form newAccount = new NewAccountForm();
+                    newAccount.Show();
+                    break;
 
-        private void tbpExports_Click(object sender, EventArgs e)
-        {
+                case "Account Manager":
+                    Form newAccountAdmin = new NewAccountAdminForm();
+                    newAccountAdmin.Show();
+                    break;
 
+                case "Instrument":
+                    break;
+
+                case "Supply":
+                    break;
+
+                case "User":
+                    break;
+
+                case "User Contact":
+                    break;
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)

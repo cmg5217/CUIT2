@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Drawing;
 
 namespace CUITAdmin
 {
-    class NewAccountPanel : Panel
+    class NewAccountAdminPanel : Panel
     {
-
-        public NewAccountPanel(NewAccountForm pForm)
+        public NewAccountAdminPanel(NewAccountAdminForm pForm)
         {
             pForm.Controls.Add(this);
             this.Location = new Point(10, 10);

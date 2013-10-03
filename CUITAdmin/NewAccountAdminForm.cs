@@ -7,21 +7,21 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-
 namespace CUITAdmin
 {
-    public partial class NewAccountForm : Form
+    public partial class NewAccountAdminForm : Form
     {
 
-        public NewAccountForm()
+        public NewAccountAdminForm()
         {
             InitializeComponent();
             this.SetBounds(350, 350, 680, 300);
         }
 
-        private void NewAccountForm_Load(object sender, EventArgs e)
+        private void NewAccountAdminForm_Load(object sender, EventArgs e)
         {
-            NewAccountPanel myAcctForm = new NewAccountPanel(this);
+            NewAccountAdminPanel myAcctAdminForm = new NewAccountAdminPanel(this);
         }
     }
 }
+
