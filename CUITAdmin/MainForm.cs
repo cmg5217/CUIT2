@@ -11,6 +11,9 @@ namespace CUITAdmin
 {
     public partial class frmCUITAdminMain : Form
     {
+        private string accountType;
+        LogPanel startPanel;
+
         public frmCUITAdminMain()
         {
             InitializeComponent();
@@ -30,13 +33,11 @@ namespace CUITAdmin
             //this.unapprovedTimeLogTableTableAdapter.FillDeniedTimeLog(this.cUIT_TRIALDataSet.UnapprovedTimeLogTable);
             // TODO: This line of code loads data into the 'cUIT_TRIALDataSet.Time_Log' table. You can move, or remove it, as needed.
             //this.time_LogTableAdapter.Fill(this.cUIT_TRIALDataSet.Time_Log);
-
-            
+            startPanel = new LogPanel(tbpTracking);        
             cboAccountAdminNew.SelectedItem = "Account";
             cboAccountAdminView.SelectedItem = "Accounts";
             DataGridViewCell editCell = dgvTimeLogRequests.Rows[0].Cells[6];
             editCell.Value = "test";
-
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -66,6 +67,15 @@ namespace CUITAdmin
             logDialog.ShowDialog();
         }
 
+        private void InitializeTabs(string accountType)
+        {
+            switch (accountType)
+            {
+                case "admin":
+                    break;
+            }
+        }
+
         /*
         private void TypeSwitch(){
             switch (cboType.SelectedItem.ToString())
@@ -79,7 +89,5 @@ namespace CUITAdmin
                     break;
             }*/
         }
-
-        
     }
 

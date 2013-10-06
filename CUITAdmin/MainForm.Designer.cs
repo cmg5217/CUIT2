@@ -29,7 +29,28 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.tabControlMain = new System.Windows.Forms.TabControl();
+            this.unapprovedTimeLogTableBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.cUIT_TRIALDataSet = new CUITAdmin.CUIT_TRIALDataSet();
+            this.time_LogBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.time_LogTableAdapter = new CUITAdmin.CUIT_TRIALDataSetTableAdapters.Time_LogTableAdapter();
+            this.tableAdapterManager = new CUITAdmin.CUIT_TRIALDataSetTableAdapters.TableAdapterManager();
+            this.unapprovedTimeLogTableTableAdapter = new CUITAdmin.CUIT_TRIALDataSetTableAdapters.UnapprovedTimeLogTableTableAdapter();
+            this.tbpExports = new System.Windows.Forms.TabPage();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.button3 = new System.Windows.Forms.Button();
+            this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
+            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.tbpAccountAdmin = new System.Windows.Forms.TabPage();
+            this.btnAccountAdminNew = new System.Windows.Forms.Button();
+            this.cboAccountAdminNew = new System.Windows.Forms.ComboBox();
+            this.btnAccountAdminSearch = new System.Windows.Forms.Button();
+            this.lblAccountAdminView = new System.Windows.Forms.Label();
+            this.cboAccountAdminView = new System.Windows.Forms.ComboBox();
+            this.txtAccountAdminSearch = new System.Windows.Forms.TextBox();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.tbpBilling = new System.Windows.Forms.TabPage();
             this.grpManualEntries = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -61,55 +82,230 @@
             this.clmFundingSource = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clmApprove = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnSubmit = new System.Windows.Forms.Button();
-            this.tbpAccountAdmin = new System.Windows.Forms.TabPage();
-            this.btnAccountAdminNew = new System.Windows.Forms.Button();
-            this.cboAccountAdminNew = new System.Windows.Forms.ComboBox();
-            this.btnAccountAdminSearch = new System.Windows.Forms.Button();
-            this.lblAccountAdminView = new System.Windows.Forms.Label();
-            this.cboAccountAdminView = new System.Windows.Forms.ComboBox();
-            this.txtAccountAdminSearch = new System.Windows.Forms.TextBox();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.tbpExports = new System.Windows.Forms.TabPage();
-            this.unapprovedTimeLogTableBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.cUIT_TRIALDataSet = new CUITAdmin.CUIT_TRIALDataSet();
-            this.time_LogBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.time_LogTableAdapter = new CUITAdmin.CUIT_TRIALDataSetTableAdapters.Time_LogTableAdapter();
-            this.tableAdapterManager = new CUITAdmin.CUIT_TRIALDataSetTableAdapters.TableAdapterManager();
-            this.unapprovedTimeLogTableTableAdapter = new CUITAdmin.CUIT_TRIALDataSetTableAdapters.UnapprovedTimeLogTableTableAdapter();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
-            this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
-            this.button3 = new System.Windows.Forms.Button();
-            this.tabControlMain.SuspendLayout();
+            this.tabControlMain = new System.Windows.Forms.TabControl();
+            this.tbpTracking = new System.Windows.Forms.TabPage();
+            ((System.ComponentModel.ISupportInitialize)(this.unapprovedTimeLogTableBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cUIT_TRIALDataSet)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.time_LogBindingSource)).BeginInit();
+            this.tbpExports.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.tbpAccountAdmin.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.tbpBilling.SuspendLayout();
             this.grpManualEntries.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.grpManualTimeLog.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTimeLogRequests)).BeginInit();
-            this.tbpAccountAdmin.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            this.tbpExports.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.unapprovedTimeLogTableBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cUIT_TRIALDataSet)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.time_LogBindingSource)).BeginInit();
-            this.groupBox3.SuspendLayout();
-            this.groupBox4.SuspendLayout();
+            this.tabControlMain.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tabControlMain
+            // unapprovedTimeLogTableBindingSource
             // 
-            this.tabControlMain.Controls.Add(this.tbpBilling);
-            this.tabControlMain.Controls.Add(this.tbpAccountAdmin);
-            this.tabControlMain.Controls.Add(this.tbpExports);
-            this.tabControlMain.Location = new System.Drawing.Point(12, 12);
-            this.tabControlMain.Name = "tabControlMain";
-            this.tabControlMain.SelectedIndex = 0;
-            this.tabControlMain.Size = new System.Drawing.Size(691, 615);
-            this.tabControlMain.TabIndex = 0;
+            this.unapprovedTimeLogTableBindingSource.DataMember = "UnapprovedTimeLogTable";
+            this.unapprovedTimeLogTableBindingSource.DataSource = this.cUIT_TRIALDataSet;
+            // 
+            // cUIT_TRIALDataSet
+            // 
+            this.cUIT_TRIALDataSet.DataSetName = "CUIT_TRIALDataSet";
+            this.cUIT_TRIALDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
+            // 
+            // time_LogBindingSource
+            // 
+            this.time_LogBindingSource.DataMember = "Time_Log";
+            this.time_LogBindingSource.DataSource = this.cUIT_TRIALDataSet;
+            // 
+            // time_LogTableAdapter
+            // 
+            this.time_LogTableAdapter.ClearBeforeFill = true;
+            // 
+            // tableAdapterManager
+            // 
+            this.tableAdapterManager.Account_AccessTableAdapter = null;
+            this.tableAdapterManager.AccountTableAdapter = null;
+            this.tableAdapterManager.BackupDataSetBeforeUpdate = false;
+            this.tableAdapterManager.Instrument_RateTableAdapter = null;
+            this.tableAdapterManager.InstrumentTableAdapter = null;
+            this.tableAdapterManager.ManagerTableAdapter = null;
+            this.tableAdapterManager.Time_LogTableAdapter = this.time_LogTableAdapter;
+            this.tableAdapterManager.UpdateOrder = CUITAdmin.CUIT_TRIALDataSetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete;
+            this.tableAdapterManager.User_ContactsTableAdapter = null;
+            this.tableAdapterManager.UserTableAdapter = null;
+            // 
+            // unapprovedTimeLogTableTableAdapter
+            // 
+            this.unapprovedTimeLogTableTableAdapter.ClearBeforeFill = true;
+            // 
+            // tbpExports
+            // 
+            this.tbpExports.Controls.Add(this.groupBox4);
+            this.tbpExports.Controls.Add(this.groupBox3);
+            this.tbpExports.Location = new System.Drawing.Point(4, 22);
+            this.tbpExports.Name = "tbpExports";
+            this.tbpExports.Padding = new System.Windows.Forms.Padding(3);
+            this.tbpExports.Size = new System.Drawing.Size(683, 589);
+            this.tbpExports.TabIndex = 2;
+            this.tbpExports.Text = "Exports";
+            this.tbpExports.UseVisualStyleBackColor = true;
+            this.tbpExports.Click += new System.EventHandler(this.tbpExports_Click);
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.button3);
+            this.groupBox4.Controls.Add(this.dateTimePicker2);
+            this.groupBox4.Controls.Add(this.dateTimePicker1);
+            this.groupBox4.Location = new System.Drawing.Point(232, 135);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(216, 119);
+            this.groupBox4.TabIndex = 3;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Billing Export";
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(131, 74);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 2;
+            this.button3.Text = "Export";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
+            // dateTimePicker2
+            // 
+            this.dateTimePicker2.Location = new System.Drawing.Point(7, 47);
+            this.dateTimePicker2.Name = "dateTimePicker2";
+            this.dateTimePicker2.Size = new System.Drawing.Size(200, 20);
+            this.dateTimePicker2.TabIndex = 1;
+            // 
+            // dateTimePicker1
+            // 
+            this.dateTimePicker1.Location = new System.Drawing.Point(7, 20);
+            this.dateTimePicker1.Name = "dateTimePicker1";
+            this.dateTimePicker1.Size = new System.Drawing.Size(200, 20);
+            this.dateTimePicker1.TabIndex = 0;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.button2);
+            this.groupBox3.Controls.Add(this.button1);
+            this.groupBox3.Location = new System.Drawing.Point(232, 260);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(216, 100);
+            this.groupBox3.TabIndex = 2;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Account Adminn";
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(52, 59);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(103, 23);
+            this.button2.TabIndex = 1;
+            this.button2.Text = "Import Logs";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(52, 29);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(103, 23);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "Export User Data";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // tbpAccountAdmin
+            // 
+            this.tbpAccountAdmin.Controls.Add(this.btnAccountAdminNew);
+            this.tbpAccountAdmin.Controls.Add(this.cboAccountAdminNew);
+            this.tbpAccountAdmin.Controls.Add(this.btnAccountAdminSearch);
+            this.tbpAccountAdmin.Controls.Add(this.lblAccountAdminView);
+            this.tbpAccountAdmin.Controls.Add(this.cboAccountAdminView);
+            this.tbpAccountAdmin.Controls.Add(this.txtAccountAdminSearch);
+            this.tbpAccountAdmin.Controls.Add(this.dataGridView1);
+            this.tbpAccountAdmin.Location = new System.Drawing.Point(4, 22);
+            this.tbpAccountAdmin.Name = "tbpAccountAdmin";
+            this.tbpAccountAdmin.Padding = new System.Windows.Forms.Padding(3);
+            this.tbpAccountAdmin.Size = new System.Drawing.Size(683, 589);
+            this.tbpAccountAdmin.TabIndex = 1;
+            this.tbpAccountAdmin.Text = "Account Admin";
+            this.tbpAccountAdmin.UseVisualStyleBackColor = true;
+            this.tbpAccountAdmin.Click += new System.EventHandler(this.tbpAccountAdmin_Click);
+            // 
+            // btnAccountAdminNew
+            // 
+            this.btnAccountAdminNew.Location = new System.Drawing.Point(475, 8);
+            this.btnAccountAdminNew.Name = "btnAccountAdminNew";
+            this.btnAccountAdminNew.Size = new System.Drawing.Size(75, 23);
+            this.btnAccountAdminNew.TabIndex = 6;
+            this.btnAccountAdminNew.Text = "Add New";
+            this.btnAccountAdminNew.UseVisualStyleBackColor = true;
+            this.btnAccountAdminNew.Click += new System.EventHandler(this.btnAccountAdminNew_Click);
+            // 
+            // cboAccountAdminNew
+            // 
+            this.cboAccountAdminNew.FormattingEnabled = true;
+            this.cboAccountAdminNew.Items.AddRange(new object[] {
+            "Account",
+            "Account Manager",
+            "Item",
+            "User",
+            "User Contact"});
+            this.cboAccountAdminNew.Location = new System.Drawing.Point(556, 9);
+            this.cboAccountAdminNew.Name = "cboAccountAdminNew";
+            this.cboAccountAdminNew.Size = new System.Drawing.Size(121, 21);
+            this.cboAccountAdminNew.TabIndex = 5;
+            // 
+            // btnAccountAdminSearch
+            // 
+            this.btnAccountAdminSearch.Location = new System.Drawing.Point(330, 8);
+            this.btnAccountAdminSearch.Name = "btnAccountAdminSearch";
+            this.btnAccountAdminSearch.Size = new System.Drawing.Size(75, 23);
+            this.btnAccountAdminSearch.TabIndex = 4;
+            this.btnAccountAdminSearch.Text = "Search";
+            this.btnAccountAdminSearch.UseVisualStyleBackColor = true;
+            // 
+            // lblAccountAdminView
+            // 
+            this.lblAccountAdminView.AutoSize = true;
+            this.lblAccountAdminView.Location = new System.Drawing.Point(6, 12);
+            this.lblAccountAdminView.Name = "lblAccountAdminView";
+            this.lblAccountAdminView.Size = new System.Drawing.Size(33, 13);
+            this.lblAccountAdminView.TabIndex = 3;
+            this.lblAccountAdminView.Text = "View:";
+            // 
+            // cboAccountAdminView
+            // 
+            this.cboAccountAdminView.FormattingEnabled = true;
+            this.cboAccountAdminView.Items.AddRange(new object[] {
+            "Accounts",
+            "Account Manager",
+            "Contacts",
+            "Users",
+            "Items"});
+            this.cboAccountAdminView.Location = new System.Drawing.Point(42, 9);
+            this.cboAccountAdminView.Name = "cboAccountAdminView";
+            this.cboAccountAdminView.Size = new System.Drawing.Size(121, 21);
+            this.cboAccountAdminView.TabIndex = 2;
+            // 
+            // txtAccountAdminSearch
+            // 
+            this.txtAccountAdminSearch.Location = new System.Drawing.Point(224, 9);
+            this.txtAccountAdminSearch.Name = "txtAccountAdminSearch";
+            this.txtAccountAdminSearch.Size = new System.Drawing.Size(100, 20);
+            this.txtAccountAdminSearch.TabIndex = 1;
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(6, 37);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.Size = new System.Drawing.Size(671, 546);
+            this.dataGridView1.TabIndex = 0;
             // 
             // tbpBilling
             // 
@@ -387,211 +583,27 @@
             this.btnSubmit.Text = "Submit";
             this.btnSubmit.UseVisualStyleBackColor = true;
             // 
-            // tbpAccountAdmin
+            // tabControlMain
             // 
-            this.tbpAccountAdmin.Controls.Add(this.btnAccountAdminNew);
-            this.tbpAccountAdmin.Controls.Add(this.cboAccountAdminNew);
-            this.tbpAccountAdmin.Controls.Add(this.btnAccountAdminSearch);
-            this.tbpAccountAdmin.Controls.Add(this.lblAccountAdminView);
-            this.tbpAccountAdmin.Controls.Add(this.cboAccountAdminView);
-            this.tbpAccountAdmin.Controls.Add(this.txtAccountAdminSearch);
-            this.tbpAccountAdmin.Controls.Add(this.dataGridView1);
-            this.tbpAccountAdmin.Location = new System.Drawing.Point(4, 22);
-            this.tbpAccountAdmin.Name = "tbpAccountAdmin";
-            this.tbpAccountAdmin.Padding = new System.Windows.Forms.Padding(3);
-            this.tbpAccountAdmin.Size = new System.Drawing.Size(683, 589);
-            this.tbpAccountAdmin.TabIndex = 1;
-            this.tbpAccountAdmin.Text = "Account Admin";
-            this.tbpAccountAdmin.UseVisualStyleBackColor = true;
-            this.tbpAccountAdmin.Click += new System.EventHandler(this.tbpAccountAdmin_Click);
+            this.tabControlMain.Controls.Add(this.tbpBilling);
+            this.tabControlMain.Controls.Add(this.tbpAccountAdmin);
+            this.tabControlMain.Controls.Add(this.tbpExports);
+            this.tabControlMain.Controls.Add(this.tbpTracking);
+            this.tabControlMain.Location = new System.Drawing.Point(12, 12);
+            this.tabControlMain.Name = "tabControlMain";
+            this.tabControlMain.SelectedIndex = 0;
+            this.tabControlMain.Size = new System.Drawing.Size(691, 615);
+            this.tabControlMain.TabIndex = 0;
             // 
-            // btnAccountAdminNew
+            // tbpTracking
             // 
-            this.btnAccountAdminNew.Location = new System.Drawing.Point(475, 8);
-            this.btnAccountAdminNew.Name = "btnAccountAdminNew";
-            this.btnAccountAdminNew.Size = new System.Drawing.Size(75, 23);
-            this.btnAccountAdminNew.TabIndex = 6;
-            this.btnAccountAdminNew.Text = "Add New";
-            this.btnAccountAdminNew.UseVisualStyleBackColor = true;
-            this.btnAccountAdminNew.Click += new System.EventHandler(this.btnAccountAdminNew_Click);
-            // 
-            // cboAccountAdminNew
-            // 
-            this.cboAccountAdminNew.FormattingEnabled = true;
-            this.cboAccountAdminNew.Items.AddRange(new object[] {
-            "Account",
-            "Account Manager",
-            "Item",
-            "User",
-            "User Contact"});
-            this.cboAccountAdminNew.Location = new System.Drawing.Point(556, 9);
-            this.cboAccountAdminNew.Name = "cboAccountAdminNew";
-            this.cboAccountAdminNew.Size = new System.Drawing.Size(121, 21);
-            this.cboAccountAdminNew.TabIndex = 5;
-            // 
-            // btnAccountAdminSearch
-            // 
-            this.btnAccountAdminSearch.Location = new System.Drawing.Point(330, 8);
-            this.btnAccountAdminSearch.Name = "btnAccountAdminSearch";
-            this.btnAccountAdminSearch.Size = new System.Drawing.Size(75, 23);
-            this.btnAccountAdminSearch.TabIndex = 4;
-            this.btnAccountAdminSearch.Text = "Search";
-            this.btnAccountAdminSearch.UseVisualStyleBackColor = true;
-            // 
-            // lblAccountAdminView
-            // 
-            this.lblAccountAdminView.AutoSize = true;
-            this.lblAccountAdminView.Location = new System.Drawing.Point(6, 12);
-            this.lblAccountAdminView.Name = "lblAccountAdminView";
-            this.lblAccountAdminView.Size = new System.Drawing.Size(33, 13);
-            this.lblAccountAdminView.TabIndex = 3;
-            this.lblAccountAdminView.Text = "View:";
-            // 
-            // cboAccountAdminView
-            // 
-            this.cboAccountAdminView.FormattingEnabled = true;
-            this.cboAccountAdminView.Items.AddRange(new object[] {
-            "Accounts",
-            "Account Manager",
-            "Contacts",
-            "Users",
-            "Items"});
-            this.cboAccountAdminView.Location = new System.Drawing.Point(42, 9);
-            this.cboAccountAdminView.Name = "cboAccountAdminView";
-            this.cboAccountAdminView.Size = new System.Drawing.Size(121, 21);
-            this.cboAccountAdminView.TabIndex = 2;
-            // 
-            // txtAccountAdminSearch
-            // 
-            this.txtAccountAdminSearch.Location = new System.Drawing.Point(224, 9);
-            this.txtAccountAdminSearch.Name = "txtAccountAdminSearch";
-            this.txtAccountAdminSearch.Size = new System.Drawing.Size(100, 20);
-            this.txtAccountAdminSearch.TabIndex = 1;
-            // 
-            // dataGridView1
-            // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(6, 37);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(671, 546);
-            this.dataGridView1.TabIndex = 0;
-            // 
-            // tbpExports
-            // 
-            this.tbpExports.Controls.Add(this.groupBox4);
-            this.tbpExports.Controls.Add(this.groupBox3);
-            this.tbpExports.Location = new System.Drawing.Point(4, 22);
-            this.tbpExports.Name = "tbpExports";
-            this.tbpExports.Padding = new System.Windows.Forms.Padding(3);
-            this.tbpExports.Size = new System.Drawing.Size(683, 589);
-            this.tbpExports.TabIndex = 2;
-            this.tbpExports.Text = "Exports";
-            this.tbpExports.UseVisualStyleBackColor = true;
-            this.tbpExports.Click += new System.EventHandler(this.tbpExports_Click);
-            // 
-            // unapprovedTimeLogTableBindingSource
-            // 
-            this.unapprovedTimeLogTableBindingSource.DataMember = "UnapprovedTimeLogTable";
-            this.unapprovedTimeLogTableBindingSource.DataSource = this.cUIT_TRIALDataSet;
-            // 
-            // cUIT_TRIALDataSet
-            // 
-            this.cUIT_TRIALDataSet.DataSetName = "CUIT_TRIALDataSet";
-            this.cUIT_TRIALDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
-            // 
-            // time_LogBindingSource
-            // 
-            this.time_LogBindingSource.DataMember = "Time_Log";
-            this.time_LogBindingSource.DataSource = this.cUIT_TRIALDataSet;
-            // 
-            // time_LogTableAdapter
-            // 
-            this.time_LogTableAdapter.ClearBeforeFill = true;
-            // 
-            // tableAdapterManager
-            // 
-            this.tableAdapterManager.Account_AccessTableAdapter = null;
-            this.tableAdapterManager.AccountTableAdapter = null;
-            this.tableAdapterManager.BackupDataSetBeforeUpdate = false;
-            this.tableAdapterManager.Instrument_RateTableAdapter = null;
-            this.tableAdapterManager.InstrumentTableAdapter = null;
-            this.tableAdapterManager.ManagerTableAdapter = null;
-            this.tableAdapterManager.Time_LogTableAdapter = this.time_LogTableAdapter;
-            this.tableAdapterManager.UpdateOrder = CUITAdmin.CUIT_TRIALDataSetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete;
-            this.tableAdapterManager.User_ContactsTableAdapter = null;
-            this.tableAdapterManager.UserTableAdapter = null;
-            // 
-            // unapprovedTimeLogTableTableAdapter
-            // 
-            this.unapprovedTimeLogTableTableAdapter.ClearBeforeFill = true;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(52, 29);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(103, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Export User Data";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(52, 59);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(103, 23);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Import Logs";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.button2);
-            this.groupBox3.Controls.Add(this.button1);
-            this.groupBox3.Location = new System.Drawing.Point(232, 260);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(216, 100);
-            this.groupBox3.TabIndex = 2;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Account Adminn";
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.button3);
-            this.groupBox4.Controls.Add(this.dateTimePicker2);
-            this.groupBox4.Controls.Add(this.dateTimePicker1);
-            this.groupBox4.Location = new System.Drawing.Point(232, 135);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(216, 119);
-            this.groupBox4.TabIndex = 3;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Billing Export";
-            // 
-            // dateTimePicker1
-            // 
-            this.dateTimePicker1.Location = new System.Drawing.Point(7, 20);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(200, 20);
-            this.dateTimePicker1.TabIndex = 0;
-            // 
-            // dateTimePicker2
-            // 
-            this.dateTimePicker2.Location = new System.Drawing.Point(7, 47);
-            this.dateTimePicker2.Name = "dateTimePicker2";
-            this.dateTimePicker2.Size = new System.Drawing.Size(200, 20);
-            this.dateTimePicker2.TabIndex = 1;
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(131, 74);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 2;
-            this.button3.Text = "Export";
-            this.button3.UseVisualStyleBackColor = true;
+            this.tbpTracking.Location = new System.Drawing.Point(4, 22);
+            this.tbpTracking.Name = "tbpTracking";
+            this.tbpTracking.Padding = new System.Windows.Forms.Padding(3);
+            this.tbpTracking.Size = new System.Drawing.Size(683, 589);
+            this.tbpTracking.TabIndex = 3;
+            this.tbpTracking.Text = "Tracking";
+            this.tbpTracking.UseVisualStyleBackColor = true;
             // 
             // frmCUITAdminMain
             // 
@@ -602,7 +614,15 @@
             this.Name = "frmCUITAdminMain";
             this.Text = "CUITAdmin";
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.tabControlMain.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.unapprovedTimeLogTableBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cUIT_TRIALDataSet)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.time_LogBindingSource)).EndInit();
+            this.tbpExports.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
+            this.tbpAccountAdmin.ResumeLayout(false);
+            this.tbpAccountAdmin.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.tbpBilling.ResumeLayout(false);
             this.grpManualEntries.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
@@ -611,53 +631,28 @@
             this.grpManualTimeLog.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvTimeLogRequests)).EndInit();
-            this.tbpAccountAdmin.ResumeLayout(false);
-            this.tbpAccountAdmin.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            this.tbpExports.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.unapprovedTimeLogTableBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cUIT_TRIALDataSet)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.time_LogBindingSource)).EndInit();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox4.ResumeLayout(false);
+            this.tabControlMain.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TabControl tabControlMain;
-        private System.Windows.Forms.TabPage tbpBilling;
-        private System.Windows.Forms.TabPage tbpAccountAdmin;
-        private System.Windows.Forms.DateTimePicker dtpManualLog;
-        private System.Windows.Forms.ComboBox cboManualLogInstrument;
-        private System.Windows.Forms.ComboBox cboManualLogFunding;
-        private System.Windows.Forms.Button btnAdd;
-        private System.Windows.Forms.TabPage tbpExports;
-        private System.Windows.Forms.Label lblManualLogInstrument;
-        private System.Windows.Forms.Label lblManualLogFunding;
         private CUIT_TRIALDataSet cUIT_TRIALDataSet;
         private System.Windows.Forms.BindingSource time_LogBindingSource;
         private CUIT_TRIALDataSetTableAdapters.Time_LogTableAdapter time_LogTableAdapter;
         private CUIT_TRIALDataSetTableAdapters.TableAdapterManager tableAdapterManager;
         private System.Windows.Forms.BindingSource unapprovedTimeLogTableBindingSource;
         private CUIT_TRIALDataSetTableAdapters.UnapprovedTimeLogTableTableAdapter unapprovedTimeLogTableTableAdapter;
-        private System.Windows.Forms.Button btnSubmit;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.GroupBox grpManualEntries;
-        private System.Windows.Forms.Label lblManualLogUser;
-        private System.Windows.Forms.ComboBox cboManualLogUser;
-        private System.Windows.Forms.TextBox txtManualLogDuration;
-        private System.Windows.Forms.Label lblManualLogDuration;
-        private System.Windows.Forms.GroupBox grpManualTimeLog;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.ComboBox cboSupplyFunding;
-        private System.Windows.Forms.Label lblSupplyFunding;
-        private System.Windows.Forms.ComboBox cboSupplyName;
-        private System.Windows.Forms.Label lblSupplyName;
-        private System.Windows.Forms.Button btmSupplyAdd;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label lblQuantity;
+        private System.Windows.Forms.TabPage tbpExports;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.DateTimePicker dateTimePicker2;
+        private System.Windows.Forms.DateTimePicker dateTimePicker1;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TabPage tbpAccountAdmin;
         private System.Windows.Forms.Button btnAccountAdminNew;
         private System.Windows.Forms.ComboBox cboAccountAdminNew;
         private System.Windows.Forms.Button btnAccountAdminSearch;
@@ -665,6 +660,28 @@
         private System.Windows.Forms.ComboBox cboAccountAdminView;
         private System.Windows.Forms.TextBox txtAccountAdminSearch;
         private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.TabPage tbpBilling;
+        private System.Windows.Forms.GroupBox grpManualEntries;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Button btmSupplyAdd;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label lblQuantity;
+        private System.Windows.Forms.ComboBox cboSupplyFunding;
+        private System.Windows.Forms.Label lblSupplyFunding;
+        private System.Windows.Forms.ComboBox cboSupplyName;
+        private System.Windows.Forms.Label lblSupplyName;
+        private System.Windows.Forms.GroupBox grpManualTimeLog;
+        private System.Windows.Forms.DateTimePicker dtpManualLog;
+        private System.Windows.Forms.Label lblManualLogInstrument;
+        private System.Windows.Forms.Label lblManualLogUser;
+        private System.Windows.Forms.ComboBox cboManualLogInstrument;
+        private System.Windows.Forms.ComboBox cboManualLogUser;
+        private System.Windows.Forms.ComboBox cboManualLogFunding;
+        private System.Windows.Forms.TextBox txtManualLogDuration;
+        private System.Windows.Forms.Button btnAdd;
+        private System.Windows.Forms.Label lblManualLogDuration;
+        private System.Windows.Forms.Label lblManualLogFunding;
+        private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.DataGridView dgvTimeLogRequests;
         private System.Windows.Forms.DataGridViewTextBoxColumn clmName;
         private System.Windows.Forms.DataGridViewTextBoxColumn clmInstrument;
@@ -673,13 +690,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn clmDuration;
         private System.Windows.Forms.DataGridViewTextBoxColumn clmFundingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn clmApprove;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.DateTimePicker dateTimePicker2;
-        private System.Windows.Forms.DateTimePicker dateTimePicker1;
-        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Button btnSubmit;
+        private System.Windows.Forms.TabControl tabControlMain;
+        private System.Windows.Forms.TabPage tbpTracking;
     }
 }
 
