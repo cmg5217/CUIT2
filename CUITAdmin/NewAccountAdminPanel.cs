@@ -1,86 +1,95 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace CUITAdmin
 {
     class NewAccountAdminPanel : Panel
     {
-        public NewAccountAdminPanel(NewAccountAdminForm pForm)
+        public NewAccountAdminPanel(NewEntryForm pForm)
         {
             pForm.Controls.Add(this);
             this.Location = new Point(10, 10);
             this.Size = new Size(650, 400);
 
-            Label lblAccountName = new Label();
-            lblAccountName.Text = "Account Name:";
-            lblAccountName.Location = new Point(10, 10);
-            this.Controls.Add(lblAccountName);
+            Label lblFirstName = new Label();
+            lblFirstName.Text = "First Name:";
+            lblFirstName.Location = new Point(10, 10);
+            this.Controls.Add(lblFirstName);
 
-            TextBox txtAccountName = new TextBox();
-            txtAccountName.SetBounds(110, 10, 200, 20);
-            this.Controls.Add(txtAccountName);
+            TextBox txtFirstName = new TextBox();
+            txtFirstName.SetBounds(110, 10, 200, 20);
+            this.Controls.Add(txtFirstName);
 
-            Label lblAccountNumber = new Label();
-            lblAccountNumber.Text = "Account Number:";
-            lblAccountNumber.Location = new Point(10, 40);
-            this.Controls.Add(lblAccountNumber);
+            Label lblLastName = new Label();
+            lblLastName.Text = "Last Name:";
+            lblLastName.Location = new Point(10, 40);
+            this.Controls.Add(lblLastName);
 
-            TextBox txtAccountNumber = new TextBox();
-            txtAccountNumber.SetBounds(110, 40, 200, 20);
-            this.Controls.Add(txtAccountNumber);
+            TextBox txtLastName = new TextBox();
+            txtLastName.SetBounds(110, 40, 200, 20);
+            this.Controls.Add(txtLastName);
 
-            Label lblMaxCharge = new Label();
-            lblMaxCharge.Text = "Max Charge Limit:";
-            lblMaxCharge.Location = new Point(10, 70);
-            this.Controls.Add(lblMaxCharge);
+            Label lblEmail = new Label();
+            lblEmail.Text = "Email:";
+            lblEmail.Location = new Point(10, 70);
+            this.Controls.Add(lblEmail);
 
-            TextBox txtMaxCharge = new TextBox();
-            txtMaxCharge.SetBounds(110, 70, 200, 20);
-            this.Controls.Add(txtMaxCharge);
+            TextBox txtEmail = new TextBox();
+            txtEmail.SetBounds(110, 70, 200, 20);
+            this.Controls.Add(txtEmail);
 
-            Label lblAccountExpiration = new Label();
-            lblAccountExpiration.Text = "Account Expiration:";
-            lblAccountExpiration.Location = new Point(10, 100);
-            this.Controls.Add(lblAccountExpiration);
+            Label lblPhone = new Label();
+            lblPhone.Text = "Phone Number:";
+            lblPhone.Location = new Point(10, 100);
+            this.Controls.Add(lblPhone);
 
-            DateTimePicker dtpAccountExpiration = new DateTimePicker();
-            dtpAccountExpiration.Location = new Point(110, 100);
-            this.Controls.Add(dtpAccountExpiration);
+            TextBox txtPhone = new TextBox();
+            txtPhone.SetBounds(110, 100, 200, 20);
+            this.Controls.Add(txtPhone);
 
-            Label lblRateType = new Label();
-            lblRateType.Text = "Rate Type:";
-            lblRateType.Location = new Point(10, 130);
-            this.Controls.Add(lblRateType);
+            Label lblStreet = new Label();
+            lblStreet.Text = "Street:";
+            lblStreet.Location = new Point(10, 130);
+            this.Controls.Add(lblStreet);
 
-            ComboBox cboRateType = new ComboBox();
-            cboRateType.SetBounds(110, 130, 200, 20);
-            this.Controls.Add(cboRateType);
+            TextBox txtStreet = new TextBox();
+            txtStreet.SetBounds(110, 130, 200, 20);
+            this.Controls.Add(txtStreet);
 
-            Label lblBalance = new Label();
-            lblBalance.Text = "Balance:";
-            lblBalance.Location = new Point(10, 160);
-            this.Controls.Add(lblBalance);
+            Label lblCity = new Label();
+            lblCity.Text = "City:";
+            lblCity.Location = new Point(10, 160);
+            this.Controls.Add(lblCity);
 
-            TextBox txtBalance = new TextBox();
-            txtBalance.SetBounds(110, 160, 200, 20);
-            this.Controls.Add(txtBalance);
+            TextBox txtCity = new TextBox();
+            txtCity.SetBounds(110, 160, 200, 20);
+            this.Controls.Add(txtCity);
 
-            Label lblNotes = new Label();
-            lblNotes.Text = "Notes:";
-            lblNotes.Location = new Point(325, 10);
-            this.Controls.Add(lblNotes);
+            Label lblState = new Label();
+            lblState.Text = "State:";
+            lblState.Location = new Point(10, 190);
+            this.Controls.Add(lblState);
 
-            RichTextBox txtNotes = new RichTextBox();
-            txtNotes.SetBounds(325, 40, 280, 142);
-            this.Controls.Add(txtNotes);
+            TextBox txtState = new TextBox();
+            txtState.SetBounds(110, 190, 200, 20);
+            this.Controls.Add(txtState);
+
+            Label lblZipCode = new Label();
+            lblZipCode.Text = "Zip Code:";
+            lblZipCode.Location = new Point(10, 220);
+            this.Controls.Add(lblZipCode);
+
+            TextBox txtZipCode = new TextBox();
+            txtZipCode.SetBounds(110, 220, 200, 20);
+            this.Controls.Add(txtZipCode);
 
             Button btnSubmit = new Button();
             btnSubmit.Text = "Submit";
-            btnSubmit.Location = new Point(525, 190);
+            btnSubmit.Location = new Point(230, 250);
             this.Controls.Add(btnSubmit);
         }
     }

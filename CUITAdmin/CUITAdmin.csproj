@@ -72,22 +72,25 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="NewAccountAdminForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="NewAccountAdminForm.Designer.cs">
-      <DependentUpon>NewAccountAdminForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="NewAccountAdminPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="NewAccountForm.cs">
+    <Compile Include="NewEntryForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NewAccountForm.Designer.cs">
-      <DependentUpon>NewAccountForm.cs</DependentUpon>
+    <Compile Include="NewEntryForm.Designer.cs">
+      <DependentUpon>NewEntryForm.cs</DependentUpon>
     </Compile>
     <Compile Include="NewAccountPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="NewInstrumentPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="NewSupplyPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="NewUserPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Program.cs" />
@@ -95,8 +98,8 @@
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NewAccountForm.resx">
-      <DependentUpon>NewAccountForm.cs</DependentUpon>
+    <EmbeddedResource Include="NewEntryForm.resx">
+      <DependentUpon>NewEntryForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewAccountPanel.resx">
       <DependentUpon>NewAccountPanel.cs</DependentUpon>
