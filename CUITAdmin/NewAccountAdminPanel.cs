@@ -9,8 +9,12 @@ namespace CUITAdmin
 {
     class NewAccountAdminPanel : Panel
     {
+        NewEntryForm containingForm;
+        
+
         public NewAccountAdminPanel(NewEntryForm pForm)
         {
+            containingForm = pForm;
             pForm.Controls.Add(this);
             this.Location = new Point(10, 10);
             this.Size = new Size(650, 400);
@@ -91,6 +95,13 @@ namespace CUITAdmin
             btnSubmit.Text = "Submit";
             btnSubmit.Location = new Point(230, 250);
             this.Controls.Add(btnSubmit);
+            btnSubmit.Click += new EventHandler(this.btnSubmit_Click);
+        }
+
+        private void btnSubmit_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("This is a test");
+            containingForm.Close();
         }
     }
 }

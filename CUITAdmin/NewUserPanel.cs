@@ -38,9 +38,11 @@ namespace CUITAdmin
         Label lblFirstName = new Label();
         Label lblPassword = new Label();
         Label lblUsername = new Label();
-
-        private NewUserPanel(NewEntryForm pForm)
+        NewEntryForm containingForm;
+        
+        public NewUserPanel(NewEntryForm pForm)
         {
+            containingForm = pForm;
             pForm.Controls.Add(this);
             this.Location = new Point(10, 10);
             this.Size = new Size(650, 400);
@@ -91,6 +93,7 @@ namespace CUITAdmin
             this.btnSubmit.TabIndex = 27;
             this.btnSubmit.Text = "Submit";
             this.btnSubmit.UseVisualStyleBackColor = true;
+            this.btnSubmit.Click += new EventHandler(this.btnSubmit_Click);
             // 
             // btnNewContact
             // 
@@ -102,6 +105,7 @@ namespace CUITAdmin
             System.Windows.Forms.ToolTip tip = new ToolTip();
             tip.SetToolTip(this.btnNewContact, "Add New Contact");
             this.btnNewContact.UseVisualStyleBackColor = true;
+            this.btnNewContact.Click += new EventHandler(this.btnNewContact_Click);
             // 
             // cboContacts
             // 
@@ -312,6 +316,17 @@ namespace CUITAdmin
             this.lblUsername.Size = new System.Drawing.Size(58, 13);
             this.lblUsername.TabIndex = 0;
             this.lblUsername.Text = "Username:";
+        }
+
+        private void btnSubmit_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("This is a test");
+            containingForm.Close();
+        }
+
+        private void btnNewContact_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("This is a test");
         }
     }
 }

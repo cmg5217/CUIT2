@@ -43,9 +43,15 @@ namespace CUITAdmin
                     break;
 
                 case "User":
+                    NewUserPanel myUserPanel = new NewUserPanel(this);
+                    this.SetBounds(350, 350, 555, 300);
+                    this.Text = "New User Form";
                     break;
 
                 case "User Contact":
+                    NewUserContactPanel myUserContactPanel = new NewUserContactPanel(this);
+                    this.SetBounds(350, 350, 555, 250);
+                    this.Text = "New User Contact Form";
                     break;
             }
             

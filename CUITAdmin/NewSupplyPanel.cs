@@ -22,9 +22,12 @@ namespace CUITAdmin
         Label lblSupplyCost = new Label();
         Label lblUnit = new Label();
         Label lblSupplyName = new Label();
+        NewEntryForm containingForm;
+        
 
         public NewSupplyPanel(NewEntryForm pForm)
         {
+            containingForm = pForm;
             pForm.Controls.Add(this);
             this.Location = new Point(10, 10);
             this.Size = new Size(650, 400);
@@ -159,6 +162,13 @@ namespace CUITAdmin
             this.btnSubmit.TabIndex = 12;
             this.btnSubmit.Text = "Submit";
             this.btnSubmit.UseVisualStyleBackColor = true;
+            this.btnSubmit.Click += new EventHandler(this.btnSubmit_Click);
+        }
+
+        private void btnSubmit_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("This is a test");
+            containingForm.Close();
         }
     }
 }

@@ -90,6 +90,9 @@
     <Compile Include="NewSupplyPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="NewUserContactPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="NewUserPanel.cs">
       <SubType>Component</SubType>
     </Compile>

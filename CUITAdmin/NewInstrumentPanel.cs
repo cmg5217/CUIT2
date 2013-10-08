@@ -22,9 +22,11 @@ namespace CUITAdmin
         Label lblTimeIncrement = new Label();
         Label lblBillingType = new Label();
         Label lblInstrumentName = new Label();
+        NewEntryForm containingForm;
 
         public NewInstrumentPanel(NewEntryForm pForm)
         {
+            containingForm = pForm;
             pForm.Controls.Add(this);
             this.Location = new Point(10, 10);
             this.Size = new Size(650, 400);
@@ -64,6 +66,7 @@ namespace CUITAdmin
             this.btnSubmit.TabIndex = 12;
             this.btnSubmit.Text = "Submit";
             this.btnSubmit.UseVisualStyleBackColor = true;
+            this.btnSubmit.Click += new EventHandler(this.btnSubmit_Click);
             // 
             // txtIndustry
             // 
@@ -160,6 +163,12 @@ namespace CUITAdmin
             this.lblInstrumentName.Size = new System.Drawing.Size(90, 13);
             this.lblInstrumentName.TabIndex = 0;
             this.lblInstrumentName.Text = "Instrument Name:";
+        }
+
+        private void btnSubmit_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("This is a test");
+            containingForm.Close();
         }
     }
 }
