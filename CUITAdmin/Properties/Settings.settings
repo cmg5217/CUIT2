@@ -10,5 +10,8 @@
 &lt;/SerializableConnectionString&gt;</DesignTimeValue>
       <Value Profile="(Default)">Data Source=CUITS\CUITS;Initial Catalog=CUIT_TRIAL;User ID=DataAdmin;Password=noforyoureyes67</Value>
     </Setting>
+    <Setting Name="InvoicePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

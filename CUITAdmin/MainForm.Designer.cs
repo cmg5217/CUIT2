@@ -70,19 +70,27 @@
             this.txtAccountAdminSearch = new System.Windows.Forms.TextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.tbpExports = new System.Windows.Forms.TabPage();
+            this.button4 = new System.Windows.Forms.Button();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.button3 = new System.Windows.Forms.Button();
+            this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
+            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.unapprovedTimeLogTableBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.cUIT_TRIALDataSet = new CUITAdmin.CUIT_TRIALDataSet();
             this.time_LogBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.time_LogTableAdapter = new CUITAdmin.CUIT_TRIALDataSetTableAdapters.Time_LogTableAdapter();
             this.tableAdapterManager = new CUITAdmin.CUIT_TRIALDataSetTableAdapters.TableAdapterManager();
             this.unapprovedTimeLogTableTableAdapter = new CUITAdmin.CUIT_TRIALDataSetTableAdapters.UnapprovedTimeLogTableTableAdapter();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
-            this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
-            this.button3 = new System.Windows.Forms.Button();
+            this.InvoiceExportPath = new System.Windows.Forms.FolderBrowserDialog();
+            this.tbpSettings = new System.Windows.Forms.TabPage();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.button5 = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.tabControlMain.SuspendLayout();
             this.tbpBilling.SuspendLayout();
             this.grpManualEntries.SuspendLayout();
@@ -93,11 +101,14 @@
             this.tbpAccountAdmin.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.tbpExports.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.unapprovedTimeLogTableBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cUIT_TRIALDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.time_LogBindingSource)).BeginInit();
-            this.groupBox3.SuspendLayout();
-            this.groupBox4.SuspendLayout();
+            this.tbpSettings.SuspendLayout();
+            this.groupBox5.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControlMain
@@ -105,6 +116,7 @@
             this.tabControlMain.Controls.Add(this.tbpBilling);
             this.tabControlMain.Controls.Add(this.tbpAccountAdmin);
             this.tabControlMain.Controls.Add(this.tbpExports);
+            this.tabControlMain.Controls.Add(this.tbpSettings);
             this.tabControlMain.Location = new System.Drawing.Point(12, 12);
             this.tabControlMain.Name = "tabControlMain";
             this.tabControlMain.SelectedIndex = 0;
@@ -481,6 +493,7 @@
             // 
             // tbpExports
             // 
+            this.tbpExports.Controls.Add(this.groupBox6);
             this.tbpExports.Controls.Add(this.groupBox4);
             this.tbpExports.Controls.Add(this.groupBox3);
             this.tbpExports.Location = new System.Drawing.Point(4, 22);
@@ -491,6 +504,81 @@
             this.tbpExports.Text = "Exports";
             this.tbpExports.UseVisualStyleBackColor = true;
             this.tbpExports.Click += new System.EventHandler(this.tbpExports_Click);
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(52, 55);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(103, 23);
+            this.button4.TabIndex = 1;
+            this.button4.Text = " Export";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.button3);
+            this.groupBox4.Controls.Add(this.dateTimePicker2);
+            this.groupBox4.Controls.Add(this.dateTimePicker1);
+            this.groupBox4.Location = new System.Drawing.Point(232, 135);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(216, 119);
+            this.groupBox4.TabIndex = 3;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Billing Export";
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(131, 74);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 2;
+            this.button3.Text = "Export";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
+            // dateTimePicker2
+            // 
+            this.dateTimePicker2.Location = new System.Drawing.Point(7, 47);
+            this.dateTimePicker2.Name = "dateTimePicker2";
+            this.dateTimePicker2.Size = new System.Drawing.Size(200, 20);
+            this.dateTimePicker2.TabIndex = 1;
+            // 
+            // dateTimePicker1
+            // 
+            this.dateTimePicker1.Location = new System.Drawing.Point(7, 20);
+            this.dateTimePicker1.Name = "dateTimePicker1";
+            this.dateTimePicker1.Size = new System.Drawing.Size(200, 20);
+            this.dateTimePicker1.TabIndex = 0;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.button2);
+            this.groupBox3.Controls.Add(this.button1);
+            this.groupBox3.Location = new System.Drawing.Point(232, 260);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(216, 100);
+            this.groupBox3.TabIndex = 2;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Account Adminn";
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(52, 59);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(103, 23);
+            this.button2.TabIndex = 1;
+            this.button2.Text = "Import Logs";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(52, 29);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(103, 23);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "Export User Data";
+            this.button1.UseVisualStyleBackColor = true;
             // 
             // unapprovedTimeLogTableBindingSource
             // 
@@ -528,70 +616,63 @@
             // 
             this.unapprovedTimeLogTableTableAdapter.ClearBeforeFill = true;
             // 
-            // button1
+            // tbpSettings
             // 
-            this.button1.Location = new System.Drawing.Point(52, 29);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(103, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Export User Data";
-            this.button1.UseVisualStyleBackColor = true;
+            this.tbpSettings.Controls.Add(this.groupBox5);
+            this.tbpSettings.Location = new System.Drawing.Point(4, 22);
+            this.tbpSettings.Name = "tbpSettings";
+            this.tbpSettings.Size = new System.Drawing.Size(683, 589);
+            this.tbpSettings.TabIndex = 3;
+            this.tbpSettings.Text = "Settings";
+            this.tbpSettings.UseVisualStyleBackColor = true;
             // 
-            // button2
+            // groupBox5
             // 
-            this.button2.Location = new System.Drawing.Point(52, 59);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(103, 23);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Import Logs";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.groupBox5.Controls.Add(this.label1);
+            this.groupBox5.Controls.Add(this.textBox2);
+            this.groupBox5.Controls.Add(this.button5);
+            this.groupBox5.Location = new System.Drawing.Point(130, 244);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(423, 100);
+            this.groupBox5.TabIndex = 5;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Export Invoice";
             // 
-            // groupBox3
+            // textBox2
             // 
-            this.groupBox3.Controls.Add(this.button2);
-            this.groupBox3.Controls.Add(this.button1);
-            this.groupBox3.Location = new System.Drawing.Point(232, 260);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(216, 100);
-            this.groupBox3.TabIndex = 2;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Account Adminn";
+            this.textBox2.Location = new System.Drawing.Point(19, 60);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(276, 20);
+            this.textBox2.TabIndex = 2;
             // 
-            // groupBox4
+            // button5
             // 
-            this.groupBox4.Controls.Add(this.button3);
-            this.groupBox4.Controls.Add(this.dateTimePicker2);
-            this.groupBox4.Controls.Add(this.dateTimePicker1);
-            this.groupBox4.Location = new System.Drawing.Point(232, 135);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(216, 119);
-            this.groupBox4.TabIndex = 3;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Billing Export";
+            this.button5.Location = new System.Drawing.Point(301, 58);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(103, 23);
+            this.button5.TabIndex = 0;
+            this.button5.Text = "Browse";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click_1);
             // 
-            // dateTimePicker1
+            // label1
             // 
-            this.dateTimePicker1.Location = new System.Drawing.Point(7, 20);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(200, 20);
-            this.dateTimePicker1.TabIndex = 0;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(19, 29);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(93, 13);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Enter Export Path:";
             // 
-            // dateTimePicker2
+            // groupBox6
             // 
-            this.dateTimePicker2.Location = new System.Drawing.Point(7, 47);
-            this.dateTimePicker2.Name = "dateTimePicker2";
-            this.dateTimePicker2.Size = new System.Drawing.Size(200, 20);
-            this.dateTimePicker2.TabIndex = 1;
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(131, 74);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 2;
-            this.button3.Text = "Export";
-            this.button3.UseVisualStyleBackColor = true;
+            this.groupBox6.Controls.Add(this.button4);
+            this.groupBox6.Location = new System.Drawing.Point(232, 379);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(216, 114);
+            this.groupBox6.TabIndex = 7;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Export Invoice";
             // 
             // frmCUITAdminMain
             // 
@@ -615,11 +696,15 @@
             this.tbpAccountAdmin.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.tbpExports.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.unapprovedTimeLogTableBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cUIT_TRIALDataSet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.time_LogBindingSource)).EndInit();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox4.ResumeLayout(false);
+            this.tbpSettings.ResumeLayout(false);
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -680,6 +765,14 @@
         private System.Windows.Forms.DateTimePicker dateTimePicker2;
         private System.Windows.Forms.DateTimePicker dateTimePicker1;
         private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.FolderBrowserDialog InvoiceExportPath;
+        private System.Windows.Forms.TabPage tbpSettings;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.Label label1;
     }
 }
 

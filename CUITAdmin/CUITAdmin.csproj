@@ -49,6 +49,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="itextsharp">
+      <HintPath>..\..\itextsharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -81,6 +84,18 @@
     <Compile Include="NewAccountPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="NewContactForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewContactForm.Designer.cs">
+      <DependentUpon>NewContactForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewUserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewUserForm.Designer.cs">
+      <DependentUpon>NewUserForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="MainForm.resx">
@@ -92,6 +107,12 @@
     <EmbeddedResource Include="NewAccountPanel.resx">
       <DependentUpon>NewAccountPanel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="NewContactForm.resx">
+      <DependentUpon>NewContactForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewUserForm.resx">
+      <DependentUpon>NewUserForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -101,7 +122,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="CUIT_TRIALDataSet.xsc">
       <DependentUpon>CUIT_TRIALDataSet.xsd</DependentUpon>
     </None>
