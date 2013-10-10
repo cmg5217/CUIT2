@@ -42,8 +42,8 @@ namespace CUITAdmin
                     if ((int)cmd.ExecuteScalar() > 0)
                     {
                         MessageBox.Show("You have successfully Logged In");
-                        SelectGrant SelectGrant = new SelectGrant(UserName);
-                        SelectGrant.Show();
+                        //SelectGrant SelectGrant = new SelectGrant(UserName);
+                        //SelectGrant.Show();
                         this.Hide();
 
                     }

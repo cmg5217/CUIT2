@@ -13,6 +13,12 @@ namespace CUITAdmin
 {
     public partial class frmCUITAdminMain : Form
     {
+        
+        public static string CONFIG_FILE = "";
+        private bool standalone = false;
+        private string accountType;
+        LogPanel startPanel;
+
         public frmCUITAdminMain()
         {
             InitializeComponent();
@@ -32,18 +38,23 @@ namespace CUITAdmin
             //this.unapprovedTimeLogTableTableAdapter.FillDeniedTimeLog(this.cUIT_TRIALDataSet.UnapprovedTimeLogTable);
             // TODO: This line of code loads data into the 'cUIT_TRIALDataSet.Time_Log' table. You can move, or remove it, as needed.
             //this.time_LogTableAdapter.Fill(this.cUIT_TRIALDataSet.Time_Log);
-
             
+            /// manually setting standalone to true so that we can test
+            /// To-DO:: Make sure to remove this to work on the server
+            standalone = true;
+
+
+
+            startPanel = new LogPanel(tbpTracking, new Point(5,5));      
+  
+
             cboAccountAdminNew.SelectedItem = "Account";
             cboAccountAdminView.SelectedItem = "Accounts";
             DataGridViewCell editCell = dgvTimeLogRequests.Rows[0].Cells[6];
             editCell.Value = "test";
-
             //loads the path for the invoice export from app.config
 
             textBox2.Text = Properties.Settings.Default.InvoicePath;
-
-
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -172,24 +183,17 @@ namespace CUITAdmin
 
 
                 textBox2.Text = InvoiceExportPath.SelectedPath;// = Properties.Settings.Default.InvoicePath;
-
             }
         }
 
-        /*
-        private void TypeSwitch(){
-            switch (cboType.SelectedItem.ToString())
+        private void InitializeTabs(string accountType)
+        {
+            switch (accountType)
             {
-                case "Instrument":
-                    cboFundingSource.Enabled = false;
-                    cboInstrument.Enabled = false;
+                case "admin":
                     break;
-                case "Supply":
-
-                    break;
-            }*/
+            }
         }
-
-        
     }
+}
 

@@ -1,6 +1,6 @@
 ﻿namespace CUITAdmin
 {
-    partial class NewAccountForm
+    partial class LogPanel
     {
         /// <summary>
         /// Required designer variable.
@@ -20,24 +20,15 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
+        #region Component Designer generated code
 
         /// <summary>
-        /// Required method for Designer support - do not modify
+        /// Required method for Designer support - do not modify 
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
             this.SuspendLayout();
-            // 
-            // NewAccountForm
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(614, 499);
-            this.Name = "NewAccountForm";
-            this.Text = "NewAccountForm";
-            this.Load += new System.EventHandler(this.NewAccountForm_Load);
             this.ResumeLayout(false);
 
         }

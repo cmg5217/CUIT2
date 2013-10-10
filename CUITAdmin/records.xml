@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <users>
+    <user>
+      <username>admin</username>
+      <password>password</password>
+    </user>
+    <user>
+      <username>shane</username>
+      <password>shanespassword</password>
+      <accounts>
+        <account></account>
+        <account></account>
+      </accounts>
+    </user>
+  </users>
+  <accounts>
+    <account_number></account_number>
+    <account_name>
+      
+    </account_name>
+  </accounts>
+  <instruments>
+    <instrument>
+      
+    </instrument>
+  </instruments>
+  <logs>
+    <log>
+      <user></user>
+      <start_time></start_time>
+      <end_time></end_time>
+    </log>
+  </logs>
+</root>
