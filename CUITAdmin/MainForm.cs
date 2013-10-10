@@ -11,6 +11,9 @@ namespace CUITAdmin
 {
     public partial class frmCUITAdminMain : Form
     {
+        
+        public static string CONFIG_FILE = "";
+        private bool standalone = false;
         private string accountType;
         LogPanel startPanel;
 
@@ -33,11 +36,22 @@ namespace CUITAdmin
             //this.unapprovedTimeLogTableTableAdapter.FillDeniedTimeLog(this.cUIT_TRIALDataSet.UnapprovedTimeLogTable);
             // TODO: This line of code loads data into the 'cUIT_TRIALDataSet.Time_Log' table. You can move, or remove it, as needed.
             //this.time_LogTableAdapter.Fill(this.cUIT_TRIALDataSet.Time_Log);
-            startPanel = new LogPanel(tbpTracking);        
+            
+            /// manually setting standalone to true so that we can test
+            /// To-DO:: Make sure to remove this to work on the server
+            standalone = true;
+
+
+
+            startPanel = new LogPanel(tbpTracking, new Point(5,5));      
+  
+
             cboAccountAdminNew.SelectedItem = "Account";
             cboAccountAdminView.SelectedItem = "Accounts";
             DataGridViewCell editCell = dgvTimeLogRequests.Rows[0].Cells[6];
             editCell.Value = "test";
+
+            
         }
 
         private void btnAdd_Click(object sender, EventArgs e)

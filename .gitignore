@@ -1,6 +1,8 @@
 # Build Folders (you can keep bin if you'd like, to store dlls and pdbs)
 [Bb]in/
+![Bb]in/records.xml
 [Oo]bj/
+[Tt]est/
 
 # mstest test results
 TestResults
@@ -14,7 +16,8 @@ TestResults
 *.sln.docstates
 
 # Build results
-[Dd]ebug/
+[Dd]ebug
+!records.xml
 [Rr]elease/
 x64/
 *_i.c

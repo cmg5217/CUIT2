@@ -73,17 +73,17 @@
             this.lblManualLogDuration = new System.Windows.Forms.Label();
             this.lblManualLogFunding = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.dgvTimeLogRequests = new System.Windows.Forms.DataGridView();
-            this.clmName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.clmInstrument = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.clmDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.clmTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.clmDuration = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.clmFundingSource = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.clmApprove = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnSubmit = new System.Windows.Forms.Button();
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tbpTracking = new System.Windows.Forms.TabPage();
+            this.clmApprove = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clmFundingSource = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clmDuration = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clmTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clmDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clmInstrument = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clmName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dgvTimeLogRequests = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.unapprovedTimeLogTableBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cUIT_TRIALDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.time_LogBindingSource)).BeginInit();
@@ -97,8 +97,8 @@
             this.groupBox2.SuspendLayout();
             this.grpManualTimeLog.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvTimeLogRequests)).BeginInit();
             this.tabControlMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTimeLogRequests)).BeginInit();
             this.SuspendLayout();
             // 
             // unapprovedTimeLogTableBindingSource
@@ -245,6 +245,7 @@
             // 
             // cboAccountAdminNew
             // 
+            this.cboAccountAdminNew.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboAccountAdminNew.FormattingEnabled = true;
             this.cboAccountAdminNew.Items.AddRange(new object[] {
             "Account",
@@ -277,6 +278,7 @@
             // 
             // cboAccountAdminView
             // 
+            this.cboAccountAdminView.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboAccountAdminView.FormattingEnabled = true;
             this.cboAccountAdminView.Items.AddRange(new object[] {
             "Accounts",
@@ -326,7 +328,7 @@
             this.grpManualEntries.Controls.Add(this.grpManualTimeLog);
             this.grpManualEntries.Location = new System.Drawing.Point(6, 6);
             this.grpManualEntries.Name = "grpManualEntries";
-            this.grpManualEntries.Size = new System.Drawing.Size(652, 220);
+            this.grpManualEntries.Size = new System.Drawing.Size(671, 220);
             this.grpManualEntries.TabIndex = 11;
             this.grpManualEntries.TabStop = false;
             this.grpManualEntries.Text = "Manual Entries";
@@ -340,9 +342,9 @@
             this.groupBox2.Controls.Add(this.lblSupplyFunding);
             this.groupBox2.Controls.Add(this.cboSupplyName);
             this.groupBox2.Controls.Add(this.lblSupplyName);
-            this.groupBox2.Location = new System.Drawing.Point(327, 15);
+            this.groupBox2.Location = new System.Drawing.Point(339, 15);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(314, 199);
+            this.groupBox2.Size = new System.Drawing.Size(326, 199);
             this.groupBox2.TabIndex = 18;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Supplies";
@@ -374,6 +376,7 @@
             // 
             // cboSupplyFunding
             // 
+            this.cboSupplyFunding.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSupplyFunding.FormattingEnabled = true;
             this.cboSupplyFunding.Location = new System.Drawing.Point(126, 63);
             this.cboSupplyFunding.Name = "cboSupplyFunding";
@@ -391,6 +394,7 @@
             // 
             // cboSupplyName
             // 
+            this.cboSupplyName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSupplyName.FormattingEnabled = true;
             this.cboSupplyName.Location = new System.Drawing.Point(126, 37);
             this.cboSupplyName.Name = "cboSupplyName";
@@ -452,6 +456,7 @@
             // 
             // cboManualLogInstrument
             // 
+            this.cboManualLogInstrument.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboManualLogInstrument.FormattingEnabled = true;
             this.cboManualLogInstrument.Location = new System.Drawing.Point(122, 90);
             this.cboManualLogInstrument.Name = "cboManualLogInstrument";
@@ -460,7 +465,13 @@
             // 
             // cboManualLogUser
             // 
+            this.cboManualLogUser.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboManualLogUser.FormattingEnabled = true;
+            this.cboManualLogUser.Items.AddRange(new object[] {
+            "Test",
+            "John Doe",
+            "Jane Doe",
+            "Tom Ato"});
             this.cboManualLogUser.Location = new System.Drawing.Point(122, 35);
             this.cboManualLogUser.Name = "cboManualLogUser";
             this.cboManualLogUser.Size = new System.Drawing.Size(148, 21);
@@ -468,6 +479,7 @@
             // 
             // cboManualLogFunding
             // 
+            this.cboManualLogFunding.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboManualLogFunding.FormattingEnabled = true;
             this.cboManualLogFunding.Location = new System.Drawing.Point(122, 62);
             this.cboManualLogFunding.Name = "cboManualLogFunding";
@@ -496,9 +508,9 @@
             this.lblManualLogDuration.AutoSize = true;
             this.lblManualLogDuration.Location = new System.Drawing.Point(31, 149);
             this.lblManualLogDuration.Name = "lblManualLogDuration";
-            this.lblManualLogDuration.Size = new System.Drawing.Size(50, 13);
+            this.lblManualLogDuration.Size = new System.Drawing.Size(95, 13);
             this.lblManualLogDuration.TabIndex = 9;
-            this.lblManualLogDuration.Text = "Duration:";
+            this.lblManualLogDuration.Text = "Duration: (minutes)";
             // 
             // lblManualLogFunding
             // 
@@ -515,68 +527,14 @@
             this.groupBox1.Controls.Add(this.btnSubmit);
             this.groupBox1.Location = new System.Drawing.Point(6, 232);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(652, 354);
+            this.groupBox1.Size = new System.Drawing.Size(671, 354);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Time Log Requests";
             // 
-            // dgvTimeLogRequests
-            // 
-            this.dgvTimeLogRequests.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvTimeLogRequests.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.clmName,
-            this.clmInstrument,
-            this.clmDate,
-            this.clmTime,
-            this.clmDuration,
-            this.clmFundingSource,
-            this.clmApprove});
-            this.dgvTimeLogRequests.Location = new System.Drawing.Point(7, 20);
-            this.dgvTimeLogRequests.Name = "dgvTimeLogRequests";
-            this.dgvTimeLogRequests.Size = new System.Drawing.Size(639, 299);
-            this.dgvTimeLogRequests.TabIndex = 8;
-            // 
-            // clmName
-            // 
-            this.clmName.HeaderText = "Name";
-            this.clmName.Name = "clmName";
-            // 
-            // clmInstrument
-            // 
-            this.clmInstrument.HeaderText = "Instrument";
-            this.clmInstrument.Name = "clmInstrument";
-            // 
-            // clmDate
-            // 
-            this.clmDate.HeaderText = "Log Date";
-            this.clmDate.Name = "clmDate";
-            // 
-            // clmTime
-            // 
-            this.clmTime.HeaderText = "Start Time";
-            this.clmTime.Name = "clmTime";
-            this.clmTime.Width = 75;
-            // 
-            // clmDuration
-            // 
-            this.clmDuration.HeaderText = "Duration";
-            this.clmDuration.Name = "clmDuration";
-            this.clmDuration.Width = 60;
-            // 
-            // clmFundingSource
-            // 
-            this.clmFundingSource.HeaderText = "Funding Source";
-            this.clmFundingSource.Name = "clmFundingSource";
-            // 
-            // clmApprove
-            // 
-            this.clmApprove.HeaderText = "Approve?";
-            this.clmApprove.Name = "clmApprove";
-            this.clmApprove.Width = 60;
-            // 
             // btnSubmit
             // 
-            this.btnSubmit.Location = new System.Drawing.Point(570, 325);
+            this.btnSubmit.Location = new System.Drawing.Point(590, 325);
             this.btnSubmit.Name = "btnSubmit";
             this.btnSubmit.Size = new System.Drawing.Size(75, 23);
             this.btnSubmit.TabIndex = 7;
@@ -597,6 +555,7 @@
             // 
             // tbpTracking
             // 
+            this.tbpTracking.AutoScroll = true;
             this.tbpTracking.Location = new System.Drawing.Point(4, 22);
             this.tbpTracking.Name = "tbpTracking";
             this.tbpTracking.Padding = new System.Windows.Forms.Padding(3);
@@ -605,12 +564,69 @@
             this.tbpTracking.Text = "Tracking";
             this.tbpTracking.UseVisualStyleBackColor = true;
             // 
+            // clmApprove
+            // 
+            this.clmApprove.HeaderText = "Approve?";
+            this.clmApprove.Name = "clmApprove";
+            this.clmApprove.Width = 60;
+            // 
+            // clmFundingSource
+            // 
+            this.clmFundingSource.HeaderText = "Funding Source";
+            this.clmFundingSource.Name = "clmFundingSource";
+            // 
+            // clmDuration
+            // 
+            this.clmDuration.HeaderText = "Duration";
+            this.clmDuration.Name = "clmDuration";
+            this.clmDuration.Width = 60;
+            // 
+            // clmTime
+            // 
+            this.clmTime.HeaderText = "Start Time";
+            this.clmTime.Name = "clmTime";
+            this.clmTime.Width = 75;
+            // 
+            // clmDate
+            // 
+            this.clmDate.HeaderText = "Log Date";
+            this.clmDate.Name = "clmDate";
+            // 
+            // clmInstrument
+            // 
+            this.clmInstrument.HeaderText = "Instrument";
+            this.clmInstrument.Name = "clmInstrument";
+            // 
+            // clmName
+            // 
+            this.clmName.HeaderText = "Name";
+            this.clmName.Name = "clmName";
+            // 
+            // dgvTimeLogRequests
+            // 
+            this.dgvTimeLogRequests.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvTimeLogRequests.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.clmName,
+            this.clmInstrument,
+            this.clmDate,
+            this.clmTime,
+            this.clmDuration,
+            this.clmFundingSource,
+            this.clmApprove});
+            this.dgvTimeLogRequests.Location = new System.Drawing.Point(7, 20);
+            this.dgvTimeLogRequests.Name = "dgvTimeLogRequests";
+            this.dgvTimeLogRequests.Size = new System.Drawing.Size(658, 299);
+            this.dgvTimeLogRequests.TabIndex = 8;
+            // 
             // frmCUITAdminMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(712, 639);
             this.Controls.Add(this.tabControlMain);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "frmCUITAdminMain";
             this.Text = "CUITAdmin";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -630,8 +646,8 @@
             this.grpManualTimeLog.ResumeLayout(false);
             this.grpManualTimeLog.PerformLayout();
             this.groupBox1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvTimeLogRequests)).EndInit();
             this.tabControlMain.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTimeLogRequests)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -682,6 +698,9 @@
         private System.Windows.Forms.Label lblManualLogDuration;
         private System.Windows.Forms.Label lblManualLogFunding;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button btnSubmit;
+        private System.Windows.Forms.TabControl tabControlMain;
+        private System.Windows.Forms.TabPage tbpTracking;
         private System.Windows.Forms.DataGridView dgvTimeLogRequests;
         private System.Windows.Forms.DataGridViewTextBoxColumn clmName;
         private System.Windows.Forms.DataGridViewTextBoxColumn clmInstrument;
@@ -690,9 +709,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn clmDuration;
         private System.Windows.Forms.DataGridViewTextBoxColumn clmFundingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn clmApprove;
-        private System.Windows.Forms.Button btnSubmit;
-        private System.Windows.Forms.TabControl tabControlMain;
-        private System.Windows.Forms.TabPage tbpTracking;
     }
 }
 
