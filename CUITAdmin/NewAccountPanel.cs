@@ -9,13 +9,13 @@ namespace CUITAdmin
 {
     class NewAccountPanel : Panel
     {
-        private int controlGroupSizeY = 400;
-        private int controlGroupIndex = 0;
+        NewEntryForm containingForm;
 
-        public NewAccountPanel(NewAccountForm pForm, int index)
+        public NewAccountPanel(NewEntryForm pForm)
         {
+            containingForm = pForm;
             pForm.Controls.Add(this);
-            this.Location = new Point(10, 10 + index * controlGroupSizeY);
+            this.Location = new Point(10, 10);
             this.Size = new Size(650, 400);
 
             Label lblAccountName = new Label();
@@ -59,17 +59,17 @@ namespace CUITAdmin
             lblRateType.Location = new Point(10, 130);
             this.Controls.Add(lblRateType);
 
-            TextBox txtRateType = new TextBox();
-            txtRateType.SetBounds(110, 130, 200, 20);
-            this.Controls.Add(txtRateType);
+            ComboBox cboRateType = new ComboBox();
+            cboRateType.SetBounds(110, 130, 200, 20);
+            this.Controls.Add(cboRateType);
 
             Label lblBalance = new Label();
             lblBalance.Text = "Balance:";
-            lblBalance.Location = new Point(10, 190);
+            lblBalance.Location = new Point(10, 160);
             this.Controls.Add(lblBalance);
 
             TextBox txtBalance = new TextBox();
-            txtBalance.SetBounds(110, 190, 200, 20);
+            txtBalance.SetBounds(110, 160, 200, 20);
             this.Controls.Add(txtBalance);
 
             Label lblNotes = new Label();
@@ -78,13 +78,20 @@ namespace CUITAdmin
             this.Controls.Add(lblNotes);
 
             RichTextBox txtNotes = new RichTextBox();
-            txtNotes.SetBounds(325, 40, 280, 172);
+            txtNotes.SetBounds(325, 40, 280, 142);
             this.Controls.Add(txtNotes);
 
             Button btnSubmit = new Button();
             btnSubmit.Text = "Submit";
-            btnSubmit.Location = new Point(525, 220);
+            btnSubmit.Location = new Point(525, 190);
             this.Controls.Add(btnSubmit);
+            btnSubmit.Click += new EventHandler(this.btnSubmit_Click);
+        }
+
+        private void btnSubmit_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("This is a test");
+            containingForm.Close();
         }
     }
 }

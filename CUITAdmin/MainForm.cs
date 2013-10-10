@@ -69,36 +69,9 @@ namespace CUITAdmin
 
         private void btnAccountAdminNew_Click(object sender, EventArgs e)
         {
-
-            if (cboAccountAdminNew.Text == "Account")
-            {
-                Form newAccount = new NewAccountForm();
-                newAccount.Show();
-            }
-
-            else if (cboAccountAdminNew.Text == "Account Manager")
-            {
-                
-            }
-
-            else if (cboAccountAdminNew.Text == "Item")
-            {
-                
-            }
-
-            else if (cboAccountAdminNew.Text == "User")
-            {
-                Form newUser = new NewUserForm();
-                newUser.Show();
-            }
-
-            else if (cboAccountAdminNew.Text == "User Contact")
-            {
-                Form newContact = new NewContactForm();
-                newContact.Show();
-            }
-
-
+            string addNewCase = cboAccountAdminNew.Text;
+            Form newForm = new NewEntryForm(addNewCase);
+            newForm.Show();
         }
 
         private void tbpExports_Click(object sender, EventArgs e)
