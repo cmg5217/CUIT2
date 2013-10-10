@@ -1,23 +1,13 @@
 # Build Folders (you can keep bin if you'd like, to store dlls and pdbs)
-<<<<<<< HEAD
 CUITAdmin/bin/Debug/*
 !itextsharp.dll
 !invoicetemplate.pdf
+!records.xml
 
 CUIT/CUITAdmin/bin/*
 CUIT/CUITClient/bin/*
 CUITClient/bin/*
 
-
-=======
-#[Bb]in/
-#CUITAdmin/bin/
-CUITAdmin/bin/Debug/*
-!records.xml
-!itextsharp.dll
-!invoicetemplate.pdf
-
->>>>>>> chris
 [Oo]bj/
 [Tt]est/
 
@@ -33,12 +23,7 @@ TestResults
 *.sln.docstates
 
 # Build results
-<<<<<<< HEAD
 #[Dd]ebug/
-=======
-#[Dd]ebug
-
->>>>>>> chris
 [Rr]elease/
 x64/
 *_i.c
