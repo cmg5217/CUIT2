@@ -1,9 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CUITAdmin", "CUITAdmin\CUITAdmin.csproj", "{C1B26EEC-DC42-4E6D-BCC9-9874D678B6D1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CUITClient", "CUITClient\CUITClient.csproj", "{7A3CAD35-AC1F-43BA-B7EF-9C1651D1157F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +13,6 @@ Global
 		{C1B26EEC-DC42-4E6D-BCC9-9874D678B6D1}.Debug|x86.Build.0 = Debug|x86
 		{C1B26EEC-DC42-4E6D-BCC9-9874D678B6D1}.Release|x86.ActiveCfg = Release|x86
 		{C1B26EEC-DC42-4E6D-BCC9-9874D678B6D1}.Release|x86.Build.0 = Release|x86
-		{7A3CAD35-AC1F-43BA-B7EF-9C1651D1157F}.Debug|x86.ActiveCfg = Debug|x86
-		{7A3CAD35-AC1F-43BA-B7EF-9C1651D1157F}.Debug|x86.Build.0 = Debug|x86
-		{7A3CAD35-AC1F-43BA-B7EF-9C1651D1157F}.Release|x86.ActiveCfg = Release|x86
-		{7A3CAD35-AC1F-43BA-B7EF-9C1651D1157F}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
