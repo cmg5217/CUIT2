@@ -92,6 +92,20 @@ namespace CUITAdmin
         {
             MessageBox.Show("This is a test");
             containingForm.Close();
+            // regular expressions example
+            /* ^\s*\+?\s*([0-9][\s-]*){9,}$
+              ^         # Start of the string
+              \s*       # Ignore leading whitespace
+              \+?       # An optional plus
+              \s*       # followed by an optional space or multiple spaces
+              (
+                 [0-9]  # A digit
+                 [\s-]* # followed by an optional space or dash or more than one of those
+              )
+               {9,}     # That appears nine or more times
+            $           # End of the string*/
+
+            
         }
     }
 }

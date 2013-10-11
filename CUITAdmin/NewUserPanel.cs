@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Text.RegularExpressions;
 
 
 namespace CUITAdmin
@@ -319,9 +320,30 @@ namespace CUITAdmin
         }
 
         private void btnSubmit_Click(object sender, EventArgs e)
-        {
+        {   
+            string phonePattern = "^\\D?(\\d{3})\\D?\\D?(\\d{3})\\D?(\\d{4})$";
+            if(!System.Text.RegularExpressions.Regex.IsMatch(txtPhone.Text, phonePattern))
+            {
+                txtPhone.BackColor;
+                return;
+            }
             MessageBox.Show("This is a test");
             containingForm.Close();
+
+            // regular expressions example
+            /* ^\s*\+?\s*([0-9][\s-]*){9,}$
+              ^         # Start of the string
+              \s*       # Ignore leading whitespace
+              \+?       # An optional plus
+              \s*       # followed by an optional space or multiple spaces
+              (
+                 [0-9]  # A digit
+                 [\s-]* # followed by an optional space or dash or more than one of those
+              )
+               {9,}     # That appears nine or more times
+            $           # End of the string*/
+
+            
         }
 
         private void btnNewContact_Click(object sender, EventArgs e)
