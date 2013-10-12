@@ -1,35 +1,44 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <users>
     <user>
       <username>admin</username>
       <password>password</password>
+      <accounts>
+      </accounts>
     </user>
     <user>
       <username>shane</username>
-      <password>shanespassword</password>
-      <accounts>
-        <account></account>
-        <account></account>
-      </accounts>
+      <password>123</password>
+      <account_numbers>
+        <account_number>123456789</account_number>
+      </account_numbers>
+    </user>
+    <user>
+      <username>chris</username>
+      <password>password</password>
     </user>
   </users>
   <accounts>
-    <account_number></account_number>
-    <account_name>
-      
-    </account_name>
+    <account>
+      <account_number>123456789</account_number>
+      <account_name>Dummy Account 1</account_name>
+    </account>
   </accounts>
   <instruments>
     <instrument>
-      
     </instrument>
   </instruments>
   <logs>
     <log>
-      <user></user>
-      <start_time></start_time>
-      <end_time></end_time>
+      <user>
+      </user>
+      <account_number>
+      </account_number>
+      <start_time>
+      </start_time>
+      <end_time>
+      </end_time>
     </log>
   </logs>
 </root>

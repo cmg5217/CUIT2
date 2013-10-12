@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Configuration;
+using System.Timers;
 
 namespace CUITAdmin {
     public partial class LogPanel : Panel {
@@ -35,7 +36,10 @@ namespace CUITAdmin {
         private Button btnStartLog = new Button();
         private DateTime logTime = new DateTime();
 
-        private Timer timeElapsed;
+        private BackgroundWorker verifyPasswordBGW;
+
+        private System.Timers.Timer timeElapsed;
+        private System.Timers.Timer pauseTimer;
 
         bool running = false;
 
@@ -44,13 +48,21 @@ namespace CUITAdmin {
         private LogPanel childPanel;
 
 
-
+        /////////////////////////////////////////// CONSTRUCTORS & DESTRUCTORS /////////////////////////////////////////////////////
+        
         public LogPanel(Control container) {
             InitializeComponent();
             this.container = container;
             container.Controls.Add(this);
             this.Visible = true;
             AddControls();
+
+
+            pauseTimer = new System.Timers.Timer(600);
+            pauseTimer.Elapsed += new ElapsedEventHandler(pauseTimer_Elapsed);
+
+            verifyPasswordBGW = new BackgroundWorker();
+            verifyPasswordBGW.RunWorkerCompleted += new RunWorkerCompletedEventHandler(verifyPasswordBGW_RunWorkerCompleted);
         }
 
         public LogPanel(Control container, Point location) 
@@ -75,11 +87,6 @@ namespace CUITAdmin {
                 }
             }
         }
-
-
-
-
-
 
         // Adds the initial controls to the panel
         private void AddControls() {
@@ -122,6 +129,7 @@ namespace CUITAdmin {
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.Size = new System.Drawing.Size(100, 20);
             this.txtPassword.TabIndex = 2;
+            this.txtPassword.TextChanged += txtPassword_TextChanged;
             //
             // lblTimeElapsed
             //
@@ -152,11 +160,12 @@ namespace CUITAdmin {
             this.lblAuthenticating.Name = "lblAuthenticating";
             this.lblAuthenticating.Size = new System.Drawing.Size(75, 13);
             this.lblAuthenticating.TabIndex = 5;
-            this.lblAuthenticating.Text = "Authenticating";
+            this.lblAuthenticating.Text = "";
             // 
             // cboFundingSource
             // 
             this.cboFundingSource.FormattingEnabled = true;
+            this.cboFundingSource.Enabled = false;
             this.cboFundingSource.Location = new System.Drawing.Point(416, 51);
             this.cboFundingSource.Name = "cboFundingSource";
             this.cboFundingSource.Size = new System.Drawing.Size(121, 21);
@@ -183,6 +192,7 @@ namespace CUITAdmin {
             // cboInstrument
             // 
             this.cboInstrument.FormattingEnabled = true;
+            this.cboInstrument.Enabled = false;
             this.cboInstrument.Location = new System.Drawing.Point(416, 77);
             this.cboInstrument.Name = "cboInstrument";
             this.cboInstrument.Size = new System.Drawing.Size(121, 21);
@@ -192,32 +202,10 @@ namespace CUITAdmin {
         // Adjust the controls for an active log, called on btnStart_Clicked
         private void StartLog() {
 
-            bool invalid = false;
-
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load("../../records.xml");
-            XmlNode userNodes = xmlDoc.SelectSingleNode("//root/users");
-            System.Diagnostics.Debug.WriteLine(userNodes.OuterXml);
-
-            XmlNode testNode = xmlDoc.SelectSingleNode("//root/users/user");
-            System.Diagnostics.Debug.WriteLine("test" + testNode.InnerText);
-
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // Start Standalone Section
             
-            foreach(XmlNode userNode in userNodes){
-                System.Diagnostics.Debug.WriteLine("In foreach");
-                XmlNode usernameNode = userNode.SelectSingleNode("username");
-                if (usernameNode != null)System.Diagnostics.Debug.WriteLine("UserName: " + usernameNode.InnerText);
-                if (txtUsername.Text == usernameNode.InnerText) {
-                    if (userNode.SelectSingleNode("password").InnerText != txtPassword.Text) {
-                        MessageBox.Show("you don't know your fucking password dumbass");
-                        invalid = true;
-                        return;
-                    }
-                }
-            }
-
-
-            if (invalid) return;
+            //if (invalid) return;
 
             childPanel = new LogPanel(container, this);
             childPanel.Location = new Point(this.Location.X, this.Location.Y + this.Size.Height + BOTTOM_PADDING);
@@ -233,7 +221,7 @@ namespace CUITAdmin {
 
             btnStartLog.Text = "End";
 
-            timeElapsed = new Timer();
+            timeElapsed = new System.Timers.Timer(1000);
             timeElapsed.Start();
 
             // To-Do: Add Query to add partial log with start time
@@ -243,6 +231,7 @@ namespace CUITAdmin {
             
         }
 
+       
         // Disposes of the this panel and moves it's children
         private void EndLog() {
             // To-Do:: Add database interactions to add an end time to the created log
@@ -251,7 +240,38 @@ namespace CUITAdmin {
             this.Dispose();
         }
 
+        private void ValidatePassword() {
+            if (ConfigurationManager.AppSettings["StandaloneMode"] == "true") {
 
+                XmlDocument xmlDoc = new XmlDocument();
+                xmlDoc.Load("records.xml");
+                XmlNode userNodes = xmlDoc.SelectSingleNode("//root/users");
+
+                foreach (XmlNode userNode in userNodes) {
+                   
+                    XmlNode usernameNode = userNode.SelectSingleNode("username");
+                    if (txtUsername.Text == usernameNode.InnerText) {
+                        if (userNode.SelectSingleNode("password").InnerText != txtPassword.Text) {
+
+                            lblAuthenticating.Invoke(new MethodInvoker(delegate { lblAuthenticating.Text = "Error: Password Invalid"; }));
+                            cboFundingSource.Invoke(new MethodInvoker(delegate { cboFundingSource.Enabled = false; }));
+                            cboInstrument.Invoke(new MethodInvoker(delegate { cboInstrument.Enabled = false; }));
+
+                            return;
+                        } else {
+                            if (lblAuthenticating.InvokeRequired) {
+                                lblAuthenticating.Invoke(new MethodInvoker(delegate { lblAuthenticating.Text = "Authentication Successful"; }));
+                            }
+
+                            cboFundingSource.Invoke(new MethodInvoker(delegate { cboFundingSource.Enabled = true; }));
+                            cboInstrument.Invoke(new MethodInvoker(delegate { cboInstrument.Enabled = true; }));
+                        }
+                    }
+                }
+            } else {
+
+            }
+        }
 
         private void MoveChildren(int yOffset) {
             if (childPanel != null) {
@@ -280,6 +300,24 @@ namespace CUITAdmin {
             } else {
                 StartLog();
             }
+        }
+
+
+        private void txtPassword_TextChanged(object sender, EventArgs e) {
+            pauseTimer.Stop();
+            pauseTimer.Start();
+        }
+
+        // Uses a background worker to change the authentification lbls text
+        // background worker needed for threadsafe calls to the form
+        private void pauseTimer_Elapsed(object sender, EventArgs e) {
+            this.ValidatePassword();
+            //this.verifyPasswordBGW.RunWorkerAsync();
+        }
+
+        // validates password, is started in pauseTimer_Elapsed
+        private void verifyPasswordBGW_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+            this.ValidatePassword();
         }
 
         private void timeElapsed_Elapsed(object sender, EventArgs e) {

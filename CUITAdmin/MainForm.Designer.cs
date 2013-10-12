@@ -541,9 +541,9 @@
             this.lblManualLogDuration.AutoSize = true;
             this.lblManualLogDuration.Location = new System.Drawing.Point(31, 149);
             this.lblManualLogDuration.Name = "lblManualLogDuration";
-            this.lblManualLogDuration.Size = new System.Drawing.Size(95, 13);
+            this.lblManualLogDuration.Size = new System.Drawing.Size(75, 13);
             this.lblManualLogDuration.TabIndex = 9;
-            this.lblManualLogDuration.Text = "Duration: (minutes)";
+            this.lblManualLogDuration.Text = "Duration: (min)";
             // 
             // lblManualLogFunding
             // 
