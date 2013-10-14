@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Configuration;
-
+ 
 namespace CUITAdmin {
     public partial class LogPanel : Panel {
 
