@@ -70,6 +70,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CUIT_TRIALDataSet.xsd</DependentUpon>
     </Compile>
+    <Compile Include="DatabaseManager.cs" />
     <Compile Include="LoginScreen.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -133,6 +134,7 @@
       <DependentUpon>TestForm.cs</DependentUpon>
     </Compile>
     <Compile Include="XmlManager.cs" />
+    <Compile Include="XMLTestingClass.cs" />
     <EmbeddedResource Include="LoginScreen.resx">
       <DependentUpon>LoginScreen.cs</DependentUpon>
     </EmbeddedResource>

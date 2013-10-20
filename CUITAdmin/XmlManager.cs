@@ -13,7 +13,7 @@ namespace CUITAdmin {
         private const string FILE_LOCATION = "records.xml";
         private XmlDocument xmlDoc;
 
-        public XmlManager() {
+        private XmlManager() {
             xmlDoc = new XmlDocument();
             xmlDoc.Load(FILE_LOCATION);
         }
@@ -25,6 +25,8 @@ namespace CUITAdmin {
                 return globalManager;
             }
         }
+
+        
 
         ////////////////////////////////////////////////// AddUser() ///////////////////////////////////////////////
         //
@@ -141,18 +143,45 @@ namespace CUITAdmin {
             return true;
         }
 
+        public void AddLog(string username, string account, string instrument, string startTime) {
 
+            // Gets the "accounts" node
+            XmlNode logsElement = xmlDoc.SelectSingleNode("//root/logs");
+            
+            // Create the new log
+            XmlElement newLog = xmlDoc.CreateElement("log");
 
-        public bool FindUser(string username, ref XmlElement outElement) {
+            // Create the nodes to add to the log
+            XmlElement usernameElement = xmlDoc.CreateElement("username");
+            XmlElement accountNumberElement = xmlDoc.CreateElement("account_number");
+            XmlElement instrumentTimeElement = xmlDoc.CreateElement("instrument");
+            XmlElement startTimeElement = xmlDoc.CreateElement("start_time");
 
-            foreach (XmlElement innerElement in xmlDoc.SelectSingleNode("//root/users")) {
-                XmlElement usernameElement = (XmlElement)innerElement.SelectSingleNode("username");
-                if (usernameElement != null && usernameElement.InnerText == username) {
-                    outElement = innerElement;
-                    return true;
-                }
-            }
+            // Set the inner text of the nodes
+            usernameElement.InnerText = username;
+            accountNumberElement.InnerText = account;
+            instrumentTimeElement.InnerText = instrument;
+            startTimeElement.InnerText = startTime;
+
+            // add the individual nodes to the new log
+            newLog.AppendChild(usernameElement);
+            newLog.AppendChild(accountNumberElement);
+            newLog.AppendChild(instrumentTimeElement);
+            newLog.AppendChild(startTimeElement);
+
+            // finally, add the new log 
+            logsElement.AppendChild(newLog);
+            xmlDoc.Save("records.xml");
+        }
+
+        public bool AddLogEndTime() {
+            XmlNode logElement;
+            
             return false;
+        }
+
+        public bool FindUser(string username, ref XmlElement outElement) {            
+            return FindElementByInnerElementValue("//root/users", "username", username, ref outElement);
         }
 
 
@@ -167,42 +196,35 @@ namespace CUITAdmin {
             return false;
         }
 
-
-        // Searches through the child elements of the parent element passed in looking for 
-        private bool FindElementByInnerElementValue(XmlElement parentElement, string childElementName, string childValue, XmlElement outElement) {
-
+        // Searches through the child elements of the parent element passed in looking for the string passed in
+        private bool FindElementByInnerElementValue(string parentElementxpath, string childElementName, string childValue, ref XmlElement outElement) {
+            XmlNode parentElement = xmlDoc.SelectSingleNode(parentElementxpath);
             foreach (XmlElement innerElement in parentElement) {
                 XmlElement checkElement = (XmlElement)innerElement.SelectSingleNode(childElementName);
-                if (childValue == checkElement.InnerText) return true;
+                if (childValue == checkElement.InnerText) {
+                    outElement = innerElement;
+                    return true;
+                }
             }
             return false;
         }
 
         // Checks the xml to see if the username and password match, returns false if no user found or invalid password
         public bool CheckPassword(string username, string password) {
-            
-            // go to the users element
-            XmlElement userElements = (XmlElement)xmlDoc.SelectSingleNode("//root/users");
 
-            // loop through each user
-            foreach (XmlElement userElement in userElements) {
+            XmlElement userElement = null;
 
-                // get the username element
-                XmlElement usernameElement = (XmlElement)userElement.SelectSingleNode("username");
-
-                // check to see if it is the same as the passed username
-                if (username == usernameElement.InnerText) {
-                    // if it is the same user check to see if their password matches, return accordingly
-                    if (userElement.SelectSingleNode("password").InnerText != password) {
-                        return false;
-                    } else {
-                        return true;
-                    }
+            // Find the user
+            if (FindUser(username, ref userElement)) {
+                // Compare password
+                if (userElement.SelectSingleNode("password").InnerText != password) {
+                    return false;
+                } else {
+                    return true;
                 }
+            } else {
+                return false; // no user found
             }
-
-            // no user found, return false
-            return false;
         }
 
 

@@ -31,14 +31,17 @@
   </instruments>
   <logs>
     <log>
-      <user>
-      </user>
+      <username>chris</username>
       <account_number>
       </account_number>
-      <start_time>
-      </start_time>
-      <end_time>
-      </end_time>
+      <instrument>testAccount</instrument>
+      <start_time>10/19/2013 9:26:03 PM</start_time>
+    </log>
+    <log>
+      <username>chris</username>
+      <account_number>test2</account_number>
+      <instrument>testAccount</instrument>
+      <start_time>10/19/2013 9:42:56 PM</start_time>
     </log>
   </logs>
 </root>

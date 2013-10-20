@@ -14,7 +14,7 @@ namespace CUITAdmin {
 
         public TestForm() {
             InitializeComponent();
-            xmlManager = new XmlManager();
+            xmlManager = XmlManager.Instance;
         }
 
         private void button1_Click(object sender, EventArgs e) {
