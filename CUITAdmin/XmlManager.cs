@@ -143,11 +143,48 @@ namespace CUITAdmin {
             return true;
         }
 
-        public void AddLog(string username, string account, string instrument, string startTime) {
+        public void AddLog(string username, string account, string instrument, string startTime, string endTime)
+        {
 
             // Gets the "accounts" node
             XmlNode logsElement = xmlDoc.SelectSingleNode("//root/logs");
-            
+
+            // Create the new log
+            XmlElement newLog = xmlDoc.CreateElement("log");
+
+            // Create the nodes to add to the log
+            XmlElement usernameElement = xmlDoc.CreateElement("username");
+            XmlElement accountNumberElement = xmlDoc.CreateElement("account_number");
+            XmlElement instrumentTimeElement = xmlDoc.CreateElement("instrument");
+            XmlElement startTimeElement = xmlDoc.CreateElement("start_time");
+            XmlElement endTimeElement = xmlDoc.CreateElement("end_time");
+
+            // Set the inner text of the nodes
+            usernameElement.InnerText = username;
+            accountNumberElement.InnerText = account;
+            instrumentTimeElement.InnerText = instrument;
+            startTimeElement.InnerText = startTime;
+            endTimeElement.InnerText = endTime;
+
+
+            // add the individual nodes to the new log
+            newLog.AppendChild(usernameElement);
+            newLog.AppendChild(accountNumberElement);
+            newLog.AppendChild(instrumentTimeElement);
+            newLog.AppendChild(startTimeElement);
+            newLog.AppendChild(endTimeElement);
+
+            // finally, add the new log 
+            logsElement.AppendChild(newLog);
+            xmlDoc.Save(FILE_LOCATION);
+        }
+
+        public void AddPartialLog(string username, string account, string instrument, string startTime)
+        {
+
+            // Gets the "accounts" node
+            XmlNode logsElement = xmlDoc.SelectSingleNode("//root/logs");
+
             // Create the new log
             XmlElement newLog = xmlDoc.CreateElement("log");
 
@@ -171,20 +208,49 @@ namespace CUITAdmin {
 
             // finally, add the new log 
             logsElement.AppendChild(newLog);
-            xmlDoc.Save("records.xml");
+            xmlDoc.Save(FILE_LOCATION);
         }
 
-        public bool AddLogEndTime() {
+        public bool AddLogEndTime()
+        {
             XmlNode logElement;
-            
+
             return false;
+        }
+
+        public bool AddSupplyUse(string username, string accountnumber, string supply, int quanity)
+        {
+            return AddSupplyUse(username, accountnumber, supply, quanity.ToString());
+        }
+
+        public bool AddSupplyUse(string supply, string username, string accountnumber, string quanity)
+        {
+            XmlNode supplyUsesNode = xmlDoc.SelectSingleNode("//root/supply_uses");
+
+            XmlElement supplyUseElement = xmlDoc.CreateElement("supply_use");
+            XmlElement supplyElement = xmlDoc.CreateElement("supply_name");
+            XmlElement usernameElement = xmlDoc.CreateElement("username");
+            XmlElement accountNumberElement = xmlDoc.CreateElement("account_number");
+            XmlElement quantityElement = xmlDoc.CreateElement("quantity");
+
+            supplyElement.InnerText = supply;
+            usernameElement.InnerText = username;
+            accountNumberElement.InnerText = accountnumber;
+            quantityElement.InnerText = supply;
+
+            supplyUseElement.AppendChild(supplyElement);
+            supplyUseElement.AppendChild(usernameElement);
+            supplyUseElement.AppendChild(accountNumberElement);
+            supplyUseElement.AppendChild(quantityElement);
+            supplyUsesNode.AppendChild(supplyUseElement);
+
+            xmlDoc.Save(FILE_LOCATION);
+            return true;
         }
 
         public bool FindUser(string username, ref XmlElement outElement) {            
             return FindElementByInnerElementValue("//root/users", "username", username, ref outElement);
         }
-
-
 
         public bool FindElementByInnerText(List<XmlElement> searchElementList, string innerText, XmlElement outElement) {
             foreach (XmlElement searchElement in searchElementList) {
