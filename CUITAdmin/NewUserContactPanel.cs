@@ -13,7 +13,7 @@ namespace CUITAdmin
         RichTextBox rtbNotes = new RichTextBox();
         TextBox txtPhone = new TextBox();
         TextBox txtZipCode = new TextBox();
-        TextBox txtState = new TextBox();
+        ComboBox cboState = new ComboBox();
         TextBox txtCity = new TextBox();
         TextBox txtStreet = new TextBox();
         TextBox txtEmail = new TextBox();
@@ -38,6 +38,7 @@ namespace CUITAdmin
             this.Size = new Size(650, 400);
 
             addControls();
+            containingForm.AcceptButton = btnSubmit;
         }
 
         private void addControls()
@@ -49,7 +50,7 @@ namespace CUITAdmin
             this.Controls.Add(this.rtbNotes);
             this.Controls.Add(this.txtPhone);
             this.Controls.Add(this.txtZipCode);
-            this.Controls.Add(this.txtState);
+            this.Controls.Add(this.cboState);
             this.Controls.Add(this.txtCity);
             this.Controls.Add(this.txtStreet);
             this.Controls.Add(this.txtEmail);
@@ -187,10 +188,17 @@ namespace CUITAdmin
             // 
             // txtState
             // 
-            this.txtState.Location = new System.Drawing.Point(108, 121);
-            this.txtState.Name = "txtState";
-            this.txtState.Size = new System.Drawing.Size(134, 20);
-            this.txtState.TabIndex = 21;
+            this.cboState.Location = new System.Drawing.Point(108, 121);
+            this.cboState.Name = "txtState";
+            this.cboState.Size = new System.Drawing.Size(134, 20);
+            this.cboState.TabIndex = 21;
+            List<string> states = new List<string> { "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New", "Hampshire", "New", "Jersey", "New", "Mexico", "New", "York", "North", "Carolina", "North", "Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode", "Island", "South", "Carolina", "South", "Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West", "Virginia", "Wisconsin", "Wyoming" };
+            foreach (string s in states)
+            {
+                cboState.Items.Add(s);
+            }
+            cboState.SelectedItem = "Pennsylvania";
+
             // 
             // txtZipCode
             // 
@@ -228,8 +236,73 @@ namespace CUITAdmin
 
         private void btnSubmit_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("This is a test");
-            containingForm.Close();
+            txtPhone.BackColor = System.Drawing.Color.White;
+            txtZipCode.BackColor = System.Drawing.Color.White;
+            txtCity.BackColor = System.Drawing.Color.White;
+            txtStreet.BackColor = System.Drawing.Color.White;
+            txtEmail.BackColor = System.Drawing.Color.White;
+            txtLastName.BackColor = System.Drawing.Color.White;
+            txtFirstName.BackColor = System.Drawing.Color.White;
+
+            bool error = false;
+
+            string phonePattern = "^\\D?(\\d{3})\\D?\\D?(\\d{3})\\D?(\\d{4})$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtPhone.Text, phonePattern))
+            {
+                txtPhone.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string zipPattern = "^([0-9]{5})\\-?([0-9]{4})?$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtZipCode.Text, zipPattern))
+            {
+                txtZipCode.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string cityPattern = "^[A-Za-z\\s-\\.]+$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtCity.Text, cityPattern))
+            {
+                txtCity.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string streetPattern = "^[\\w\\s-\\.]+$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtStreet.Text, streetPattern))
+            {
+                txtStreet.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string emailPattern = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtEmail.Text, emailPattern))
+            {
+                txtEmail.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string lastnamePattern = "^[A-Za-z\\s-\\.]+$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtLastName.Text, lastnamePattern))
+            {
+                txtLastName.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string firstnamePattern = "^[A-Za-z\\s-\\.]+$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtFirstName.Text, firstnamePattern))
+            {
+                txtFirstName.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            if (error == true)
+                MessageBox.Show("You have errors on the form.  Please correct them to submit.");
+            else
+            {
+                //this is for testing and will be deleted and changed
+                MessageBox.Show("This form had no errors. Good job. You don't fail at your job.");
+                containingForm.Close();
+            }
         }
     }
 }

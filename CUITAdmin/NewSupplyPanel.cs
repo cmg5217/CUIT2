@@ -33,6 +33,7 @@ namespace CUITAdmin
             this.Size = new Size(650, 400);
 
             addControls();
+            containingForm.AcceptButton = btnSubmit;
         }
 
         private void addControls()
@@ -167,8 +168,64 @@ namespace CUITAdmin
 
         private void btnSubmit_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("This is a test");
-            containingForm.Close();
+            txtIndustryRate.BackColor = System.Drawing.Color.White;
+            txtExternalRate.BackColor = System.Drawing.Color.White;
+            txtInternalRate.BackColor = System.Drawing.Color.White;
+            txtUnit.BackColor = System.Drawing.Color.White;
+            txtSupplyCost.BackColor = System.Drawing.Color.White;
+            txtSupplyName.BackColor = System.Drawing.Color.White;
+
+            bool error = false;
+
+            string industryPattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtIndustryRate.Text, industryPattern))
+            {
+                txtIndustryRate.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string externalPattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtExternalRate.Text, externalPattern))
+            {
+                txtExternalRate.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string internalPattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtInternalRate.Text, internalPattern))
+            {
+                txtInternalRate.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string unitPattern = "^[\\w]+$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtUnit.Text, unitPattern))
+            {
+                txtUnit.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string costPattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtSupplyCost.Text, costPattern))
+            {
+                txtSupplyCost.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string namePattern = "^[A-Za-z\\s-\\.]+$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtSupplyName.Text, namePattern))
+            {
+                txtSupplyName.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            if (error)
+                MessageBox.Show("you done fucked up");
+            else
+            {
+                MessageBox.Show("you win");
+                containingForm.Close();
+            }
         }
     }
 }

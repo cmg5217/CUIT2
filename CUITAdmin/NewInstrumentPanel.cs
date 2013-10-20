@@ -14,7 +14,7 @@ namespace CUITAdmin
         TextBox txtExternalAcademic = new TextBox();
         TextBox txtInternalAcademic = new TextBox();
         TextBox txtTimeIncrement = new TextBox();
-        TextBox txtBillingType = new TextBox();
+        ComboBox cboBillingType = new ComboBox();
         TextBox txtInstrumentName = new TextBox();
         Label lblIndustry = new Label();
         Label lblExternalAcademic = new Label();
@@ -32,7 +32,7 @@ namespace CUITAdmin
             this.Size = new Size(650, 400);
 
             addControls();
-
+            containingForm.AcceptButton = btnSubmit;
         }
 
         private void addControls()
@@ -45,7 +45,7 @@ namespace CUITAdmin
             this.Controls.Add(this.txtExternalAcademic);
             this.Controls.Add(this.txtInternalAcademic);
             this.Controls.Add(this.txtTimeIncrement);
-            this.Controls.Add(this.txtBillingType);
+            this.Controls.Add(this.cboBillingType);
             this.Controls.Add(this.txtInstrumentName);
             this.Controls.Add(this.lblIndustry);
             this.Controls.Add(this.lblExternalAcademic);
@@ -96,12 +96,15 @@ namespace CUITAdmin
             this.txtTimeIncrement.Size = new System.Drawing.Size(100, 20);
             this.txtTimeIncrement.TabIndex = 8;
             // 
-            // txtBillingType
+            // cboBillingType
             // 
-            this.txtBillingType.Location = new System.Drawing.Point(166, 44);
-            this.txtBillingType.Name = "txtBillingType";
-            this.txtBillingType.Size = new System.Drawing.Size(100, 20);
-            this.txtBillingType.TabIndex = 7;
+            this.cboBillingType.Location = new System.Drawing.Point(166, 44);
+            this.cboBillingType.Name = "cboBillingType";
+            this.cboBillingType.Size = new System.Drawing.Size(100, 20);
+            this.cboBillingType.TabIndex = 7;
+            cboBillingType.Items.Add("Time");
+            cboBillingType.Items.Add("Per Use");
+            cboBillingType.SelectedItem = "Time";
             // 
             // txtInstrumentName
             // 
@@ -167,8 +170,57 @@ namespace CUITAdmin
 
         private void btnSubmit_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("This is a test");
-            containingForm.Close();
+            txtIndustry.BackColor = System.Drawing.Color.White;
+            txtExternalAcademic.BackColor = System.Drawing.Color.White;
+            txtInternalAcademic.BackColor = System.Drawing.Color.White;
+            txtTimeIncrement.BackColor = System.Drawing.Color.White;
+            cboBillingType.BackColor = System.Drawing.Color.White;
+            txtInstrumentName.BackColor = System.Drawing.Color.White;
+
+            bool error = false;
+
+            string industryPattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtIndustry.Text, industryPattern))
+            {
+                txtIndustry.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string externalPattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtExternalAcademic.Text, externalPattern))
+            {
+                txtExternalAcademic.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string internalPattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtInternalAcademic.Text, internalPattern))
+            {
+                txtInternalAcademic.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string timePattern = "^[0-9]+$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtTimeIncrement.Text, timePattern))
+            {
+                txtTimeIncrement.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string namePattern = "^[A-Za-z\\s-\\.]+$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtInstrumentName.Text, namePattern))
+            {
+                txtInstrumentName.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            if (error)
+                MessageBox.Show("You suck, go fix stuff");
+            else
+            {
+                MessageBox.Show("good job");
+                containingForm.Close();
+            }
         }
     }
 }

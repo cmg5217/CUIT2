@@ -10,6 +10,21 @@ namespace CUITAdmin
     class NewAccountPanel : Panel
     {
         NewEntryForm containingForm;
+        TextBox txtAccountName = new TextBox();
+        TextBox txtAccountNumber = new TextBox();
+        TextBox txtMaxCharge = new TextBox();
+        ComboBox cboRateType = new ComboBox();
+        TextBox txtBalance = new TextBox();
+        Label lblAccountName = new Label();
+        Label lblAccountNumber = new Label();
+        Label lblMaxCharge = new Label();
+        Label lblAccountExpiration = new Label();
+        DateTimePicker dtpAccountExpiration = new DateTimePicker();
+        Label lblRateType = new Label();
+        Label lblBalance = new Label();
+        Label lblNotes = new Label();
+        RichTextBox txtNotes = new RichTextBox();
+        Button btnSubmit = new Button();
 
         public NewAccountPanel(NewEntryForm pForm)
         {
@@ -18,80 +33,136 @@ namespace CUITAdmin
             this.Location = new Point(10, 10);
             this.Size = new Size(650, 400);
 
-            Label lblAccountName = new Label();
+            //Label lblAccountName = new Label();
             lblAccountName.Text = "Account Name:";
             lblAccountName.Location = new Point(10, 10);
             this.Controls.Add(lblAccountName);
 
-            TextBox txtAccountName = new TextBox();
+            //TextBox txtAccountName = new TextBox();
             txtAccountName.SetBounds(110, 10, 200, 20);
             this.Controls.Add(txtAccountName);
 
-            Label lblAccountNumber = new Label();
+            //Label lblAccountNumber = new Label();
             lblAccountNumber.Text = "Account Number:";
             lblAccountNumber.Location = new Point(10, 40);
             this.Controls.Add(lblAccountNumber);
 
-            TextBox txtAccountNumber = new TextBox();
+            //TextBox txtAccountNumber = new TextBox();
             txtAccountNumber.SetBounds(110, 40, 200, 20);
             this.Controls.Add(txtAccountNumber);
 
-            Label lblMaxCharge = new Label();
+            //Label lblMaxCharge = new Label();
             lblMaxCharge.Text = "Max Charge Limit:";
             lblMaxCharge.Location = new Point(10, 70);
             this.Controls.Add(lblMaxCharge);
 
-            TextBox txtMaxCharge = new TextBox();
+            //TextBox txtMaxCharge = new TextBox();
             txtMaxCharge.SetBounds(110, 70, 200, 20);
             this.Controls.Add(txtMaxCharge);
 
-            Label lblAccountExpiration = new Label();
+            //Label lblAccountExpiration = new Label();
             lblAccountExpiration.Text = "Account Expiration:";
             lblAccountExpiration.Location = new Point(10, 100);
             this.Controls.Add(lblAccountExpiration);
 
-            DateTimePicker dtpAccountExpiration = new DateTimePicker();
+            //DateTimePicker dtpAccountExpiration = new DateTimePicker();
             dtpAccountExpiration.Location = new Point(110, 100);
             this.Controls.Add(dtpAccountExpiration);
 
-            Label lblRateType = new Label();
+            //Label lblRateType = new Label();
             lblRateType.Text = "Rate Type:";
             lblRateType.Location = new Point(10, 130);
             this.Controls.Add(lblRateType);
 
-            ComboBox cboRateType = new ComboBox();
+            //ComboBox cboRateType = new ComboBox();
             cboRateType.SetBounds(110, 130, 200, 20);
             this.Controls.Add(cboRateType);
+            cboRateType.Items.Add("");
+            cboRateType.Items.Add("Internal Academic");
+            cboRateType.Items.Add("External Academic");
+            cboRateType.Items.Add("Industry");
+            cboRateType.SelectedIndex = 0;
 
-            Label lblBalance = new Label();
+            //Label lblBalance = new Label();
             lblBalance.Text = "Balance:";
             lblBalance.Location = new Point(10, 160);
             this.Controls.Add(lblBalance);
 
-            TextBox txtBalance = new TextBox();
+            //TextBox txtBalance = new TextBox();
             txtBalance.SetBounds(110, 160, 200, 20);
             this.Controls.Add(txtBalance);
 
-            Label lblNotes = new Label();
+            //Label lblNotes = new Label();
             lblNotes.Text = "Notes:";
             lblNotes.Location = new Point(325, 10);
             this.Controls.Add(lblNotes);
 
-            RichTextBox txtNotes = new RichTextBox();
+            //RichTextBox txtNotes = new RichTextBox();
             txtNotes.SetBounds(325, 40, 280, 142);
             this.Controls.Add(txtNotes);
 
-            Button btnSubmit = new Button();
+            //Button btnSubmit = new Button();
             btnSubmit.Text = "Submit";
             btnSubmit.Location = new Point(525, 190);
             this.Controls.Add(btnSubmit);
             btnSubmit.Click += new EventHandler(this.btnSubmit_Click);
+
+            containingForm.AcceptButton = btnSubmit;
         }
 
         private void btnSubmit_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("This is a test");
-            containingForm.Close();
+            txtAccountName.BackColor = System.Drawing.Color.White;
+            txtAccountNumber.BackColor = System.Drawing.Color.White;
+            txtMaxCharge.BackColor = System.Drawing.Color.White;
+            cboRateType.BackColor = System.Drawing.Color.White;
+            txtBalance.BackColor = System.Drawing.Color.White;
+
+            bool error = false;
+            string namePattern = "^[A-Za-z\\s-\\.]+$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAccountName.Text, namePattern))
+            {
+                txtAccountName.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string numberPattern = "^[\\w\\W]+$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAccountNumber.Text, numberPattern))
+            {
+                txtAccountNumber.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string chargePattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtMaxCharge.Text, chargePattern))
+            {
+                txtMaxCharge.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            if(cboRateType.SelectedIndex == 0)
+            {
+                cboRateType.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+            
+            string balancePattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtBalance.Text, balancePattern))
+            {
+                txtBalance.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            if (error)
+            {
+                MessageBox.Show("You fail at everything, kill yourself");
+            }
+
+            else
+            {
+                MessageBox.Show("Good job not being a fuck up. You may pass.");
+                containingForm.Close();
+            }
             // regular expressions example
             /* ^\s*\+?\s*([0-9][\s-]*){9,}$
               ^         # Start of the string
