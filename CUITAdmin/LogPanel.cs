@@ -54,11 +54,6 @@ namespace CUITAdmin {
         private LogPanel childPanel;
         XmlManager manager;
 
-
-            private class Data {
-                public string Name { get; set; }
-                public string Value { get; set; }
-            }
         /////////////////////////////////////////// CONSTRUCTORS & DESTRUCTORS /////////////////////////////////////////////////////
         
         public LogPanel(Control container) {

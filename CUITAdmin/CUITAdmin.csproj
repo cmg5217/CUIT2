@@ -70,6 +70,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CUIT_TRIALDataSet.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Data.cs" />
     <Compile Include="DatabaseManager.cs" />
     <Compile Include="LoginScreen.cs">
       <SubType>Form</SubType>

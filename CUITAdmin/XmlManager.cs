@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Configuration;
 using System.Xml;
+using System.ComponentModel;
 
 namespace CUITAdmin {
     class XmlManager {
@@ -223,7 +224,7 @@ namespace CUITAdmin {
             return AddSupplyUse(username, accountnumber, supply, quanity.ToString());
         }
 
-        public bool AddSupplyUse(string supply, string username, string accountnumber, string quanity)
+        public bool AddSupplyUse(string username, string accountnumber, string supply, string quanity)
         {
             XmlNode supplyUsesNode = xmlDoc.SelectSingleNode("//root/supply_uses");
 
@@ -293,6 +294,36 @@ namespace CUITAdmin {
             }
         }
 
+        public bool GetUserAccounts(string username, out BindingList<Data> accounts)
+        {
+            BindingList<Data> outAccounts = new BindingList<Data>();
+            XmlElement userElement = null;
+
+            // Find the user
+            if (FindUser(username, ref userElement))
+            {
+                XmlNode userAccounts = userElement.SelectSingleNode("account_numbers");
+                // loop through each account in the user
+                foreach (XmlElement currentAccount in userAccounts)
+                {
+
+                    XmlElement currentAccountDetails = null;
+                    // Look up the account details in the //root/accounts node
+                    FindElementByInnerElementValue("//root/accounts",
+                        "account_number",
+                        currentAccount.InnerText,
+                        ref currentAccountDetails);
+                    outAccounts.Add(new Data
+                    {
+                        Name = currentAccountDetails.SelectSingleNode("account_name").InnerText,
+                        Value = currentAccountDetails.SelectSingleNode("account_number").InnerText
+                    });
+                }
+            }
+
+            accounts = outAccounts;
+            return false;
+        }
 
         /*
          XmlDocument xmlDoc = new XmlDocument();

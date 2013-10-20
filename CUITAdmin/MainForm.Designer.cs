@@ -95,25 +95,34 @@
             this.tbpManualRequests = new System.Windows.Forms.TabPage();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.button6 = new System.Windows.Forms.Button();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.btnManualSupplyValidate = new System.Windows.Forms.Button();
+            this.txtManualSupplyPassword = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.txtManualSupplyUsername = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.btnManualSupplyAdd = new System.Windows.Forms.Button();
+            this.txtManualSupplyQuantity = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.cboManualSupplyAccount = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.cboManualSupplyItem = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.btnManualTimeValidate = new System.Windows.Forms.Button();
+            this.txtManualTimePassword = new System.Windows.Forms.TextBox();
             this.lblPassword = new System.Windows.Forms.Label();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.dateTimePicker3 = new System.Windows.Forms.DateTimePicker();
+            this.txtManualTimeUsername = new System.Windows.Forms.TextBox();
+            this.dtpManualTimeDate = new System.Windows.Forms.DateTimePicker();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
-            this.comboBox5 = new System.Windows.Forms.ComboBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.button7 = new System.Windows.Forms.Button();
+            this.cboManualTimeInstrument = new System.Windows.Forms.ComboBox();
+            this.cboManualTimeAccount = new System.Windows.Forms.ComboBox();
+            this.txtManualTimeDuration = new System.Windows.Forms.TextBox();
+            this.btnManualTimeAdd = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.unapprovedTimeLogTableBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cUIT_TRIALDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.time_LogBindingSource)).BeginInit();
@@ -744,83 +753,132 @@
             this.groupBox7.Controls.Add(this.groupBox9);
             this.groupBox7.Location = new System.Drawing.Point(6, 6);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(671, 238);
+            this.groupBox7.Size = new System.Drawing.Size(671, 240);
             this.groupBox7.TabIndex = 12;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Manual Entries";
             // 
             // groupBox8
             // 
-            this.groupBox8.Controls.Add(this.button6);
-            this.groupBox8.Controls.Add(this.textBox3);
+            this.groupBox8.Controls.Add(this.label12);
+            this.groupBox8.Controls.Add(this.btnManualSupplyValidate);
+            this.groupBox8.Controls.Add(this.txtManualSupplyPassword);
+            this.groupBox8.Controls.Add(this.label9);
+            this.groupBox8.Controls.Add(this.txtManualSupplyUsername);
+            this.groupBox8.Controls.Add(this.label10);
+            this.groupBox8.Controls.Add(this.btnManualSupplyAdd);
+            this.groupBox8.Controls.Add(this.txtManualSupplyQuantity);
             this.groupBox8.Controls.Add(this.label2);
-            this.groupBox8.Controls.Add(this.comboBox1);
+            this.groupBox8.Controls.Add(this.cboManualSupplyAccount);
             this.groupBox8.Controls.Add(this.label3);
-            this.groupBox8.Controls.Add(this.comboBox2);
+            this.groupBox8.Controls.Add(this.cboManualSupplyItem);
             this.groupBox8.Controls.Add(this.label4);
             this.groupBox8.Location = new System.Drawing.Point(339, 15);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(326, 217);
+            this.groupBox8.Size = new System.Drawing.Size(326, 218);
             this.groupBox8.TabIndex = 18;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Supplies";
             // 
-            // button6
+            // btnManualSupplyValidate
             // 
-            this.button6.Location = new System.Drawing.Point(199, 88);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(75, 23);
-            this.button6.TabIndex = 11;
-            this.button6.Text = "Add";
-            this.button6.UseVisualStyleBackColor = true;
+            this.btnManualSupplyValidate.Location = new System.Drawing.Point(201, 75);
+            this.btnManualSupplyValidate.Name = "btnManualSupplyValidate";
+            this.btnManualSupplyValidate.Size = new System.Drawing.Size(75, 23);
+            this.btnManualSupplyValidate.TabIndex = 22;
+            this.btnManualSupplyValidate.Text = "Validate";
+            this.btnManualSupplyValidate.UseVisualStyleBackColor = true;
+            this.btnManualSupplyValidate.Click += new System.EventHandler(this.btnManualSupplyValidate_Click);
             // 
-            // textBox3
+            // txtManualSupplyPassword
             // 
-            this.textBox3.Location = new System.Drawing.Point(126, 90);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(67, 20);
-            this.textBox3.TabIndex = 10;
+            this.txtManualSupplyPassword.Location = new System.Drawing.Point(128, 51);
+            this.txtManualSupplyPassword.Name = "txtManualSupplyPassword";
+            this.txtManualSupplyPassword.Size = new System.Drawing.Size(148, 20);
+            this.txtManualSupplyPassword.TabIndex = 21;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(37, 54);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(56, 13);
+            this.label9.TabIndex = 20;
+            this.label9.Text = "Password:";
+            // 
+            // txtManualSupplyUsername
+            // 
+            this.txtManualSupplyUsername.Location = new System.Drawing.Point(128, 25);
+            this.txtManualSupplyUsername.Name = "txtManualSupplyUsername";
+            this.txtManualSupplyUsername.Size = new System.Drawing.Size(148, 20);
+            this.txtManualSupplyUsername.TabIndex = 19;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(37, 28);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(58, 13);
+            this.label10.TabIndex = 18;
+            this.label10.Text = "Username:";
+            // 
+            // btnManualSupplyAdd
+            // 
+            this.btnManualSupplyAdd.Location = new System.Drawing.Point(201, 155);
+            this.btnManualSupplyAdd.Name = "btnManualSupplyAdd";
+            this.btnManualSupplyAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnManualSupplyAdd.TabIndex = 11;
+            this.btnManualSupplyAdd.Text = "Add";
+            this.btnManualSupplyAdd.UseVisualStyleBackColor = true;
+            this.btnManualSupplyAdd.Click += new System.EventHandler(this.btnManualSupplyAdd_Click);
+            // 
+            // txtManualSupplyQuantity
+            // 
+            this.txtManualSupplyQuantity.Location = new System.Drawing.Point(128, 157);
+            this.txtManualSupplyQuantity.Name = "txtManualSupplyQuantity";
+            this.txtManualSupplyQuantity.Size = new System.Drawing.Size(67, 20);
+            this.txtManualSupplyQuantity.TabIndex = 10;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(36, 91);
+            this.label2.Location = new System.Drawing.Point(38, 158);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(49, 13);
             this.label2.TabIndex = 9;
             this.label2.Text = "Quantity:";
             // 
-            // comboBox1
+            // cboManualSupplyAccount
             // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(126, 63);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(148, 21);
-            this.comboBox1.TabIndex = 7;
+            this.cboManualSupplyAccount.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboManualSupplyAccount.FormattingEnabled = true;
+            this.cboManualSupplyAccount.Location = new System.Drawing.Point(128, 130);
+            this.cboManualSupplyAccount.Name = "cboManualSupplyAccount";
+            this.cboManualSupplyAccount.Size = new System.Drawing.Size(148, 21);
+            this.cboManualSupplyAccount.TabIndex = 7;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(35, 66);
+            this.label3.Location = new System.Drawing.Point(37, 133);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(85, 13);
             this.label3.TabIndex = 8;
             this.label3.Text = "Funding Source:";
             // 
-            // comboBox2
+            // cboManualSupplyItem
             // 
-            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(126, 37);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(148, 21);
-            this.comboBox2.TabIndex = 5;
+            this.cboManualSupplyItem.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboManualSupplyItem.FormattingEnabled = true;
+            this.cboManualSupplyItem.Location = new System.Drawing.Point(128, 104);
+            this.cboManualSupplyItem.Name = "cboManualSupplyItem";
+            this.cboManualSupplyItem.Size = new System.Drawing.Size(148, 21);
+            this.cboManualSupplyItem.TabIndex = 5;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(35, 40);
+            this.label4.Location = new System.Drawing.Point(37, 107);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(61, 13);
             this.label4.TabIndex = 6;
@@ -828,51 +886,73 @@
             // 
             // groupBox9
             // 
+            this.groupBox9.Controls.Add(this.label11);
+            this.groupBox9.Controls.Add(this.btnManualTimeValidate);
+            this.groupBox9.Controls.Add(this.txtManualTimePassword);
             this.groupBox9.Controls.Add(this.lblPassword);
-            this.groupBox9.Controls.Add(this.textBox5);
-            this.groupBox9.Controls.Add(this.dateTimePicker3);
+            this.groupBox9.Controls.Add(this.txtManualTimeUsername);
+            this.groupBox9.Controls.Add(this.dtpManualTimeDate);
             this.groupBox9.Controls.Add(this.label5);
             this.groupBox9.Controls.Add(this.label6);
-            this.groupBox9.Controls.Add(this.comboBox3);
-            this.groupBox9.Controls.Add(this.comboBox5);
-            this.groupBox9.Controls.Add(this.textBox4);
-            this.groupBox9.Controls.Add(this.button7);
+            this.groupBox9.Controls.Add(this.cboManualTimeInstrument);
+            this.groupBox9.Controls.Add(this.cboManualTimeAccount);
+            this.groupBox9.Controls.Add(this.txtManualTimeDuration);
+            this.groupBox9.Controls.Add(this.btnManualTimeAdd);
             this.groupBox9.Controls.Add(this.label7);
             this.groupBox9.Controls.Add(this.label8);
             this.groupBox9.Location = new System.Drawing.Point(7, 15);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(314, 217);
+            this.groupBox9.Size = new System.Drawing.Size(314, 218);
             this.groupBox9.TabIndex = 17;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Time Log";
             // 
+            // btnManualTimeValidate
+            // 
+            this.btnManualTimeValidate.Location = new System.Drawing.Point(193, 75);
+            this.btnManualTimeValidate.Name = "btnManualTimeValidate";
+            this.btnManualTimeValidate.Size = new System.Drawing.Size(75, 23);
+            this.btnManualTimeValidate.TabIndex = 18;
+            this.btnManualTimeValidate.Text = "Validate";
+            this.btnManualTimeValidate.UseVisualStyleBackColor = true;
+            this.btnManualTimeValidate.Click += new System.EventHandler(this.btnManualTimeValidate_Click);
+            // 
+            // txtManualTimePassword
+            // 
+            this.txtManualTimePassword.Location = new System.Drawing.Point(120, 51);
+            this.txtManualTimePassword.Name = "txtManualTimePassword";
+            this.txtManualTimePassword.Size = new System.Drawing.Size(148, 20);
+            this.txtManualTimePassword.TabIndex = 17;
+            // 
             // lblPassword
             // 
             this.lblPassword.AutoSize = true;
-            this.lblPassword.Location = new System.Drawing.Point(34, 65);
+            this.lblPassword.Location = new System.Drawing.Point(29, 54);
             this.lblPassword.Name = "lblPassword";
             this.lblPassword.Size = new System.Drawing.Size(56, 13);
             this.lblPassword.TabIndex = 16;
             this.lblPassword.Text = "Password:";
             // 
-            // textBox5
+            // txtManualTimeUsername
             // 
-            this.textBox5.Location = new System.Drawing.Point(122, 22);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(148, 20);
-            this.textBox5.TabIndex = 15;
+            this.txtManualTimeUsername.Location = new System.Drawing.Point(120, 25);
+            this.txtManualTimeUsername.Name = "txtManualTimeUsername";
+            this.txtManualTimeUsername.Size = new System.Drawing.Size(148, 20);
+            this.txtManualTimeUsername.TabIndex = 15;
             // 
-            // dateTimePicker3
+            // dtpManualTimeDate
             // 
-            this.dateTimePicker3.Location = new System.Drawing.Point(34, 146);
-            this.dateTimePicker3.Name = "dateTimePicker3";
-            this.dateTimePicker3.Size = new System.Drawing.Size(236, 20);
-            this.dateTimePicker3.TabIndex = 3;
+            this.dtpManualTimeDate.CustomFormat = "Da\'t\'e: M-dd-yyyy Ti\'m\'e: hh:mm tt";
+            this.dtpManualTimeDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtpManualTimeDate.Location = new System.Drawing.Point(32, 160);
+            this.dtpManualTimeDate.Name = "dtpManualTimeDate";
+            this.dtpManualTimeDate.Size = new System.Drawing.Size(236, 20);
+            this.dtpManualTimeDate.TabIndex = 3;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(31, 121);
+            this.label5.Location = new System.Drawing.Point(29, 135);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(59, 13);
             this.label5.TabIndex = 5;
@@ -881,63 +961,84 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(31, 25);
+            this.label6.Location = new System.Drawing.Point(29, 28);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(58, 13);
             this.label6.TabIndex = 14;
             this.label6.Text = "Username:";
             // 
-            // comboBox3
+            // cboManualTimeInstrument
             // 
-            this.comboBox3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(122, 118);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(148, 21);
-            this.comboBox3.TabIndex = 2;
+            this.cboManualTimeInstrument.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboManualTimeInstrument.FormattingEnabled = true;
+            this.cboManualTimeInstrument.Location = new System.Drawing.Point(120, 132);
+            this.cboManualTimeInstrument.Name = "cboManualTimeInstrument";
+            this.cboManualTimeInstrument.Size = new System.Drawing.Size(148, 21);
+            this.cboManualTimeInstrument.TabIndex = 2;
             // 
-            // comboBox5
+            // cboManualTimeAccount
             // 
-            this.comboBox5.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox5.FormattingEnabled = true;
-            this.comboBox5.Location = new System.Drawing.Point(122, 90);
-            this.comboBox5.Name = "comboBox5";
-            this.comboBox5.Size = new System.Drawing.Size(148, 21);
-            this.comboBox5.TabIndex = 1;
+            this.cboManualTimeAccount.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboManualTimeAccount.FormattingEnabled = true;
+            this.cboManualTimeAccount.Location = new System.Drawing.Point(120, 104);
+            this.cboManualTimeAccount.Name = "cboManualTimeAccount";
+            this.cboManualTimeAccount.Size = new System.Drawing.Size(148, 21);
+            this.cboManualTimeAccount.TabIndex = 1;
             // 
-            // textBox4
+            // txtManualTimeDuration
             // 
-            this.textBox4.Location = new System.Drawing.Point(122, 174);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(67, 20);
-            this.textBox4.TabIndex = 12;
+            this.txtManualTimeDuration.Location = new System.Drawing.Point(120, 186);
+            this.txtManualTimeDuration.Name = "txtManualTimeDuration";
+            this.txtManualTimeDuration.Size = new System.Drawing.Size(67, 20);
+            this.txtManualTimeDuration.TabIndex = 12;
             // 
-            // button7
+            // btnManualTimeAdd
             // 
-            this.button7.Location = new System.Drawing.Point(195, 172);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(75, 23);
-            this.button7.TabIndex = 0;
-            this.button7.Text = "Add";
-            this.button7.UseVisualStyleBackColor = true;
+            this.btnManualTimeAdd.Location = new System.Drawing.Point(193, 184);
+            this.btnManualTimeAdd.Name = "btnManualTimeAdd";
+            this.btnManualTimeAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnManualTimeAdd.TabIndex = 0;
+            this.btnManualTimeAdd.Text = "Add";
+            this.btnManualTimeAdd.UseVisualStyleBackColor = true;
+            this.btnManualTimeAdd.Click += new System.EventHandler(this.btnManualTimeAdd_Click);
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(31, 177);
+            this.label7.Location = new System.Drawing.Point(29, 189);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(95, 13);
+            this.label7.Size = new System.Drawing.Size(75, 13);
             this.label7.TabIndex = 9;
             this.label7.Text = "Duration: (min)";
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(31, 93);
+            this.label8.Location = new System.Drawing.Point(29, 107);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(85, 13);
             this.label8.TabIndex = 4;
             this.label8.Text = "Funding Source:";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(136, 80);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(51, 13);
+            this.label11.TabIndex = 19;
+            this.label11.Text = "Validated";
+            this.label11.Visible = false;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(144, 80);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(51, 13);
+            this.label12.TabIndex = 23;
+            this.label12.Text = "Validated";
+            this.label12.Visible = false;
             // 
             // frmCUITAdminMain
             // 
@@ -1051,25 +1152,34 @@
         private System.Windows.Forms.TabPage tbpManualRequests;
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.GroupBox groupBox8;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.Button btnManualSupplyAdd;
+        private System.Windows.Forms.TextBox txtManualSupplyQuantity;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox cboManualSupplyAccount;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.ComboBox cboManualSupplyItem;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.Label lblPassword;
-        private System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.DateTimePicker dateTimePicker3;
+        private System.Windows.Forms.TextBox txtManualTimeUsername;
+        private System.Windows.Forms.DateTimePicker dtpManualTimeDate;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.ComboBox comboBox3;
-        private System.Windows.Forms.ComboBox comboBox5;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.ComboBox cboManualTimeInstrument;
+        private System.Windows.Forms.ComboBox cboManualTimeAccount;
+        private System.Windows.Forms.TextBox txtManualTimeDuration;
+        private System.Windows.Forms.Button btnManualTimeAdd;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox txtManualTimePassword;
+        private System.Windows.Forms.TextBox txtManualSupplyPassword;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox txtManualSupplyUsername;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button btnManualSupplyValidate;
+        private System.Windows.Forms.Button btnManualTimeValidate;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label12;
     }
 }
 
