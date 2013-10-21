@@ -155,12 +155,12 @@ namespace CUITAdmin
 
             if (error)
             {
-                MessageBox.Show("You fail at everything, kill yourself");
+                MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
             }
 
             else
             {
-                MessageBox.Show("Good job not being a fuck up. You may pass.");
+                MessageBox.Show("There were no errors. Form submitted.");
                 containingForm.Close();
             }
             // regular expressions example

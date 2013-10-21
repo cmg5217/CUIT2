@@ -73,6 +73,14 @@
       <start_time>10/20/2013 7:31:30 PM</start_time>
       <end_time>10/20/2013 7:31:30 PM15</end_time>
     </log>
+    <log>
+      <username>shane</username>
+      <account_number>Value</account_number>
+      <instrument>
+      </instrument>
+      <start_time>10/10/2013 12:30:49 PM</start_time>
+      <end_time>10/10/2013 12:30:49 PM15</end_time>
+    </log>
   </logs>
   <supply_uses>
     <supply_use>
@@ -264,6 +272,12 @@
       <account_number>Value</account_number>
       <quantity>
       </quantity>
+    </supply_use>
+    <supply_use>
+      <supply_name>t3</supply_name>
+      <username>t1</username>
+      <account_number>t2</account_number>
+      <quantity>t3</quantity>
     </supply_use>
   </supply_uses>
 </root>
