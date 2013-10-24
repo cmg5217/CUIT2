@@ -61,6 +61,15 @@ namespace CUITAdmin
 
             textBox2.Text = Properties.Settings.Default.InvoicePath;
 
+            //Time Log manual request username field clicks validate on enter key pressed
+            txtManualTimeUsername.KeyDown += (sender1, args) =>
+            {
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnManualTimeValidate.PerformClick();
+                }
+            };
+
             //Time Log manual request password field clicks validate on enter key pressed
             txtManualTimePassword.KeyDown += (sender1, args) =>
             {
@@ -76,6 +85,15 @@ namespace CUITAdmin
                 if (args.KeyCode == Keys.Return)
                 {
                     btnManualTimeAdd.PerformClick();
+                }
+            };
+
+            //Supplies manual request username field clicks validate on enter key pressed
+            txtManualSupplyUsername.KeyDown += (sender1, args) =>
+            {
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnManualSupplyValidate.PerformClick();
                 }
             };
 
@@ -225,7 +243,11 @@ namespace CUITAdmin
                 label11.Visible = true;
                 timeValid = true;
             }
-            else MessageBox.Show("Your username or password is incorrect.");
+            else
+            {
+                MessageBox.Show("Your username or password is incorrect.");
+                txtManualTimeUsername.Focus();
+            }
         }
 
         private void btnManualTimeAdd_Click(object sender, EventArgs e)
@@ -239,6 +261,7 @@ namespace CUITAdmin
             if (!timeValid)
             {
                 MessageBox.Show("Your log in information is not valid.  Please log in to continue.");
+                txtManualTimeUsername.Focus();
             }
             else if (!System.Text.RegularExpressions.Regex.IsMatch(txtManualTimeDuration.Text, durationPattern))
             {
@@ -247,8 +270,13 @@ namespace CUITAdmin
             }
             else
             {
-                //adds the time log, unsure of how to add the duration to the datetime that was selected.  Will look into it later.
-                xmlManager.AddLog(txtManualTimeUsername.Text, cboManualTimeAccount.ValueMember, cboManualTimeInstrument.ValueMember, dtpManualTimeDate.Value.ToString(), (dtpManualTimeDate.Value + txtManualTimeDuration.Text));
+                //adds the time log
+                string username = txtManualTimeUsername.Text;
+                string account = cboManualTimeAccount.SelectedValue.ToString();
+                string instrument = "test";//cboManualTimeInstrument.SelectedValue.ToString();
+                string startTime = dtpManualTimeDate.Value.ToString();
+                string endTime = (dtpManualTimeDate.Value.AddMinutes(int.Parse(txtManualTimeDuration.Text))).ToString();
+                xmlManager.AddLog(username, account, instrument, startTime, endTime);
 
                 //confirms the add to the user and resets the time log form.
                 MessageBox.Show("Time Log Manual Request Added");
@@ -260,6 +288,7 @@ namespace CUITAdmin
                 cboManualTimeAccount.DataSource = null;
                 cboManualTimeAccount.Items.Clear();
                 dtpManualTimeDate.Value = DateTime.Now;
+                txtManualTimeUsername.Focus();
             }
         }
 
@@ -269,7 +298,7 @@ namespace CUITAdmin
             //supplies manual request log in validation
             if (xmlManager.CheckPassword(txtManualSupplyUsername.Text, txtManualSupplyPassword.Text))
             {
-                //code for populating th funding source combobox
+                //code for populating the funding source combobox
                 BindingList<Data> comboItems = new BindingList<Data>();
                 xmlManager.GetUserAccounts(txtManualSupplyUsername.Text, out comboItems);
                 cboManualSupplyAccount.DataSource = comboItems;
@@ -279,7 +308,11 @@ namespace CUITAdmin
                 label12.Visible = true;
                 supplyValid = true;
             }
-            else MessageBox.Show("Your username or password is incorrect.");
+            else
+            {
+                MessageBox.Show("Your username or password is incorrect.");
+                txtManualSupplyUsername.Focus();
+            }
         }
 
         private void btnManualSupplyAdd_Click(object sender, EventArgs e)
@@ -293,6 +326,7 @@ namespace CUITAdmin
             if (!supplyValid)
             {
                 MessageBox.Show("Your log in information is not valid.  Please log in to continue.");
+                txtManualSupplyUsername.Focus();
             }
             else if (!System.Text.RegularExpressions.Regex.IsMatch(txtManualSupplyQuantity.Text, quantityPattern))
             {
@@ -303,7 +337,11 @@ namespace CUITAdmin
             else
             {
                 //adds the supply use log 
-                xmlManager.AddSupplyUse(txtManualSupplyUsername.Text, cboManualSupplyAccount.ValueMember, cboManualSupplyItem.ValueMember, txtManualSupplyQuantity.Text);
+                string username = txtManualSupplyUsername.Text;
+                string account = cboManualSupplyAccount.SelectedValue.ToString();
+                string item = "item";// cboManualSupplyItem.SelectedValue.ToString();
+                string quantity = txtManualSupplyQuantity.Text;
+                xmlManager.AddSupplyUse(username, account, item, quantity);
                 
                 //confirms the add with the user then resets the supply form
                 MessageBox.Show("Supply Manual Request Added");
@@ -314,6 +352,7 @@ namespace CUITAdmin
                 supplyValid = false;
                 cboManualSupplyAccount.DataSource = null;
                 cboManualSupplyAccount.Items.Clear();
+                txtManualSupplyUsername.Focus();
             }
         }
     }

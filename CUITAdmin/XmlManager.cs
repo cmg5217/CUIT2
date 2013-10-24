@@ -224,11 +224,12 @@ namespace CUITAdmin {
             return AddSupplyUse(username, accountnumber, supply, quanity.ToString());
         }
 
-        public bool AddSupplyUse(string username, string accountnumber, string supply, string quanity)
+        public bool AddSupplyUse(string username, string accountnumber, string supply, string quantity)
         {
             XmlNode supplyUsesNode = xmlDoc.SelectSingleNode("//root/supply_uses");
 
             XmlElement supplyUseElement = xmlDoc.CreateElement("supply_use");
+            
             XmlElement supplyElement = xmlDoc.CreateElement("supply_name");
             XmlElement usernameElement = xmlDoc.CreateElement("username");
             XmlElement accountNumberElement = xmlDoc.CreateElement("account_number");
@@ -237,14 +238,14 @@ namespace CUITAdmin {
             supplyElement.InnerText = supply;
             usernameElement.InnerText = username;
             accountNumberElement.InnerText = accountnumber;
-            quantityElement.InnerText = supply;
+            quantityElement.InnerText = quantity;
 
             supplyUseElement.AppendChild(supplyElement);
             supplyUseElement.AppendChild(usernameElement);
             supplyUseElement.AppendChild(accountNumberElement);
             supplyUseElement.AppendChild(quantityElement);
-            supplyUsesNode.AppendChild(supplyUseElement);
 
+            supplyUsesNode.AppendChild(supplyUseElement);
             xmlDoc.Save(FILE_LOCATION);
             return true;
         }
