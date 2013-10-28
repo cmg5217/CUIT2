@@ -110,7 +110,7 @@
     </Compile>
     <Compile Include="NewUserForm.Designer.cs">
       <DependentUpon>NewUserForm.cs</DependentUpon>
-	</Compile>
+    </Compile>
     <Compile Include="NewInstrumentPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -123,6 +123,7 @@
     <Compile Include="NewUserPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="PDFManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XmlParser.cs" />

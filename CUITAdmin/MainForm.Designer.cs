@@ -92,6 +92,7 @@
             this.button5 = new System.Windows.Forms.Button();
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tbpTracking = new System.Windows.Forms.TabPage();
+            this.comboBoxSelectMonth = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.unapprovedTimeLogTableBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cUIT_TRIALDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.time_LogBindingSource)).BeginInit();
@@ -164,6 +165,7 @@
             // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.comboBoxSelectMonth);
             this.groupBox6.Controls.Add(this.button4);
             this.groupBox6.Location = new System.Drawing.Point(232, 379);
             this.groupBox6.Name = "groupBox6";
@@ -174,7 +176,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(52, 55);
+            this.button4.Location = new System.Drawing.Point(52, 76);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(103, 23);
             this.button4.TabIndex = 1;
@@ -202,6 +204,7 @@
             this.button3.TabIndex = 2;
             this.button3.Text = "Export";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // dateTimePicker2
             // 
@@ -700,6 +703,27 @@
             this.tbpTracking.Text = "Tracking";
             this.tbpTracking.UseVisualStyleBackColor = true;
             // 
+            // comboBoxSelectMonth
+            // 
+            this.comboBoxSelectMonth.FormattingEnabled = true;
+            this.comboBoxSelectMonth.Items.AddRange(new object[] {
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"});
+            this.comboBoxSelectMonth.Location = new System.Drawing.Point(52, 29);
+            this.comboBoxSelectMonth.Name = "comboBoxSelectMonth";
+            this.comboBoxSelectMonth.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxSelectMonth.TabIndex = 2;
+            // 
             // frmCUITAdminMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -803,6 +827,7 @@
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox comboBoxSelectMonth;
     }
 }
 

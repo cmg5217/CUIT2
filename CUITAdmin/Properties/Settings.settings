@@ -11,7 +11,7 @@
       <Value Profile="(Default)">Data Source=CUITS\CUITS;Initial Catalog=CUIT_TRIAL;User ID=DataAdmin;Password=noforyoureyes67</Value>
     </Setting>
     <Setting Name="InvoicePath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\</Value>
+      <Value Profile="(Default)">%UserProfile%\Desktop\</Value>
     </Setting>
   </Settings>
 </SettingsFile>
