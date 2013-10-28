@@ -71,6 +71,7 @@
       <DependentUpon>CUIT_TRIALDataSet.xsd</DependentUpon>
     </Compile>
     <Compile Include="DBManager.cs" />
+    <Compile Include="Data.cs" />
     <Compile Include="LoginScreen.cs">
       <SubType>Form</SubType>
     </Compile>

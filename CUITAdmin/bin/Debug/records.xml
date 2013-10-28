@@ -17,6 +17,13 @@
     <user>
       <username>chris</username>
       <password>password</password>
+      <account_numbers>
+      </account_numbers>
+    </user>
+    <user>
+      <username>david</username>
+      <password>123</password>
+      <account_numbers />
     </user>
   </users>
   <accounts>
@@ -42,6 +49,13 @@
       <account_number>test2</account_number>
       <instrument>testAccount</instrument>
       <start_time>10/19/2013 9:42:56 PM</start_time>
+    </log>
+    <log>
+      <username>shane</username>
+      <account_number>123456789</account_number>
+      <instrument>test</instrument>
+      <start_time>10/28/2013 6:02:24 PM</start_time>
+      <end_time>10/28/2013 6:12:24 PM</end_time>
     </log>
   </logs>
   <supply_uses>

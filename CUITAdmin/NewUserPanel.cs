@@ -411,11 +411,11 @@ namespace CUITAdmin
             }
 
             if (error == true)
-                MessageBox.Show("You have errors on the form.  Please correct them to submit.");
+                MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
             else
             {
                 //this is for testing and will be deleted and changed
-                MessageBox.Show("This form had no errors. Good job. You don't fail at your job.");
+                MessageBox.Show("There were no errors. Form submitted.");
                 containingForm.Close();
             }
 

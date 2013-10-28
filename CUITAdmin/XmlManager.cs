@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Configuration;
 using System.Xml;
+using System.ComponentModel;
 
 namespace CUITAdmin {
     class XmlManager {
@@ -75,13 +76,17 @@ namespace CUITAdmin {
             userElement.AppendChild(usernameElement);
             userElement.AppendChild(passwordElement);
 
-
+            XmlElement accountNumbersElement = xmlDoc.CreateElement("account_numbers");
             if (accountNumbers != null) {
                 foreach (string accountNumber in accountNumbers) {
                     XmlElement accountNumberElement = xmlDoc.CreateElement("account_number");
                     accountNumberElement.InnerText = accountNumber;
-                }
+                    accountNumbersElement.AppendChild(accountNumberElement);
+                } 
             }
+
+            userElement.AppendChild(accountNumbersElement);
+
 
             // finally add the user to the users element
             usersElement.AppendChild(userElement);
@@ -145,6 +150,7 @@ namespace CUITAdmin {
 
             return true;
         }
+
 
 
         public void AddLog(string username, string account, string instrument, string startTime, string endTime)
@@ -252,11 +258,12 @@ namespace CUITAdmin {
             return AddSupplyUse(username, accountnumber, supply, quanity.ToString());
         }
 
-        public bool AddSupplyUse(string supply, string username, string accountnumber, string quanity)
+        public bool AddSupplyUse(string username, string accountnumber, string supply, string quantity)
         {
             XmlNode supplyUsesNode = xmlDoc.SelectSingleNode("//root/supply_uses");
 
             XmlElement supplyUseElement = xmlDoc.CreateElement("supply_use");
+            
             XmlElement supplyElement = xmlDoc.CreateElement("supply_name");
             XmlElement usernameElement = xmlDoc.CreateElement("username");
             XmlElement accountNumberElement = xmlDoc.CreateElement("account_number");
@@ -265,14 +272,14 @@ namespace CUITAdmin {
             supplyElement.InnerText = supply;
             usernameElement.InnerText = username;
             accountNumberElement.InnerText = accountnumber;
-            quantityElement.InnerText = supply;
+            quantityElement.InnerText = quantity;
 
             supplyUseElement.AppendChild(supplyElement);
             supplyUseElement.AppendChild(usernameElement);
             supplyUseElement.AppendChild(accountNumberElement);
             supplyUseElement.AppendChild(quantityElement);
-            supplyUsesNode.AppendChild(supplyUseElement);
 
+            supplyUsesNode.AppendChild(supplyUseElement);
             xmlDoc.Save(FILE_LOCATION);
             return true;
         }
@@ -320,6 +327,39 @@ namespace CUITAdmin {
             }
         }
 
+        public bool GetUserAccounts(string username, out BindingList<Data> accounts)
+        {
+            BindingList<Data> outAccounts = new BindingList<Data>();
+            XmlElement userElement = null;
+
+            // Find the user
+            if (FindUser(username, ref userElement))
+            {
+                XmlNode userAccounts = userElement.SelectSingleNode("account_numbers");
+                // loop through each account in the user
+                foreach (XmlElement currentAccount in userAccounts)
+                {
+
+                    XmlElement currentAccountDetails = null;
+                    // Look up the account details in the //root/accounts node
+                    FindElementByInnerElementValue("//root/accounts",
+                        "account_number",
+                        currentAccount.InnerText,
+                        ref currentAccountDetails);
+                    outAccounts.Add(new Data
+                    {
+                        Name = currentAccountDetails.SelectSingleNode("account_name").InnerText,
+                        Value = currentAccountDetails.SelectSingleNode("account_number").InnerText
+                    });
+                }
+            }
+
+            accounts = outAccounts;
+
+            if (accounts.Count == 0)
+                return false;
+            return true;
+        }
 
         /*
          XmlDocument xmlDoc = new XmlDocument();

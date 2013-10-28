@@ -54,11 +54,6 @@ namespace CUITAdmin {
         private LogPanel childPanel;
         XmlManager manager;
 
-
-            private class Data {
-                public string Name { get; set; }
-                public string Value { get; set; }
-            }
         /////////////////////////////////////////// CONSTRUCTORS & DESTRUCTORS /////////////////////////////////////////////////////
         
         public LogPanel(Control container) {
@@ -79,20 +74,6 @@ namespace CUITAdmin {
             } else standalone = false;
 
             dateTime = new DateTime();
-
-            manager = XmlManager.Instance;
-
-
-            BindingList<Data> comboItems = new BindingList<Data>();
-            comboItems.Add( new Data { Name = "test", Value = "test2" });
-            cboFundingSource.DataSource = comboItems;
-            cboFundingSource.DisplayMember = "Name";
-            cboFundingSource.ValueMember = "Value";
-            
-            cboInstrument.Items.Add("testAccount");
-
-            manager.AddSupplyUse("t1", "t2", "t3", "t4");
-
         }
 
         public LogPanel(Control container, Point location) 

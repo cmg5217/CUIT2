@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace CUITAdmin
         private bool standalone = false;
         private string accountType;
         LogPanel startPanel;
+        XmlManager xmlManager;
 
         public frmCUITAdminMain()
         {
@@ -41,12 +43,15 @@ namespace CUITAdmin
             
             /// manually setting standalone to true so that we can test
             /// To-DO:: Make sure to remove this to work on the server
-            standalone = true;
+            if (ConfigurationManager.AppSettings["StandaloneMode"] == "true")
+            {
+                standalone = true;
+            }
+            else standalone = false;
 
+            xmlManager = XmlManager.Instance; 
 
-
-            startPanel = new LogPanel(tbpTracking, new Point(5,5));      
-  
+            startPanel = new LogPanel(tbpTracking, new Point(5,5));
 
             cboAccountAdminNew.SelectedItem = "Account";
             cboAccountAdminView.SelectedItem = "Accounts";
@@ -55,6 +60,60 @@ namespace CUITAdmin
             //loads the path for the invoice export from app.config
 
             textBox2.Text = Properties.Settings.Default.InvoicePath;
+
+            //Time Log manual request username field clicks validate on enter key pressed
+            txtManualTimeUsername.KeyDown += (sender1, args) =>
+            {
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnManualTimeValidate.PerformClick();
+                }
+            };
+
+            //Time Log manual request password field clicks validate on enter key pressed
+            txtManualTimePassword.KeyDown += (sender1, args) =>
+            {
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnManualTimeValidate.PerformClick();
+                }
+            };
+
+            //Time Log manual request duration field clicks add on enter key pressed
+            txtManualTimeDuration.KeyDown += (sender1, args) =>
+            {
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnManualTimeAdd.PerformClick();
+                }
+            };
+
+            //Supplies manual request username field clicks validate on enter key pressed
+            txtManualSupplyUsername.KeyDown += (sender1, args) =>
+            {
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnManualSupplyValidate.PerformClick();
+                }
+            };
+
+            //Supplies manual request password field clicks validate on enter key pressed
+            txtManualSupplyPassword.KeyDown += (sender1, args) =>
+            {
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnManualSupplyValidate.PerformClick();
+                }
+            };
+
+            //Supplies manual request quantity field clicks add on enter key pressed
+            txtManualSupplyQuantity.KeyDown += (sender1, args) =>
+            {
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnManualSupplyAdd.PerformClick();
+                }
+            };
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -165,6 +224,154 @@ namespace CUITAdmin
             {
                 case "admin":
                     break;
+            }
+        }
+
+        private bool timeValid = false;
+        private void btnManualTimeValidate_Click(object sender, EventArgs e)
+        {
+            txtManualTimeDuration.Clear();
+            label11.Visible = false;
+            timeValid = false;
+            cboManualTimeAccount.DataSource = null;
+            cboManualTimeAccount.Items.Clear();
+            dtpManualTimeDate.Value = DateTime.Now;
+
+            //time log manual request log in validation
+            if (xmlManager.CheckPassword(txtManualTimeUsername.Text, txtManualTimePassword.Text))
+            {
+                //code for populating the funding source combobox
+                BindingList<Data> comboItems = new BindingList<Data>();
+                if (!xmlManager.GetUserAccounts(txtManualTimeUsername.Text, out comboItems)) {
+                    MessageBox.Show("Eat a sack of Dicks, you have no accounts");
+                    return;
+                }
+                cboManualTimeAccount.DataSource = comboItems;
+                cboManualTimeAccount.DisplayMember = "Name";
+                cboManualTimeAccount.ValueMember = "Value";
+
+                label11.Visible = true;
+                timeValid = true;
+            }
+            else
+            {
+                MessageBox.Show("Your username or password is incorrect.");
+                txtManualTimeUsername.Focus();
+            }
+        }
+
+        private void btnManualTimeAdd_Click(object sender, EventArgs e)
+        {
+            //this is for adding the time log user manual request log
+            txtManualTimeDuration.BackColor = System.Drawing.Color.White;
+            
+            //RegEx pattern for duration field
+            string durationPattern = "^[0-9]+$";
+
+            if (!timeValid)
+            {
+                MessageBox.Show("Your log in information is not valid.  Please log in to continue.");
+                txtManualTimeUsername.Focus();
+            }
+            else if (!System.Text.RegularExpressions.Regex.IsMatch(txtManualTimeDuration.Text, durationPattern))
+            {
+                txtManualTimeDuration.BackColor = System.Drawing.Color.Red;
+                MessageBox.Show("Please input a simple integer to represent the durations in minutes.");
+            }
+            else
+            {
+                //adds the time log
+                string username = txtManualTimeUsername.Text;
+                string account = cboManualTimeAccount.SelectedValue.ToString();
+                string instrument = "test";//cboManualTimeInstrument.SelectedValue.ToString();
+                string startTime = dtpManualTimeDate.Value.ToString();
+                string endTime = (dtpManualTimeDate.Value.AddMinutes(int.Parse(txtManualTimeDuration.Text))).ToString();
+                xmlManager.AddLog(username, account, instrument, startTime, endTime);
+
+                //confirms the add to the user and resets the time log form.
+                MessageBox.Show("Time Log Manual Request Added");
+                txtManualTimeUsername.Clear();
+                txtManualTimePassword.Clear();
+                txtManualTimeDuration.Clear();
+                label11.Visible = false;
+                timeValid = false;
+                cboManualTimeAccount.DataSource = null;
+                cboManualTimeAccount.Items.Clear();
+                dtpManualTimeDate.Value = DateTime.Now;
+                txtManualTimeUsername.Focus();
+            }
+        }
+
+        private bool supplyValid = false;
+        private void btnManualSupplyValidate_Click(object sender, EventArgs e)
+        {
+            //supplies manual request log in validation
+            if (xmlManager.CheckPassword(txtManualSupplyUsername.Text, txtManualSupplyPassword.Text))
+            {
+                txtManualSupplyQuantity.Clear();
+                label12.Visible = false;
+                supplyValid = false;
+                cboManualSupplyAccount.DataSource = null;
+                cboManualSupplyAccount.Items.Clear();
+                
+                //code for populating the funding source combobox
+                BindingList<Data> comboItems = new BindingList<Data>();
+                if (!xmlManager.GetUserAccounts(txtManualSupplyUsername.Text, out comboItems)) {
+                    MessageBox.Show("Eat a sack of Dicks, you have no accounts");
+                    return;
+                }
+                cboManualSupplyAccount.DataSource = comboItems;
+                cboManualSupplyAccount.DisplayMember = "Name";
+                cboManualSupplyAccount.ValueMember = "Value";
+
+                label12.Visible = true;
+                supplyValid = true;
+            }
+            else
+            {
+                MessageBox.Show("Your username or password is incorrect.");
+                txtManualSupplyUsername.Focus();
+            }
+        }
+
+        private void btnManualSupplyAdd_Click(object sender, EventArgs e)
+        {
+            //this is for adding the supplies user manual request log
+            txtManualSupplyQuantity.BackColor = System.Drawing.Color.White;
+            
+            //RegEx pattern for the quantity field
+            string quantityPattern = "^[0-9]+$";
+
+            if (!supplyValid)
+            {
+                MessageBox.Show("Your log in information is not valid.  Please log in to continue.");
+                txtManualSupplyUsername.Focus();
+            }
+            else if (!System.Text.RegularExpressions.Regex.IsMatch(txtManualSupplyQuantity.Text, quantityPattern))
+            {
+                txtManualSupplyQuantity.BackColor = System.Drawing.Color.Red;
+                MessageBox.Show("Please input a simple integer to represent the quantity in the unit of measurement appropriate.");
+                txtManualSupplyQuantity.Focus();
+            }
+            else
+            {
+                //adds the supply use log 
+                string username = txtManualSupplyUsername.Text;
+                string account = cboManualSupplyAccount.SelectedValue.ToString();
+                string item = "item";// cboManualSupplyItem.SelectedValue.ToString();
+                string quantity = txtManualSupplyQuantity.Text;
+                xmlManager.AddSupplyUse(username, account, item, quantity);
+                
+                //confirms the add with the user then resets the supply form
+                MessageBox.Show("Supply Manual Request Added");
+                txtManualSupplyUsername.Clear();
+                txtManualSupplyPassword.Clear();
+                txtManualSupplyQuantity.Clear();
+                label12.Visible = false;
+                supplyValid = false;
+                cboManualSupplyAccount.DataSource = null;
+                cboManualSupplyAccount.Items.Clear();
+                txtManualSupplyUsername.Focus();
             }
         }
     }

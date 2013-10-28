@@ -220,10 +220,10 @@ namespace CUITAdmin
             }
 
             if (error)
-                MessageBox.Show("you done fucked up");
+                MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
             else
             {
-                MessageBox.Show("you win");
+                MessageBox.Show("There were no errors. Form submitted.");
                 containingForm.Close();
             }
         }
