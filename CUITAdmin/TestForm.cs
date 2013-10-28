@@ -19,10 +19,18 @@ namespace CUITAdmin {
 
         private void button1_Click(object sender, EventArgs e) {
             DBManager mymanager = DBManager.Instance;
-            //mymanager.AddUser("test", "lastName", "street", "city", "state", "12345", "8147587606", "test@test.com");
-            DateTime currentTime = new DateTime();
-
-            //mymanager.AddAccount("123", "testAccount", "1000000", DateTime.Now.ToLongDateString(), "InternalAcademic", "1", "this guy is a bitch", "costCenter test", "1234", "0");
+            //mymanager.AddNewManager("test", "lastName", "street", "city", "state", "12345", "8147587606", "test@test.com");
+            //DateTime currentTime = new DateTime();
+            //mymanager.AddNewUser("test", "lastName", "street", "city", "state", "12345", "8147587606", "test@test.com", "cmg5217", "password",
+            //    "computer science", "U", "Terrible Student", "1");
+            mymanager.AddAccount("123", "testAccount", "1000000", DateTime.Now.ToLongDateString(), "InternalAcademic", "12", "this guy is terrible", "costCenter test", "1234","0");
+            //List<string> output = mymanager.GetUserAccountNumbers("cmg5217");
+            //foreach (string theString in output) {
+            //    MessageBox.Show(theString);
+            //}
+        
+        
+        
         }
     }
 }

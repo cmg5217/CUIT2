@@ -90,6 +90,9 @@ namespace CUITAdmin {
             cboFundingSource.ValueMember = "Value";
             
             cboInstrument.Items.Add("testAccount");
+
+            manager.AddSupplyUse("t1", "t2", "t3", "t4");
+
         }
 
         public LogPanel(Control container, Point location) 
@@ -261,7 +264,7 @@ namespace CUITAdmin {
             if (standalone) {
                 string account = cboFundingSource.SelectedValue.ToString();
                 string instrument = cboInstrument.SelectedItem.ToString();
-                manager.AddLog(txtUsername.Text, 
+                manager.AddPartialLog(txtUsername.Text, 
                     account, 
                     instrument,
                     DateTime.Now.ToString());
