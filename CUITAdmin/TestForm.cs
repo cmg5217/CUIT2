@@ -18,8 +18,11 @@ namespace CUITAdmin {
         }
 
         private void button1_Click(object sender, EventArgs e) {
-            if (xmlManager.EditUser(textBox1.Text, textBox2.Text)) textBox1.Text = "User Edited";
-            else textBox1.Text = "User doesn't Exists";
+            DBManager mymanager = DBManager.Instance;
+            //mymanager.AddUser("test", "lastName", "street", "city", "state", "12345", "8147587606", "test@test.com");
+            DateTime currentTime = new DateTime();
+
+            //mymanager.AddAccount("123", "testAccount", "1000000", DateTime.Now.ToLongDateString(), "InternalAcademic", "1", "this guy is a bitch", "costCenter test", "1234", "0");
         }
     }
 }

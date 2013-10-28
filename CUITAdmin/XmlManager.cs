@@ -8,6 +8,8 @@ using System.Xml;
 namespace CUITAdmin {
     class XmlManager {
 
+        List<XmlElement> startedLogs;
+
         private static XmlManager globalManager;
 
         private const string FILE_LOCATION = "records.xml";
@@ -143,6 +145,8 @@ namespace CUITAdmin {
             return true;
         }
 
+
+
         public void AddLog(string username, string account, string instrument, string startTime) {
 
             // Gets the "accounts" node
@@ -171,14 +175,16 @@ namespace CUITAdmin {
 
             // finally, add the new log 
             logsElement.AppendChild(newLog);
+            startedLogs.Add(newLog);
             xmlDoc.Save("records.xml");
         }
 
-        public bool AddLogEndTime() {
-            XmlNode logElement;
-            
+////////////////////////////////////////////////////////////////////////////////////////////////////////////END LOG
+        public bool AddLogEndTime(string username, string account, string instrument, string startTime) {
             return false;
         }
+
+
 
         public bool FindUser(string username, ref XmlElement outElement) {            
             return FindElementByInnerElementValue("//root/users", "username", username, ref outElement);

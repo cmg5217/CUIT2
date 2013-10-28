@@ -43,5 +43,17 @@
       <instrument>testAccount</instrument>
       <start_time>10/19/2013 9:42:56 PM</start_time>
     </log>
+    <log>
+      <username>chris</username>
+      <account_number>test2</account_number>
+      <instrument>testAccount</instrument>
+      <start_time>10/22/2013 12:24:44 PM</start_time>
+    </log>
+    <log>
+      <username>shane</username>
+      <account_number>test2</account_number>
+      <instrument>testAccount</instrument>
+      <start_time>10/22/2013 12:41:34 PM</start_time>
+    </log>
   </logs>
 </root>
