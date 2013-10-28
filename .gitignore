@@ -4,6 +4,7 @@ CUITAdmin/bin/Debug/*
 !invoicetemplate.pdf
 !records.xml
 
+
 CUIT/CUITAdmin/bin/*
 CUIT/CUITClient/bin/*
 CUITClient/bin/*

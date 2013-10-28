@@ -66,6 +66,8 @@ namespace CUITAdmin {
             passwordTimer = new System.Timers.Timer(600);
             passwordTimer.Elapsed += new ElapsedEventHandler(pauseTimer_Elapsed);
 
+            manager = XmlManager.Instance;
+
             verifyPasswordBGW = new BackgroundWorker();
             verifyPasswordBGW.RunWorkerCompleted += new RunWorkerCompletedEventHandler(verifyPasswordBGW_RunWorkerCompleted);
 

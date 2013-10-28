@@ -37,6 +37,7 @@
             this.unapprovedTimeLogTableTableAdapter = new CUITAdmin.CUIT_TRIALDataSetTableAdapters.UnapprovedTimeLogTableTableAdapter();
             this.tbpExports = new System.Windows.Forms.TabPage();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.comboBoxSelectMonth = new System.Windows.Forms.ComboBox();
             this.button4 = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.button3 = new System.Windows.Forms.Button();
@@ -123,6 +124,9 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
+            this.comboBoxSelectAccount = new System.Windows.Forms.ComboBox();
+            this.txtMonth = new System.Windows.Forms.Label();
+            this.txtAccount = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.unapprovedTimeLogTableBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cUIT_TRIALDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.time_LogBindingSource)).BeginInit();
@@ -199,17 +203,43 @@
             // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.txtAccount);
+            this.groupBox6.Controls.Add(this.txtMonth);
+            this.groupBox6.Controls.Add(this.comboBoxSelectAccount);
+            this.groupBox6.Controls.Add(this.comboBoxSelectMonth);
             this.groupBox6.Controls.Add(this.button4);
             this.groupBox6.Location = new System.Drawing.Point(232, 379);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(216, 114);
+            this.groupBox6.Size = new System.Drawing.Size(216, 175);
             this.groupBox6.TabIndex = 7;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Export Invoice";
             // 
+            // comboBoxSelectMonth
+            // 
+            this.comboBoxSelectMonth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxSelectMonth.FormattingEnabled = true;
+            this.comboBoxSelectMonth.Items.AddRange(new object[] {
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"});
+            this.comboBoxSelectMonth.Location = new System.Drawing.Point(79, 37);
+            this.comboBoxSelectMonth.Name = "comboBoxSelectMonth";
+            this.comboBoxSelectMonth.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxSelectMonth.TabIndex = 2;
+            // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(52, 55);
+            this.button4.Location = new System.Drawing.Point(57, 120);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(103, 23);
             this.button4.TabIndex = 1;
@@ -237,6 +267,7 @@
             this.button3.TabIndex = 2;
             this.button3.Text = "Export";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // dateTimePicker2
             // 
@@ -1039,6 +1070,37 @@
             this.label12.TabIndex = 23;
             this.label12.Text = "Validated";
             this.label12.Visible = false;
+            //
+            // comboBoxSelectAccount
+            // 
+            this.comboBoxSelectAccount.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxSelectAccount.FormattingEnabled = true;
+            this.comboBoxSelectAccount.Items.AddRange(new object[] {
+            "AccountA",
+            "AccountB",
+            "AccountC"});
+            this.comboBoxSelectAccount.Location = new System.Drawing.Point(79, 77);
+            this.comboBoxSelectAccount.Name = "comboBoxSelectAccount";
+            this.comboBoxSelectAccount.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxSelectAccount.TabIndex = 3;
+            // 
+            // txtMonth
+            // 
+            this.txtMonth.AutoSize = true;
+            this.txtMonth.Location = new System.Drawing.Point(22, 40);
+            this.txtMonth.Name = "txtMonth";
+            this.txtMonth.Size = new System.Drawing.Size(40, 13);
+            this.txtMonth.TabIndex = 4;
+            this.txtMonth.Text = "Month:";
+            // 
+            // txtAccount
+            // 
+            this.txtAccount.AutoSize = true;
+            this.txtAccount.Location = new System.Drawing.Point(23, 80);
+            this.txtAccount.Name = "txtAccount";
+            this.txtAccount.Size = new System.Drawing.Size(50, 13);
+            this.txtAccount.TabIndex = 5;
+            this.txtAccount.Text = "Account:";
             // 
             // frmCUITAdminMain
             // 
@@ -1057,6 +1119,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.time_LogBindingSource)).EndInit();
             this.tbpExports.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.tbpAccountAdmin.ResumeLayout(false);
@@ -1180,6 +1243,10 @@
         private System.Windows.Forms.Button btnManualTimeValidate;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.ComboBox comboBoxSelectMonth;
+        private System.Windows.Forms.ComboBox comboBoxSelectAccount;
+        private System.Windows.Forms.Label txtAccount;
+        private System.Windows.Forms.Label txtMonth;
     }
 }
 

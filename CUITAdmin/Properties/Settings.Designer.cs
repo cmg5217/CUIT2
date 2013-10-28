@@ -36,7 +36,7 @@ namespace CUITAdmin.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\")]
+        [global::System.Configuration.DefaultSettingValueAttribute("%UserProfile%\\Desktop\\")]
         public string InvoicePath {
             get {
                 return ((string)(this["InvoicePath"]));

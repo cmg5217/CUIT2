@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using iTextSharp.text.pdf;
 using System.IO;
+using CUITAdmin.Properties;
 
 namespace CUITAdmin
 {
@@ -19,7 +20,11 @@ namespace CUITAdmin
         private bool standalone = false;
         private string accountType;
         LogPanel startPanel;
+
         XmlManager xmlManager;
+
+        PDFManager pdfManager;
+
 
         public frmCUITAdminMain()
         {
@@ -57,7 +62,15 @@ namespace CUITAdmin
             cboAccountAdminView.SelectedItem = "Accounts";
             DataGridViewCell editCell = dgvTimeLogRequests.Rows[0].Cells[6];
             editCell.Value = "test";
+
             //loads the path for the invoice export from app.config
+            textBox2.Text = Settings.Default["InvoicePath"].ToString();
+
+
+            DateTime now = DateTime.Now;
+            Console.WriteLine(now.Month);
+            comboBoxSelectMonth.Text = ((now.ToString("MMMMMMMMM")));
+
 
             textBox2.Text = Properties.Settings.Default.InvoicePath;
 
@@ -114,6 +127,7 @@ namespace CUITAdmin
                     btnManualSupplyAdd.PerformClick();
                 }
             };
+
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -140,68 +154,30 @@ namespace CUITAdmin
 
         private void button2_Click(object sender, EventArgs e)
         {
-            OpenFileDialog logDialog = new OpenFileDialog();
-            logDialog.ShowDialog();
+            if (InvoiceExportPath.ShowDialog() == DialogResult.OK)
+            {                
+                textBox2.Text = InvoiceExportPath.SelectedPath;
+                Settings.Default["InvoicePath"] = button5.Text;
+                Settings.Default.Save();
+            }
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            string pdfTemplate = @"invoicetemplate.pdf";
-            string newFile = textBox2.Text + @"\CARIPD-002-13.pdf";
-
-
-            
-
-            PdfReader pdfReader = new PdfReader(pdfTemplate);
-            PdfStamper pdfStamper = new PdfStamper(pdfReader, new FileStream(
-                        newFile, FileMode.Create));
-
-            AcroFields pdfFormFields = pdfStamper.AcroFields;
-
-            // set form pdfFormFields
-
-            // Address
-            pdfFormFields.SetField("Address", "David Stephens" + Environment.NewLine
-                + "1856 US 62" + Environment.NewLine + "Oil City, PA 16301");
-            //Services
-            pdfFormFields.SetField("services", "Atomic Force Microscopy" +
-                Environment.NewLine + "(April 2013, 16 hours @ $27/hr)" +
-                Environment.NewLine + Environment.NewLine +
-                "Optical/Fluorescent Microscopy" + Environment.NewLine + 
-                "(April 2013, 8 hours @ $18/hr)");
-
-
-            //Charges
-            pdfFormFields.SetField("charges", "$432" + Environment.NewLine
-                + Environment.NewLine + Environment.NewLine+
-                "$144");
-            //Credits
-            pdfFormFields.SetField("credits", "");
-            //Balance
-            pdfFormFields.SetField("balance", Environment.NewLine + Environment.NewLine + Environment.NewLine +
-                Environment.NewLine + "$576.00");
-            //Date
-            pdfFormFields.SetField("Date", "10/9/2013");
-            //Invoice/ID
-            pdfFormFields.SetField("FillText1", "CARIPD-002-13");
-
-            // report by reading values from completed PDF
-
-            MessageBox.Show("Export Complete! \n" + "File has been exported to:\n" + newFile);
-
-            // flatten the form to remove editting options, set it to false
-            // to leave the form open to subsequent manual edits
-            pdfStamper.FormFlattening = true;
-
-            // close the pdf
-            pdfStamper.Close();
+            pdfManager = new PDFManager();
+            pdfManager.AddAddress("David Stephens", "1856 Us 62", "Oil City", "PA", "16301");
+            pdfManager.AddService("Atomic Force", "Aug. 2013", "12", "27", "hour");
+            pdfManager.AddDate("January 2014");
+            pdfManager.AddInvoiceID("Invoice 234");
+            pdfManager.AddBalance("529");
+            pdfManager.AddCharge("529");
+            pdfManager.QueryDatabase("January");
+            pdfManager.PDFClose();  
+         
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-
-          
-
 
         }
 
@@ -212,9 +188,7 @@ namespace CUITAdmin
 
                 Properties.Settings.Default.InvoicePath = InvoiceExportPath.SelectedPath;
                 Properties.Settings.Default.Save();
-
-
-                textBox2.Text = InvoiceExportPath.SelectedPath;// = Properties.Settings.Default.InvoicePath;
+                textBox2.Text = InvoiceExportPath.SelectedPath;
             }
         }
 
@@ -373,6 +347,16 @@ namespace CUITAdmin
                 cboManualSupplyAccount.Items.Clear();
                 txtManualSupplyUsername.Focus();
             }
+        }
+
+        private void btnPreview_Click(object sender, EventArgs e)
+        {
+           
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
