@@ -116,18 +116,18 @@ namespace CUITAdmin
         public void QueryDatabase(string month)
         {
 
-            SqlConnection myConnection = new SqlConnection("Data Source=CUITS\\CUITS;Initial Catalog=CUIT;User ID=DataAdmin;Password=JazBarne$411");
+            //SqlConnection myConnection = new SqlConnection("Data Source=CUITS\\CUITS;Initial Catalog=CUIT;User ID=DataAdmin;Password=JazBarne$411");
 
-            SqlDataReader myReader = null;
-            SqlCommand myCommand = new SqlCommand("select * from Invoice",
-                                                     myConnection);
-            myReader = myCommand.ExecuteReader();
-            while (myReader.Read())
-            {
-                MessageBox.Show((myReader["Column1"].ToString()));
-                Console.WriteLine(myReader["Column1"].ToString());
-                //Console.WriteLine(myReader["Column2"].ToString());
-            }
+           // SqlDataReader myReader = null;
+           // SqlCommand myCommand = new SqlCommand("select * from Invoice",
+           //                                          myConnection);
+           // myReader = myCommand.ExecuteReader();
+           // while (myReader.Read())
+           // {
+           //     MessageBox.Show((myReader["Column1"].ToString()));
+           //     Console.WriteLine(myReader["Column1"].ToString());
+           //     //Console.WriteLine(myReader["Column2"].ToString());
+           // }
             
         }
        }

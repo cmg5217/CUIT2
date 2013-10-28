@@ -58,6 +58,11 @@ namespace CUITAdmin
             //loads the path for the invoice export from app.config
             textBox2.Text = Settings.Default["InvoicePath"].ToString();
 
+
+            DateTime now = DateTime.Now;
+            Console.WriteLine(now.Month);
+            comboBoxSelectMonth.Text = ((now.ToString("MMMMMMMMM")));
+
             
         }
 
