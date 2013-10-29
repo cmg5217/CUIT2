@@ -37,6 +37,9 @@
             this.unapprovedTimeLogTableTableAdapter = new CUITAdmin.CUIT_TRIALDataSetTableAdapters.UnapprovedTimeLogTableTableAdapter();
             this.tbpExports = new System.Windows.Forms.TabPage();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.txtAccount = new System.Windows.Forms.Label();
+            this.txtMonth = new System.Windows.Forms.Label();
+            this.comboBoxSelectAccount = new System.Windows.Forms.ComboBox();
             this.comboBoxSelectMonth = new System.Windows.Forms.ComboBox();
             this.button4 = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -96,6 +99,7 @@
             this.tbpManualRequests = new System.Windows.Forms.TabPage();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.btnManualSupplyValidate = new System.Windows.Forms.Button();
             this.txtManualSupplyPassword = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -109,6 +113,7 @@
             this.cboManualSupplyItem = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.label11 = new System.Windows.Forms.Label();
             this.btnManualTimeValidate = new System.Windows.Forms.Button();
             this.txtManualTimePassword = new System.Windows.Forms.TextBox();
             this.lblPassword = new System.Windows.Forms.Label();
@@ -122,11 +127,6 @@
             this.btnManualTimeAdd = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.comboBoxSelectAccount = new System.Windows.Forms.ComboBox();
-            this.txtMonth = new System.Windows.Forms.Label();
-            this.txtAccount = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.unapprovedTimeLogTableBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cUIT_TRIALDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.time_LogBindingSource)).BeginInit();
@@ -214,6 +214,37 @@
             this.groupBox6.TabIndex = 7;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Export Invoice";
+            // 
+            // txtAccount
+            // 
+            this.txtAccount.AutoSize = true;
+            this.txtAccount.Location = new System.Drawing.Point(23, 80);
+            this.txtAccount.Name = "txtAccount";
+            this.txtAccount.Size = new System.Drawing.Size(50, 13);
+            this.txtAccount.TabIndex = 5;
+            this.txtAccount.Text = "Account:";
+            // 
+            // txtMonth
+            // 
+            this.txtMonth.AutoSize = true;
+            this.txtMonth.Location = new System.Drawing.Point(22, 40);
+            this.txtMonth.Name = "txtMonth";
+            this.txtMonth.Size = new System.Drawing.Size(40, 13);
+            this.txtMonth.TabIndex = 4;
+            this.txtMonth.Text = "Month:";
+            // 
+            // comboBoxSelectAccount
+            // 
+            this.comboBoxSelectAccount.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxSelectAccount.FormattingEnabled = true;
+            this.comboBoxSelectAccount.Items.AddRange(new object[] {
+            "AccountA",
+            "AccountB",
+            "AccountC"});
+            this.comboBoxSelectAccount.Location = new System.Drawing.Point(79, 77);
+            this.comboBoxSelectAccount.Name = "comboBoxSelectAccount";
+            this.comboBoxSelectAccount.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxSelectAccount.TabIndex = 3;
             // 
             // comboBoxSelectMonth
             // 
@@ -347,11 +378,10 @@
             this.cboAccountAdminNew.FormattingEnabled = true;
             this.cboAccountAdminNew.Items.AddRange(new object[] {
             "Account",
-            "Account Manager",
             "Instrument",
             "Supply",
             "User",
-            "User Contact"});
+            "Point of Contact"});
             this.cboAccountAdminNew.Location = new System.Drawing.Point(556, 9);
             this.cboAccountAdminNew.Name = "cboAccountAdminNew";
             this.cboAccountAdminNew.Size = new System.Drawing.Size(121, 21);
@@ -811,6 +841,16 @@
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Supplies";
             // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(144, 80);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(51, 13);
+            this.label12.TabIndex = 23;
+            this.label12.Text = "Validated";
+            this.label12.Visible = false;
+            // 
             // btnManualSupplyValidate
             // 
             this.btnManualSupplyValidate.Location = new System.Drawing.Point(201, 75);
@@ -938,6 +978,16 @@
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Time Log";
             // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(136, 80);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(51, 13);
+            this.label11.TabIndex = 19;
+            this.label11.Text = "Validated";
+            this.label11.Visible = false;
+            // 
             // btnManualTimeValidate
             // 
             this.btnManualTimeValidate.Location = new System.Drawing.Point(193, 75);
@@ -1050,57 +1100,6 @@
             this.label8.Size = new System.Drawing.Size(85, 13);
             this.label8.TabIndex = 4;
             this.label8.Text = "Funding Source:";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(136, 80);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(51, 13);
-            this.label11.TabIndex = 19;
-            this.label11.Text = "Validated";
-            this.label11.Visible = false;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(144, 80);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(51, 13);
-            this.label12.TabIndex = 23;
-            this.label12.Text = "Validated";
-            this.label12.Visible = false;
-            //
-            // comboBoxSelectAccount
-            // 
-            this.comboBoxSelectAccount.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxSelectAccount.FormattingEnabled = true;
-            this.comboBoxSelectAccount.Items.AddRange(new object[] {
-            "AccountA",
-            "AccountB",
-            "AccountC"});
-            this.comboBoxSelectAccount.Location = new System.Drawing.Point(79, 77);
-            this.comboBoxSelectAccount.Name = "comboBoxSelectAccount";
-            this.comboBoxSelectAccount.Size = new System.Drawing.Size(121, 21);
-            this.comboBoxSelectAccount.TabIndex = 3;
-            // 
-            // txtMonth
-            // 
-            this.txtMonth.AutoSize = true;
-            this.txtMonth.Location = new System.Drawing.Point(22, 40);
-            this.txtMonth.Name = "txtMonth";
-            this.txtMonth.Size = new System.Drawing.Size(40, 13);
-            this.txtMonth.TabIndex = 4;
-            this.txtMonth.Text = "Month:";
-            // 
-            // txtAccount
-            // 
-            this.txtAccount.AutoSize = true;
-            this.txtAccount.Location = new System.Drawing.Point(23, 80);
-            this.txtAccount.Name = "txtAccount";
-            this.txtAccount.Size = new System.Drawing.Size(50, 13);
-            this.txtAccount.TabIndex = 5;
-            this.txtAccount.Text = "Account:";
             // 
             // frmCUITAdminMain
             // 

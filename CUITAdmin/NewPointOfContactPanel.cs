@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace CUITAdmin
 {
-    class NewUserContactPanel : Panel
+    class NewPointOfContactPanel : Panel
     {
         Button btnSubmit = new Button();
         RichTextBox rtbNotes = new RichTextBox();
@@ -30,7 +30,7 @@ namespace CUITAdmin
         Label lblFirstName = new Label();
         NewEntryForm containingForm;
 
-        public NewUserContactPanel(NewEntryForm pForm)
+        public NewPointOfContactPanel(NewEntryForm pForm)
         {
             containingForm = pForm;
             pForm.Controls.Add(this);

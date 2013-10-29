@@ -24,12 +24,6 @@ namespace CUITAdmin
                     this.Text = "New Account Form";
                     break;
 
-                case "Account Manager":
-                    NewAccountAdminPanel myAcctAdminForm = new NewAccountAdminPanel(this);
-                    this.SetBounds(350, 350, 360, 340);
-                    this.Text = "New Manager Form";
-                    break;
-
                 case "Instrument":
                     NewInstrumentPanel myInstrumentForm = new NewInstrumentPanel(this);
                     this.SetBounds(350, 350, 340, 300);
@@ -48,10 +42,10 @@ namespace CUITAdmin
                     this.Text = "New User Form";
                     break;
 
-                case "User Contact":
-                    NewUserContactPanel myUserContactPanel = new NewUserContactPanel(this);
+                case "Point of Contact":
+                    NewPointOfContactPanel myContactPanel = new NewPointOfContactPanel(this);
                     this.SetBounds(350, 350, 555, 250);
-                    this.Text = "New User Contact Form";
+                    this.Text = "New Contact Form";
                     break;
             }
             

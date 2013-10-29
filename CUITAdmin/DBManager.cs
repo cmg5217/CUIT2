@@ -5,7 +5,10 @@ using System.Linq;
 using System.Text;
 
 
-using System.Diagnostics;namespace CUITAdmin {
+using System.Diagnostics;
+using System.ComponentModel;
+namespace CUITAdmin
+{
     class DBManager {
 
         static DBManager globalManager;
@@ -201,8 +204,15 @@ using System.Diagnostics;namespace CUITAdmin {
             SqlCommand myCommand = new SqlCommand("SELECT * FROM [CUIT].[dbo].[Users] u left outer join CUIT.dbo.User_Account ua on u.PersonID = ua.PersonID where u.Username = @username", myConnection);
 
             myCommand.Parameters.AddWithValue("@username", username);
-            
-            myReader = myCommand.ExecuteReader();
+
+            try
+            {
+                myReader = myCommand.ExecuteReader();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
 
             List<string> userAccounts = new List<string>();
 
@@ -214,7 +224,36 @@ using System.Diagnostics;namespace CUITAdmin {
             return userAccounts;
         }
 
+        public BindingList<Data> GetInstruments() {
+            SqlDataReader myReader = null;
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand("SELECT * FROM Instrument",myConnection);
 
+            try
+            {
+                myReader = myCommand.ExecuteReader();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+
+            BindingList<Data> instruments = new BindingList<Data>();
+
+            while (myReader.Read())
+            {
+                instruments.Add(new Data
+                    {
+                        Value = myReader["InstrumentID"].ToString(),
+                        Name = myReader["Name"].ToString()
+                    }
+                );
+            }
+
+            myConnection.Close();
+            return instruments;
+
+        }
 
     }
 }

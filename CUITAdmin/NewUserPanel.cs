@@ -403,7 +403,7 @@ namespace CUITAdmin
                 error = true;
             }
 
-            string usernamePattern = "^([1-zA-Z0-1@.\\s]{5,20})$";
+            string usernamePattern = "^([1-zA-Z0-1@.]{5,20})$";
             if (!System.Text.RegularExpressions.Regex.IsMatch(txtUsername.Text, usernamePattern))
             {
                 txtUsername.BackColor = System.Drawing.Color.Red;
@@ -431,13 +431,13 @@ namespace CUITAdmin
               )
                {9,}     # That appears nine or more times
             $           # End of the string*/
-
-            
+ 
         }
 
         private void btnNewContact_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("This is a test");
+            NewEntryForm newContact = new NewEntryForm("Point of Contact");
+            newContact.Show();
         }
     }
 }

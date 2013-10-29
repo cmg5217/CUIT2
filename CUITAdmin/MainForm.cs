@@ -22,7 +22,7 @@ namespace CUITAdmin
         LogPanel startPanel;
 
         XmlManager xmlManager;
-
+        DBManager dbManager;
         PDFManager pdfManager;
 
 
@@ -54,8 +54,8 @@ namespace CUITAdmin
             }
             else standalone = false;
 
-            xmlManager = XmlManager.Instance; 
-
+            xmlManager = XmlManager.Instance;
+            dbManager = DBManager.Instance;
             startPanel = new LogPanel(tbpTracking, new Point(5,5));
 
             cboAccountAdminNew.SelectedItem = "Account";
@@ -223,6 +223,11 @@ namespace CUITAdmin
                 cboManualTimeAccount.DataSource = comboItems;
                 cboManualTimeAccount.DisplayMember = "Name";
                 cboManualTimeAccount.ValueMember = "Value";
+
+                BindingList<Data> comboInstruments = dbManager.GetInstruments();
+                cboManualTimeInstrument.DataSource = comboInstruments;
+                cboManualTimeInstrument.DisplayMember = "Name";
+                cboManualTimeInstrument.ValueMember = "Value";
 
                 label11.Visible = true;
                 timeValid = true;

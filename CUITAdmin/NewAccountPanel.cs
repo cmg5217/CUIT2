@@ -14,17 +14,20 @@ namespace CUITAdmin
         TextBox txtAccountNumber = new TextBox();
         TextBox txtMaxCharge = new TextBox();
         ComboBox cboRateType = new ComboBox();
+        ComboBox cboContacts = new ComboBox();
         TextBox txtBalance = new TextBox();
         Label lblAccountName = new Label();
         Label lblAccountNumber = new Label();
         Label lblMaxCharge = new Label();
         Label lblAccountExpiration = new Label();
+        Label lblContacts = new Label();
         DateTimePicker dtpAccountExpiration = new DateTimePicker();
         Label lblRateType = new Label();
         Label lblBalance = new Label();
         Label lblNotes = new Label();
         RichTextBox txtNotes = new RichTextBox();
         Button btnSubmit = new Button();
+        Button btnNewContact = new Button();
 
         public NewAccountPanel(NewEntryForm pForm)
         {
@@ -92,6 +95,15 @@ namespace CUITAdmin
             txtBalance.SetBounds(110, 160, 200, 20);
             this.Controls.Add(txtBalance);
 
+            //Label lblContacts = new Label();
+            lblContacts.Text = "Contacts:";
+            lblContacts.Location = new Point(10, 190);
+            this.Controls.Add(lblContacts);
+            
+            //ComboBox cboContacts = new ComboBox();
+            cboContacts.SetBounds(110, 190, 200, 20);
+            this.Controls.Add(cboContacts);
+
             //Label lblNotes = new Label();
             lblNotes.Text = "Notes:";
             lblNotes.Location = new Point(325, 10);
@@ -106,6 +118,16 @@ namespace CUITAdmin
             btnSubmit.Location = new Point(525, 190);
             this.Controls.Add(btnSubmit);
             btnSubmit.Click += new EventHandler(this.btnSubmit_Click);
+
+            //Button btnNewContact = new Button();
+            btnNewContact.Location = new Point(315,190);
+            btnNewContact.Name = "btnNewContact";
+            btnNewContact.Size = new System.Drawing.Size(24, 21);
+            btnNewContact.Text = "...";
+            System.Windows.Forms.ToolTip tip = new ToolTip();
+            tip.SetToolTip(this.btnNewContact, "Add New Contact");
+            this.Controls.Add(btnNewContact);
+            btnNewContact.Click += new EventHandler(this.btnNewContact_Click);
 
             containingForm.AcceptButton = btnSubmit;
         }
@@ -177,6 +199,12 @@ namespace CUITAdmin
             $           # End of the string*/
 
             
+        }
+
+        private void btnNewContact_Click(object sender, EventArgs e)
+        {
+            NewEntryForm newContact = new NewEntryForm("Point of Contact");
+            newContact.Show();
         }
     }
 }
