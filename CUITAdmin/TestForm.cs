@@ -17,20 +17,22 @@ namespace CUITAdmin {
             xmlManager = XmlManager.Instance;
         }
 
-        private void button1_Click(object sender, EventArgs e) {
+        private void button1_Click(object sender, EventArgs e) 
+        {
             DBManager mymanager = DBManager.Instance;
             //mymanager.AddNewManager("test", "lastName", "street", "city", "state", "12345", "8147587606", "test@test.com");
             //DateTime currentTime = new DateTime();
             //mymanager.AddNewUser("test", "lastName", "street", "city", "state", "12345", "8147587606", "test@test.com", "cmg5217", "password",
             //    "computer science", "U", "Terrible Student", "1");
-            //mymanager.AddAccount("123", "testAccount", "1000000", DateTime.Now.ToLongDateString(), "InternalAcademic", "12", "this guy is terrible", "costCenter test", "1234","0");
+            string pointOfContactID;
+            mymanager.AddPointOfContact("ted", "bundy", "murder street", "murder town", "Pa", "16301", "8147777777", "test@test.com", "crazy");
+            mymanager.AddAccount("123", "testAccount", "1000000", DateTime.Now.ToLongDateString(), "InternalAcademic", "12", "this guy is terrible", "costCenter test", "1234","0");
             //List<string> output = mymanager.GetUserAccountNumbers("cmg5217");
             //foreach (string theString in output) {
             //    MessageBox.Show(theString);
             //}
-
-            xmlManager.AddUser("david", "123");
-        
+            //mymanager.AddTimeLog("1", "1", "Y", DateTime.Now.ToString(), DateTime.Now.ToString(), "50", "1");
+            
         
         }
     }
