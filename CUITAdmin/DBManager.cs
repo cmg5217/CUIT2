@@ -76,7 +76,7 @@ namespace CUITAdmin
         }
 
 
-        public void AddUserAccount(int personID, string accountNumber) {
+        public void AddUserAccount(int personID, int accountNumber) {
 
 
             SqlConnection myConnection = DBConnect();
@@ -125,7 +125,7 @@ namespace CUITAdmin
         }
 
 
-        public void AddAccount(string accountNumber, string name, int maxChargeLimit, DateTime accountExpiration, 
+        public void AddAccount(int accountNumber, string name, int maxChargeLimit, DateTime accountExpiration, 
                 string rateType, int managerID, string notes, string costCenter, string wbsNumber, int balance) 
         {
             SqlConnection myConnection = DBConnect();

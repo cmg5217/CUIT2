@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -19,18 +20,26 @@ namespace CUITAdmin {
 
         private void button1_Click(object sender, EventArgs e) 
         {
+            int count = 0;
             DBManager mymanager = DBManager.Instance;
             Random rand = new Random();
             DateTime currentTime = new DateTime();
             string pointOfContactID;
+
+            Debug.WriteLine("Line" + (++count));
             mymanager.AddPointOfContact("ted", "bundy", "murder street", "murder town", "Pa", "16301", "8147777777", "test@test.com", "crazy");
 
-            string testAccountNum = "TestAcct" + DateTime.Now.ToString();
-            
-            
-            mymanager.AddAccount(testAccountNum + rand.Next(), "testAccount", 1000000, DateTime.Now, "InternalAcademic", 14, "this guy is terrible", "costCenter test", "1234", 0);
+
+            MessageBox.Show(DateTime.Now.Ticks.ToString());
+            int testAccountNum = rand.Next(1,1000000);
+
+            Debug.WriteLine("Line" + (++count));
+
+            mymanager.AddAccount(testAccountNum, "testAccount", 1000000, DateTime.Now, "InternalAcademic", 14, "this guy is terrible", "costCenter test", "1234", 0);
+            Debug.WriteLine("Line" + (++count));
             mymanager.AddUser("test", "lastName", "street", "city", "state", "12345", "8147587606", "test@test.com", "cmg5217", "password",
                 "computer science", "U", "Terrible Student", 1);
+            Debug.WriteLine("Line" + (++count));
             mymanager.AddUserAccount(12, testAccountNum);
 
             string message = "Accounts: \r\n";
@@ -42,17 +51,25 @@ namespace CUITAdmin {
 
             MessageBox.Show(message);
 
+            Debug.WriteLine("Line" + (++count));
             mymanager.AddTimeLog("1", "12", 'Y', DateTime.Now, DateTime.Now, 50, "1");
+            Debug.WriteLine("Line" + (++count));
             mymanager.AddSupplyUse("12345", "TestSupply", DateTime.Now, 30);
+            Debug.WriteLine("Line" + (++count));
             mymanager.AddSupply("testsupply" + DateTime.Now.ToString(), 100, "gm");
 
             int invoiceID;
+            Debug.WriteLine("Line" + (++count));
             mymanager.AddInvoice(DateTime.Now, DateTime.Now, DateTime.Now, "12345", 40, out invoiceID);
+            Debug.WriteLine("Line" + (++count));
             mymanager.AddInvoiceSupplyLine("testsupply", 50, invoiceID);
+            Debug.WriteLine("Line" + (++count));
             mymanager.AddInvoiceTimeLine("testsupply", 30, 50, invoiceID);
 
+            Debug.WriteLine("Line" + (++count));
             mymanager.AddInstrument("testInstrument", "oz", 50);
 
+            Debug.WriteLine("Line" + (++count));
             mymanager.AddInstrumentRate("TestRate" + rand.Next(), 10, 1);
 
 

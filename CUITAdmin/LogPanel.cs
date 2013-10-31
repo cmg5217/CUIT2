@@ -52,6 +52,7 @@ namespace CUITAdmin {
 
         private LogPanel parentPanel;
         private LogPanel childPanel;
+
         XmlManager manager;
 
         /////////////////////////////////////////// CONSTRUCTORS & DESTRUCTORS /////////////////////////////////////////////////////
