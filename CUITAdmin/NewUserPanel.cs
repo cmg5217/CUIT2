@@ -339,7 +339,7 @@ namespace CUITAdmin
                 cboContacts.Items.Add(1);
                 cboContacts.SelectedItem = 1;
 
-                dbManager.AddNewUser(txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text, 
+                dbManager.AddUser(txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text, 
                     cboState.SelectedItem.ToString(), txtZipCode.Text, txtPhone.Text, txtEmail.Text, txtUsername.Text, 
                     txtPassword.Text, txtDepartment.Text, "U", rtbNotes.Text, (int)cboContacts.SelectedValue);
 

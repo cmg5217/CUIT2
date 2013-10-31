@@ -244,7 +244,7 @@ namespace CUITAdmin
                 MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
             else
             {
-                dbManager.AddNewContact(txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text, 
+                dbManager.AddPointOfContact(txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text, 
                     cboState.SelectedItem.ToString(), txtZipCode.Text, txtPhone.Text, txtEmail.Text, rtbNotes.Text);
                 containingForm.Close();
             }

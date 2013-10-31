@@ -110,6 +110,7 @@ namespace CUITAdmin
                                                   "VALUES (@personID, @notes)",
                                                   myConnection);
 
+            myCommand.Parameters.AddWithValue("@personID", newPersonID);
             myCommand.Parameters.AddWithValue("@notes", notes);
 
             try {
@@ -124,24 +125,16 @@ namespace CUITAdmin
         }
 
 
-        public void AddAccount(string accountNumber, string name, string maxChargeLimit, DateTime accountExpiration, 
-                string rateType, string managerID, string notes, string costCenter, string wbsNumber, string balance) 
+        public void AddAccount(string accountNumber, string name, int maxChargeLimit, DateTime accountExpiration, 
+                string rateType, int managerID, string notes, string costCenter, string wbsNumber, int balance) 
         {
             SqlConnection myConnection = DBConnect();
 
-            string pointOfContactID = "", pointOfContactParameter = "";
-
-            if (managerID != "")
-            {
-                pointOfContactID = "PointOfContactID, ";
-                pointOfContactParameter = "@pointOfContact, ";
-            }
-
             SqlCommand myCommand = new SqlCommand("INSERT into Account " +
-            "(Account_Number, Name, Max_Charge_Limit, Account_Expiration, Rate_Type, " + pointOfContactID + " Notes, Cost_Center, " +
+            "(Account_Number, Name, Max_Charge_Limit, Account_Expiration, Rate_Type, PointOfContactID, Notes, Cost_Center, " +
             "WBS_Number, Balance) " +
 
-            "VALUES (@accountNumber, @name, @maxChargeLimit, @accountExpiration, @rateType, " + pointOfContactParameter +
+            "VALUES (@accountNumber, @name, @maxChargeLimit, @accountExpiration, @rateType, @pointOfContact, " +
             "@notes, @costCenter, @wbsNumber, @balance)", myConnection);
 
 
@@ -150,9 +143,7 @@ namespace CUITAdmin
             myCommand.Parameters.AddWithValue("@maxChargeLimit", maxChargeLimit);
             myCommand.Parameters.AddWithValue("@accountExpiration", accountExpiration);
             myCommand.Parameters.AddWithValue("@rateType", rateType);
-
-            if (managerID != "") myCommand.Parameters.AddWithValue("@pointOfContact", managerID);
-            
+            myCommand.Parameters.AddWithValue("@pointOfContact", managerID);
             myCommand.Parameters.AddWithValue("@notes", notes);
             myCommand.Parameters.AddWithValue("@costCenter", costCenter);
             myCommand.Parameters.AddWithValue("@wbsNumber", wbsNumber);

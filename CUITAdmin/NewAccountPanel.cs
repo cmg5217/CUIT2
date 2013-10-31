@@ -147,12 +147,14 @@ namespace CUITAdmin
                 MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
             }
 
+// TO-DO: Shane, change the contact box to use a Binding list with the Name = the contact name and the Value = their contact id
+
             else
             {
                 cboContacts.Items.Add("1");
                 cboContacts.SelectedItem = "1";
-                dbManager.AddAccount(txtAccountNumber.Text, txtAccountName.Text, txtMaxCharge.Text, dtpAccountExpiration.Value.ToString(), 
-                    cboRateType.SelectedItem.ToString(), cboContacts.SelectedItem.ToString(), txtNotes.Text, txtCostCenter.Text, txtWBSNumber.Text, txtBalance.Text);
+                dbManager.AddAccount(txtAccountNumber.Text, txtAccountName.Text, int.Parse(txtMaxCharge.Text), dtpAccountExpiration.Value, 
+                    cboRateType.SelectedItem.ToString(), int.Parse(cboContacts.SelectedItem.ToString()), txtNotes.Text, txtCostCenter.Text, txtWBSNumber.Text, int.Parse(txtBalance.Text));
                 containingForm.Close();
             }
         }
