@@ -7,6 +7,7 @@ using System.Text;
 
 using System.Diagnostics;
 using System.ComponentModel;
+using System.Data;
 namespace CUITAdmin
 {
     class DBManager {
@@ -41,7 +42,7 @@ namespace CUITAdmin
         }
 
         public void AddNewUser(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email, 
-            string username, string password, string department, string type, string notes, string contactID) 
+            string username, string password, string department, string type, string notes, int contactID) 
         {
 
             string personID;
@@ -57,7 +58,7 @@ namespace CUITAdmin
             myCommand.Parameters.AddWithValue("@username", username);
             myCommand.Parameters.AddWithValue("@password", password);
             myCommand.Parameters.AddWithValue("@department", department);
-            myCommand.Parameters.AddWithValue("@type", type);
+            myCommand.Parameters.AddWithValue("@type", type.ToCharArray()[0]);
             myCommand.Parameters.AddWithValue("@notes", notes);
             myCommand.Parameters.AddWithValue("@contactID", contactID);
 
@@ -75,11 +76,12 @@ namespace CUITAdmin
             string personID;
             AddPerson(firstName, lastName, street, city, state, zip, phoneNumber, email, out personID);
             SqlConnection myConnection = DBConnect();
-            SqlCommand myCommand = new SqlCommand("INSERT INTO Contact (PersonID, Notes) " +
+            SqlCommand myCommand = new SqlCommand("INSERT INTO Point_Of_Contact (PersonID, Notes) " +
                                                   "VALUES (@personID, @notes)",
                                                   myConnection);
 
             myCommand.Parameters.AddWithValue("@notes", notes);
+            myCommand.Parameters.AddWithValue("@personID", personID);
             try {
                 myCommand.ExecuteNonQuery();
             } catch (Exception e) {
@@ -116,11 +118,19 @@ namespace CUITAdmin
         {
             SqlConnection myConnection = DBConnect();
 
+            string pointOfContactID = "", pointOfContactParameter = "";
+
+            if (managerID != "")
+            {
+                pointOfContactID = "PointOfContactID, ";
+                pointOfContactParameter = "@pointOfContact, ";
+            }
+
             SqlCommand myCommand = new SqlCommand("INSERT into Account " +
-            "(Account_Number, Name, Max_Charge_Limit, Account_Expiration, Rate_Type, ManagerID, Notes, Cost_Center, " +
+            "(Account_Number, Name, Max_Charge_Limit, Account_Expiration, Rate_Type, " + pointOfContactID + " Notes, Cost_Center, " +
             "WBS_Number, Balance) " +
 
-            "VALUES (@accountNumber, @name, @maxChargeLimit, @accountExpiration, @rateType, @managerID, " +
+            "VALUES (@accountNumber, @name, @maxChargeLimit, @accountExpiration, @rateType, " + pointOfContactParameter +
             "@notes, @costCenter, @wbsNumber, @balance)", myConnection);
 
 
@@ -129,7 +139,9 @@ namespace CUITAdmin
             myCommand.Parameters.AddWithValue("@maxChargeLimit", maxChargeLimit);
             myCommand.Parameters.AddWithValue("@accountExpiration", DateTime.Now);
             myCommand.Parameters.AddWithValue("@rateType", rateType);
-            myCommand.Parameters.AddWithValue("@managerID", managerID);
+
+            if (managerID != "") myCommand.Parameters.AddWithValue("@pointOfContact", managerID);
+            
             myCommand.Parameters.AddWithValue("@notes", notes);
             myCommand.Parameters.AddWithValue("@costCenter", costCenter);
             myCommand.Parameters.AddWithValue("@wbsNumber", wbsNumber);
@@ -156,7 +168,6 @@ namespace CUITAdmin
 
             myConnection.Close();
         }
-
 
         public void AddPerson(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email) {
 
@@ -196,7 +207,74 @@ namespace CUITAdmin
             myConnection.Close();
         }
 
+        public DataTable GetAccounts()
+        {
+            SqlConnection myConnection = DBConnect();
+            string myCommand = "SELECT Account_Number, Name, Max_Charge_Limit, Balance, First_Name, Last_Name FROM Account acct left outer join Point_of_Contact poc on acct.PointOfContactID = poc.PersonID left outer join Person psn on poc.PersonID = psn.PersonID";
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
 
+            DataTable table = new DataTable();
+            dataAdapter.Fill(table);
+
+            myConnection.Close();
+            return table;
+        }
+
+        public DataTable GetInstruments()
+        {
+            SqlConnection myConnection = DBConnect();
+            string myCommand = "SELECT Name, Billing_Unit, Time_Increment FROM Instrument";
+
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
+
+            DataTable table = new DataTable();
+            dataAdapter.Fill(table);
+
+            myConnection.Close();
+            return table;
+        }
+
+        public DataTable GetSupplies()
+        {
+            SqlConnection myConnection = DBConnect();
+            string myCommand = "SELECT * FROM Supply";
+
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
+
+            DataTable table = new DataTable();
+            dataAdapter.Fill(table);
+
+            myConnection.Close();
+            return table;
+        }
+
+        public DataTable GetUsers()
+        {
+            SqlConnection myConnection = DBConnect();
+            string myCommand = "SELECT First_Name, Last_Name, Username, Department FROM Users usr left outer join Person psn on usr.PersonID = psn.PersonID";
+
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
+
+            DataTable table = new DataTable();
+            dataAdapter.Fill(table);
+
+            myConnection.Close();
+            return table;
+        }
+
+        public DataTable GetContacts()
+        {
+            SqlConnection myConnection = DBConnect();
+            string myCommand = "SELECT First_Name, Last_Name, psn.PersonID, Email FROM Point_of_Contact poc left outer join Person psn on poc.PersonID = psn.PersonID";
+
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
+
+            DataTable table = new DataTable();
+            dataAdapter.Fill(table);
+
+            myConnection.Close();
+            return table;
+        }
 
         public List<string> GetUserAccountNumbers(string username) {
             SqlDataReader myReader = null;
@@ -224,7 +302,7 @@ namespace CUITAdmin
             return userAccounts;
         }
 
-        public BindingList<Data> GetInstruments() {
+        public BindingList<Data> GetInstrumentsData() {
             SqlDataReader myReader = null;
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand("SELECT * FROM Instrument",myConnection);
@@ -252,8 +330,9 @@ namespace CUITAdmin
 
             myConnection.Close();
             return instruments;
-
         }
+
+        
 
     }
 }

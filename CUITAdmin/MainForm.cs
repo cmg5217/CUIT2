@@ -62,6 +62,11 @@ namespace CUITAdmin
             cboAccountAdminView.SelectedItem = "Accounts";
             DataGridViewCell editCell = dgvTimeLogRequests.Rows[0].Cells[6];
             editCell.Value = "test";
+            //dgvTimeLogRequests.DataSource = ds;
+            //cboAccountAdminView.SelectedValue = "Accounts";
+            
+            // Resize the DataGridView columns to fit the newly loaded content.
+            dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader);
 
             //loads the path for the invoice export from app.config
             textBox2.Text = Settings.Default["InvoicePath"].ToString();
@@ -128,6 +133,36 @@ namespace CUITAdmin
                 }
             };
 
+        }
+
+        private void adminEditViewLoad(object sender, EventArgs e)
+        {
+
+            /*Accounts
+            Contacts
+            Users
+            Instruments
+            Supplies*/
+            if (cboAccountAdminView.SelectedItem == "Accounts")
+            {
+                dataGridView1.DataSource = dbManager.GetAccounts();
+            }
+            else if (cboAccountAdminView.SelectedItem == "Contacts")
+            {
+                dataGridView1.DataSource = dbManager.GetContacts();
+            }
+            else if (cboAccountAdminView.SelectedItem == "Users")
+            {
+                dataGridView1.DataSource = dbManager.GetUsers();
+            }
+            else if (cboAccountAdminView.SelectedItem == "Instruments")
+            {
+                dataGridView1.DataSource = dbManager.GetInstruments();
+            }
+            else if (cboAccountAdminView.SelectedItem == "Supplies")
+            {
+                dataGridView1.DataSource = dbManager.GetSupplies();
+            }
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -217,14 +252,14 @@ namespace CUITAdmin
                 //code for populating the funding source combobox
                 BindingList<Data> comboItems = new BindingList<Data>();
                 if (!xmlManager.GetUserAccounts(txtManualTimeUsername.Text, out comboItems)) {
-                    MessageBox.Show("Eat a sack of Dicks, you have no accounts");
+                    MessageBox.Show("There are no accounts tied to this username.");
                     return;
                 }
                 cboManualTimeAccount.DataSource = comboItems;
                 cboManualTimeAccount.DisplayMember = "Name";
                 cboManualTimeAccount.ValueMember = "Value";
 
-                BindingList<Data> comboInstruments = dbManager.GetInstruments();
+                BindingList<Data> comboInstruments = dbManager.GetInstrumentsData();
                 cboManualTimeInstrument.DataSource = comboInstruments;
                 cboManualTimeInstrument.DisplayMember = "Name";
                 cboManualTimeInstrument.ValueMember = "Value";
@@ -296,12 +331,14 @@ namespace CUITAdmin
                 //code for populating the funding source combobox
                 BindingList<Data> comboItems = new BindingList<Data>();
                 if (!xmlManager.GetUserAccounts(txtManualSupplyUsername.Text, out comboItems)) {
-                    MessageBox.Show("Eat a sack of Dicks, you have no accounts");
+                    MessageBox.Show("There are no accounts tied to this username.");
                     return;
                 }
                 cboManualSupplyAccount.DataSource = comboItems;
                 cboManualSupplyAccount.DisplayMember = "Name";
                 cboManualSupplyAccount.ValueMember = "Value";
+
+
 
                 label12.Visible = true;
                 supplyValid = true;

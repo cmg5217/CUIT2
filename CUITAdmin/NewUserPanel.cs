@@ -40,9 +40,11 @@ namespace CUITAdmin
         Label lblPassword = new Label();
         Label lblUsername = new Label();
         NewEntryForm containingForm;
+        DBManager dbManager;
         
         public NewUserPanel(NewEntryForm pForm)
         {
+            dbManager = DBManager.Instance;
             containingForm = pForm;
             pForm.Controls.Add(this);
             this.Location = new Point(10, 10);
@@ -116,6 +118,7 @@ namespace CUITAdmin
             this.cboContacts.Name = "cboContacts";
             this.cboContacts.Size = new System.Drawing.Size(134, 21);
             this.cboContacts.TabIndex = 21;
+            this.cboContacts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             // 
             // rtbNotes
             // 
@@ -150,7 +153,8 @@ namespace CUITAdmin
             {
                 cboState.Items.Add(s);
             }
-            cboState.SelectedItem = "Pennsylvania";
+            this.cboState.SelectedItem = "Pennsylvania";
+            this.cboState.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             // 
             // txtCity
             // 
@@ -328,6 +332,23 @@ namespace CUITAdmin
 
         private void btnSubmit_Click(object sender, EventArgs e)
         {
+            if (errorCheck())
+                MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
+            else
+            {
+                cboContacts.Items.Add(1);
+                cboContacts.SelectedItem = 1;
+
+                dbManager.AddNewUser(txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text, 
+                    cboState.SelectedItem.ToString(), txtZipCode.Text, txtPhone.Text, txtEmail.Text, txtUsername.Text, 
+                    txtPassword.Text, txtDepartment.Text, "U", rtbNotes.Text, (int)cboContacts.SelectedValue);
+
+                containingForm.Close();
+            }
+        }
+
+        private bool errorCheck()
+        {
             txtPhone.BackColor = System.Drawing.Color.White;
             txtZipCode.BackColor = System.Drawing.Color.White;
             txtCity.BackColor = System.Drawing.Color.White;
@@ -338,10 +359,10 @@ namespace CUITAdmin
             txtFirstName.BackColor = System.Drawing.Color.White;
             txtPassword.BackColor = System.Drawing.Color.White;
             txtUsername.BackColor = System.Drawing.Color.White;
-            
+
             bool error = false;
             string phonePattern = "^\\D?(\\d{3})\\D?\\D?(\\d{3})\\D?(\\d{4})$";
-            if(!System.Text.RegularExpressions.Regex.IsMatch(txtPhone.Text, phonePattern))
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtPhone.Text, phonePattern))
             {
                 txtPhone.BackColor = System.Drawing.Color.Red;
                 error = true;
@@ -410,28 +431,7 @@ namespace CUITAdmin
                 error = true;
             }
 
-            if (error == true)
-                MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
-            else
-            {
-                //this is for testing and will be deleted and changed
-                MessageBox.Show("There were no errors. Form submitted.");
-                containingForm.Close();
-            }
-
-            // regular expressions example
-            /* ^\s*\+?\s*([0-9][\s-]*){9,}$
-              ^         # Start of the string
-              \s*       # Ignore leading whitespace
-              \+?       # An optional plus
-              \s*       # followed by an optional space or multiple spaces
-              (
-                 [0-9]  # A digit
-                 [\s-]* # followed by an optional space or dash or more than one of those
-              )
-               {9,}     # That appears nine or more times
-            $           # End of the string*/
- 
+            return error;
         }
 
         private void btnNewContact_Click(object sender, EventArgs e)

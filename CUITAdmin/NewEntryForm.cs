@@ -15,7 +15,9 @@ namespace CUITAdmin
         public NewEntryForm(string addNewCase)
         {
             InitializeComponent();
- 
+
+            DBManager dbManager = DBManager.Instance;
+
             switch (addNewCase)
             {
                 case "Account":
@@ -49,11 +51,6 @@ namespace CUITAdmin
                     break;
             }
             
-        }
-
-        private void NewEntryForm_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }

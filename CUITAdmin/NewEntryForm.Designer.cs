@@ -39,7 +39,6 @@
             this.ClientSize = new System.Drawing.Size(614, 499);
             this.Name = "NewEntryForm";
             this.Text = "New Entry Form";
-            this.Load += new System.EventHandler(this.NewEntryForm_Load);
             this.ResumeLayout(false);
 
         }

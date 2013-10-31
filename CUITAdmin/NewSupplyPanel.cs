@@ -168,6 +168,17 @@ namespace CUITAdmin
 
         private void btnSubmit_Click(object sender, EventArgs e)
         {
+            if (errorChecked())
+                MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
+            else
+            {
+                MessageBox.Show("There were no errors. Form submitted.");
+                containingForm.Close();
+            }
+        }
+
+        private Boolean errorChecked()
+        {
             txtIndustryRate.BackColor = System.Drawing.Color.White;
             txtExternalRate.BackColor = System.Drawing.Color.White;
             txtInternalRate.BackColor = System.Drawing.Color.White;
@@ -219,13 +230,7 @@ namespace CUITAdmin
                 error = true;
             }
 
-            if (error)
-                MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
-            else
-            {
-                MessageBox.Show("There were no errors. Form submitted.");
-                containingForm.Close();
-            }
+            return error;
         }
     }
 }

@@ -411,14 +411,15 @@
             this.cboAccountAdminView.FormattingEnabled = true;
             this.cboAccountAdminView.Items.AddRange(new object[] {
             "Accounts",
-            "Account Manager",
             "Contacts",
             "Users",
-            "Items"});
+            "Instruments",
+            "Supplies"});
             this.cboAccountAdminView.Location = new System.Drawing.Point(42, 9);
             this.cboAccountAdminView.Name = "cboAccountAdminView";
             this.cboAccountAdminView.Size = new System.Drawing.Size(121, 21);
             this.cboAccountAdminView.TabIndex = 2;
+            this.cboAccountAdminView.SelectedValueChanged += new System.EventHandler(this.adminEditViewLoad);
             // 
             // txtAccountAdminSearch
             // 

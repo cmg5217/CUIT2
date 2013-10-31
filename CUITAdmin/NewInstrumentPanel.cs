@@ -23,9 +23,12 @@ namespace CUITAdmin
         Label lblBillingType = new Label();
         Label lblInstrumentName = new Label();
         NewEntryForm containingForm;
+        DBManager dbManager;
+
 
         public NewInstrumentPanel(NewEntryForm pForm)
         {
+            dbManager = DBManager.Instance;
             containingForm = pForm;
             pForm.Controls.Add(this);
             this.Location = new Point(10, 10);
@@ -105,6 +108,7 @@ namespace CUITAdmin
             cboBillingType.Items.Add("Time");
             cboBillingType.Items.Add("Per Use");
             cboBillingType.SelectedItem = "Time";
+            this.cboBillingType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             // 
             // txtInstrumentName
             // 
@@ -170,6 +174,17 @@ namespace CUITAdmin
 
         private void btnSubmit_Click(object sender, EventArgs e)
         {
+            if (errorChecked())
+                MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
+            else
+            {
+                //dbManager.AddInstrument(blahblahblah);
+                containingForm.Close();
+            }
+        }
+
+        private Boolean errorChecked()
+        {
             txtIndustry.BackColor = System.Drawing.Color.White;
             txtExternalAcademic.BackColor = System.Drawing.Color.White;
             txtInternalAcademic.BackColor = System.Drawing.Color.White;
@@ -214,13 +229,7 @@ namespace CUITAdmin
                 error = true;
             }
 
-            if (error)
-                MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
-            else
-            {
-                MessageBox.Show("There were no errors. Form submitted.");
-                containingForm.Close();
-            }
+            return error;
         }
     }
 }
