@@ -39,13 +39,21 @@ using System.Diagnostics;namespace CUITAdmin {
             return theConnection;
         }
 
+        public void AddTemplate() {
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand("", myConnection);
 
-        public void AddNewUser(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email, 
+
+
+            myConnection.Close();
+        }
+
+        public void AddUser(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email, 
             string username, string password, string department, string type, string notes, string contactID) 
         {
 
             string personID;
-            AddPerson(firstName, lastName, street, city, state, zip, phoneNumber, email, out personID);
+            AddPerson(firstName, lastName, street, city, state, zip, phoneNumber, email, true, false, out personID);
 
 
             SqlConnection myConnection = DBConnect();
@@ -71,13 +79,34 @@ using System.Diagnostics;namespace CUITAdmin {
 
         }
 
+
+        public void AddUserAccount(int personID, string accountNumber) {
+
+
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand("INSERT INTO User_Account (PersonID, Account_Number) " +
+                                                  "VALUES (@personID, @accountNumber)",myConnection);
+
+            myCommand.Parameters.AddWithValue("@personID", personID);
+            myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
+
+            try {
+                myCommand.ExecuteNonQuery();
+            } catch (Exception e) {
+                Debug.WriteLine(e.Message);
+            }
+
+            myConnection.Close();
+        }
+
+
         public void AddPointOfContact(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email, string notes) {
             string throwaway;
             AddPointOfContact(firstName, lastName, street, city, state, zip, phoneNumber, email, notes, out throwaway);
         }
         public void AddPointOfContact(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email, string notes, out string personID) {
             string newPersonID;
-            AddPerson(firstName, lastName, street, city, state, zip, phoneNumber, email, out newPersonID);
+            AddPerson(firstName, lastName, street, city, state, zip, phoneNumber, email, false, true, out newPersonID);
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand("INSERT INTO Point_of_Contact (PersonID, Notes) " +
                                                   "VALUES (@personID, @notes)",
@@ -97,13 +126,13 @@ using System.Diagnostics;namespace CUITAdmin {
         }
 
 
-        public void AddAccount(string accountNumber, string name, string maxChargeLimit, string accountExpiration, 
+        public void AddAccount(string accountNumber, string name, string maxChargeLimit, DateTime accountExpiration, 
                 string rateType, string managerID, string notes, string costCenter, string wbsNumber, string balance) 
         {
             SqlConnection myConnection = DBConnect();
 
             SqlCommand myCommand = new SqlCommand("INSERT into Account " +
-            "(Account_Number, Name, Max_Charge_Limit, Account_Expiration, Rate_Type, ManagerID, Notes, Cost_Center, " +
+            "(Account_Number, Name, Max_Charge_Limit, Account_Expiration, Rate_Type, PointOfContactID, Notes, Cost_Center, " +
             "WBS_Number, Balance) " +
 
             "VALUES (@accountNumber, @name, @maxChargeLimit, @accountExpiration, @rateType, @managerID, " +
@@ -113,7 +142,7 @@ using System.Diagnostics;namespace CUITAdmin {
             myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
             myCommand.Parameters.AddWithValue("@name", name);
             myCommand.Parameters.AddWithValue("@maxChargeLimit", maxChargeLimit);
-            myCommand.Parameters.AddWithValue("@accountExpiration", DateTime.Now);
+            myCommand.Parameters.AddWithValue("@accountExpiration", accountExpiration);
             myCommand.Parameters.AddWithValue("@rateType", rateType);
             myCommand.Parameters.AddWithValue("@managerID", managerID);
             myCommand.Parameters.AddWithValue("@notes", notes);
@@ -130,31 +159,23 @@ using System.Diagnostics;namespace CUITAdmin {
 
         }
 
-        public void GetUser(string username) {
-            SqlConnection myConnection = DBConnect();
-
-            SqlCommand myCommand = new SqlCommand("SELECT Password FROM Users" +
-                                                  "WHERE Username = @username", myConnection);
-
-            myCommand.Parameters.AddWithValue("@username", username);
 
 
 
-            myConnection.Close();
-        }
-
-
-        public void AddPerson(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email) {
+        public void AddPerson(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email, bool isUser, bool isPointOfContact) {
             string throwaway;
-            AddPerson(firstName, lastName, street, city, state, zip, phoneNumber, email, out throwaway);
+            AddPerson(firstName, lastName, street, city, state, zip, phoneNumber, email, isUser, isPointOfContact, out throwaway);
         }
+        public void AddPerson(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email, bool isUser, bool isPointOfContact, out string personID) {
 
-        public void AddPerson(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email, out string personID) {
+            string personColumn = (isUser) ? ", IsUser" : ", IsPoint_of_Contact";
+            string personParameter = (isUser) ? "@isUser" : "@isPointOfContact";
+            
             SqlConnection myConnection = DBConnect();
 
             SqlCommand myCommand = new SqlCommand(
-                "INSERT INTO Person (First_Name, Last_Name, Street, City, State, Zip, Phone_Number, Email)" +
-                "VALUES (@firstName, @lastName, @street, @city, @state, @zip, @phoneNumber, @email)" +
+                "INSERT INTO Person (First_Name, Last_Name, Street, City, State, Zip, Phone_Number, Email" + personColumn + ")" +
+                "VALUES (@firstName, @lastName, @street, @city, @state, @zip, @phoneNumber, @email, " + personParameter + ")" +
                 "SELECT SCOPE_IDENTITY() As TheId",
                 myConnection);
 
@@ -168,6 +189,8 @@ using System.Diagnostics;namespace CUITAdmin {
             myCommand.Parameters.AddWithValue("@zip", zip);
             myCommand.Parameters.AddWithValue("@phoneNumber", phoneNumber);
             myCommand.Parameters.AddWithValue("@email", email);
+
+            myCommand.Parameters.AddWithValue(personParameter, 1);
 
 
             string newID = "";
@@ -183,7 +206,49 @@ using System.Diagnostics;namespace CUITAdmin {
             myConnection.Close();
         }
 
-        public void AddTimeLog(string accountNumber, string userID, string approved, string startTime, string endTime, string currentRate, string instrumentID) {
+        
+
+        public void AddSupply(string supplyName, int cost, string unit) {
+                        SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand("INSERT INTO Supply(Supply_Name, Cost, Unit)" + 
+                "VALUES(@supplyName, @cost, @unit)", myConnection);
+
+            myCommand.Parameters.AddWithValue("@supplyName", supplyName);
+            myCommand.Parameters.AddWithValue("@cost", cost);
+            myCommand.Parameters.AddWithValue("@unit", unit);
+
+            try {
+                myCommand.ExecuteNonQuery();
+            } catch (Exception e) {
+                Debug.WriteLine(e.Message);
+            }
+
+            myConnection.Close();
+        }
+        
+        public void AddSupplyUse(string accountNumber, string supplyName, DateTime date, int quantity){
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand();
+            myCommand.Connection = myConnection;
+            myCommand.CommandText = "insertSupplyUse";
+            myCommand.CommandType = System.Data.CommandType.StoredProcedure;
+            myCommand.Parameters.AddWithValue( "@AccountNumber", accountNumber);
+            myCommand.Parameters.AddWithValue( "@Supply_Name", supplyName);
+            myCommand.Parameters.AddWithValue( "@Date", date);
+            myCommand.Parameters.AddWithValue( "@Quantity", quantity);
+
+            try {
+                myCommand.ExecuteNonQuery();
+            } catch (Exception e) {
+                Debug.WriteLine(e.Message);
+            }
+
+            myConnection.Close();
+        }
+
+
+
+        public void AddTimeLog(string accountNumber, string userID, char approved, DateTime startTime, DateTime endTime, int currentRate, string instrumentID) {
             SqlConnection myConnection = DBConnect();
 
             SqlCommand myCommand = new SqlCommand(
@@ -209,7 +274,79 @@ using System.Diagnostics;namespace CUITAdmin {
 
 
 
-        public void AddInstrument(string name, string billingUnit, string timeIncrement) {
+        public void AddInvoice(DateTime dateGenerated, DateTime postingStartDate, DateTime postingEndDate, string accountNumber, int totalBalance) {
+            int throwaway;
+             AddInvoice(dateGenerated, postingStartDate,  postingEndDate,  accountNumber,  totalBalance, out throwaway);
+        }
+
+        public void AddInvoice(DateTime dateGenerated, DateTime postingStartDate, DateTime postingEndDate, string accountNumber, int totalBalance, out int invoiceID) {
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand("INSERT INTO Invoice (Posting_Start_Date, Account_Number, Total_Balance, Posting_End_Date, Date_Generated) " +
+                "VALUES(@postingStartDate, @accountNumber, @totalBalance, @postingEndDate, @dateGenerated)" +
+                "SELECT SCOPE_IDENTITY() As TheId", myConnection);
+
+            myCommand.Parameters.AddWithValue("@postingStartDate", postingStartDate);
+            myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
+            myCommand.Parameters.AddWithValue("@totalBalance", totalBalance);
+            myCommand.Parameters.AddWithValue("@postingEndDate", postingEndDate);
+            myCommand.Parameters.AddWithValue("@dateGenerated", dateGenerated);
+
+
+            int newID = 0;
+            try {
+                newID = int.Parse(myCommand.ExecuteScalar().ToString());
+                Debug.WriteLine("Insert ID: " + newID);
+            } catch (Exception e) {
+                Debug.WriteLine(e.Message);
+            }
+                
+            invoiceID = newID;
+
+            myConnection.Close();
+        }
+        
+        // TO-DO Test
+        public void AddInvoiceSupplyLine(string supplyName, int lineAmount, int invoiceID) {
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand("INSERT INTO Invoice_Supply_Line (Supply_Name, Line_Amount, InvoiceID)" + 
+                "VALUES (@supplyName, @lineAmount, @invoiceID)", myConnection);
+
+            myCommand.Parameters.AddWithValue("@supplyName", supplyName);
+            myCommand.Parameters.AddWithValue("@lineAmount", lineAmount);
+            myCommand.Parameters.AddWithValue("@invoiceID", invoiceID);
+
+            try {
+                myCommand.ExecuteNonQuery();
+            } catch (Exception e) {
+                Debug.WriteLine(e.Message);
+            }
+
+            myConnection.Close();
+        }
+        
+        // TO-DO test
+        public void AddInvoiceTimeLine(string instrumentID, int hours, int lineAmount, int invoiceID) {
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand("INSERT INTO Invoice_Time_Line(InstrumentID, Hours, Line_Amount, InvoiceID) " + 
+                "VALUES(@InstrumentID, @hours, @lineAmount, @invoiceID)", myConnection);
+
+            myCommand.Parameters.AddWithValue("@instrumentID", instrumentID);
+            myCommand.Parameters.AddWithValue("@hours", hours);
+            myCommand.Parameters.AddWithValue("@lineAmount", lineAmount);
+            myCommand.Parameters.AddWithValue("invoiceID", invoiceID);
+
+            try {
+                myCommand.ExecuteNonQuery();
+            } catch (Exception e) {
+                Debug.WriteLine(e.Message);
+            }
+
+            myConnection.Close();
+        }
+        
+
+
+        public void AddInstrument(string name, string billingUnit, int timeIncrement) {
             SqlConnection myConnection = DBConnect();
 
             SqlCommand myCommand = new SqlCommand(
@@ -229,7 +366,7 @@ using System.Diagnostics;namespace CUITAdmin {
             myConnection.Close();
         }
 
-        public void AddInstrumentRate(string rateName, string rate, string instrumentID) {
+        public void AddInstrumentRate(string rateName, int rate, int instrumentID) {
 
             SqlConnection myConnection = DBConnect();
 
@@ -249,6 +386,22 @@ using System.Diagnostics;namespace CUITAdmin {
             }
             myConnection.Close();
         }
+
+
+
+        public void GetUser(string username) {
+            SqlConnection myConnection = DBConnect();
+
+            SqlCommand myCommand = new SqlCommand("SELECT Password FROM Users" +
+                                                  "WHERE Username = @username", myConnection);
+
+            myCommand.Parameters.AddWithValue("@username", username);
+
+
+
+            myConnection.Close();
+        }
+
 
         public List<string> GetUserAccountNumbers(string username) {
             SqlDataReader myReader = null;
