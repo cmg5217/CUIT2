@@ -76,7 +76,7 @@ namespace CUITAdmin
         }
 
 
-        public void AddUserAccount(int personID, int accountNumber) {
+        public void AddUserAccount(int personID, string accountNumber) {
 
 
             SqlConnection myConnection = DBConnect();
@@ -125,7 +125,7 @@ namespace CUITAdmin
         }
 
 
-        public void AddAccount(int accountNumber, string name, int maxChargeLimit, DateTime accountExpiration, 
+        public void AddAccount(string accountNumber, string name, int maxChargeLimit, DateTime accountExpiration, 
                 string rateType, int managerID, string notes, string costCenter, string wbsNumber, int balance) 
         {
             SqlConnection myConnection = DBConnect();
@@ -464,10 +464,27 @@ namespace CUITAdmin
             return table;
         }
 
+        public DataTable GetUserAccounts(string username) {
+            SqlConnection myConnection = DBConnect();
+
+            SqlCommand myCommand = new SqlCommand("SELECT ua.Account_Number, a.Name FROM User_Account ua INNER JOIN Users u on ua.PersonID = u.PersonID INNER JOIN Account a on ua.Account_Number = a.Account_Number WHERE Username = @username", myConnection);
+            
+            myCommand.Parameters.AddWithValue("@username", username);
+
+
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+
+            DataTable table = new DataTable();
+            dataAdapter.Fill(table);
+
+            myConnection.Close();
+            return table;
+        }
+
         public List<string> GetUserAccountNumbers(string username) {
             SqlDataReader myReader = null;
             SqlConnection myConnection = DBConnect();
-            SqlCommand myCommand = new SqlCommand("SELECT * FROM [CUIT].[dbo].[Users] u left outer join CUIT.dbo.User_Account ua on u.PersonID = ua.PersonID where u.Username = @username", myConnection);
+            SqlCommand myCommand = new SqlCommand("SELECT * FROM User_Account ua INNER JOIN Users u on ua.PersonID = u.PersonID WHERE Username = @username", myConnection);
 
             myCommand.Parameters.AddWithValue("@username", username);
 
