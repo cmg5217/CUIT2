@@ -25,9 +25,15 @@ namespace CUITAdmin {
             DBManager mymanager = DBManager.Instance;
             Random rand = new Random();
 
+            //mymanager.SendDataTable();
 
-            DataTable testTabel = mymanager.GetUserAccounts("cmg5217");
-            testTabel.Columns
+            //MessageBox.Show(DateTime.Now.ToString());
+
+
+            mymanager.GenerateInvoice("1", DateTime.Now.AddDays(-15), DateTime.Now);
+
+            //DataTable testTable = mymanager.GetUserAccounts("cmg5217");
+            
 
             /*
             DateTime currentTime = new DateTime();
@@ -60,11 +66,12 @@ namespace CUITAdmin {
 
             MessageBox.Show(message);
 
-            Debug.WriteLine("Line" + (++count));
-            mymanager.AddTimeLog("1", "63", 'Y', DateTime.Now, DateTime.Now, 50, "1");
-            Debug.WriteLine("Line" + (++count));
-            mymanager.AddSupplyUse("12345", "TestSupply", DateTime.Now, 30);
-            Debug.WriteLine("Line" + (++count));
+            Debug.WriteLine("Line" + (++count)); */
+            //mymanager.AddTimeLog("1", "63", 'Y', DateTime.Now, DateTime.Now.AddHours(rand.Next(2,10)), 50, "1"); 
+            /*
+            Debug.WriteLine("Line" + (++count));*/
+            //mymanager.AddSupplyUse("1", "TestSupply", DateTime.Now, 20);
+           /* Debug.WriteLine("Line" + (++count));
             mymanager.AddSupply("testsupply" + DateTime.Now.ToString(), 100, "gm");
 
             int invoiceID;
