@@ -168,7 +168,7 @@ namespace CUITAdmin
             txtBalance.BackColor = System.Drawing.Color.White;
 
             bool error = false;
-            string namePattern = "^[A-Za-z\\s-\\.]+$";
+            string namePattern = "^[A-Za-z0-9\\s-\\.]+$";
             if (!System.Text.RegularExpressions.Regex.IsMatch(txtAccountName.Text, namePattern))
             {
                 txtAccountName.BackColor = System.Drawing.Color.Red;
