@@ -103,6 +103,7 @@
     <Compile Include="NewUserPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="PasswordHash.cs" />
     <Compile Include="PDFManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
