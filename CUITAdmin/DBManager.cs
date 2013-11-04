@@ -48,26 +48,30 @@ namespace CUITAdmin
             return myConnection;
         }
 
+        #region Add Functions
 
+        // TESTED 11-4
         public void AddUser(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email,
             string username, string password, string department, string type, string notes, int contactID) {
 
-            string personID;
-            AddPerson(firstName, lastName, street, city, state, zip, phoneNumber, email, true, false, out personID);
-
-
             SqlConnection myConnection = DBConnect();
-            SqlCommand myCommand = new SqlCommand("INSERT INTO Users (PersonID, Username, Password, Department, Type, Notes, ContactID) " +
-                                                  "VALUES (@personID, @username, @password, @department, @type, @notes, @contactID)",
-                                                  myConnection);
+            SqlCommand myCommand = new SqlCommand();
+            myCommand.Connection = myConnection;
+            myCommand.CommandText = "insertUser";
+            myCommand.CommandType = System.Data.CommandType.StoredProcedure;
 
-
-
-            myCommand.Parameters.AddWithValue("@personID", personID);
-            myCommand.Parameters.AddWithValue("@username", username);
+            myCommand.Parameters.AddWithValue("@firstName", firstName);
+            myCommand.Parameters.AddWithValue("@lastName", lastName);
+            myCommand.Parameters.AddWithValue("@street", street);
+            myCommand.Parameters.AddWithValue("@city", city);
+            myCommand.Parameters.AddWithValue("@state", state);
+            myCommand.Parameters.AddWithValue("@zip", zip);
+            myCommand.Parameters.AddWithValue("@phoneNumber", phoneNumber);
+            myCommand.Parameters.AddWithValue("@email", email);
+            myCommand.Parameters.AddWithValue("@userName", username);
             myCommand.Parameters.AddWithValue("@password", password);
             myCommand.Parameters.AddWithValue("@department", department);
-            myCommand.Parameters.AddWithValue("@type", type.ToCharArray()[0]);
+            myCommand.Parameters.AddWithValue("@type", type);
             myCommand.Parameters.AddWithValue("@notes", notes);
             myCommand.Parameters.AddWithValue("@contactID", contactID);
 
@@ -78,10 +82,9 @@ namespace CUITAdmin
             }
 
             myConnection.Close();
-
         }
 
-
+        // TESTED 11-4
         public void AddUserAccount(int personID, string accountNumber) {
 
 
@@ -109,14 +112,21 @@ namespace CUITAdmin
             AddPointOfContact(firstName, lastName, street, city, state, zip, phoneNumber, email, notes, out throwaway);
         }
         public void AddPointOfContact(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email, string notes, out string personID) {
-            string newPersonID;
-            AddPerson(firstName, lastName, street, city, state, zip, phoneNumber, email, false, true, out newPersonID);
-            SqlConnection myConnection = DBConnect();
-            SqlCommand myCommand = new SqlCommand("INSERT INTO Point_of_Contact (PersonID, Notes) " +
-                                                  "VALUES (@personID, @notes)",
-                                                  myConnection);
 
-            myCommand.Parameters.AddWithValue("@personID", newPersonID);
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand();
+            myCommand.Connection = myConnection;
+            myCommand.CommandText = "insertPointOfContact";
+            myCommand.CommandType = System.Data.CommandType.StoredProcedure;
+
+            myCommand.Parameters.AddWithValue("@firstName", firstName);
+            myCommand.Parameters.AddWithValue("@lastName", lastName);
+            myCommand.Parameters.AddWithValue("@street", street);
+            myCommand.Parameters.AddWithValue("@city", city);
+            myCommand.Parameters.AddWithValue("@state", state);
+            myCommand.Parameters.AddWithValue("@zip", zip);
+            myCommand.Parameters.AddWithValue("@phoneNumber", phoneNumber);
+            myCommand.Parameters.AddWithValue("@email", email);
             myCommand.Parameters.AddWithValue("@notes", notes);
 
             try {
@@ -124,13 +134,11 @@ namespace CUITAdmin
             } catch (Exception e) {
                 Debug.WriteLine(e.Message);
             }
-
-            personID = newPersonID;
-
+            personID = "";
             myConnection.Close();
         }
 
-
+        // TESTED 11-4
         public void AddAccount(string accountNumber, string name, int maxChargeLimit, DateTime accountExpiration,
                 string rateType, int managerID, string notes, string costCenter, string wbsNumber, int balance) {
             SqlConnection myConnection = DBConnect();
@@ -163,11 +171,12 @@ namespace CUITAdmin
 
         }
 
-        public void AddPerson(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email, bool isUser, bool isPointOfContact) {
+        // TESTED 11-4
+        public void AddPerson(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email, string notes, bool isUser, bool isPointOfContact) {
             string throwaway;
-            AddPerson(firstName, lastName, street, city, state, zip, phoneNumber, email, isUser, isPointOfContact, out throwaway);
+            AddPerson(firstName, lastName, street, city, state, zip, phoneNumber, email, notes, isUser, isPointOfContact, out throwaway);
         }
-        public void AddPerson(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email, bool isUser, bool isPointOfContact, out string personID) {
+        public void AddPerson(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email, string notes, bool isUser, bool isPointOfContact, out string personID) {
 
             string personColumn = (isUser) ? ", IsUser" : ", IsPoint_of_Contact";
             string personParameter = (isUser) ? "@isUser" : "@isPointOfContact";
@@ -175,8 +184,8 @@ namespace CUITAdmin
             SqlConnection myConnection = DBConnect();
 
             SqlCommand myCommand = new SqlCommand(
-                "INSERT INTO Person (First_Name, Last_Name, Street, City, State, Zip, Phone_Number, Email" + personColumn + ")" +
-                "VALUES (@firstName, @lastName, @street, @city, @state, @zip, @phoneNumber, @email, " + personParameter + ")" +
+                "INSERT INTO Person (First_Name, Last_Name, Street, City, State, Zip, Phone_Number, Email, Notes" + personColumn + ")" +
+                "VALUES (@firstName, @lastName, @street, @city, @state, @zip, @phoneNumber, @email, @notes " + personParameter + ")" +
                 "SELECT SCOPE_IDENTITY() As TheId",
                 myConnection);
 
@@ -190,6 +199,7 @@ namespace CUITAdmin
             myCommand.Parameters.AddWithValue("@zip", zip);
             myCommand.Parameters.AddWithValue("@phoneNumber", phoneNumber);
             myCommand.Parameters.AddWithValue("@email", email);
+            myCommand.Parameters.AddWithValue("@notes", notes);
 
             myCommand.Parameters.AddWithValue(personParameter, 1);
 
@@ -247,20 +257,21 @@ namespace CUITAdmin
         }
 
 
+        private void AddTimeLog(string accountNumber, string userID, char approved, int currentRate, string instrumentID, DateTime startTime) {
+            AddTimeLog(accountNumber, userID, approved, currentRate, instrumentID, startTime, DateTime.Now, true);
+        }
 
-        public void AddTimeLog(string accountNumber, string userID, char approved, DateTime startTime, DateTime endTime, int currentRate, string instrumentID) {
+        private void AddTimeLog(string accountNumber, string userID, char approved, int currentRate, string instrumentID, DateTime startTime, DateTime endTime, bool partialLog = false) {
             SqlConnection myConnection = DBConnect();
-
-            SqlCommand myCommand = new SqlCommand(
-                "INSERT INTO Time_Log (Account_Number, UserID, Approved, Start_Time, End_Time, Current_Rate, InstrumentID)" +
-                "VALUES (@accountNumber, @userID, @approved, @startTime, @endTime, @currentRate, @instrumentID)",
-                myConnection);
-
+            SqlCommand myCommand = new SqlCommand();
+            myCommand.Connection = myConnection;
+            myCommand.CommandText = "insertSupplyUse";
+            myCommand.CommandType = System.Data.CommandType.StoredProcedure;
             myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
             myCommand.Parameters.AddWithValue("@userID", userID);
             myCommand.Parameters.AddWithValue("@approved", approved);
             myCommand.Parameters.AddWithValue("@startTime", startTime);
-            myCommand.Parameters.AddWithValue("@endTime", endTime);
+            if (partialLog) myCommand.Parameters.AddWithValue("@endTime", endTime);
             myCommand.Parameters.AddWithValue("@currentRate", currentRate);
             myCommand.Parameters.AddWithValue("@instrumentID", instrumentID);
 
@@ -269,6 +280,7 @@ namespace CUITAdmin
             } catch (Exception e) {
                 Debug.WriteLine(e.Message);
             }
+
             myConnection.Close();
         }
 
@@ -345,6 +357,21 @@ namespace CUITAdmin
         }
 
 
+        public void AddRateType(string name) {
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand("INSERT INTO Rate_Type(Name) " +
+                "VALUES(@name)", myConnection);
+
+            myCommand.Parameters.AddWithValue("@name", name);
+
+            try {
+                myCommand.ExecuteNonQuery();
+            } catch (Exception e) {
+                Debug.WriteLine(e.Message);
+            }
+
+            myConnection.Close();
+        }
 
         public void AddInstrument(string name, string billingUnit, int timeIncrement) {
             SqlConnection myConnection = DBConnect();
@@ -387,21 +414,69 @@ namespace CUITAdmin
             myConnection.Close();
         }
 
-        public void GetUser(string username) {
+        #endregion //End Add Region
+
+
+        public bool CheckPassword(string username, string password) {
             SqlConnection myConnection = DBConnect();
 
-            SqlCommand myCommand = new SqlCommand("SELECT Password FROM Users" +
+            SqlCommand myCommand = new SqlCommand(
+                "SELECT COUNT(Username) FROM Users " +
+                "WHERE Username = @username AND Password = @password", myConnection);
+
+            myCommand.Parameters.AddWithValue("@username", username);
+            myCommand.Parameters.AddWithValue("@password", password);
+            
+            int count = 0;
+
+            try {
+                count = (int) myCommand.ExecuteScalar();
+            } catch (Exception e){
+                Debug.Write(e.ToString());
+            }
+
+            myConnection.Close();
+            return (count == 1);
+        }
+
+
+        #region Get Functions
+        
+        public int GetUserID(string username) {
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand("SELECT PersonID FROM Users" +
                                                   "WHERE Username = @username", myConnection);
 
             myCommand.Parameters.AddWithValue("@username", username);
 
+            int personID = 0;
 
+            try {
+                personID = (int) myCommand.ExecuteScalar();
+            } catch (Exception e) {
+                Debug.Write(e.ToString());
+            }
 
             myConnection.Close();
+            return personID;
         }
 
+        public bool GetServerDateTime(out DateTime serverTime) {
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand("SELECT GETDATE()", myConnection);
 
+            serverTime = DateTime.Now;
+            try {
+                serverTime = (DateTime)myCommand.ExecuteScalar();
+            } catch (Exception e) {
+                Debug.Write(e.ToString());
+                myConnection.Close();
+                return false;
+            }
 
+            myConnection.Close();
+            return true;
+        }
 
         public DataTable GetAccounts() {
             SqlConnection myConnection = DBConnect();
@@ -588,6 +663,10 @@ namespace CUITAdmin
             myConnection.Close();
             return instruments;
         }
+        
+        #endregion End Get Region
+
+
 
         public void GenerateAllInvoices(string accountNumber, DateTime startDate, DateTime endDate) {
 

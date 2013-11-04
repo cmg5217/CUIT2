@@ -252,7 +252,10 @@ namespace CUITAdmin {
                     DateTime.Now.ToString());
             } else {
             // To-Do: Add Query to add partial log with start time
-
+                DateTime currentTime; 
+                if(dbManager.GetServerDateTime(out currentTime)){
+                    //dbManager.AddTimeLog(cboFundingSource.SelectedValue, dbManager.GetUserID(username), 'Y', cboInstrument.SelectedValue, )
+                }
             }
 
             
@@ -269,15 +272,19 @@ namespace CUITAdmin {
         }
 
         private void ValidatePassword() {
+
+            username = txtUsername.Text;
+            password = txtPassword.Text;
+
             bool valid = false;
 
             // ------------------------------------ Standalone Section ---------------------------------------------- //
 
             if (standalone) {
-                valid = xmlManager.CheckPassword(txtUsername.Text, txtPassword.Text);
+                valid = xmlManager.CheckPassword(username, password);
 
             } else { // ------------------------------------ Server Section ----------------------------------------- //
-
+                valid = dbManager.CheckPassword(username, password);
             }
 
             if (logStarted) { // ----------------------------- End Log ----------------------------------------------- //
