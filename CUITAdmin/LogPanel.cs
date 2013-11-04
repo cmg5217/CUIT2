@@ -41,7 +41,6 @@ namespace CUITAdmin {
         private Button btnStartLog = new Button();
         private DateTime logTime = new DateTime();
 
-        private BackgroundWorker verifyPasswordBGW;
 
         private System.Timers.Timer timeElapsed;
         private System.Timers.Timer passwordTimer;     // Timer for when the user pauses while typing in their password
@@ -52,7 +51,9 @@ namespace CUITAdmin {
 
         private LogPanel parentPanel;
         private LogPanel childPanel;
-        XmlManager manager;
+
+        XmlManager xmlManager;
+        DBManager dbManager;
 
         /////////////////////////////////////////// CONSTRUCTORS & DESTRUCTORS /////////////////////////////////////////////////////
         
@@ -66,10 +67,8 @@ namespace CUITAdmin {
             passwordTimer = new System.Timers.Timer(600);
             passwordTimer.Elapsed += new ElapsedEventHandler(pauseTimer_Elapsed);
 
-            manager = XmlManager.Instance;
-
-            verifyPasswordBGW = new BackgroundWorker();
-            verifyPasswordBGW.RunWorkerCompleted += new RunWorkerCompletedEventHandler(verifyPasswordBGW_RunWorkerCompleted);
+            xmlManager = XmlManager.Instance;
+            dbManager = DBManager.Instance;
 
             if (ConfigurationManager.AppSettings["StandaloneMode"] == "true") {
                 standalone = true;
@@ -247,13 +246,16 @@ namespace CUITAdmin {
             if (standalone) {
                 string account = cboFundingSource.SelectedValue.ToString();
                 string instrument = cboInstrument.SelectedItem.ToString();
-                manager.AddPartialLog(txtUsername.Text, 
+                xmlManager.AddPartialLog(txtUsername.Text, 
                     account, 
                     instrument,
                     DateTime.Now.ToString());
             } else {
             // To-Do: Add Query to add partial log with start time
-
+                DateTime currentTime; 
+                if(dbManager.GetServerDateTime(out currentTime)){
+                    //dbManager.AddTimeLog(cboFundingSource.SelectedValue, dbManager.GetUserID(username), 'Y', cboInstrument.SelectedValue, )
+                }
             }
 
             
@@ -270,15 +272,19 @@ namespace CUITAdmin {
         }
 
         private void ValidatePassword() {
+
+            username = txtUsername.Text;
+            password = txtPassword.Text;
+
             bool valid = false;
 
             // ------------------------------------ Standalone Section ---------------------------------------------- //
 
             if (standalone) {
-                valid = manager.CheckPassword(txtUsername.Text, txtPassword.Text);
+                valid = xmlManager.CheckPassword(username, password);
 
             } else { // ------------------------------------ Server Section ----------------------------------------- //
-
+                valid = dbManager.CheckPassword(username, password);
             }
 
             if (logStarted) { // ----------------------------- End Log ----------------------------------------------- //
@@ -360,11 +366,6 @@ namespace CUITAdmin {
         private void pauseTimer_Elapsed(object sender, EventArgs e) {
             this.ValidatePassword();
             //this.verifyPasswordBGW.RunWorkerAsync();
-        }
-
-        // validates password, is started in pauseTimer_Elapsed
-        private void verifyPasswordBGW_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-            this.ValidatePassword();
         }
 
         private void timeElapsed_Elapsed(object sender, EventArgs e) {

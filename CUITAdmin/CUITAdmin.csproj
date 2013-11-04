@@ -65,8 +65,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BillingTab.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="DBManager.cs" />
     <Compile Include="Data.cs" />
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
     <Compile Include="LogPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -78,9 +87,6 @@
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="NewAccountAdminPanel.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="NewEntryForm.cs">
       <SubType>Form</SubType>
@@ -97,7 +103,7 @@
     <Compile Include="NewSupplyPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="NewUserContactPanel.cs">
+    <Compile Include="NewPointOfContactPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="NewUserPanel.cs">
@@ -115,6 +121,9 @@
     </Compile>
     <Compile Include="XmlManager.cs" />
     <Compile Include="XMLTestingClass.cs" />
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LogPanel.resx">
       <DependentUpon>LogPanel.cs</DependentUpon>
     </EmbeddedResource>

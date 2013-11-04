@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace CUITAdmin
 {
-    class NewUserContactPanel : Panel
+    class NewPointOfContactPanel : Panel
     {
         Button btnSubmit = new Button();
         RichTextBox rtbNotes = new RichTextBox();
@@ -30,8 +30,11 @@ namespace CUITAdmin
         Label lblFirstName = new Label();
         NewEntryForm containingForm;
 
-        public NewUserContactPanel(NewEntryForm pForm)
+        DBManager dbManager;
+
+        public NewPointOfContactPanel(NewEntryForm pForm)
         {
+            dbManager = DBManager.Instance;
             containingForm = pForm;
             pForm.Controls.Add(this);
             this.Location = new Point(10, 10);
@@ -198,6 +201,7 @@ namespace CUITAdmin
                 cboState.Items.Add(s);
             }
             cboState.SelectedItem = "Pennsylvania";
+            this.cboState.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 
             // 
             // txtZipCode
@@ -235,6 +239,18 @@ namespace CUITAdmin
         }
 
         private void btnSubmit_Click(object sender, EventArgs e)
+        {
+            if (errorChecked())
+                MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
+            else
+            {
+                dbManager.AddPointOfContact(txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text, 
+                    cboState.SelectedItem.ToString(), txtZipCode.Text, txtPhone.Text, txtEmail.Text, rtbNotes.Text);
+                containingForm.Close();
+            }
+        }
+
+        private Boolean errorChecked()
         {
             txtPhone.BackColor = System.Drawing.Color.White;
             txtZipCode.BackColor = System.Drawing.Color.White;
@@ -295,14 +311,7 @@ namespace CUITAdmin
                 error = true;
             }
 
-            if (error == true)
-                MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
-            else
-            {
-                //this is for testing and will be deleted and changed
-                MessageBox.Show("There were no errors. Form submitted.");
-                containingForm.Close();
-            }
+            return error;
         }
     }
 }

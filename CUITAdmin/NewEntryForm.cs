@@ -15,19 +15,15 @@ namespace CUITAdmin
         public NewEntryForm(string addNewCase)
         {
             InitializeComponent();
- 
+
+            DBManager dbManager = DBManager.Instance;
+
             switch (addNewCase)
             {
                 case "Account":
                     NewAccountPanel myAcctForm = new NewAccountPanel(this);
                     this.SetBounds(350, 350, 680, 300);
                     this.Text = "New Account Form";
-                    break;
-
-                case "Account Manager":
-                    NewAccountAdminPanel myAcctAdminForm = new NewAccountAdminPanel(this);
-                    this.SetBounds(350, 350, 360, 340);
-                    this.Text = "New Manager Form";
                     break;
 
                 case "Instrument":
@@ -48,18 +44,13 @@ namespace CUITAdmin
                     this.Text = "New User Form";
                     break;
 
-                case "User Contact":
-                    NewUserContactPanel myUserContactPanel = new NewUserContactPanel(this);
+                case "Point of Contact":
+                    NewPointOfContactPanel myContactPanel = new NewPointOfContactPanel(this);
                     this.SetBounds(350, 350, 555, 250);
-                    this.Text = "New User Contact Form";
+                    this.Text = "New Contact Form";
                     break;
             }
             
-        }
-
-        private void NewEntryForm_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }

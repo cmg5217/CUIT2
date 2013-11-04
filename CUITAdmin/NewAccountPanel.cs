@@ -14,20 +14,29 @@ namespace CUITAdmin
         TextBox txtAccountNumber = new TextBox();
         TextBox txtMaxCharge = new TextBox();
         ComboBox cboRateType = new ComboBox();
+        ComboBox cboContacts = new ComboBox();
         TextBox txtBalance = new TextBox();
+        TextBox txtCostCenter = new TextBox();
+        TextBox txtWBSNumber = new TextBox();
         Label lblAccountName = new Label();
         Label lblAccountNumber = new Label();
         Label lblMaxCharge = new Label();
         Label lblAccountExpiration = new Label();
+        Label lblContacts = new Label();
         DateTimePicker dtpAccountExpiration = new DateTimePicker();
         Label lblRateType = new Label();
         Label lblBalance = new Label();
         Label lblNotes = new Label();
+        Label lblCostCenter = new Label();
+        Label lblWBSNumber = new Label();
         RichTextBox txtNotes = new RichTextBox();
         Button btnSubmit = new Button();
+        Button btnNewContact = new Button();
+        DBManager dbManager;
 
         public NewAccountPanel(NewEntryForm pForm)
         {
+            dbManager = DBManager.Instance;
             containingForm = pForm;
             pForm.Controls.Add(this);
             this.Location = new Point(10, 10);
@@ -82,6 +91,7 @@ namespace CUITAdmin
             cboRateType.Items.Add("External Academic");
             cboRateType.Items.Add("Industry");
             cboRateType.SelectedIndex = 0;
+            this.cboRateType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 
             //Label lblBalance = new Label();
             lblBalance.Text = "Balance:";
@@ -91,6 +101,16 @@ namespace CUITAdmin
             //TextBox txtBalance = new TextBox();
             txtBalance.SetBounds(110, 160, 200, 20);
             this.Controls.Add(txtBalance);
+
+            //Label lblContacts = new Label();
+            lblContacts.Text = "Contacts:";
+            lblContacts.Location = new Point(10, 190);
+            this.Controls.Add(lblContacts);
+            
+            //ComboBox cboContacts = new ComboBox();
+            cboContacts.SetBounds(110, 190, 200, 20);
+            this.Controls.Add(cboContacts);
+            this.cboContacts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 
             //Label lblNotes = new Label();
             lblNotes.Text = "Notes:";
@@ -107,10 +127,39 @@ namespace CUITAdmin
             this.Controls.Add(btnSubmit);
             btnSubmit.Click += new EventHandler(this.btnSubmit_Click);
 
+            //Button btnNewContact = new Button();
+            btnNewContact.Location = new Point(315,190);
+            btnNewContact.Name = "btnNewContact";
+            btnNewContact.Size = new System.Drawing.Size(24, 21);
+            btnNewContact.Text = "...";
+            System.Windows.Forms.ToolTip tip = new ToolTip();
+            tip.SetToolTip(this.btnNewContact, "Add New Contact");
+            this.Controls.Add(btnNewContact);
+            btnNewContact.Click += new EventHandler(this.btnNewContact_Click);
+
             containingForm.AcceptButton = btnSubmit;
         }
 
         private void btnSubmit_Click(object sender, EventArgs e)
+        {
+            if (errorCheck())
+            {
+                MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
+            }
+
+// TO-DO: Shane, change the contact box to use a Binding list with the Name = the contact name and the Value = their contact id
+
+            else
+            {
+                cboContacts.Items.Add("1");
+                cboContacts.SelectedItem = "1";
+                dbManager.AddAccount(txtAccountNumber.Text, txtAccountName.Text, int.Parse(txtMaxCharge.Text), dtpAccountExpiration.Value, 
+                    cboRateType.SelectedItem.ToString(), int.Parse(cboContacts.SelectedItem.ToString()), txtNotes.Text, txtCostCenter.Text, txtWBSNumber.Text, int.Parse(txtBalance.Text));
+                containingForm.Close();
+            }
+        }
+
+        private bool errorCheck()
         {
             txtAccountName.BackColor = System.Drawing.Color.White;
             txtAccountNumber.BackColor = System.Drawing.Color.White;
@@ -140,12 +189,12 @@ namespace CUITAdmin
                 error = true;
             }
 
-            if(cboRateType.SelectedIndex == 0)
+            if (cboRateType.SelectedIndex == 0)
             {
                 cboRateType.BackColor = System.Drawing.Color.Red;
                 error = true;
             }
-            
+
             string balancePattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$";
             if (!System.Text.RegularExpressions.Regex.IsMatch(txtBalance.Text, balancePattern))
             {
@@ -153,30 +202,13 @@ namespace CUITAdmin
                 error = true;
             }
 
-            if (error)
-            {
-                MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
-            }
+            return error;
+        }
 
-            else
-            {
-                MessageBox.Show("There were no errors. Form submitted.");
-                containingForm.Close();
-            }
-            // regular expressions example
-            /* ^\s*\+?\s*([0-9][\s-]*){9,}$
-              ^         # Start of the string
-              \s*       # Ignore leading whitespace
-              \+?       # An optional plus
-              \s*       # followed by an optional space or multiple spaces
-              (
-                 [0-9]  # A digit
-                 [\s-]* # followed by an optional space or dash or more than one of those
-              )
-               {9,}     # That appears nine or more times
-            $           # End of the string*/
-
-            
+        private void btnNewContact_Click(object sender, EventArgs e)
+        {
+            NewEntryForm newContact = new NewEntryForm("Point of Contact");
+            newContact.Show();
         }
     }
 }

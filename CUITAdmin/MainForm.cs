@@ -22,7 +22,7 @@ namespace CUITAdmin
         LogPanel startPanel;
 
         XmlManager xmlManager;
-
+        DBManager dbManager;
         PDFManager pdfManager;
 
 
@@ -31,20 +31,9 @@ namespace CUITAdmin
             InitializeComponent();
         }
 
-        private void time_LogBindingNavigatorSaveItem_Click(object sender, EventArgs e)
-        {
-            this.Validate();
-            this.time_LogBindingSource.EndEdit();
-            //this.tableAdapterManager.UpdateAll(this.cUIT_TRIALDataSet);
-
-        }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            // TODO: This line of code loads data into the 'cUIT_TRIALDataSet.UnapprovedTimeLogTable' table. You can move, or remove it, as needed.
-            //this.unapprovedTimeLogTableTableAdapter.FillDeniedTimeLog(this.cUIT_TRIALDataSet.UnapprovedTimeLogTable);
-            // TODO: This line of code loads data into the 'cUIT_TRIALDataSet.Time_Log' table. You can move, or remove it, as needed.
-            //this.time_LogTableAdapter.Fill(this.cUIT_TRIALDataSet.Time_Log);
             
             /// manually setting standalone to true so that we can test
             /// To-DO:: Make sure to remove this to work on the server
@@ -54,28 +43,101 @@ namespace CUITAdmin
             }
             else standalone = false;
 
-            xmlManager = XmlManager.Instance; 
-
+            xmlManager = XmlManager.Instance;
+            dbManager = DBManager.Instance;
             startPanel = new LogPanel(tbpTracking, new Point(5,5));
 
             cboAccountAdminNew.SelectedItem = "Account";
             cboAccountAdminView.SelectedItem = "Accounts";
-            DataGridViewCell editCell = dgvTimeLogRequests.Rows[0].Cells[6];
-            editCell.Value = "test";
+            //dgvTimeLogRequests.DataSource = ds;
+            //cboAccountAdminView.SelectedValue = "Accounts";
+            
+            // Resize the DataGridView columns to fit the newly loaded content.
+            AdminDataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader);
 
             //loads the path for the invoice export from app.config
-            textBox2.Text = Settings.Default["InvoicePath"].ToString();
+            txtInvoiceExportPath.Text = Settings.Default["InvoicePath"].ToString();
 
 
             DateTime now = DateTime.Now;
             comboBoxSelectMonth.Text = ((now.ToString("MMMMMMMMM")));
-            textBox2.Text = Properties.Settings.Default.InvoicePath;
+            txtInvoiceExportPath.Text = Properties.Settings.Default.InvoicePath;
 
+
+
+            txtInvoiceExportPath.Text = Properties.Settings.Default.InvoicePath;
+
+            // Sets up the return keys for the manual entry tab
+
+            BindReturnKeys();
+            InitializeBillingTab();
+            InitializeRequestTab();
+        }
+
+        private void InitializeBillingTab() {
+
+            cboManualLogUser.DataSource = dbManager.GetUsers();
+            cboManualLogUser.DisplayMember = "Username";
+            cboManualLogUser.ValueMember = "PersonID";
+            cboManualLogUser.Refresh();
+
+            cboManualLogInstrument.DataSource = dbManager.GetInstruments();
+            cboManualLogInstrument.DisplayMember = "Name";
+            cboManualLogInstrument.ValueMember = "InstrumentID";
+
+            cboManualLogFunding.DataSource = dbManager.GetAccounts();
+            cboManualLogFunding.DisplayMember = "Name";
+            cboManualLogFunding.ValueMember = "Account_Number";
+
+            cboBillingSupplyFunding.DataSource = dbManager.GetAccounts();
+            cboBillingSupplyFunding.DisplayMember = "Name";
+            cboBillingSupplyFunding.ValueMember = "Account_Number";
+
+            cboBillingSupplyName.DataSource = dbManager.GetInstruments();
+            cboBillingSupplyName.DisplayMember = "Name";
+            cboBillingSupplyName.ValueMember = "InstrumentID";
+
+            dgvTimeLogRequests.DataSource = dbManager.GetTimeLogsExceptions();
+            FindAndRenameDGVColumn("Account_Name", "Account Name", dgvTimeLogRequests);
+            FindAndRenameDGVColumn("Account_Number", "Account Number", dgvTimeLogRequests);
+        }
+
+        private void InitializeRequestTab() {
+
+            cboManualSupplyAccount.DataSource = dbManager.GetAccounts();
+            cboManualSupplyAccount.DisplayMember = "Name";
+            cboManualSupplyAccount.ValueMember = "Account_Number";
+
+            cboManualTimeAccount.DataSource = dbManager.GetAccounts();
+            cboManualTimeAccount.DisplayMember = "Name";
+            cboManualTimeAccount.ValueMember = "Account_Number";
+
+            cboManualTimeInstrument.DataSource = dbManager.GetInstruments();
+            cboManualTimeInstrument.DisplayMember = "Name";
+            cboManualTimeInstrument.ValueMember = "InstrumentID";            
+            
+            
+            cboManualSupplyItem.DataSource = dbManager.GetInstruments();
+            cboManualSupplyItem.DisplayMember = "Name";
+            cboManualSupplyItem.ValueMember = "InstrumentID";
+
+        }
+
+        private void FindAndRenameDGVColumn(string searchName, string newHeader, DataGridView dgv) {
+            foreach (DataGridViewColumn col in dgv.Columns) {
+                if (col.Name == searchName) {
+                    col.HeaderText = newHeader;
+                    return;
+                }
+            }
+
+        }
+
+
+        private void BindReturnKeys() {
             //Time Log manual request username field clicks validate on enter key pressed
-            txtManualTimeUsername.KeyDown += (sender1, args) =>
-            {
-                if (args.KeyCode == Keys.Return)
-                {
+            txtManualTimeUsername.KeyDown += (sender1, args) => {
+                if (args.KeyCode == Keys.Return) {
                     btnManualTimeValidate.PerformClick();
                 }
             };
@@ -83,49 +145,43 @@ namespace CUITAdmin
             
 
             //Time Log manual request password field clicks validate on enter key pressed
-            txtManualTimePassword.KeyDown += (sender1, args) =>
-            {
-                if (args.KeyCode == Keys.Return)
-                {
+            txtManualTimePassword.KeyDown += (sender1, args) => {
+                if (args.KeyCode == Keys.Return) {
                     btnManualTimeValidate.PerformClick();
                 }
             };
 
             //Time Log manual request duration field clicks add on enter key pressed
-            txtManualTimeDuration.KeyDown += (sender1, args) =>
-            {
-                if (args.KeyCode == Keys.Return)
-                {
+            txtManualTimeDuration.KeyDown += (sender1, args) => {
+                if (args.KeyCode == Keys.Return) {
                     btnManualTimeAdd.PerformClick();
                 }
             };
 
             //Supplies manual request username field clicks validate on enter key pressed
-            txtManualSupplyUsername.KeyDown += (sender1, args) =>
-            {
-                if (args.KeyCode == Keys.Return)
-                {
+            txtManualSupplyUsername.KeyDown += (sender1, args) => {
+                if (args.KeyCode == Keys.Return) {
                     btnManualSupplyValidate.PerformClick();
                 }
             };
 
             //Supplies manual request password field clicks validate on enter key pressed
-            txtManualSupplyPassword.KeyDown += (sender1, args) =>
-            {
-                if (args.KeyCode == Keys.Return)
-                {
+            txtManualSupplyPassword.KeyDown += (sender1, args) => {
+                if (args.KeyCode == Keys.Return) {
                     btnManualSupplyValidate.PerformClick();
                 }
             };
 
             //Supplies manual request quantity field clicks add on enter key pressed
-            txtManualSupplyQuantity.KeyDown += (sender1, args) =>
-            {
-                if (args.KeyCode == Keys.Return)
-                {
+            txtManualSupplyQuantity.KeyDown += (sender1, args) => {
+                if (args.KeyCode == Keys.Return) {
                     btnManualSupplyAdd.PerformClick();
                 }
             };
+        }
+
+        private void adminEditViewLoad(object sender, EventArgs e)
+        {
 
             PopulateExportAccounts();
 
@@ -140,6 +196,32 @@ namespace CUITAdmin
             comboBoxSelectAccount.DataSource = comboItems;
             comboBoxSelectAccount.DisplayMember = "Name";
             comboBoxSelectAccount.ValueMember = "Value";
+
+            /*Accounts
+            Contacts
+            Users
+            Instruments
+            Supplies*/
+            if (cboAccountAdminView.SelectedItem == "Accounts")
+            {
+                AdminDataGridView.DataSource = dbManager.GetAccounts();
+            }
+            else if (cboAccountAdminView.SelectedItem == "Contacts")
+            {
+                AdminDataGridView.DataSource = dbManager.GetContacts();
+            }
+            else if (cboAccountAdminView.SelectedItem == "Users")
+            {
+                AdminDataGridView.DataSource = dbManager.GetUsers();
+            }
+            else if (cboAccountAdminView.SelectedItem == "Instruments")
+            {
+                AdminDataGridView.DataSource = dbManager.GetInstruments();
+            }
+            else if (cboAccountAdminView.SelectedItem == "Supplies")
+            {
+                AdminDataGridView.DataSource = dbManager.GetSupplies();
+            }
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -168,8 +250,8 @@ namespace CUITAdmin
         {
             if (InvoiceExportPath.ShowDialog() == DialogResult.OK)
             {                
-                textBox2.Text = InvoiceExportPath.SelectedPath;
-                Settings.Default["InvoicePath"] = button5.Text;
+                txtInvoiceExportPath.Text = InvoiceExportPath.SelectedPath;
+                Settings.Default["InvoicePath"] = btnSetInvoiceExportPath.Text;
                 Settings.Default.Save();
             }
         }
@@ -198,11 +280,6 @@ namespace CUITAdmin
          
         }
 
-        private void button5_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void button5_Click_1(object sender, EventArgs e)
         {
             if (InvoiceExportPath.ShowDialog() == DialogResult.OK)
@@ -210,7 +287,7 @@ namespace CUITAdmin
 
                 Properties.Settings.Default.InvoicePath = InvoiceExportPath.SelectedPath;
                 Properties.Settings.Default.Save();
-                textBox2.Text = InvoiceExportPath.SelectedPath;
+                txtInvoiceExportPath.Text = InvoiceExportPath.SelectedPath;
             }
         }
 
@@ -239,7 +316,7 @@ namespace CUITAdmin
                 //code for populating the funding source combobox
                 BindingList<Data> comboItems = new BindingList<Data>();
                 if (!xmlManager.GetUserAccounts(txtManualTimeUsername.Text, out comboItems)) {
-                    MessageBox.Show("Eat a sack of Dicks, you have no accounts");
+                    MessageBox.Show("There are no accounts tied to this username.");
                     return;
                 }
                 cboManualTimeAccount.DataSource = comboItems;
@@ -247,6 +324,13 @@ namespace CUITAdmin
                 cboManualTimeAccount.ValueMember = "Value";
 
                 lblValidate.Visible = true;
+
+                BindingList<Data> comboInstruments = dbManager.GetInstrumentsData();
+                cboManualTimeInstrument.DataSource = comboInstruments;
+                cboManualTimeInstrument.DisplayMember = "Name";
+                cboManualTimeInstrument.ValueMember = "Value";
+
+
                 timeValid = true;
             }
             else
@@ -313,12 +397,14 @@ namespace CUITAdmin
                 //code for populating the funding source combobox
                 BindingList<Data> comboItems = new BindingList<Data>();
                 if (!xmlManager.GetUserAccounts(txtManualSupplyUsername.Text, out comboItems)) {
-                    MessageBox.Show("Eat a sack of Dicks, you have no accounts");
+                    MessageBox.Show("There are no accounts tied to this username.");
                     return;
                 }
                 cboManualSupplyAccount.DataSource = comboItems;
                 cboManualSupplyAccount.DisplayMember = "Name";
                 cboManualSupplyAccount.ValueMember = "Value";
+
+
 
                 label12.Visible = true;
                 supplyValid = true;
@@ -379,6 +465,10 @@ namespace CUITAdmin
         private void button3_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void dgvTimeLogRequests_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
+            MessageBox.Show("Header " + e + " Clicked");
         }
     }
 }
