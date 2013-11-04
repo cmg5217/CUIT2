@@ -35,7 +35,7 @@ namespace CUITAdmin
         {
             this.Validate();
             this.time_LogBindingSource.EndEdit();
-            this.tableAdapterManager.UpdateAll(this.cUIT_TRIALDataSet);
+            //this.tableAdapterManager.UpdateAll(this.cUIT_TRIALDataSet);
 
         }
 
@@ -68,10 +68,7 @@ namespace CUITAdmin
 
 
             DateTime now = DateTime.Now;
-            Console.WriteLine(now.Month);
             comboBoxSelectMonth.Text = ((now.ToString("MMMMMMMMM")));
-
-
             textBox2.Text = Properties.Settings.Default.InvoicePath;
 
             //Time Log manual request username field clicks validate on enter key pressed
@@ -82,6 +79,8 @@ namespace CUITAdmin
                     btnManualTimeValidate.PerformClick();
                 }
             };
+
+            
 
             //Time Log manual request password field clicks validate on enter key pressed
             txtManualTimePassword.KeyDown += (sender1, args) =>
@@ -128,6 +127,19 @@ namespace CUITAdmin
                 }
             };
 
+            PopulateExportAccounts();
+
+        }
+
+        private void PopulateExportAccounts()
+        {
+            BindingList<Data> comboItems = new BindingList<Data>();
+
+            comboItems.Add(new Data{Name = "TestName", Value = "TestValue"});
+
+            comboBoxSelectAccount.DataSource = comboItems;
+            comboBoxSelectAccount.DisplayMember = "Name";
+            comboBoxSelectAccount.ValueMember = "Value";
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -164,15 +176,25 @@ namespace CUITAdmin
 
         private void button4_Click(object sender, EventArgs e)
         {
-            pdfManager = new PDFManager();
-            pdfManager.AddAddress("David Stephens", "1856 Us 62", "Oil City", "PA", "16301");
-            pdfManager.AddService("Atomic Force", "Aug. 2013", "12", "27", "hour");
-            pdfManager.AddDate("January 2014");
-            pdfManager.AddInvoiceID("Invoice 234");
-            pdfManager.AddBalance("529");
-            pdfManager.AddCharge("529");
-            pdfManager.QueryDatabase("January");
-            pdfManager.PDFClose();  
+            if (Settings.Default["InvoicePath"].ToString() == "")
+            {
+
+                MessageBox.Show("You have not selected the export path. Please go to the Settings tab and select an export path.");
+
+            }
+
+            else
+            {
+                pdfManager = new PDFManager();
+                pdfManager.AddAddress("David Stephens", "1856 Us 62", "Oil City", "PA", "16301");
+                pdfManager.AddService("Atomic Force", "Aug. 2013", "12", "27", "hour");
+                pdfManager.AddDate("January 2014");
+                pdfManager.AddInvoiceID("Invoice 234");
+                pdfManager.AddBalance("529");
+                pdfManager.AddCharge("529");
+                pdfManager.PDFClose();
+
+            }
          
         }
 
@@ -205,7 +227,7 @@ namespace CUITAdmin
         private void btnManualTimeValidate_Click(object sender, EventArgs e)
         {
             txtManualTimeDuration.Clear();
-            label11.Visible = false;
+            lblValidate.Visible = false;
             timeValid = false;
             cboManualTimeAccount.DataSource = null;
             cboManualTimeAccount.Items.Clear();
@@ -224,7 +246,7 @@ namespace CUITAdmin
                 cboManualTimeAccount.DisplayMember = "Name";
                 cboManualTimeAccount.ValueMember = "Value";
 
-                label11.Visible = true;
+                lblValidate.Visible = true;
                 timeValid = true;
             }
             else
@@ -267,7 +289,7 @@ namespace CUITAdmin
                 txtManualTimeUsername.Clear();
                 txtManualTimePassword.Clear();
                 txtManualTimeDuration.Clear();
-                label11.Visible = false;
+                lblValidate.Visible = false;
                 timeValid = false;
                 cboManualTimeAccount.DataSource = null;
                 cboManualTimeAccount.Items.Clear();

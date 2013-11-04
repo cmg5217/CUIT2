@@ -30,13 +30,12 @@
         {
             this.components = new System.ComponentModel.Container();
             this.unapprovedTimeLogTableBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.cUIT_TRIALDataSet = new CUITAdmin.CUIT_TRIALDataSet();
             this.time_LogBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.time_LogTableAdapter = new CUITAdmin.CUIT_TRIALDataSetTableAdapters.Time_LogTableAdapter();
-            this.tableAdapterManager = new CUITAdmin.CUIT_TRIALDataSetTableAdapters.TableAdapterManager();
-            this.unapprovedTimeLogTableTableAdapter = new CUITAdmin.CUIT_TRIALDataSetTableAdapters.UnapprovedTimeLogTableTableAdapter();
             this.tbpExports = new System.Windows.Forms.TabPage();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.txtAccount = new System.Windows.Forms.Label();
+            this.txtMonth = new System.Windows.Forms.Label();
+            this.comboBoxSelectAccount = new System.Windows.Forms.ComboBox();
             this.comboBoxSelectMonth = new System.Windows.Forms.ComboBox();
             this.button4 = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -88,7 +87,7 @@
             this.InvoiceExportPath = new System.Windows.Forms.FolderBrowserDialog();
             this.tbpSettings = new System.Windows.Forms.TabPage();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblExportPath = new System.Windows.Forms.Label();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.button5 = new System.Windows.Forms.Button();
             this.tabControlMain = new System.Windows.Forms.TabControl();
@@ -96,6 +95,7 @@
             this.tbpManualRequests = new System.Windows.Forms.TabPage();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.btnManualSupplyValidate = new System.Windows.Forms.Button();
             this.txtManualSupplyPassword = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -109,26 +109,21 @@
             this.cboManualSupplyItem = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.lblValidate = new System.Windows.Forms.Label();
             this.btnManualTimeValidate = new System.Windows.Forms.Button();
             this.txtManualTimePassword = new System.Windows.Forms.TextBox();
             this.lblPassword = new System.Windows.Forms.Label();
             this.txtManualTimeUsername = new System.Windows.Forms.TextBox();
             this.dtpManualTimeDate = new System.Windows.Forms.DateTimePicker();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
+            this.lblInstrument = new System.Windows.Forms.Label();
+            this.lblUsername = new System.Windows.Forms.Label();
             this.cboManualTimeInstrument = new System.Windows.Forms.ComboBox();
             this.cboManualTimeAccount = new System.Windows.Forms.ComboBox();
             this.txtManualTimeDuration = new System.Windows.Forms.TextBox();
             this.btnManualTimeAdd = new System.Windows.Forms.Button();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.comboBoxSelectAccount = new System.Windows.Forms.ComboBox();
-            this.txtMonth = new System.Windows.Forms.Label();
-            this.txtAccount = new System.Windows.Forms.Label();
+            this.lblDuration = new System.Windows.Forms.Label();
+            this.lblFundingSource = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.unapprovedTimeLogTableBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cUIT_TRIALDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.time_LogBindingSource)).BeginInit();
             this.tbpExports.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -154,38 +149,10 @@
             // unapprovedTimeLogTableBindingSource
             // 
             this.unapprovedTimeLogTableBindingSource.DataMember = "UnapprovedTimeLogTable";
-            this.unapprovedTimeLogTableBindingSource.DataSource = this.cUIT_TRIALDataSet;
-            // 
-            // cUIT_TRIALDataSet
-            // 
-            this.cUIT_TRIALDataSet.DataSetName = "CUIT_TRIALDataSet";
-            this.cUIT_TRIALDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
             // time_LogBindingSource
             // 
             this.time_LogBindingSource.DataMember = "Time_Log";
-            this.time_LogBindingSource.DataSource = this.cUIT_TRIALDataSet;
-            // 
-            // time_LogTableAdapter
-            // 
-            this.time_LogTableAdapter.ClearBeforeFill = true;
-            // 
-            // tableAdapterManager
-            // 
-            this.tableAdapterManager.Account_AccessTableAdapter = null;
-            this.tableAdapterManager.AccountTableAdapter = null;
-            this.tableAdapterManager.BackupDataSetBeforeUpdate = false;
-            this.tableAdapterManager.Instrument_RateTableAdapter = null;
-            this.tableAdapterManager.InstrumentTableAdapter = null;
-            this.tableAdapterManager.ManagerTableAdapter = null;
-            this.tableAdapterManager.Time_LogTableAdapter = this.time_LogTableAdapter;
-            this.tableAdapterManager.UpdateOrder = CUITAdmin.CUIT_TRIALDataSetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete;
-            this.tableAdapterManager.User_ContactsTableAdapter = null;
-            this.tableAdapterManager.UserTableAdapter = null;
-            // 
-            // unapprovedTimeLogTableTableAdapter
-            // 
-            this.unapprovedTimeLogTableTableAdapter.ClearBeforeFill = true;
             // 
             // tbpExports
             // 
@@ -214,6 +181,33 @@
             this.groupBox6.TabIndex = 7;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Export Invoice";
+            // 
+            // txtAccount
+            // 
+            this.txtAccount.AutoSize = true;
+            this.txtAccount.Location = new System.Drawing.Point(23, 80);
+            this.txtAccount.Name = "txtAccount";
+            this.txtAccount.Size = new System.Drawing.Size(50, 13);
+            this.txtAccount.TabIndex = 5;
+            this.txtAccount.Text = "Account:";
+            // 
+            // txtMonth
+            // 
+            this.txtMonth.AutoSize = true;
+            this.txtMonth.Location = new System.Drawing.Point(22, 40);
+            this.txtMonth.Name = "txtMonth";
+            this.txtMonth.Size = new System.Drawing.Size(40, 13);
+            this.txtMonth.TabIndex = 4;
+            this.txtMonth.Text = "Month:";
+            // 
+            // comboBoxSelectAccount
+            // 
+            this.comboBoxSelectAccount.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxSelectAccount.FormattingEnabled = true;
+            this.comboBoxSelectAccount.Location = new System.Drawing.Point(79, 77);
+            this.comboBoxSelectAccount.Name = "comboBoxSelectAccount";
+            this.comboBoxSelectAccount.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxSelectAccount.TabIndex = 3;
             // 
             // comboBoxSelectMonth
             // 
@@ -706,7 +700,7 @@
             // 
             // groupBox5
             // 
-            this.groupBox5.Controls.Add(this.label1);
+            this.groupBox5.Controls.Add(this.lblExportPath);
             this.groupBox5.Controls.Add(this.textBox2);
             this.groupBox5.Controls.Add(this.button5);
             this.groupBox5.Location = new System.Drawing.Point(130, 244);
@@ -716,14 +710,14 @@
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Export Invoice";
             // 
-            // label1
+            // lblExportPath
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(19, 29);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(93, 13);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Enter Export Path:";
+            this.lblExportPath.AutoSize = true;
+            this.lblExportPath.Location = new System.Drawing.Point(19, 29);
+            this.lblExportPath.Name = "lblExportPath";
+            this.lblExportPath.Size = new System.Drawing.Size(93, 13);
+            this.lblExportPath.TabIndex = 3;
+            this.lblExportPath.Text = "Enter Export Path:";
             // 
             // textBox2
             // 
@@ -810,6 +804,16 @@
             this.groupBox8.TabIndex = 18;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Supplies";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(144, 80);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(51, 13);
+            this.label12.TabIndex = 23;
+            this.label12.Text = "Validated";
+            this.label12.Visible = false;
             // 
             // btnManualSupplyValidate
             // 
@@ -917,26 +921,36 @@
             // 
             // groupBox9
             // 
-            this.groupBox9.Controls.Add(this.label11);
+            this.groupBox9.Controls.Add(this.lblValidate);
             this.groupBox9.Controls.Add(this.btnManualTimeValidate);
             this.groupBox9.Controls.Add(this.txtManualTimePassword);
             this.groupBox9.Controls.Add(this.lblPassword);
             this.groupBox9.Controls.Add(this.txtManualTimeUsername);
             this.groupBox9.Controls.Add(this.dtpManualTimeDate);
-            this.groupBox9.Controls.Add(this.label5);
-            this.groupBox9.Controls.Add(this.label6);
+            this.groupBox9.Controls.Add(this.lblInstrument);
+            this.groupBox9.Controls.Add(this.lblUsername);
             this.groupBox9.Controls.Add(this.cboManualTimeInstrument);
             this.groupBox9.Controls.Add(this.cboManualTimeAccount);
             this.groupBox9.Controls.Add(this.txtManualTimeDuration);
             this.groupBox9.Controls.Add(this.btnManualTimeAdd);
-            this.groupBox9.Controls.Add(this.label7);
-            this.groupBox9.Controls.Add(this.label8);
+            this.groupBox9.Controls.Add(this.lblDuration);
+            this.groupBox9.Controls.Add(this.lblFundingSource);
             this.groupBox9.Location = new System.Drawing.Point(7, 15);
             this.groupBox9.Name = "groupBox9";
             this.groupBox9.Size = new System.Drawing.Size(314, 218);
             this.groupBox9.TabIndex = 17;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Time Log";
+            // 
+            // lblValidate
+            // 
+            this.lblValidate.AutoSize = true;
+            this.lblValidate.Location = new System.Drawing.Point(136, 80);
+            this.lblValidate.Name = "lblValidate";
+            this.lblValidate.Size = new System.Drawing.Size(51, 13);
+            this.lblValidate.TabIndex = 19;
+            this.lblValidate.Text = "Validated";
+            this.lblValidate.Visible = false;
             // 
             // btnManualTimeValidate
             // 
@@ -980,23 +994,23 @@
             this.dtpManualTimeDate.Size = new System.Drawing.Size(236, 20);
             this.dtpManualTimeDate.TabIndex = 3;
             // 
-            // label5
+            // lblInstrument
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(29, 135);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(59, 13);
-            this.label5.TabIndex = 5;
-            this.label5.Text = "Instrument:";
+            this.lblInstrument.AutoSize = true;
+            this.lblInstrument.Location = new System.Drawing.Point(29, 135);
+            this.lblInstrument.Name = "lblInstrument";
+            this.lblInstrument.Size = new System.Drawing.Size(59, 13);
+            this.lblInstrument.TabIndex = 5;
+            this.lblInstrument.Text = "Instrument:";
             // 
-            // label6
+            // lblUsername
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(29, 28);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(58, 13);
-            this.label6.TabIndex = 14;
-            this.label6.Text = "Username:";
+            this.lblUsername.AutoSize = true;
+            this.lblUsername.Location = new System.Drawing.Point(29, 28);
+            this.lblUsername.Name = "lblUsername";
+            this.lblUsername.Size = new System.Drawing.Size(58, 13);
+            this.lblUsername.TabIndex = 14;
+            this.lblUsername.Text = "Username:";
             // 
             // cboManualTimeInstrument
             // 
@@ -1033,74 +1047,23 @@
             this.btnManualTimeAdd.UseVisualStyleBackColor = true;
             this.btnManualTimeAdd.Click += new System.EventHandler(this.btnManualTimeAdd_Click);
             // 
-            // label7
+            // lblDuration
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(29, 189);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(75, 13);
-            this.label7.TabIndex = 9;
-            this.label7.Text = "Duration: (min)";
+            this.lblDuration.AutoSize = true;
+            this.lblDuration.Location = new System.Drawing.Point(29, 189);
+            this.lblDuration.Name = "lblDuration";
+            this.lblDuration.Size = new System.Drawing.Size(75, 13);
+            this.lblDuration.TabIndex = 9;
+            this.lblDuration.Text = "Duration: (min)";
             // 
-            // label8
+            // lblFundingSource
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(29, 107);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(85, 13);
-            this.label8.TabIndex = 4;
-            this.label8.Text = "Funding Source:";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(136, 80);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(51, 13);
-            this.label11.TabIndex = 19;
-            this.label11.Text = "Validated";
-            this.label11.Visible = false;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(144, 80);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(51, 13);
-            this.label12.TabIndex = 23;
-            this.label12.Text = "Validated";
-            this.label12.Visible = false;
-            //
-            // comboBoxSelectAccount
-            // 
-            this.comboBoxSelectAccount.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxSelectAccount.FormattingEnabled = true;
-            this.comboBoxSelectAccount.Items.AddRange(new object[] {
-            "AccountA",
-            "AccountB",
-            "AccountC"});
-            this.comboBoxSelectAccount.Location = new System.Drawing.Point(79, 77);
-            this.comboBoxSelectAccount.Name = "comboBoxSelectAccount";
-            this.comboBoxSelectAccount.Size = new System.Drawing.Size(121, 21);
-            this.comboBoxSelectAccount.TabIndex = 3;
-            // 
-            // txtMonth
-            // 
-            this.txtMonth.AutoSize = true;
-            this.txtMonth.Location = new System.Drawing.Point(22, 40);
-            this.txtMonth.Name = "txtMonth";
-            this.txtMonth.Size = new System.Drawing.Size(40, 13);
-            this.txtMonth.TabIndex = 4;
-            this.txtMonth.Text = "Month:";
-            // 
-            // txtAccount
-            // 
-            this.txtAccount.AutoSize = true;
-            this.txtAccount.Location = new System.Drawing.Point(23, 80);
-            this.txtAccount.Name = "txtAccount";
-            this.txtAccount.Size = new System.Drawing.Size(50, 13);
-            this.txtAccount.TabIndex = 5;
-            this.txtAccount.Text = "Account:";
+            this.lblFundingSource.AutoSize = true;
+            this.lblFundingSource.Location = new System.Drawing.Point(29, 107);
+            this.lblFundingSource.Name = "lblFundingSource";
+            this.lblFundingSource.Size = new System.Drawing.Size(85, 13);
+            this.lblFundingSource.TabIndex = 4;
+            this.lblFundingSource.Text = "Funding Source:";
             // 
             // frmCUITAdminMain
             // 
@@ -1115,7 +1078,6 @@
             this.Text = "CUITAdmin";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.unapprovedTimeLogTableBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cUIT_TRIALDataSet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.time_LogBindingSource)).EndInit();
             this.tbpExports.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
@@ -1149,12 +1111,12 @@
 
         #endregion
 
-        private CUIT_TRIALDataSet cUIT_TRIALDataSet;
+        //private CUIT_TRIALDataSet cUIT_TRIALDataSet;
         private System.Windows.Forms.BindingSource time_LogBindingSource;
-        private CUIT_TRIALDataSetTableAdapters.Time_LogTableAdapter time_LogTableAdapter;
-        private CUIT_TRIALDataSetTableAdapters.TableAdapterManager tableAdapterManager;
+        //private CUIT_TRIALDataSetTableAdapters.Time_LogTableAdapter time_LogTableAdapter;
+        //private CUIT_TRIALDataSetTableAdapters.TableAdapterManager tableAdapterManager;
         private System.Windows.Forms.BindingSource unapprovedTimeLogTableBindingSource;
-        private CUIT_TRIALDataSetTableAdapters.UnapprovedTimeLogTableTableAdapter unapprovedTimeLogTableTableAdapter;
+       // private CUIT_TRIALDataSetTableAdapters.UnapprovedTimeLogTableTableAdapter unapprovedTimeLogTableTableAdapter;
         private System.Windows.Forms.TabPage tbpExports;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Button button3;
@@ -1211,7 +1173,7 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.GroupBox groupBox6;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblExportPath;
         private System.Windows.Forms.TabPage tbpManualRequests;
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.GroupBox groupBox8;
@@ -1226,14 +1188,14 @@
         private System.Windows.Forms.Label lblPassword;
         private System.Windows.Forms.TextBox txtManualTimeUsername;
         private System.Windows.Forms.DateTimePicker dtpManualTimeDate;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label lblInstrument;
+        private System.Windows.Forms.Label lblUsername;
         private System.Windows.Forms.ComboBox cboManualTimeInstrument;
         private System.Windows.Forms.ComboBox cboManualTimeAccount;
         private System.Windows.Forms.TextBox txtManualTimeDuration;
         private System.Windows.Forms.Button btnManualTimeAdd;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label lblDuration;
+        private System.Windows.Forms.Label lblFundingSource;
         private System.Windows.Forms.TextBox txtManualTimePassword;
         private System.Windows.Forms.TextBox txtManualSupplyPassword;
         private System.Windows.Forms.Label label9;
@@ -1241,7 +1203,7 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Button btnManualSupplyValidate;
         private System.Windows.Forms.Button btnManualTimeValidate;
-        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label lblValidate;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.ComboBox comboBoxSelectMonth;
         private System.Windows.Forms.ComboBox comboBoxSelectAccount;
