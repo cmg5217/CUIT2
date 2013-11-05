@@ -480,7 +480,8 @@ namespace CUITAdmin
 
         public DataTable GetAccounts() {
             SqlConnection myConnection = DBConnect();
-            string myCommand = "SELECT Account_Number, Name, Max_Charge_Limit, Balance, First_Name, Last_Name FROM Account acct left outer join Point_of_Contact poc on acct.PointOfContactID = poc.PersonID left outer join Person psn on poc.PersonID = psn.PersonID";
+            //Account_Number, Name, Max_Charge_Limit, Balance, First_Name, Last_Name
+            string myCommand = "SELECT * FROM Account acct left outer join Point_of_Contact poc on acct.PointOfContactID = poc.PersonID left outer join Person psn on poc.PersonID = psn.PersonID";
             SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
 
             DataTable table = new DataTable();
@@ -609,11 +610,47 @@ namespace CUITAdmin
             return table;
         }
 
-        public DataTable GetInvoice(string accountNumber) {
+        public DataTable GetInvoice(int invoiceID)
+        {
             SqlConnection myConnection = DBConnect();
-            SqlCommand myCommand = new SqlCommand("SELECT * From Invoice Where Account_Number = @accountNumber", myConnection);
+            SqlCommand myCommand = new SqlCommand("SELECT * From Invoice Where InvoiceID = @invoiceID", myConnection);
 
-            myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
+            myCommand.Parameters.AddWithValue("@invoiceID", invoiceID);
+
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+
+            DataTable table = new DataTable();
+            dataAdapter.Fill(table);
+
+            myConnection.Close();
+            return table;
+        }
+
+        public DataTable GetInvoiceTimeLine(int invoiceID)
+        {
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand(
+                "SELECT * " +
+                "From Invoice_Time_Line tl INNER JOIN Instrument i on tl.InstrumentID = i.InstrumentID " +
+                "Where InvoiceID = @invoiceID", myConnection);
+
+            myCommand.Parameters.AddWithValue("@invoiceID", invoiceID);
+
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+
+            DataTable table = new DataTable();
+            dataAdapter.Fill(table);
+
+            myConnection.Close();
+            return table;
+        }
+
+        public DataTable GetInvoiceSupplyLine(int invoiceID)
+        {
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand("SELECT * From Invoice_Supply_Line Where InvoiceID = @invoiceID", myConnection);
+
+            myCommand.Parameters.AddWithValue("@invoiceID", invoiceID);
 
             SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
 
@@ -757,7 +794,15 @@ namespace CUITAdmin
             }
         }
 
-        public bool GenerateInvoice(string accountNumber, DateTime startDate, DateTime endDate) {
+        public bool GenerateInvoice(string accountNumber, DateTime startDate, DateTime endDate)
+        {
+            int throwaway;
+            return GenerateInvoice(accountNumber, startDate, endDate, out throwaway);
+        }
+
+        public bool GenerateInvoice(string accountNumber, DateTime startDate, DateTime endDate, out int invoiceNumber) {
+            // Used as a default value in the event that this terminates early
+            invoiceNumber = 0;
 
             // Create an invoice for the account and set it's values, this will be used to build an SQL Query later
             Invoice invoice = new Invoice();
@@ -791,7 +836,7 @@ namespace CUITAdmin
             invoiceSupplyLine.Columns.Add("Cost");
             invoiceSupplyLine.Columns.Add("Quantity");
 
-            if (invoice.supplies.Count == 0 || invoice.instrumets.Count == 0) return false;
+            if (invoice.supplies.Count == 0 && invoice.instrumets.Count == 0) return false;
 
             SqlConnection myConnection = DBConnect();
 
@@ -844,7 +889,7 @@ namespace CUITAdmin
 
             SendDataTable(invoiceTimeLine, "Invoice_Time_Line");
             SendDataTable(invoiceSupplyLine, "Invoice_Supply_Line");
-
+            invoiceNumber = invoiceID;
             return true;
         }
 

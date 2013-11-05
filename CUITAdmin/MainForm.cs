@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using iTextSharp.text.pdf;
 using System.IO;
 using CUITAdmin.Properties;
+using System.Globalization;
 
 namespace CUITAdmin
 {
@@ -72,6 +73,7 @@ namespace CUITAdmin
             BindReturnKeys();
             InitializeBillingTab();
             InitializeRequestTab();
+            InitializeExportTab();
         }
 
         private void InitializeBillingTab() {
@@ -122,6 +124,46 @@ namespace CUITAdmin
             cboManualSupplyItem.ValueMember = "InstrumentID";
 
         }
+
+        private void InitializeExportTab()
+        {
+            comboBoxSelectAccount.DataSource = dbManager.GetAccounts();
+            comboBoxSelectAccount.DisplayMember = "Name";
+            comboBoxSelectAccount.ValueMember = "Account_Number";
+        }
+
+        // Called in the onload of the tab page to prevent unnecessary calls to the DB5
+        private void InitializeAdminTab()
+        {
+
+            /*Accounts
+            Contacts
+            Users
+            Instruments
+            Supplies*/
+            if (cboAccountAdminView.SelectedItem == "Accounts")
+            {
+                AdminDataGridView.DataSource = dbManager.GetAccounts();
+            }
+            else if (cboAccountAdminView.SelectedItem == "Contacts")
+            {
+                AdminDataGridView.DataSource = dbManager.GetContacts();
+            }
+            else if (cboAccountAdminView.SelectedItem == "Users")
+            {
+                AdminDataGridView.DataSource = dbManager.GetUsers();
+            }
+            else if (cboAccountAdminView.SelectedItem == "Instruments")
+            {
+                AdminDataGridView.DataSource = dbManager.GetInstruments();
+            }
+            else if (cboAccountAdminView.SelectedItem == "Supplies")
+            {
+                AdminDataGridView.DataSource = dbManager.GetSupplies();
+            }
+            ;
+        }
+
 
         private void FindAndRenameDGVColumn(string searchName, string newHeader, DataGridView dgv) {
             foreach (DataGridViewColumn col in dgv.Columns) {
@@ -183,45 +225,8 @@ namespace CUITAdmin
         private void adminEditViewLoad(object sender, EventArgs e)
         {
 
-            PopulateExportAccounts();
+            InitializeAdminTab();
 
-        }
-
-        private void PopulateExportAccounts()
-        {
-            BindingList<Data> comboItems = new BindingList<Data>();
-
-            comboItems.Add(new Data{Name = "TestName", Value = "TestValue"});
-
-            comboBoxSelectAccount.DataSource = comboItems;
-            comboBoxSelectAccount.DisplayMember = "Name";
-            comboBoxSelectAccount.ValueMember = "Value";
-
-            /*Accounts
-            Contacts
-            Users
-            Instruments
-            Supplies*/
-            if (cboAccountAdminView.SelectedItem == "Accounts")
-            {
-                AdminDataGridView.DataSource = dbManager.GetAccounts();
-            }
-            else if (cboAccountAdminView.SelectedItem == "Contacts")
-            {
-                AdminDataGridView.DataSource = dbManager.GetContacts();
-            }
-            else if (cboAccountAdminView.SelectedItem == "Users")
-            {
-                AdminDataGridView.DataSource = dbManager.GetUsers();
-            }
-            else if (cboAccountAdminView.SelectedItem == "Instruments")
-            {
-                AdminDataGridView.DataSource = dbManager.GetInstruments();
-            }
-            else if (cboAccountAdminView.SelectedItem == "Supplies")
-            {
-                AdminDataGridView.DataSource = dbManager.GetSupplies();
-            }
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -260,22 +265,70 @@ namespace CUITAdmin
         {
             if (Settings.Default["InvoicePath"].ToString() == "")
             {
-
-                MessageBox.Show("You have not selected the export path. Please go to the Settings tab and select an export path.");
-
+              MessageBox.Show("You have not selected the export path. Please go to the Settings tab and select an export path.");
+              
             }
 
             else
             {
-                pdfManager = new PDFManager();
-                pdfManager.AddAddress("David Stephens", "1856 Us 62", "Oil City", "PA", "16301");
-                pdfManager.AddService("Atomic Force", "Aug. 2013", "12", "27", "hour");
-                pdfManager.AddDate("January 2014");
-                pdfManager.AddInvoiceID("Invoice 234");
-                pdfManager.AddBalance("529");
-                pdfManager.AddCharge("529");
-                pdfManager.PDFClose();
+                //parse the date in the combobox and calculate the end of the month
+                string date = comboBoxSelectMonth.Text;
+                DateTime datetime = DateTime.ParseExact(date, "MMMMMMMM", CultureInfo.InvariantCulture);
+                DateTime endtime = datetime.AddMonths(1);
+                endtime = endtime.AddSeconds(-1);
+                //MessageBox.Show(endtime.ToString());
+                //the offset 
+                string offset = "";
+                int invoiceID;
+                //dbManager.GenerateInvoice("1", DateTime.Now.AddDays(-5), DateTime.Now, out invoiceID);
+                dbManager.GenerateInvoice(comboBoxSelectAccount.SelectedValue.ToString(), datetime, endtime, out invoiceID);
 
+                DataTable invoice = dbManager.GetInvoice(invoiceID);
+                DataTable invoiceTime = dbManager.GetInvoiceTimeLine(invoiceID);
+                DataTable invoiceSupply = dbManager.GetInvoiceSupplyLine(invoiceID);
+                DataTable getacc = dbManager.GetAccounts();
+                //convert date time to invoice friendly format
+                DateTime poststart = DateTime.Parse(invoice.Rows[0]["Posting_Start_Date"].ToString());
+                DateTime postend = DateTime.Parse(invoice.Rows[0]["Posting_End_Date"].ToString());
+                //MessageBox.Show(test.ToShortDateString().ToString());
+               
+               // try
+               // {
+
+                pdfManager = new PDFManager();
+                //pdfManager.AddAddress("Name", "Street", "City", "State", "Zip");
+                pdfManager.AddAddress(getacc.Rows[0]["Name"].ToString(),
+                    getacc.Rows[0]["Street"].ToString(), //add street to invocie
+                    getacc.Rows[0]["City"].ToString(), // add city to invoice
+                    getacc.Rows[0]["State"].ToString(), //add state to invoice
+                    getacc.Rows[0]["Zip"].ToString()); //add zip to invoice
+
+                //pdfManager.AddService("Instrument", "StartPostDate", "EndPostDate","hours", "rate ($/hr)", "unit(hours days ects)");
+                foreach (DataRow currentRow in invoiceTime.Rows)
+                {
+
+                    pdfManager.AddService(
+                        currentRow["Name"].ToString(), //insert time into the invoice
+                        poststart.ToShortDateString().ToString(), //insert start date into invoice
+                        postend.ToShortDateString().ToString(),  //insert end date into invoice
+                        currentRow["Hours"].ToString(), //insert hours into invoice
+                        currentRow["Rate"].ToString(), //insert dollars per hour into invoice
+                        "hour");// unit of biling displayed on invoice
+                        pdfManager.AddCharge(currentRow["Line_Amount"].ToString()); //add charge to invoice
+                        offset += "\r\n\r\n";
+                }
+
+                pdfManager.AddDate(DateTime.Now.ToString()); //Add todays date to the invoice
+                pdfManager.AddInvoiceID(invoice.Rows[0]["InvoiceID"].ToString()); // add invoice id to invoice
+                pdfManager.AddBalance(offset+"$"+invoice.Rows[0]["Total_Balance"].ToString()); // add balance to invoice
+
+                pdfManager.PDFClose();            
+              //  }
+              //  catch (Exception)
+              //  {
+               //     MessageBox.Show("Error writing file. Check that this file is not currently\n" 
+              //                   +"open in a PDF reader such as Adobe Reader.");
+               // }
             }
          
         }
