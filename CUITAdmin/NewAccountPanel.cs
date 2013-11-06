@@ -153,8 +153,8 @@ namespace CUITAdmin
             {
                 cboContacts.Items.Add("1");
                 cboContacts.SelectedItem = "1";
-                dbManager.AddAccount(txtAccountNumber.Text, txtAccountName.Text, int.Parse(txtMaxCharge.Text), dtpAccountExpiration.Value, 
-                    cboRateType.SelectedItem.ToString(), int.Parse(cboContacts.SelectedItem.ToString()), txtNotes.Text, txtCostCenter.Text, txtWBSNumber.Text, int.Parse(txtBalance.Text));
+                //dbManager.AddAccount(txtAccountNumber.Text, txtAccountName.Text, int.Parse(txtMaxCharge.Text), dtpAccountExpiration.Value, 
+                //    cboRateType.SelectedItem.ToString(), int.Parse(cboContacts.SelectedItem.ToString()), txtNotes.Text, txtCostCenter.Text, txtWBSNumber.Text, int.Parse(txtBalance.Text));
                 containingForm.Close();
             }
         }

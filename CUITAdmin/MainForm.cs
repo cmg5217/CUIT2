@@ -1,4 +1,12 @@
-﻿using System;
+﻿//////////////////////////////////////////////////////////////////////////////////////////
+/* 
+ * TO-DO - Reorder tab stop on manual request, check tabstop for all pages
+ * 
+ * 
+ */ 
+//////////////////////////////////////////////////////////////////////////////////////////
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
@@ -37,7 +45,7 @@ namespace CUITAdmin
             
             /// manually setting standalone to true so that we can test
             /// To-DO:: Make sure to remove this to work on the server
-            if (ConfigurationManager.AppSettings["StandaloneMode"] == "true")
+            if (Properties.Settings.Default.StandaloneMode == "true")
             {
                 standalone = true;
             }
@@ -69,48 +77,48 @@ namespace CUITAdmin
 
             // Sets up the return keys for the manual entry tab
 
+
+
             BindReturnKeys();
             InitializeBillingTab();
             InitializeRequestTab();
+            InitializeSettingsTab();
         }
 
         private void InitializeBillingTab() {
+            if (Settings.Default.StandaloneMode == "false") {
+                cboManualLogUser.DataSource = dbManager.GetUsers();
+                cboManualLogUser.DisplayMember = "Username";
+                cboManualLogUser.ValueMember = "PersonID";
+                cboManualLogUser.Refresh();
 
-            cboManualLogUser.DataSource = dbManager.GetUsers();
-            cboManualLogUser.DisplayMember = "Username";
-            cboManualLogUser.ValueMember = "PersonID";
-            cboManualLogUser.Refresh();
+                cboManualLogInstrument.DataSource = dbManager.GetInstruments();
+                cboManualLogInstrument.DisplayMember = "Name";
+                cboManualLogInstrument.ValueMember = "InstrumentID";
 
-            cboManualLogInstrument.DataSource = dbManager.GetInstruments();
-            cboManualLogInstrument.DisplayMember = "Name";
-            cboManualLogInstrument.ValueMember = "InstrumentID";
+                cboManualLogFunding.DataSource = dbManager.GetAccounts();
+                cboManualLogFunding.DisplayMember = "Name";
+                cboManualLogFunding.ValueMember = "Account_Number";
 
-            cboManualLogFunding.DataSource = dbManager.GetAccounts();
-            cboManualLogFunding.DisplayMember = "Name";
-            cboManualLogFunding.ValueMember = "Account_Number";
+                cboBillingSupplyFunding.DataSource = dbManager.GetAccounts();
+                cboBillingSupplyFunding.DisplayMember = "Name";
+                cboBillingSupplyFunding.ValueMember = "Account_Number";
 
-            cboBillingSupplyFunding.DataSource = dbManager.GetAccounts();
-            cboBillingSupplyFunding.DisplayMember = "Name";
-            cboBillingSupplyFunding.ValueMember = "Account_Number";
+                cboBillingSupplyName.DataSource = dbManager.GetInstruments();
+                cboBillingSupplyName.DisplayMember = "Name";
+                cboBillingSupplyName.ValueMember = "InstrumentID";
 
-            cboBillingSupplyName.DataSource = dbManager.GetInstruments();
-            cboBillingSupplyName.DisplayMember = "Name";
-            cboBillingSupplyName.ValueMember = "InstrumentID";
+                dgvTimeLogRequests.DataSource = dbManager.GetTimeLogsExceptions();
+                FindAndRenameDGVColumn("Account_Name", "Account Name", dgvTimeLogRequests);
+                FindAndRenameDGVColumn("Account_Number", "Account Number", dgvTimeLogRequests);
+            } else {
+                //TO-DO Add XML to load accounts
 
-            dgvTimeLogRequests.DataSource = dbManager.GetTimeLogsExceptions();
-            FindAndRenameDGVColumn("Account_Name", "Account Name", dgvTimeLogRequests);
-            FindAndRenameDGVColumn("Account_Number", "Account Number", dgvTimeLogRequests);
+            }
         }
 
         private void InitializeRequestTab() {
-
-            cboManualSupplyAccount.DataSource = dbManager.GetAccounts();
-            cboManualSupplyAccount.DisplayMember = "Name";
-            cboManualSupplyAccount.ValueMember = "Account_Number";
-
-            cboManualTimeAccount.DataSource = dbManager.GetAccounts();
-            cboManualTimeAccount.DisplayMember = "Name";
-            cboManualTimeAccount.ValueMember = "Account_Number";
+            if (Settings.Default.StandaloneMode == "false") {
 
             cboManualTimeInstrument.DataSource = dbManager.GetInstruments();
             cboManualTimeInstrument.DisplayMember = "Name";
@@ -120,7 +128,16 @@ namespace CUITAdmin
             cboManualSupplyItem.DataSource = dbManager.GetInstruments();
             cboManualSupplyItem.DisplayMember = "Name";
             cboManualSupplyItem.ValueMember = "InstrumentID";
+            } else {
+                //TO-DO Add XML to load     
 
+            }
+        }
+
+        private void InitializeSettingsTab() {
+            if (Properties.Settings.Default.StandaloneMode == "true") {
+                chkStandalone.Checked = true;
+            }
         }
 
         private void FindAndRenameDGVColumn(string searchName, string newHeader, DataGridView dgv) {
@@ -303,6 +320,11 @@ namespace CUITAdmin
         private bool timeValid = false;
         private void btnManualTimeValidate_Click(object sender, EventArgs e)
         {
+            bool pwValid = false;
+
+            string username = txtManualTimeUsername.Text;
+            string password = txtManualTimePassword.Text;
+
             txtManualTimeDuration.Clear();
             lblValidate.Visible = false;
             timeValid = false;
@@ -310,25 +332,37 @@ namespace CUITAdmin
             cboManualTimeAccount.Items.Clear();
             dtpManualTimeDate.Value = DateTime.Now;
 
+            if (standalone) {
+                pwValid = xmlManager.CheckPassword(username, password);
+            } else {
+                pwValid = dbManager.CheckPassword(username, password);
+            }
+
             //time log manual request log in validation
-            if (xmlManager.CheckPassword(txtManualTimeUsername.Text, txtManualTimePassword.Text))
+            if (pwValid)
             {
-                //code for populating the funding source combobox
-                BindingList<Data> comboItems = new BindingList<Data>();
-                if (!xmlManager.GetUserAccounts(txtManualTimeUsername.Text, out comboItems)) {
-                    MessageBox.Show("There are no accounts tied to this username.");
-                    return;
+                if (standalone) {
+                    //code for populating the funding source combobox
+                    BindingList<Data> comboItems = new BindingList<Data>();
+                    if (!xmlManager.GetUserAccounts(txtManualTimeUsername.Text, out comboItems)) {
+                        MessageBox.Show("There are no accounts tied to this username.");
+                        return;
+                    }
+                    cboManualTimeAccount.DataSource = comboItems;
+                    cboManualTimeAccount.DisplayMember = "Name";
+                    cboManualTimeAccount.ValueMember = "Value";
+                } else {
+                    DataTable timeAcctTable = dbManager.GetAccounts();
+                    if (timeAcctTable.Rows.Count == 0) MessageBox.Show("There are no accounts tied to this username.");
+                    cboManualTimeAccount.DataSource = timeAcctTable;
+                    cboManualTimeAccount.DisplayMember = "Name";
+                    cboManualTimeAccount.ValueMember = "Account_Number";
+
                 }
-                cboManualTimeAccount.DataSource = comboItems;
-                cboManualTimeAccount.DisplayMember = "Name";
-                cboManualTimeAccount.ValueMember = "Value";
+            
 
                 lblValidate.Visible = true;
-
-                BindingList<Data> comboInstruments = dbManager.GetInstrumentsData();
-                cboManualTimeInstrument.DataSource = comboInstruments;
-                cboManualTimeInstrument.DisplayMember = "Name";
-                cboManualTimeInstrument.ValueMember = "Value";
+                
 
 
                 timeValid = true;
@@ -360,14 +394,23 @@ namespace CUITAdmin
             }
             else
             {
+
                 //adds the time log
                 string username = txtManualTimeUsername.Text;
                 string account = cboManualTimeAccount.SelectedValue.ToString();
-                string instrument = "test";//cboManualTimeInstrument.SelectedValue.ToString();
-                string startTime = dtpManualTimeDate.Value.ToString();
-                string endTime = (dtpManualTimeDate.Value.AddMinutes(int.Parse(txtManualTimeDuration.Text))).ToString();
-                xmlManager.AddLog(username, account, instrument, startTime, endTime);
+                string instrument = cboManualTimeInstrument.SelectedValue.ToString();
 
+
+                if (standalone) {
+                    string startTime = dtpManualTimeDate.Value.ToString();
+                    string endTime = (dtpManualTimeDate.Value.AddMinutes(int.Parse(txtManualTimeDuration.Text))).ToString();
+                    xmlManager.AddLog(username, account, instrument, startTime, endTime);
+                } else {
+                    int instrumentId = int.Parse(instrument);
+                    DateTime startTime = dtpManualTimeDate.Value;
+                    DateTime endTime = dtpManualTimeDate.Value.AddMinutes(int.Parse(txtManualTimeDuration.Text));
+                    dbManager.AddTimeLog(account, dbManager.GetUserID(username), ' ', instrumentId, startTime, endTime);
+                }
                 //confirms the add to the user and resets the time log form.
                 MessageBox.Show("Time Log Manual Request Added");
                 txtManualTimeUsername.Clear();
@@ -385,8 +428,13 @@ namespace CUITAdmin
         private bool supplyValid = false;
         private void btnManualSupplyValidate_Click(object sender, EventArgs e)
         {
+            string username = txtManualSupplyUsername.Text;
+            string password = txtManualSupplyPassword.Text;
             //supplies manual request log in validation
-            if (xmlManager.CheckPassword(txtManualSupplyUsername.Text, txtManualSupplyPassword.Text))
+
+
+
+            if (xmlManager.CheckPassword(username, password))
             {
                 txtManualSupplyQuantity.Clear();
                 label12.Visible = false;
@@ -469,6 +517,17 @@ namespace CUITAdmin
 
         private void dgvTimeLogRequests_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
             MessageBox.Show("Header " + e + " Clicked");
+        }
+
+        private void chkStandalone_CheckedChanged(object sender, EventArgs e) {
+
+            if (chkStandalone.Checked) {
+                Properties.Settings.Default.StandaloneMode = "true";
+                Properties.Settings.Default.Save();
+            } else {
+                Properties.Settings.Default.StandaloneMode = "false";
+                Properties.Settings.Default.Save();
+            }
         }
     }
 }
