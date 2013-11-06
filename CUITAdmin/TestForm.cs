@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace CUITAdmin {
     public partial class TestForm : Form {
@@ -20,12 +21,22 @@ namespace CUITAdmin {
 
         private void button1_Click(object sender, EventArgs e) 
         {
-            
+            xmlManager = XmlManager.Instance; 
             int count = 0;
             DBManager mymanager = DBManager.Instance;
             Random rand = new Random();
 
-           
+            
+
+            DataTable testTable = mymanager.GetAccounts();
+            testTable.TableName = "root";
+            XmlWriter testWriter = XmlWriter.Create("test.xml");
+            DataSet testSet = new DataSet("testSet");
+            testSet.Tables.Add(testTable);
+
+            testSet.WriteXml(testWriter);
+
+            //xmlManager.AddSupplyUse("string username", "string accountnumber", "string supply", "string quantity");
 
             //mymanager.SendDataTable();
 

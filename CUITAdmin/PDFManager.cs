@@ -16,7 +16,7 @@ namespace CUITAdmin
 {
     public sealed class PDFManager
     {
-        static PDFManager globalManager = null;
+
         private static readonly object padlock = new object();
         //template pdf file in same directory as executable
         private const string PDF_TEMPLATE = @"invoicetemplate.pdf";
@@ -45,6 +45,7 @@ namespace CUITAdmin
                         newFile, FileMode.Create));
             pdfFormFields = pdfStamper.AcroFields;
         }
+
        public void CreateFolderifDoesNotExist()
        {
           if (!Directory.Exists(pathname))

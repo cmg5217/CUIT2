@@ -248,9 +248,10 @@ namespace CUITAdmin {
 
             passwordValidated = false; // Set passwordValidated back to false, used to validate before ending the log
 
+            instrument = cboInstrument.SelectedValue.ToString();
+            account = cboFundingSource.SelectedValue.ToString();
+
             if (standalone) {
-                account = cboFundingSource.SelectedValue.ToString();
-                instrument = cboInstrument.SelectedItem.ToString();
                 xmlManager.AddPartialLog(txtUsername.Text, 
                     account, 
                     instrument,
@@ -260,8 +261,8 @@ namespace CUITAdmin {
                 
 
                 if (dbManager.GetServerDateTime(out currentTime)) {
-                    dbManager.AddTimeLog(cboFundingSource.SelectedValue.ToString(), dbManager.GetUserID(username), 'Y',
-                                         int.Parse(cboInstrument.SelectedValue.ToString()), currentTime);
+                    dbManager.AddTimeLog(account, dbManager.GetUserID(username), 'Y',
+                                         int.Parse(instrument), currentTime);
                 } else {
                     MessageBox.Show("Error: Could not connect to server. \r\nCheck connection or contact your server administrater");
                 }
@@ -280,11 +281,11 @@ namespace CUITAdmin {
 
             } else {
                 DateTime endTime;
-                
-                if(dbManager.GetServerDateTime(out endTime)){
-                    //dbManager.AddTimeLogEndTime(account, dbManager.GetUserID(username), instrument, currentTime, endTime)
+                if (dbManager.GetServerDateTime(out endTime)) {
+                    dbManager.AddTimeLogEndTime(account, dbManager.GetUserID(username), int.Parse(instrument), currentTime, endTime);
+                } else {
+                    MessageBox.Show("Could not connect to server, \r\nPlease contact your server admin");
                 }
-
             }
             MoveChildren(-1 * (this.Size.Height + BOTTOM_PADDING)); //Multiply by -1 bacause the panel need to move up
             this.Dispose();

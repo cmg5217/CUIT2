@@ -36,6 +36,18 @@
     <instrument>
     </instrument>
   </instruments>
+  <supplies>
+    <supply>
+      <name></name>
+      <cost></cost>
+      <unit></unit>
+    </supply>
+    <supply>
+      <name></name>
+      <cost></cost>
+      <unit></unit>
+    </supply>
+  </supplies>
   <logs>
     <log>
       <username>chris</username>
@@ -95,6 +107,12 @@
       <username>shane</username>
       <account_number>123456789</account_number>
       <quantity>9001</quantity>
+    </supply_use>
+    <supply_use>
+      <username>string username</username>
+      <account_number>string accountnumber</account_number>
+      <supply_name>string supply</supply_name>
+      <quantity>string quantity</quantity>
     </supply_use>
   </supply_uses>
 </root>

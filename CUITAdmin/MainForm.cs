@@ -485,13 +485,15 @@ namespace CUITAdmin
             }
             else
             {
-                //adds the supply use log 
-                string username = txtManualSupplyUsername.Text;
-                string account = cboManualSupplyAccount.SelectedValue.ToString();
-                string item = "item";// cboManualSupplyItem.SelectedValue.ToString();
-                string quantity = txtManualSupplyQuantity.Text;
-                xmlManager.AddSupplyUse(username, account, item, quantity);
-                
+                    string username = txtManualSupplyUsername.Text;
+                    string account = cboManualSupplyAccount.SelectedValue.ToString();
+                if (standalone) {
+
+                    //adds the supply use log 
+                    string item = "item";// cboManualSupplyItem.SelectedValue.ToString();
+                    string quantity = txtManualSupplyQuantity.Text;
+                    xmlManager.AddSupplyUse(username, account, item, quantity);
+                }
                 //confirms the add with the user then resets the supply form
                 MessageBox.Show("Supply Manual Request Added");
                 txtManualSupplyUsername.Clear();

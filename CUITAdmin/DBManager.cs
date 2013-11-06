@@ -302,7 +302,7 @@ namespace CUITAdmin
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand(
                 "UPDATE Time_Log " +
-                "SET End_Time = @endTime" +
+                "SET End_Time = @endTime " +
                 "WHERE Account_Number = @accountNumber and UserID = @userID and InstrumentID = @instrumentID and Start_Time = @startTime", myConnection);
             
             myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
@@ -518,6 +518,7 @@ namespace CUITAdmin
             SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
 
             DataTable table = new DataTable();
+
             dataAdapter.Fill(table);
 
             myConnection.Close();
