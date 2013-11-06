@@ -294,6 +294,8 @@ namespace CUITAdmin {
         // Checks the xml to see if the username and password match, returns false if no user found or invalid password
         public bool CheckPassword(string username, string password) {
 
+            password = PasswordHash.getHashSha512(password);
+
             XmlElement userElement = null;
 
             // Find the user

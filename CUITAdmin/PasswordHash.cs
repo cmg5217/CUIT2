@@ -6,10 +6,10 @@ using System.Security.Cryptography;
 
 namespace CUITAdmin
 {
-    class PasswordHash
+    static class PasswordHash
     {
         //this method returns a SHA512 Hash string
-        public string getHashSha512(string text)
+        static public string getHashSha512(string text)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(text);
             SHA512Managed hashstring = new SHA512Managed();

@@ -79,6 +79,9 @@ namespace CUITAdmin
             myCommand.Parameters.AddWithValue("@phoneNumber", phoneNumber);
             myCommand.Parameters.AddWithValue("@email", email);
             myCommand.Parameters.AddWithValue("@userName", username);
+
+            password = PasswordHash.getHashSha512(password);
+
             myCommand.Parameters.AddWithValue("@password", password);
             myCommand.Parameters.AddWithValue("@department", department);
             myCommand.Parameters.AddWithValue("@type", type);
@@ -452,6 +455,9 @@ namespace CUITAdmin
 
 
         public bool CheckPassword(string username, string password) {
+
+            password = PasswordHash.getHashSha512(password);
+
             SqlConnection myConnection = DBConnect();
 
             SqlCommand myCommand = new SqlCommand(

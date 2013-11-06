@@ -28,13 +28,13 @@ namespace CUITAdmin {
 
             
 
-            DataTable testTable = mymanager.GetAccounts();
-            testTable.TableName = "root";
-            XmlWriter testWriter = XmlWriter.Create("test.xml");
-            DataSet testSet = new DataSet("testSet");
-            testSet.Tables.Add(testTable);
+            //DataTable testTable = mymanager.GetAccounts();
+            //testTable.TableName = "root";
+            //XmlWriter testWriter = XmlWriter.Create("test.xml");
+           // DataSet testSet = new DataSet("testSet");
+            //testSet.Tables.Add(testTable);
 
-            testSet.WriteXml(testWriter);
+            //testSet.WriteXml(testWriter);
 
             //xmlManager.AddSupplyUse("string username", "string accountnumber", "string supply", "string quantity");
 
@@ -68,8 +68,8 @@ namespace CUITAdmin {
             //                        "teststreet", "testcity", "teststate", 12345);
             //Debug.WriteLine("Line" + (++count));
            
-            //mymanager.AddUser("test", "lastName", "street", "city", "state", "12345", "8147587606", "test@test.com", "cmg" + rand.Next(), "password",
-            //    "computer science", "U", "Terrible Student", 4);
+            mymanager.AddUser("test", "lastName", "street", "city", "state", "12345", "8147587606", "test@test.com", "chris1", "tHeskull0135$",
+                "computer science", "U", "Terrible Student", 4);
 
             //mymanager.AddUserAccount(1, "1");
             //Debug.WriteLine("Line" + (++count));
