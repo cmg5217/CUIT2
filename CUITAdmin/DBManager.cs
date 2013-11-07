@@ -781,78 +781,17 @@ namespace CUITAdmin
         #endregion End Get Region
 
 
-        public void GenerateAllInvoices(DateTime startDate, DateTime endDate) {
+        public void GenerateAllInvoices(DateTime startDate, DateTime endDate, out List<int> invoicesGenerated) {
+            List<string> accounts = GetAccountNumberList();
+            List<int> invoiceNumbers = new List<int>();
 
-            DataTable timeLogs = GetTimeLogsFromRange(startDate, endDate, false);
-
-            DataRowCollection rows = timeLogs.Rows;
-
-            List<Invoice> invoices = new List<Invoice>();
-
-
-
-            // Loop through all timelogs in the data table
-            foreach (DataRow currentRow in rows) {
-
-                Invoice invoiceToUpdate = null;
-                InvoiceInstrumentLine instrumentToUpdate = null;
-                bool foundFlag = false;
-
-
-                // Check if an invoice with the current account number has already been generated for the account in the current row
-                foreach (Invoice currentInvoice in invoices) {
-                    if (currentRow["Account_Number"].ToString() == currentInvoice.accountNumber) {
-                        invoiceToUpdate = currentInvoice;
-                        foundFlag = true;
-                        break;
-                    }
-                }
-
-                // If there was no invoice, create one.
-                if (!foundFlag) {
-
-                    invoiceToUpdate = new Invoice {
-                        accountNumber = currentRow["Account_Number"].ToString(),
-                        accountName = currentRow["Name"].ToString(),
-                        instrumets = new List<InvoiceInstrumentLine>(),
-                        supplies = new List<InvoiceSupplyLine>(),
-                        dateGenerated = DateTime.Now
-                    };
-
-                    DateTime startTime = (DateTime)currentRow["Start_Time"];
-                    DateTime endTime = (DateTime)currentRow["End_Time"];
-                    TimeSpan duration = endTime - startTime;
-
-
-                    instrumentToUpdate = new InvoiceInstrumentLine {
-                        name = currentRow["Name1"].ToString(),
-                        id = (int)currentRow["InstrumentID"],
-                        hours = duration.TotalHours,
-                        rate = (double)currentRow["Current_Rate"],
-                    };
-
-                    invoices.Add(invoiceToUpdate);
-                }
-
-                foundFlag = false;
-
-
-
-                foreach (InvoiceInstrumentLine currentInstrument in invoiceToUpdate.instrumets) {
-                    if (currentInstrument.id == (int)currentRow["InstrumentID"] &&
-                        currentInstrument.rate == (double)currentRow["InstrumentID"]) {
-                        instrumentToUpdate = currentInstrument;
-                        foundFlag = true;
-                        break;
-                    }
-                }
-
-                if (!foundFlag) {
-                    instrumentToUpdate = new InvoiceInstrumentLine();
-                }
-
-
+            foreach (string currentAccount in accounts) {
+                int invoiceNumber;
+                GenerateInvoice(currentAccount, startDate, endDate, out invoiceNumber);
+                invoiceNumbers.Add(invoiceNumber);
             }
+
+            invoicesGenerated = invoiceNumbers;
         }
 
         public bool GenerateInvoice(string accountNumber, DateTime startDate, DateTime endDate)
