@@ -23,7 +23,7 @@ namespace CUITAdmin
         PdfReader pdfReader;
         PdfStamper pdfStamper;
         AcroFields pdfFormFields;
-        private static string filename = @"\default.pdf";
+        private static string filename = @"default.pdf";
         private static string pathname = Settings.Default["InvoicePath"].ToString() + @"\Invoices\" + (DateTime.Now.Year);
         private static string fullpath = pathname + filename;
        
@@ -33,9 +33,11 @@ namespace CUITAdmin
             //If the program has not been used on the user's
             //computer before, the path will default to the user's desktop.
             //TODO: make filename set to invoiceID
-            : this(fullpath)
+            : this(filename)
         {
-        }    
+        }
+
+       
        public PDFManager(string newFile){
 
            CreateFolderifDoesNotExist();
@@ -43,10 +45,11 @@ namespace CUITAdmin
             pdfReader = new PdfReader(PDF_TEMPLATE);
 
             pdfStamper = new PdfStamper(pdfReader, new FileStream(
-                          newFile, FileMode.Create));
+                          pathname + "\\" + newFile, FileMode.Create));
             pdfFormFields = pdfStamper.AcroFields;
 
         }
+
 
        // crete the directory if it does not exist (/Invoices/[currentyear])
        public void CreateFolderifDoesNotExist()

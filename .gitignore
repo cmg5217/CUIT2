@@ -3,7 +3,7 @@ CUITAdmin/bin/Debug/*
 !itextsharp.dll
 !invoicetemplate.pdf
 !records.xml
-
+!GLSU Template
 
 CUIT/CUITAdmin/bin/*
 CUIT/CUITClient/bin/*
