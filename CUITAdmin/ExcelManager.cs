@@ -28,6 +28,8 @@ namespace CUITAdmin
         private static System.Data.DataTable invoiceDataTable;
         DBManager dbManager;
 
+
+
         static public void generateExcel(System.Data.DataTable invoiceDataTable)
         {
             generateExcel(new System.Data.DataTable[] { invoiceDataTable });
@@ -35,16 +37,20 @@ namespace CUITAdmin
 
         static public void generateExcel(System.Data.DataTable[] invoiceArray)
         {
+
+            string excelfilename = @"\" + DateTime.Now.ToString("MMMMMMMM yyyy") + ".xls";
             //checks if the files exists and delets it if it does exits            
-            if (File.Exists(pathname + @"\GLSUExport.xls"))
+            if (File.Exists(pathname + excelfilename))
             {
-                
-                File.Delete(pathname + @"\GLSUExport.xls");
+
+                File.Delete(pathname + excelfilename);
                 
             }
+            
+
             //copies the template from the bin folder to a predetermined location
-            System.IO.File.Copy(@"GLSU Template.xls", pathname + @"\GLSUExport.xls");
-            string path = pathname + @"\GLSUExport.xls";
+            System.IO.File.Copy(@"GLSU Template.xls", pathname + excelfilename);
+            string path = pathname + excelfilename;
             
             //write info to newly copied excel file
             oXL = new Microsoft.Office.Interop.Excel.Application();
