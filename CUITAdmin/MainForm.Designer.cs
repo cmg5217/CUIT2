@@ -76,6 +76,7 @@
             this.btnSubmit = new System.Windows.Forms.Button();
             this.InvoiceExportPath = new System.Windows.Forms.FolderBrowserDialog();
             this.tbpSettings = new System.Windows.Forms.TabPage();
+            this.chkStandalone = new System.Windows.Forms.CheckBox();
             this.grpExportPath = new System.Windows.Forms.GroupBox();
             this.lblExportPath = new System.Windows.Forms.Label();
             this.txtInvoiceExportPath = new System.Windows.Forms.TextBox();
@@ -188,33 +189,6 @@
             "AccountA",
             "AccountB",
             "AccountC"});
-            this.comboBoxSelectAccount.Location = new System.Drawing.Point(79, 77);
-            this.comboBoxSelectAccount.Name = "comboBoxSelectAccount";
-            this.comboBoxSelectAccount.Size = new System.Drawing.Size(121, 21);
-            this.comboBoxSelectAccount.TabIndex = 3;
-            // 
-            // txtAccount
-            // 
-            this.txtAccount.AutoSize = true;
-            this.txtAccount.Location = new System.Drawing.Point(23, 80);
-            this.txtAccount.Name = "txtAccount";
-            this.txtAccount.Size = new System.Drawing.Size(50, 13);
-            this.txtAccount.TabIndex = 5;
-            this.txtAccount.Text = "Account:";
-            // 
-            // txtMonth
-            // 
-            this.txtMonth.AutoSize = true;
-            this.txtMonth.Location = new System.Drawing.Point(22, 40);
-            this.txtMonth.Name = "txtMonth";
-            this.txtMonth.Size = new System.Drawing.Size(40, 13);
-            this.txtMonth.TabIndex = 4;
-            this.txtMonth.Text = "Month:";
-            // 
-            // comboBoxSelectAccount
-            // 
-            this.comboBoxSelectAccount.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxSelectAccount.FormattingEnabled = true;
             this.comboBoxSelectAccount.Location = new System.Drawing.Point(79, 77);
             this.comboBoxSelectAccount.Name = "comboBoxSelectAccount";
             this.comboBoxSelectAccount.Size = new System.Drawing.Size(121, 21);
@@ -659,6 +633,7 @@
             // 
             // tbpSettings
             // 
+            this.tbpSettings.Controls.Add(this.chkStandalone);
             this.tbpSettings.Controls.Add(this.grpExportPath);
             this.tbpSettings.Location = new System.Drawing.Point(4, 22);
             this.tbpSettings.Name = "tbpSettings";
@@ -666,6 +641,17 @@
             this.tbpSettings.TabIndex = 3;
             this.tbpSettings.Text = "Settings";
             this.tbpSettings.UseVisualStyleBackColor = true;
+            // 
+            // chkStandalone
+            // 
+            this.chkStandalone.AutoSize = true;
+            this.chkStandalone.Location = new System.Drawing.Point(149, 207);
+            this.chkStandalone.Name = "chkStandalone";
+            this.chkStandalone.Size = new System.Drawing.Size(110, 17);
+            this.chkStandalone.TabIndex = 6;
+            this.chkStandalone.Text = "Standalone Mode";
+            this.chkStandalone.UseVisualStyleBackColor = true;
+            this.chkStandalone.CheckedChanged += new System.EventHandler(this.chkStandalone_CheckedChanged);
             // 
             // grpExportPath
             // 
@@ -798,6 +784,7 @@
             // 
             this.txtManualSupplyPassword.Location = new System.Drawing.Point(128, 51);
             this.txtManualSupplyPassword.Name = "txtManualSupplyPassword";
+            this.txtManualSupplyPassword.PasswordChar = '*';
             this.txtManualSupplyPassword.Size = new System.Drawing.Size(148, 20);
             this.txtManualSupplyPassword.TabIndex = 21;
             // 
@@ -935,6 +922,7 @@
             // 
             this.txtManualTimePassword.Location = new System.Drawing.Point(120, 51);
             this.txtManualTimePassword.Name = "txtManualTimePassword";
+            this.txtManualTimePassword.PasswordChar = '*';
             this.txtManualTimePassword.Size = new System.Drawing.Size(148, 20);
             this.txtManualTimePassword.TabIndex = 17;
             // 
@@ -1063,6 +1051,7 @@
             this.grpTimeLogExceptions.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvTimeLogRequests)).EndInit();
             this.tbpSettings.ResumeLayout(false);
+            this.tbpSettings.PerformLayout();
             this.grpExportPath.ResumeLayout(false);
             this.grpExportPath.PerformLayout();
             this.tabControlMain.ResumeLayout(false);
@@ -1164,6 +1153,7 @@
         private System.Windows.Forms.ComboBox comboBoxSelectAccount;
         private System.Windows.Forms.Label txtAccount;
         private System.Windows.Forms.Label txtMonth;
+        private System.Windows.Forms.CheckBox chkStandalone;
     }
 }
 

@@ -16,7 +16,7 @@ namespace CUITAdmin
 {
     public sealed class PDFManager
     {
-        static PDFManager globalManager = null;
+
         private static readonly object padlock = new object();
         //template pdf file in same directory as executable
         private const string PDF_TEMPLATE = @"invoicetemplate.pdf";
@@ -41,10 +41,14 @@ namespace CUITAdmin
            CreateFolderifDoesNotExist();
             // open the invoice template using PdfReader
             pdfReader = new PdfReader(PDF_TEMPLATE);
+
             pdfStamper = new PdfStamper(pdfReader, new FileStream(
-                        newFile, FileMode.Create));
+                          newFile, FileMode.Create));
             pdfFormFields = pdfStamper.AcroFields;
+
         }
+
+       // crete the directory if it does not exist (/Invoices/[currentyear])
        public void CreateFolderifDoesNotExist()
        {
           if (!Directory.Exists(pathname))
@@ -68,22 +72,34 @@ namespace CUITAdmin
         {
             
             pdfFormFields.SetField("Address", name + Environment.NewLine
-               + street + Environment.NewLine + city +","+ state +" "+ zip);
+               + street + Environment.NewLine + city +", "+ state +" "+ zip);
         }
 
         //Add Service//////////////
-        public void AddService(string service, string date, string unitquantity, string rate, string unit)
+        public void AddService(string service, string postStartDate, string postEndDate, string unitquantity, string rate, string unit)
         {
             
             string field = pdfFormFields.GetField("services");
+            //old code
+            //pdfFormFields.SetField("services", service +
+            //Environment.NewLine + "(" + postStartDate + ", " 
+            //+ unitquantity + " " + unit + "s" + " @ $" + rate + "/" + unit + "" + ")" +
+            //Environment.NewLine + Environment.NewLine); 
+            ///
             pdfFormFields.SetField("services", field + service +
-                 Environment.NewLine + "(" + date + ", " + unitquantity + " " + unit +"s" + " @ $" + rate + "/" + unit + "" +")"+
-                 Environment.NewLine + Environment.NewLine); 
+            Environment.NewLine + "Post Start Date: " + postStartDate + Environment.NewLine +"Post End Date: "+ postEndDate
+             + Environment.NewLine+ "("+ unitquantity +" "  + unit + "s" + " @ $" + rate 
+             + "/" + unit + "" + ")" + Environment.NewLine + Environment.NewLine);
+
+
+
         }
         //add charge////////////////////
         public void AddCharge(string chargeamount)
         {
-            pdfFormFields.SetField("charges", "$" + chargeamount);                   
+            string field = pdfFormFields.GetField("charges");
+
+            pdfFormFields.SetField("charges", field + "$" + chargeamount + "\r\n\r\n\r\n\r\n\r\n");                   
         }
         //add balance/////////////////////
         public void AddBalance(string balance)
@@ -91,7 +107,7 @@ namespace CUITAdmin
            
 
             pdfFormFields.SetField("balance", Environment.NewLine + Environment.NewLine + Environment.NewLine +
-                Environment.NewLine + "$"+balance);
+                Environment.NewLine + balance);
         }
         //add date/////////////////////////
         public void AddDate(string Date)
@@ -104,6 +120,55 @@ namespace CUITAdmin
         {
          
             pdfFormFields.SetField("FillText1", invoiceID);
+        }
+
+        public void GenerateOldInvoice(int invoiceNumber) {
+            DBManager dbManager = DBManager.Instance;
+            //MessageBox.Show(endtime.ToString());
+            //the offset 
+            string offset = "";
+            //int invoiceID;
+            //dbManager.GenerateInvoice("1", DateTime.Now.AddDays(-5), DateTime.Now, out invoiceID);
+
+            DataTable invoice = dbManager.GetInvoice(invoiceNumber);
+            DataTable invoiceTime = dbManager.GetInvoiceTimeLine(invoiceNumber);
+            DataTable invoiceSupply = dbManager.GetInvoiceSupplyLine(invoiceNumber);
+            DataTable getacc = dbManager.GetAccounts();
+            //convert date time to invoice friendly format
+            DateTime poststart = DateTime.Parse(invoice.Rows[0]["Posting_Start_Date"].ToString());
+            DateTime postend = DateTime.Parse(invoice.Rows[0]["Posting_End_Date"].ToString());
+            //MessageBox.Show(test.ToShortDateString().ToString());
+
+            // try
+            // {
+
+
+            //pdfManager.AddAddress("Name", "Street", "City", "State", "Zip");
+            AddAddress(getacc.Rows[0]["Name"].ToString(),
+                getacc.Rows[0]["Street"].ToString(), //add street to invocie
+                getacc.Rows[0]["City"].ToString(), // add city to invoice
+                getacc.Rows[0]["State"].ToString(), //add state to invoice
+                getacc.Rows[0]["Zip"].ToString()); //add zip to invoice
+
+            //pdfManager.AddService("Instrument", "StartPostDate", "EndPostDate","hours", "rate ($/hr)", "unit(hours days ects)");
+            foreach (DataRow currentRow in invoiceTime.Rows)
+            {
+
+                AddService(
+                    currentRow["Name"].ToString(), //insert time into the invoice
+                    poststart.ToShortDateString().ToString(), //insert start date into invoice
+                    postend.ToShortDateString().ToString(),  //insert end date into invoice
+                    currentRow["Hours"].ToString(), //insert hours into invoice
+                    currentRow["Rate"].ToString(), //insert dollars per hour into invoice
+                    "day");// unit of biling displayed on invoice
+                AddCharge(currentRow["Line_Amount"].ToString()); //add charge to invoice
+                offset += "\r\n\r\n";
+            }
+
+            AddDate(DateTime.Now.ToString()); //Add todays date to the invoice
+            AddInvoiceID(invoice.Rows[0]["InvoiceID"].ToString()); // add invoice id to invoice
+            AddBalance(offset + "$" + invoice.Rows[0]["Total_Balance"].ToString()); // add balance to invoice
+
         }
 
               

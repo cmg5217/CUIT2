@@ -33,7 +33,7 @@ namespace CUITAdmin.Properties {
                 return ((string)(this["CUIT_TRIALConnectionString"]));
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
@@ -43,6 +43,17 @@ namespace CUITAdmin.Properties {
             }
             set {
                 this["InvoicePath"] = value;
+            }
+        }
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("false")]
+        public string StandaloneMode {
+            get {
+                return ((string)(this["StandaloneMode"]));
+            }
+            set {
+                this["StandaloneMode"] = value;
             }
         }
     }

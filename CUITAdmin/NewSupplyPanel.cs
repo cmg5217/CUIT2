@@ -173,7 +173,7 @@ namespace CUITAdmin
                 MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
             else
             {
-                dbManager.AddSupply(txtSupplyName.Text, int.Parse(txtSupplyCost.Text), txtUnit.Text);
+                dbManager.AddSupply(txtSupplyName.Text, Double.Parse(txtSupplyCost.Text), txtUnit.Text);
                 containingForm.Close();
             }
         }

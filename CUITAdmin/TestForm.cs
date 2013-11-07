@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace CUITAdmin {
     public partial class TestForm : Form {
@@ -20,17 +21,29 @@ namespace CUITAdmin {
 
         private void button1_Click(object sender, EventArgs e) 
         {
-            
+            xmlManager = XmlManager.Instance; 
             int count = 0;
             DBManager mymanager = DBManager.Instance;
             Random rand = new Random();
+
+            
+
+            //DataTable testTable = mymanager.GetAccounts();
+            //testTable.TableName = "root";
+            //XmlWriter testWriter = XmlWriter.Create("test.xml");
+           // DataSet testSet = new DataSet("testSet");
+            //testSet.Tables.Add(testTable);
+
+            //testSet.WriteXml(testWriter);
+
+            //xmlManager.AddSupplyUse("string username", "string accountnumber", "string supply", "string quantity");
 
             //mymanager.SendDataTable();
 
             //MessageBox.Show(DateTime.Now.ToString());
 
 
-            mymanager.GenerateInvoice("1", DateTime.Now.AddDays(-15), DateTime.Now);
+            
 
             //DataTable testTable = mymanager.GetUserAccounts("cmg5217");
             
@@ -48,24 +61,26 @@ namespace CUITAdmin {
             //Debug.WriteLine("Line" + (++count));
 
             #region Add Account, User, and User_Account
-            /*
+            
             string testAccountNum = "TestAcct" + rand.Next();
             
-            //mymanager.AddAccount("1", "testAccount", 1000000, DateTime.Now, "Internal Academic", 4, "this guy is terrible", "costCenter test", "1234", 0);
-            Debug.WriteLine("Line" + (++count));
+            //mymanager.AddAccount("1", "testAccount", 1000000, DateTime.Now, "Internal Academic", 4, "this guy is terrible", "costCenter test", "1234", 0,
+            //                        "teststreet", "testcity", "teststate", 12345);
+            //Debug.WriteLine("Line" + (++count));
            
-            //mymanager.AddUser("test", "lastName", "street", "city", "state", "12345", "8147587606", "test@test.com", "cmg" + rand.Next(), "password",
-            //    "computer science", "U", "Terrible Student", 4);
-            Debug.WriteLine("Line" + (++count));
+            mymanager.AddUser("test", "lastName", "street", "city", "state", "12345", "8147587606", "test@test.com", "chris1", "tHeskull0135$",
+                "computer science", "U", "Terrible Student", 4);
 
             //mymanager.AddUserAccount(1, "1");
-            */
+            //Debug.WriteLine("Line" + (++count));
+            
             #endregion
             
             
 
             //Debug.WriteLine("Line" + (++count));
-            //mymanager.AddTimeLog("1", "", true, currentRate, instrumentID, DateTime.Now, DateTime.Now); 
+            //DateTime startTime = DateTime.Now.AddHours(-10);
+            //mymanager.AddTimeLog("1", 1, 'Y', 1, startTime, DateTime.Now); 
             
             #region Add Supply & Use
             /*
@@ -73,7 +88,7 @@ namespace CUITAdmin {
             mymanager.AddSupplyUse("1", "TestSupply", DateTime.Now, 20);
             Debug.WriteLine("Line" + (++count));
             mymanager.AddSupply("testsupply" + DateTime.Now.ToString(), 100, "gm");
-             */
+            */
             #endregion
 
 
@@ -98,7 +113,8 @@ namespace CUITAdmin {
             //mymanager.AddInstrumentRate("TestRate" + rand.Next(), 10, 1);
              
             #endregion
-            
+
+            //mymanager.GenerateInvoice("1", DateTime.Now.AddDays(-15), DateTime.Now);
             
         }
 

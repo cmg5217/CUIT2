@@ -1,4 +1,14 @@
-﻿using System;
+﻿/* TO-DO Take into account instrument increment 
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
+
+
+
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -69,6 +79,9 @@ namespace CUITAdmin
             myCommand.Parameters.AddWithValue("@phoneNumber", phoneNumber);
             myCommand.Parameters.AddWithValue("@email", email);
             myCommand.Parameters.AddWithValue("@userName", username);
+
+            password = PasswordHash.getHashSha512(password);
+
             myCommand.Parameters.AddWithValue("@password", password);
             myCommand.Parameters.AddWithValue("@department", department);
             myCommand.Parameters.AddWithValue("@type", type);
@@ -137,16 +150,16 @@ namespace CUITAdmin
         }
 
         // TESTED 11-4
-        public void AddAccount(string accountNumber, string name, int maxChargeLimit, DateTime accountExpiration,
-                string rateType, int managerID, string notes, string costCenter, string wbsNumber, int balance) {
+        public void AddAccount(string accountNumber, string name, double maxChargeLimit, DateTime accountExpiration, string rateType, int managerID, 
+            string notes, string costCenter, string wbsNumber, double balance, string street, string city, string state, int zip) {
             SqlConnection myConnection = DBConnect();
 
             SqlCommand myCommand = new SqlCommand("INSERT into Account " +
             "(Account_Number, Name, Max_Charge_Limit, Account_Expiration, Rate_Type, PointOfContactID, Notes, Cost_Center, " +
-            "WBS_Number, Balance) " +
+            "WBS_Number, Balance, Street, City, State, Zip) " +
 
             "VALUES (@accountNumber, @name, @maxChargeLimit, @accountExpiration, @rateType, @pointOfContact, " +
-            "@notes, @costCenter, @wbsNumber, @balance)", myConnection);
+            "@notes, @costCenter, @wbsNumber, @balance, @street, @city, @state, @zip)", myConnection);
 
 
             myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
@@ -159,6 +172,10 @@ namespace CUITAdmin
             myCommand.Parameters.AddWithValue("@costCenter", costCenter);
             myCommand.Parameters.AddWithValue("@wbsNumber", wbsNumber);
             myCommand.Parameters.AddWithValue("@balance", balance);
+            myCommand.Parameters.AddWithValue("@street", street);
+            myCommand.Parameters.AddWithValue("@city", city);
+            myCommand.Parameters.AddWithValue("@state", state);
+            myCommand.Parameters.AddWithValue("@zip", zip);
 
             try {
                 myCommand.ExecuteNonQuery();
@@ -215,7 +232,7 @@ namespace CUITAdmin
             myConnection.Close();
         }
 
-        public void AddSupply(string supplyName, int cost, string unit) {
+        public void AddSupply(string supplyName, double cost, string unit) {
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand("INSERT INTO Supply(Supply_Name, Cost, Unit)" +
                 "VALUES(@supplyName, @cost, @unit)", myConnection);
@@ -255,22 +272,22 @@ namespace CUITAdmin
         }
 
 
-        private void AddTimeLog(string accountNumber, string userID, char approved, int currentRate, string instrumentID, DateTime startTime) {
-            AddTimeLog(accountNumber, userID, approved, currentRate, instrumentID, startTime, DateTime.Now, true);
+        public void AddTimeLog(string accountNumber, int userID, char approved, int instrumentID, DateTime startTime) {
+            AddTimeLog(accountNumber, userID, approved, instrumentID, startTime, DateTime.Now, true);
         }
 
-        private void AddTimeLog(string accountNumber, string userID, char approved, int currentRate, string instrumentID, DateTime startTime, DateTime endTime, bool partialLog = false) {
+        public void AddTimeLog(string accountNumber, int userID, char approved, int instrumentID, DateTime startTime, DateTime endTime, bool partialLog = false) {
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand();
             myCommand.Connection = myConnection;
-            myCommand.CommandText = "insertSupplyUse";
+            myCommand.CommandText = "insertTimeLog";
             myCommand.CommandType = System.Data.CommandType.StoredProcedure;
             myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
             myCommand.Parameters.AddWithValue("@userID", userID);
-            myCommand.Parameters.AddWithValue("@approved", approved);
+            if(!(approved == ' ')) myCommand.Parameters.AddWithValue("@approved", approved);
             myCommand.Parameters.AddWithValue("@startTime", startTime);
-            if (partialLog) myCommand.Parameters.AddWithValue("@endTime", endTime);
-            myCommand.Parameters.AddWithValue("@currentRate", currentRate);
+
+            if (!partialLog) myCommand.Parameters.AddWithValue("@endTime", endTime);
             myCommand.Parameters.AddWithValue("@instrumentID", instrumentID);
 
             try {
@@ -282,14 +299,34 @@ namespace CUITAdmin
             myConnection.Close();
         }
 
+        public void AddTimeLogEndTime(string accountNumber, int userID, int instrumentID, DateTime startTime, DateTime endTime) {
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand(
+                "UPDATE Time_Log " +
+                "SET End_Time = @endTime " +
+                "WHERE Account_Number = @accountNumber and UserID = @userID and InstrumentID = @instrumentID and Start_Time = @startTime", myConnection);
+            
+            myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
+            myCommand.Parameters.AddWithValue("@userID", userID);
+            myCommand.Parameters.AddWithValue("@instrumentID", instrumentID);
+            myCommand.Parameters.AddWithValue("@startTime", startTime);
+            myCommand.Parameters.AddWithValue("@endTime", endTime);
 
+            try {
+                myCommand.ExecuteNonQuery();
+            } catch (Exception e) {
+                Debug.WriteLine(e.Message);
+            }
 
-        public void AddInvoice(DateTime dateGenerated, DateTime postingStartDate, DateTime postingEndDate, string accountNumber, int totalBalance) {
+            myConnection.Close();
+        }
+
+        public void AddInvoice(DateTime dateGenerated, DateTime postingStartDate, DateTime postingEndDate, string accountNumber, double totalBalance) {
             int throwaway;
             AddInvoice(dateGenerated, postingStartDate, postingEndDate, accountNumber, totalBalance, out throwaway);
         }
 
-        public void AddInvoice(DateTime dateGenerated, DateTime postingStartDate, DateTime postingEndDate, string accountNumber, int totalBalance, out int invoiceID) {
+        public void AddInvoice(DateTime dateGenerated, DateTime postingStartDate, DateTime postingEndDate, string accountNumber, double totalBalance, out int invoiceID) {
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand("INSERT INTO Invoice (Posting_Start_Date, Account_Number, Total_Balance, Posting_End_Date, Date_Generated) " +
                 "VALUES(@postingStartDate, @accountNumber, @totalBalance, @postingEndDate, @dateGenerated)" +
@@ -316,7 +353,7 @@ namespace CUITAdmin
         }
 
         // TO-DO Test
-        public void AddInvoiceSupplyLine(string supplyName, int lineAmount, int invoiceID) {
+        public void AddInvoiceSupplyLine(string supplyName, double lineAmount, int invoiceID) {
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand("INSERT INTO Invoice_Supply_Line (Supply_Name, Line_Amount, InvoiceID)" +
                 "VALUES (@supplyName, @lineAmount, @invoiceID)", myConnection);
@@ -335,7 +372,7 @@ namespace CUITAdmin
         }
 
         // TO-DO test
-        public void AddInvoiceTimeLine(string instrumentID, int hours, int lineAmount, int invoiceID) {
+        public void AddInvoiceTimeLine(string instrumentID, double hours, double lineAmount, int invoiceID) {
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand("INSERT INTO Invoice_Time_Line(InstrumentID, Hours, Line_Amount, InvoiceID) " +
                 "VALUES(@InstrumentID, @hours, @lineAmount, @invoiceID)", myConnection);
@@ -391,7 +428,7 @@ namespace CUITAdmin
             myConnection.Close();
         }
 
-        public void AddInstrumentRate(string rateName, int rate, int instrumentID) {
+        public void AddInstrumentRate(string rateName, double rate, int instrumentID) {
 
             SqlConnection myConnection = DBConnect();
 
@@ -416,6 +453,9 @@ namespace CUITAdmin
 
 
         public bool CheckPassword(string username, string password) {
+
+            password = PasswordHash.getHashSha512(password);
+
             SqlConnection myConnection = DBConnect();
 
             SqlCommand myCommand = new SqlCommand(
@@ -442,7 +482,7 @@ namespace CUITAdmin
         
         public int GetUserID(string username) {
             SqlConnection myConnection = DBConnect();
-            SqlCommand myCommand = new SqlCommand("SELECT PersonID FROM Users" +
+            SqlCommand myCommand = new SqlCommand("SELECT PersonID FROM Users " +
                                                   "WHERE Username = @username", myConnection);
 
             myCommand.Parameters.AddWithValue("@username", username);
@@ -450,7 +490,7 @@ namespace CUITAdmin
             int personID = 0;
 
             try {
-                personID = (int) myCommand.ExecuteScalar();
+                personID = int.Parse(myCommand.ExecuteScalar().ToString());
             } catch (Exception e) {
                 Debug.Write(e.ToString());
             }
@@ -478,10 +518,12 @@ namespace CUITAdmin
 
         public DataTable GetAccounts() {
             SqlConnection myConnection = DBConnect();
-            string myCommand = "SELECT Account_Number, Name, Max_Charge_Limit, Balance, First_Name, Last_Name FROM Account acct left outer join Point_of_Contact poc on acct.PointOfContactID = poc.PersonID left outer join Person psn on poc.PersonID = psn.PersonID";
+            //Account_Number, Name, Max_Charge_Limit, Balance, First_Name, Last_Name
+            string myCommand = "SELECT * FROM Account acct left outer join Point_of_Contact poc on acct.PointOfContactID = poc.PersonID left outer join Person psn on poc.PersonID = psn.PersonID";
             SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
 
             DataTable table = new DataTable();
+
             dataAdapter.Fill(table);
 
             myConnection.Close();
@@ -537,10 +579,10 @@ namespace CUITAdmin
             return table;
         }
 
-        public DataTable GetTimeLogs(string accountNumber, DateTime startDate, DateTime endDate, bool acceptNull) {
+        public DataTable GetTimeLogs(string accountNumber, DateTime startDate, DateTime endDate, bool acceptNull = false) {
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand(
-                "Select tl.Account_Number, acct.Name, i.InstrumentID, i.Name, tl.Start_Time, tl.End_Time, tl.Current_Rate " +
+                "Select tl.Account_Number, acct.Name, i.InstrumentID, i.Name, tl.Start_Time, tl.End_Time, tl.Current_Rate, tl.Time_Increment " +
                 "From Time_Log tl INNER JOIN Account acct on tl.Account_Number = acct.Account_Number INNER JOIN Instrument i on tl.InstrumentID = i.InstrumentID " +
                 "WHERE tl.Account_Number = @accountNumber and tl.Start_Time between @startDate and @endDate" + ((!acceptNull) ? " and tl.End_Time IS NOT NULL" : "")
                 , myConnection);
@@ -607,11 +649,47 @@ namespace CUITAdmin
             return table;
         }
 
-        public DataTable GetInvoice(string accountNumber) {
+        public DataTable GetInvoice(int invoiceID)
+        {
             SqlConnection myConnection = DBConnect();
-            SqlCommand myCommand = new SqlCommand("SELECT * From Invoice Where Account_Number = @accountNumber", myConnection);
+            SqlCommand myCommand = new SqlCommand("SELECT * From Invoice Where InvoiceID = @invoiceID", myConnection);
 
-            myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
+            myCommand.Parameters.AddWithValue("@invoiceID", invoiceID);
+
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+
+            DataTable table = new DataTable();
+            dataAdapter.Fill(table);
+
+            myConnection.Close();
+            return table;
+        }
+
+        public DataTable GetInvoiceTimeLine(int invoiceID)
+        {
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand(
+                "SELECT * " +
+                "From Invoice_Time_Line tl INNER JOIN Instrument i on tl.InstrumentID = i.InstrumentID " +
+                "Where InvoiceID = @invoiceID", myConnection);
+
+            myCommand.Parameters.AddWithValue("@invoiceID", invoiceID);
+
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+
+            DataTable table = new DataTable();
+            dataAdapter.Fill(table);
+
+            myConnection.Close();
+            return table;
+        }
+
+        public DataTable GetInvoiceSupplyLine(int invoiceID)
+        {
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand("SELECT * From Invoice_Supply_Line Where InvoiceID = @invoiceID", myConnection);
+
+            myCommand.Parameters.AddWithValue("@invoiceID", invoiceID);
 
             SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
 
@@ -678,7 +756,6 @@ namespace CUITAdmin
         }
         
         #endregion End Get Region
-
 
 
         public void GenerateAllInvoices(string accountNumber, DateTime startDate, DateTime endDate) {
@@ -755,7 +832,15 @@ namespace CUITAdmin
             }
         }
 
-        public bool GenerateInvoice(string accountNumber, DateTime startDate, DateTime endDate) {
+        public bool GenerateInvoice(string accountNumber, DateTime startDate, DateTime endDate)
+        {
+            int throwaway;
+            return GenerateInvoice(accountNumber, startDate, endDate, out throwaway);
+        }
+
+        public bool GenerateInvoice(string accountNumber, DateTime startDate, DateTime endDate, out int invoiceNumber) {
+            // Used as a default value in the event that this terminates early
+            invoiceNumber = 0;
 
             // Create an invoice for the account and set it's values, this will be used to build an SQL Query later
             Invoice invoice = new Invoice();
@@ -789,7 +874,7 @@ namespace CUITAdmin
             invoiceSupplyLine.Columns.Add("Cost");
             invoiceSupplyLine.Columns.Add("Quantity");
 
-            if (invoice.supplies.Count == 0 || invoice.instrumets.Count == 0) return false;
+            if (invoice.supplies.Count == 0 && invoice.instrumets.Count == 0) return false;
 
             SqlConnection myConnection = DBConnect();
 
@@ -842,7 +927,7 @@ namespace CUITAdmin
 
             SendDataTable(invoiceTimeLine, "Invoice_Time_Line");
             SendDataTable(invoiceSupplyLine, "Invoice_Supply_Line");
-
+            invoiceNumber = invoiceID;
             return true;
         }
 
@@ -862,7 +947,8 @@ namespace CUITAdmin
 
                 foreach (InvoiceInstrumentLine currentInstrument in invoice.instrumets) {
                     if (currentInstrument.id == Convert.ToInt32(currentRow["InstrumentID"]) &&
-                        currentInstrument.rate == Convert.ToDouble(currentRow["Current_Rate"])) {
+                        currentInstrument.rate == Convert.ToDouble(currentRow["Current_Rate"]) &&
+                        currentInstrument.timeIncrement == Convert.ToInt32(currentRow["Time_Increment"])) {
                         instrumentToUpdate = currentInstrument;
                         foundFlag = true;
                         break;
@@ -876,6 +962,7 @@ namespace CUITAdmin
                     instrumentToUpdate.id = Convert.ToInt32(currentRow["InstrumentID"]);
                     instrumentToUpdate.hours = duration.TotalHours;
                     instrumentToUpdate.rate = Convert.ToDouble(currentRow["Current_Rate"]);
+                    instrumentToUpdate.timeIncrement = Convert.ToInt32(currentRow["Time_Increment"]);
                     invoice.instrumets.Add(instrumentToUpdate);
                 } else {
                     instrumentToUpdate.hours += duration.TotalHours;
@@ -886,7 +973,7 @@ namespace CUITAdmin
             }
 
             foreach (InvoiceInstrumentLine currentLine in invoice.instrumets) {
-                currentLine.charges = currentLine.hours * currentLine.rate;
+                currentLine.charges = (currentLine.hours * 60) / currentLine.timeIncrement * currentLine.rate;
                 invoice.totalBalance += currentLine.charges;
             }
 
@@ -930,6 +1017,7 @@ namespace CUITAdmin
             }
         }
 
+
         public void SendDataTable(DataTable tableToSend, string destinationTable) {
 
             SqlConnection myConnection = DBConnect();
@@ -969,6 +1057,7 @@ namespace CUITAdmin
             public double hours { get; set; }
             public double charges { get; set; }
             public double rate { get; set; }
+            public int timeIncrement { get; set; }
         }
         #endregion
     }

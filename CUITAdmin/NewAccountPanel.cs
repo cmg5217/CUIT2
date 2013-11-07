@@ -196,7 +196,9 @@ namespace CUITAdmin
             else
             {
                 dbManager.AddAccount(txtAccountNumber.Text, txtAccountName.Text, int.Parse(txtMaxCharge.Text), dtpAccountExpiration.Value, 
-                    cboRateType.SelectedItem.ToString(), int.Parse(cboContacts.SelectedValue.ToString()), txtNotes.Text, txtCostCenter.Text, txtWBSNumber.Text, int.Parse(txtBalance.Text));
+                    cboRateType.SelectedItem.ToString(), int.Parse(cboContacts.SelectedValue.ToString()), txtNotes.Text, txtCostCenter.Text, txtWBSNumber.Text, int.Parse(txtBalance.Text),
+                    "street", "city", "state", 12345);
+
                 containingForm.Close();
             }
         }

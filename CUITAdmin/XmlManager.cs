@@ -43,15 +43,18 @@ namespace CUITAdmin {
             return AddUser(username, password, accountNumber, ref nullElement);
         }
 
+
         public bool AddUser(string username, string password, string accountNumber, ref XmlElement outElement) {
             List<string> accountNumbers = new List<string> { accountNumber };
             return AddUser(username, password, ref outElement, accountNumbers);
         }
 
+
         public bool AddUser(string username, string password) {
             XmlElement nullElement = null;
             return AddUser(username, password, ref nullElement);
         }
+
 
         public bool AddUser(string username, string password, ref XmlElement outElement, List<string> accountNumbers = null) {
             if (FindUser(username, ref outElement)) {
@@ -94,6 +97,111 @@ namespace CUITAdmin {
             xmlDoc.Save(FILE_LOCATION);
             return true;
         }
+
+
+        public bool AddLog(string username, string account, string instrument, string startTime, string endTime)
+        {
+            string parentXPath = "//root/logs";
+            string node = "log";
+            string[] nodeNames = new string[]{
+                "username", "account_number", "instrument", "start_time", "end_time"
+            };
+
+            string[] nodeValues = new string[]{
+                username, account, instrument, startTime, endTime
+            };
+            return AddToXml(parentXPath, node, nodeNames, nodeValues);
+        }
+
+
+        public bool AddPartialLog(string username, string account, string instrument, string startTime)
+        {
+            string parentXPath = "//root/logs";
+            string node = "log";
+            string[] nodeNames = new string[]{
+                "username", "account_number","instrument",  "start_time"
+            };
+
+            string[] nodeValues = new string[]{
+                username, account, instrument, startTime
+            };
+            return AddToXml(parentXPath, node, nodeNames, nodeValues);
+        }
+
+
+        public bool AddLogEndTime(string username, string accountNumber, string instrument, string startTime, string endTime)
+        {
+            foreach (XmlElement currentElement in startedLogs) {
+                if (currentElement.SelectSingleNode("start_time").InnerText == startTime && 
+                    currentElement.SelectSingleNode("username").InnerText == username &&
+                    currentElement.SelectSingleNode("account_number").InnerText == accountNumber &&
+                    currentElement.SelectSingleNode("instrument").InnerText == instrument
+                    )
+                {
+                    XmlElement endTimeNode = xmlDoc.CreateElement("end_time");
+                    endTimeNode.InnerText = endTime;
+                    currentElement.AppendChild(endTimeNode);
+                    xmlDoc.SelectSingleNode("logs").AppendChild(currentElement);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+
+        public bool AddSupplyUse(string username, string accountnumber, string supply, int quanity)
+        {
+            return AddSupplyUse(username, accountnumber, supply, quanity.ToString());
+        }
+
+        public bool AddSupplyUse(string username, string accountnumber, string supply, string quantity) {
+            string parentXPath = "//root/supply_uses";
+            string node = "supply_use";
+            string[] nodeNames = new string[]{
+                "username", "account_number","supply_name",  "quantity"
+            };
+            string[] nodeValues = new string[]{
+                username, accountnumber, supply, quantity
+            };
+            return AddToXml(parentXPath, node, nodeNames, nodeValues);
+        }
+
+        // Private method used to shorten method bodies. 
+        // Adds a new node to the specified path. 
+        // The new node may have children passed into the array
+        // with innerText passed into the values array
+        private bool AddToXml(string parentXPath, string nodeName, string[] childNodes, string[] values) {
+            XmlElement throwaway = null;
+            return AddToXml(parentXPath, nodeName, childNodes, values, out throwaway);
+        }
+
+        private bool AddToXml(string parentXPath, string nodeName, string[] childNodes, string[] values, out XmlElement outElement) {
+            if (childNodes.Length != values.Length) {
+                outElement = null;
+                return false;
+            }
+
+            XmlNode parentNode = xmlDoc.SelectSingleNode(parentXPath);
+
+            XmlElement node = xmlDoc.CreateElement(nodeName);
+
+            XmlElement loopElement;
+            for (int i = 0; i < childNodes.Length; i++) {
+                loopElement = xmlDoc.CreateElement(childNodes[i]);
+                loopElement.InnerText = values[i];
+                node.AppendChild(loopElement);
+            }
+
+            parentNode.AppendChild(node);
+            xmlDoc.Save(FILE_LOCATION);
+
+            outElement = node;
+            return true;
+        }
+
+
+
 
 
         ////////////////////////////////////////////////// EditUser() ///////////////////////////////////////////////
@@ -152,139 +260,13 @@ namespace CUITAdmin {
         }
 
 
-
-        public void AddLog(string username, string account, string instrument, string startTime, string endTime)
-        {
-            // Gets the "accounts" node
-            XmlNode logsElement = xmlDoc.SelectSingleNode("//root/logs");
-
-            // Create the new log
-            XmlElement newLog = xmlDoc.CreateElement("log");
-
-            // Create the nodes to add to the log
-            XmlElement usernameElement = xmlDoc.CreateElement("username");
-            XmlElement accountNumberElement = xmlDoc.CreateElement("account_number");
-            XmlElement instrumentTimeElement = xmlDoc.CreateElement("instrument");
-            XmlElement startTimeElement = xmlDoc.CreateElement("start_time");
-            XmlElement endTimeElement = xmlDoc.CreateElement("end_time");
-
-            // Set the inner text of the nodes
-            usernameElement.InnerText = username;
-            accountNumberElement.InnerText = account;
-            instrumentTimeElement.InnerText = instrument;
-            startTimeElement.InnerText = startTime;
-            endTimeElement.InnerText = endTime;
-
-
-            // add the individual nodes to the new log
-            newLog.AppendChild(usernameElement);
-            newLog.AppendChild(accountNumberElement);
-            newLog.AppendChild(instrumentTimeElement);
-            newLog.AppendChild(startTimeElement);
-            newLog.AppendChild(endTimeElement);
-
-            // finally, add the new log 
-            logsElement.AppendChild(newLog);
-            startedLogs.Add(newLog);
-            xmlDoc.Save(FILE_LOCATION);
-        }
-
-        public void AddPartialLog(string username, string account, string instrument, string startTime)
-        {
-
-            // Gets the "accounts" node
-            XmlNode logsElement = xmlDoc.SelectSingleNode("//root/logs");
-
-            // Create the new log
-            XmlElement newLog = xmlDoc.CreateElement("log");
-
-            // Create the nodes to add to the log
-            XmlElement usernameElement = xmlDoc.CreateElement("username");
-            XmlElement accountNumberElement = xmlDoc.CreateElement("account_number");
-            XmlElement instrumentTimeElement = xmlDoc.CreateElement("instrument");
-            XmlElement startTimeElement = xmlDoc.CreateElement("start_time");
-
-            // Set the inner text of the nodes
-            usernameElement.InnerText = username;
-            accountNumberElement.InnerText = account;
-            instrumentTimeElement.InnerText = instrument;
-            startTimeElement.InnerText = startTime;
-
-            // add the individual nodes to the new log
-            newLog.AppendChild(usernameElement);
-            newLog.AppendChild(accountNumberElement);
-            newLog.AppendChild(instrumentTimeElement);
-            newLog.AppendChild(startTimeElement);
-
-            // finally, add the new log 
-            logsElement.AppendChild(newLog);
-            xmlDoc.Save(FILE_LOCATION);
-        }
-
-        public bool AddLogEndTime(string username, string accountNumber, string instrument, string startTime, string endTime)
-        {
-            foreach (XmlElement currentElement in startedLogs) {
-                if (currentElement.SelectSingleNode("start_time").InnerText == startTime && 
-                    currentElement.SelectSingleNode("username").InnerText == username &&
-                    currentElement.SelectSingleNode("account_number").InnerText == accountNumber &&
-                    currentElement.SelectSingleNode("instrument").InnerText == instrument
-                    )
-                {
-                    XmlElement endTimeNode = xmlDoc.CreateElement("end_time");
-                    endTimeNode.InnerText = endTime;
-                    currentElement.AppendChild(endTimeNode);
-                    xmlDoc.SelectSingleNode("logs").AppendChild(currentElement);
-                    return true;
-                }
-            }
-
-            return false;
-        }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////END LOG
 
         
-////////////////////////////////////////////////////////////////////////////////////////////////////////////END LOG
-        public bool AddLogEndTime(string username, string account, string instrument, string startTime) {
-            return false;
-        }
-
-
 
         public bool FindUser(string username, ref XmlElement outElement) {
             return FindElementByInnerElementValue("//root/users", "username", username, ref outElement);
         }
-
-        public bool AddSupplyUse(string username, string accountnumber, string supply, int quanity)
-        {
-            return AddSupplyUse(username, accountnumber, supply, quanity.ToString());
-        }
-
-        public bool AddSupplyUse(string username, string accountnumber, string supply, string quantity)
-        {
-            XmlNode supplyUsesNode = xmlDoc.SelectSingleNode("//root/supply_uses");
-
-            XmlElement supplyUseElement = xmlDoc.CreateElement("supply_use");
-            
-            XmlElement supplyElement = xmlDoc.CreateElement("supply_name");
-            XmlElement usernameElement = xmlDoc.CreateElement("username");
-            XmlElement accountNumberElement = xmlDoc.CreateElement("account_number");
-            XmlElement quantityElement = xmlDoc.CreateElement("quantity");
-
-            supplyElement.InnerText = supply;
-            usernameElement.InnerText = username;
-            accountNumberElement.InnerText = accountnumber;
-            quantityElement.InnerText = quantity;
-
-            supplyUseElement.AppendChild(supplyElement);
-            supplyUseElement.AppendChild(usernameElement);
-            supplyUseElement.AppendChild(accountNumberElement);
-            supplyUseElement.AppendChild(quantityElement);
-
-            supplyUsesNode.AppendChild(supplyUseElement);
-            xmlDoc.Save(FILE_LOCATION);
-            return true;
-        }
-
-
 
         public bool FindElementByInnerText(List<XmlElement> searchElementList, string innerText, XmlElement outElement) {
             foreach (XmlElement searchElement in searchElementList) {
@@ -311,6 +293,8 @@ namespace CUITAdmin {
 
         // Checks the xml to see if the username and password match, returns false if no user found or invalid password
         public bool CheckPassword(string username, string password) {
+
+            password = PasswordHash.getHashSha512(password);
 
             XmlElement userElement = null;
 
