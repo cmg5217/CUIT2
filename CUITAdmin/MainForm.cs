@@ -33,6 +33,7 @@ namespace CUITAdmin
         XmlManager xmlManager;
         DBManager dbManager;
         PDFManager pdfManager;
+        ExcelManager ExcelManager;
 
 
         public frmCUITAdminMain()
@@ -320,6 +321,9 @@ namespace CUITAdmin
                     getacc.Rows[0]["Zip"].ToString()); //add zip to invoice
 
                 //pdfManager.AddService("Instrument", "StartPostDate", "EndPostDate","hours", "rate ($/hr)", "unit(hours days ects)");
+
+                pdfManager.AddPostDate(poststart.ToShortDateString().ToString(), postend.ToShortDateString().ToString());
+                
                 foreach (DataRow currentRow in invoiceTime.Rows)
                 {
 
@@ -338,13 +342,17 @@ namespace CUITAdmin
                 pdfManager.AddInvoiceID(invoice.Rows[0]["InvoiceID"].ToString()); // add invoice id to invoice
                 pdfManager.AddBalance(offset+"$"+invoice.Rows[0]["Total_Balance"].ToString()); // add balance to invoice
 
-                pdfManager.PDFClose();            
+                pdfManager.PDFClose();
               //  }
               //  catch (Exception)
               //  {
                //     MessageBox.Show("Error writing file. Check that this file is not currently\n" 
               //                   +"open in a PDF reader such as Adobe Reader.");
                // }
+
+                ExcelManager.generateExcel(invoice);
+               
+                
             }
          
         }
@@ -582,6 +590,11 @@ namespace CUITAdmin
                 Properties.Settings.Default.StandaloneMode = "false";
                 Properties.Settings.Default.Save();
             }
+        }
+
+        private void btnExportAll_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

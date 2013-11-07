@@ -64,7 +64,7 @@ namespace CUITAdmin
             //close the file stream
             pdfStamper.Close();
             //Display success message with the file path in the message
-            MessageBox.Show("Export Complete! \n" + "File has been exported to:\n" + fullpath);
+            MessageBox.Show("Export Complete! \n" + "File has been exported to:\n" + pathname);
             
         }
         // Add Address //////////////
@@ -74,6 +74,15 @@ namespace CUITAdmin
             pdfFormFields.SetField("Address", name + Environment.NewLine
                + street + Environment.NewLine + city +", "+ state +" "+ zip);
         }
+
+        //Add postdate/////////////
+        public void AddPostDate(string postStartDate, string postEndDate) {
+
+            pdfFormFields.SetField("services", "Post Start Date: " + postStartDate + Environment.NewLine + "Post End Date: " + postEndDate + Environment.NewLine + Environment.NewLine);
+             
+        
+        }
+
 
         //Add Service//////////////
         public void AddService(string service, string postStartDate, string postEndDate, string unitquantity, string rate, string unit)
@@ -86,8 +95,7 @@ namespace CUITAdmin
             //+ unitquantity + " " + unit + "s" + " @ $" + rate + "/" + unit + "" + ")" +
             //Environment.NewLine + Environment.NewLine); 
             ///
-            pdfFormFields.SetField("services", field + service +
-            Environment.NewLine + "Post Start Date: " + postStartDate + Environment.NewLine +"Post End Date: "+ postEndDate
+            pdfFormFields.SetField("services", field + service 
              + Environment.NewLine+ "("+ unitquantity +" "  + unit + "s" + " @ $" + rate 
              + "/" + unit + "" + ")" + Environment.NewLine + Environment.NewLine);
 
@@ -99,7 +107,7 @@ namespace CUITAdmin
         {
             string field = pdfFormFields.GetField("charges");
 
-            pdfFormFields.SetField("charges", field + "$" + chargeamount + "\r\n\r\n\r\n\r\n\r\n");                   
+            pdfFormFields.SetField("charges", "\n\r\n" +field + "$" + chargeamount + "\r\n\r\n\r");                   
         }
         //add balance/////////////////////
         public void AddBalance(string balance)

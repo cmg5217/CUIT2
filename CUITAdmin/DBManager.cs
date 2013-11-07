@@ -579,6 +579,27 @@ namespace CUITAdmin
             return table;
         }
 
+        public DataTable GetTimeLogsFromRange(DateTime startDate, DateTime endDate, bool acceptNull = false)
+        {
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand(
+                "Select tl.Account_Number, acct.Name, i.InstrumentID, i.Name, tl.Start_Time, tl.End_Time, tl.Current_Rate, tl.Time_Increment " +
+                "From Time_Log tl INNER JOIN Account acct on tl.Account_Number = acct.Account_Number INNER JOIN Instrument i on tl.InstrumentID = i.InstrumentID " +
+                "WHERE tl.Start_Time between @startDate and @endDate" + ((!acceptNull) ? " and tl.End_Time IS NOT NULL" : "")
+                , myConnection);
+
+            myCommand.Parameters.AddWithValue("@startDate", startDate);
+            myCommand.Parameters.AddWithValue("@endDate", endDate);
+
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+
+            DataTable table = new DataTable();
+            dataAdapter.Fill(table);
+
+            myConnection.Close();
+            return table;
+        }
+
         public DataTable GetTimeLogs(string accountNumber, DateTime startDate, DateTime endDate, bool acceptNull = false) {
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand(
@@ -652,7 +673,9 @@ namespace CUITAdmin
         public DataTable GetInvoice(int invoiceID)
         {
             SqlConnection myConnection = DBConnect();
-            SqlCommand myCommand = new SqlCommand("SELECT * From Invoice Where InvoiceID = @invoiceID", myConnection);
+            SqlCommand myCommand = new SqlCommand("SELECT * " + 
+                                                  "From Invoice iv INNER JOIN Account acct on iv.Account_Number = acct.Account_Number " +  
+                                                  "Where InvoiceID = @invoiceID", myConnection);
 
             myCommand.Parameters.AddWithValue("@invoiceID", invoiceID);
 
@@ -758,9 +781,9 @@ namespace CUITAdmin
         #endregion End Get Region
 
 
-        public void GenerateAllInvoices(string accountNumber, DateTime startDate, DateTime endDate) {
+        public void GenerateAllInvoices(DateTime startDate, DateTime endDate) {
 
-            DataTable timeLogs = GetTimeLogs(accountNumber, startDate, endDate, false);
+            DataTable timeLogs = GetTimeLogsFromRange(startDate, endDate, false);
 
             DataRowCollection rows = timeLogs.Rows;
 
