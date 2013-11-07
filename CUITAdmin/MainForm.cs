@@ -133,7 +133,6 @@ namespace CUITAdmin
 
         }
 
-
         private void BindReturnKeys() {
             //Time Log manual request username field clicks validate on enter key pressed
             txtManualTimeUsername.KeyDown += (sender1, args) => {
@@ -238,7 +237,7 @@ namespace CUITAdmin
         {
             string addNewCase = cboAccountAdminNew.Text;
             Form newForm = new NewEntryForm(addNewCase);
-            newForm.Show();
+            newForm.ShowDialog(); //Displays forms modally
         }
 
         private void tbpExports_Click(object sender, EventArgs e)

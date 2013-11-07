@@ -5,6 +5,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Text.RegularExpressions;
+using System.ComponentModel;
+using System.Data;
 
 
 namespace CUITAdmin
@@ -119,6 +121,8 @@ namespace CUITAdmin
             this.cboContacts.Size = new System.Drawing.Size(134, 21);
             this.cboContacts.TabIndex = 21;
             this.cboContacts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboContacts.Click += new EventHandler(cboContact_Click);
+            updateContactList();
             // 
             // rtbNotes
             // 
@@ -330,18 +334,38 @@ namespace CUITAdmin
             this.lblUsername.Text = "Username:";
         }
 
+        private void updateContactList()
+        {
+            BindingList<Data> comboItems = new BindingList<Data>();
+            DataTable table = dbManager.GetContacts();
+            DataTableReader myReader = table.CreateDataReader();
+            while (myReader.Read())
+            {
+                comboItems.Add(new Data
+                {
+                    Name = myReader["First_Name"] + " " + myReader["Last_Name"],
+                    Value = myReader["PersonID"].ToString()
+                });
+            }
+            cboContacts.DataSource = comboItems;
+            cboContacts.DisplayMember = "Name";
+            cboContacts.ValueMember = "Value";
+        }
+
+        private void cboContact_Click(object sender, EventArgs e)
+        {
+            updateContactList();
+        }
+
         private void btnSubmit_Click(object sender, EventArgs e)
         {
             if (errorCheck())
                 MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
             else
             {
-                cboContacts.Items.Add(1);
-                cboContacts.SelectedItem = 1;
-
                 dbManager.AddUser(txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text, 
                     cboState.SelectedItem.ToString(), txtZipCode.Text, txtPhone.Text, txtEmail.Text, txtUsername.Text, 
-                    txtPassword.Text, txtDepartment.Text, "U", rtbNotes.Text, (int)cboContacts.SelectedItem);
+                    txtPassword.Text, txtDepartment.Text, "U", rtbNotes.Text, int.Parse(cboContacts.SelectedValue.ToString()));
 
                 containingForm.Close();
             }
@@ -437,7 +461,7 @@ namespace CUITAdmin
         private void btnNewContact_Click(object sender, EventArgs e)
         {
             NewEntryForm newContact = new NewEntryForm("Point of Contact");
-            newContact.Show();
+            newContact.ShowDialog();
         }
     }
 }

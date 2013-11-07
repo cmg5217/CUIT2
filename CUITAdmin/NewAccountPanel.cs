@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using System.ComponentModel;
+using System.Data;
 
 namespace CUITAdmin
 {
@@ -39,8 +41,9 @@ namespace CUITAdmin
             dbManager = DBManager.Instance;
             containingForm = pForm;
             pForm.Controls.Add(this);
-            this.Location = new Point(10, 10);
-            this.Size = new Size(650, 400);
+            //this.Location = new Point(10, 10);
+            //this.Size = new Size(650, 460);
+            this.SetBounds(10, 10, 680, 380);
 
             //Label lblAccountName = new Label();
             lblAccountName.Text = "Account Name:";
@@ -111,6 +114,26 @@ namespace CUITAdmin
             cboContacts.SetBounds(110, 190, 200, 20);
             this.Controls.Add(cboContacts);
             this.cboContacts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboContacts.Click += new EventHandler(cboContact_Click);
+            updateContactList();
+
+            //Label lblCostCenter = new Label();
+            lblCostCenter.Text = "Cost Center:";
+            lblCostCenter.Location = new Point(10, 220);
+            this.Controls.Add(lblCostCenter);
+
+            //TextBox txtCostCenter = new TextBox();
+            txtCostCenter.SetBounds(110, 220, 200, 20);
+            this.Controls.Add(txtCostCenter);
+
+            //Label lblWBSNumber = new Label();
+            lblWBSNumber.Text = "WBSNumber:";
+            lblWBSNumber.Location = new Point(10, 250);
+            this.Controls.Add(lblWBSNumber);
+
+            //TextBox txtWBSNumber = new TextBox();
+            txtWBSNumber.SetBounds(110, 250, 200, 20);
+            this.Controls.Add(txtWBSNumber);
 
             //Label lblNotes = new Label();
             lblNotes.Text = "Notes:";
@@ -140,6 +163,29 @@ namespace CUITAdmin
             containingForm.AcceptButton = btnSubmit;
         }
 
+        private void updateContactList()
+        {
+            BindingList<Data> comboItems = new BindingList<Data>();
+            DataTable table = dbManager.GetContacts();
+            DataTableReader myReader = table.CreateDataReader();
+            while (myReader.Read())
+            {
+                comboItems.Add(new Data
+                {
+                    Name = myReader["First_Name"] + " " + myReader["Last_Name"],
+                    Value = myReader["PersonID"].ToString()
+                });
+            }
+            cboContacts.DataSource = comboItems;
+            cboContacts.DisplayMember = "Name";
+            cboContacts.ValueMember = "Value";
+        }
+
+        private void cboContact_Click(object sender, EventArgs e)
+        {
+            updateContactList();
+        }
+
         private void btnSubmit_Click(object sender, EventArgs e)
         {
             if (errorCheck())
@@ -147,14 +193,10 @@ namespace CUITAdmin
                 MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
             }
 
-// TO-DO: Shane, change the contact box to use a Binding list with the Name = the contact name and the Value = their contact id
-
             else
             {
-                cboContacts.Items.Add("1");
-                cboContacts.SelectedItem = "1";
                 dbManager.AddAccount(txtAccountNumber.Text, txtAccountName.Text, int.Parse(txtMaxCharge.Text), dtpAccountExpiration.Value, 
-                    cboRateType.SelectedItem.ToString(), int.Parse(cboContacts.SelectedItem.ToString()), txtNotes.Text, txtCostCenter.Text, txtWBSNumber.Text, int.Parse(txtBalance.Text));
+                    cboRateType.SelectedItem.ToString(), int.Parse(cboContacts.SelectedValue.ToString()), txtNotes.Text, txtCostCenter.Text, txtWBSNumber.Text, int.Parse(txtBalance.Text));
                 containingForm.Close();
             }
         }
@@ -166,6 +208,8 @@ namespace CUITAdmin
             txtMaxCharge.BackColor = System.Drawing.Color.White;
             cboRateType.BackColor = System.Drawing.Color.White;
             txtBalance.BackColor = System.Drawing.Color.White;
+            txtWBSNumber.BackColor = System.Drawing.Color.White;
+            txtCostCenter.BackColor = System.Drawing.Color.White;
 
             bool error = false;
             string namePattern = "^[A-Za-z0-9\\s-\\.]+$";
@@ -182,6 +226,20 @@ namespace CUITAdmin
                 error = true;
             }
 
+            string CostCenterPattern = "^[\\w\\W]+$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtCostCenter.Text, CostCenterPattern))
+            {
+                txtCostCenter.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string WBSPattern = "^[\\w\\W]+$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtWBSNumber.Text, WBSPattern))
+            {
+                txtWBSNumber.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
             string chargePattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$";
             if (!System.Text.RegularExpressions.Regex.IsMatch(txtMaxCharge.Text, chargePattern))
             {
@@ -191,7 +249,7 @@ namespace CUITAdmin
 
             if (cboRateType.SelectedIndex == 0)
             {
-                cboRateType.BackColor = System.Drawing.Color.Red;
+                lblRateType.BackColor = System.Drawing.Color.Red;
                 error = true;
             }
 
@@ -208,7 +266,7 @@ namespace CUITAdmin
         private void btnNewContact_Click(object sender, EventArgs e)
         {
             NewEntryForm newContact = new NewEntryForm("Point of Contact");
-            newContact.Show();
+            newContact.ShowDialog();
         }
     }
 }

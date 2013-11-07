@@ -105,8 +105,6 @@ namespace CUITAdmin
             myConnection.Close();
         }
 
-
-
         public void AddPointOfContact(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email, string notes) {
             string throwaway;
             AddPointOfContact(firstName, lastName, street, city, state, zip, phoneNumber, email, notes, out throwaway);
@@ -649,7 +647,7 @@ namespace CUITAdmin
 
             DataTable table = new DataTable();
             dataAdapter.Fill(table);
-
+        
             myConnection.Close();
             return table;
         }
