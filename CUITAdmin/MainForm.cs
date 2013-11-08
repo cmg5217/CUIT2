@@ -174,6 +174,10 @@ namespace CUITAdmin
             else if (cboAccountAdminView.SelectedItem == "Instruments")
             {
                 AdminDataGridView.DataSource = dbManager.GetInstruments();
+            } 
+            else if (cboAccountAdminView.SelectedItem == "Rate Types") 
+            {
+                AdminDataGridView.DataSource = dbManager.GetRateTypes();
             }
             else if (cboAccountAdminView.SelectedItem == "Supplies")
             {
@@ -243,7 +247,6 @@ namespace CUITAdmin
         {
 
             InitializeAdminTab();
-
         }
 
         private void btnAdd_Click(object sender, EventArgs e)

@@ -289,6 +289,7 @@
             this.cboAccountAdminNew.Items.AddRange(new object[] {
             "Account",
             "Instrument",
+            "Rate Type",
             "Supply",
             "User",
             "Point of Contact"});
@@ -324,6 +325,7 @@
             "Contacts",
             "Users",
             "Instruments",
+            "Rate Types",
             "Supplies"});
             this.cboAccountAdminView.Location = new System.Drawing.Point(42, 9);
             this.cboAccountAdminView.Name = "cboAccountAdminView";
