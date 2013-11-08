@@ -193,33 +193,6 @@
             this.comboBoxSelectAccount.Size = new System.Drawing.Size(121, 21);
             this.comboBoxSelectAccount.TabIndex = 3;
             // 
-            // txtAccount
-            // 
-            this.txtAccount.AutoSize = true;
-            this.txtAccount.Location = new System.Drawing.Point(23, 80);
-            this.txtAccount.Name = "txtAccount";
-            this.txtAccount.Size = new System.Drawing.Size(50, 13);
-            this.txtAccount.TabIndex = 5;
-            this.txtAccount.Text = "Account:";
-            // 
-            // txtMonth
-            // 
-            this.txtMonth.AutoSize = true;
-            this.txtMonth.Location = new System.Drawing.Point(22, 40);
-            this.txtMonth.Name = "txtMonth";
-            this.txtMonth.Size = new System.Drawing.Size(40, 13);
-            this.txtMonth.TabIndex = 4;
-            this.txtMonth.Text = "Month:";
-            // 
-            // comboBoxSelectAccount
-            // 
-            this.comboBoxSelectAccount.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxSelectAccount.FormattingEnabled = true;
-            this.comboBoxSelectAccount.Location = new System.Drawing.Point(79, 77);
-            this.comboBoxSelectAccount.Name = "comboBoxSelectAccount";
-            this.comboBoxSelectAccount.Size = new System.Drawing.Size(121, 21);
-            this.comboBoxSelectAccount.TabIndex = 3;
-            // 
             // comboBoxSelectMonth
             // 
             this.comboBoxSelectMonth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -353,6 +326,7 @@
             this.cboAccountAdminNew.Items.AddRange(new object[] {
             "Account",
             "Instrument",
+            "Rate Type",
             "Supply",
             "User",
             "Point of Contact"});
@@ -388,6 +362,7 @@
             "Contacts",
             "Users",
             "Instruments",
+            "Rate Types",
             "Supplies"});
             this.cboAccountAdminView.Location = new System.Drawing.Point(42, 9);
             this.cboAccountAdminView.Name = "cboAccountAdminView";

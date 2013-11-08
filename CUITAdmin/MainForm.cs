@@ -200,6 +200,7 @@ namespace CUITAdmin
             Contacts
             Users
             Instruments
+            Rate Types
             Supplies*/
             if (cboAccountAdminView.SelectedItem == "Accounts")
             {
@@ -216,6 +217,10 @@ namespace CUITAdmin
             else if (cboAccountAdminView.SelectedItem == "Instruments")
             {
                 AdminDataGridView.DataSource = dbManager.GetInstruments();
+            }
+            else if (cboAccountAdminView.SelectedItem == "Rate Types")
+            {
+                AdminDataGridView.DataSource = dbManager.GetRateTypes();
             }
             else if (cboAccountAdminView.SelectedItem == "Supplies")
             {

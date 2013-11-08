@@ -371,23 +371,37 @@ namespace CUITAdmin
             myConnection.Close();
         }
 
-        public void AddInstrument(string name, string billingUnit, int timeIncrement) {
+        public void AddInstrument(string name, string billingUnit, int timeIncrement)
+        {
+            int throwaway;
+            AddInstrument(name, billingUnit, timeIncrement, out throwaway);
+        }
+
+        public void AddInstrument(string name, string billingUnit, int timeIncrement, out int instrumentID) {
             SqlConnection myConnection = DBConnect();
 
             SqlCommand myCommand = new SqlCommand(
                 "INSERT INTO Instrument(Name, Billing_Unit, Time_Increment)" +
-                "VALUES (@name, @billingUnit, @timeIncrement)",
+                "VALUES (@name, @billingUnit, @timeIncrement)" +
+                "SELECT SCOPE_IDENTITY() As TheId",
                 myConnection);
 
             myCommand.Parameters.AddWithValue("@name", name);
             myCommand.Parameters.AddWithValue("@billingUnit", billingUnit);
             myCommand.Parameters.AddWithValue("@timeIncrement", timeIncrement);
 
-            try {
-                myCommand.ExecuteNonQuery();
-            } catch (Exception e) {
+            int newID = 0;
+            try
+            {
+                newID = int.Parse(myCommand.ExecuteScalar().ToString());
+                Debug.WriteLine("Insert ID: " + newID);
+            }
+            catch (Exception e)
+            {
                 Debug.WriteLine(e.Message);
             }
+
+            instrumentID = newID;
             myConnection.Close();
         }
 
@@ -675,6 +689,34 @@ namespace CUITAdmin
 
             myConnection.Close();
             return instruments;
+        }
+
+        public DataTable GetRateTypes()
+        {
+            SqlConnection myConnection = DBConnect();
+            string myCommand = "SELECT * FROM Rate_Type";
+
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
+
+            DataTable table = new DataTable();
+            dataAdapter.Fill(table);
+
+            myConnection.Close();
+            return table;
+        }
+
+        public DataTable GetInstrumentRates()
+        {
+            SqlConnection myConnection = DBConnect();
+            string myCommand = "SELECT * FROM Instrument_Rate";
+
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
+
+            DataTable table = new DataTable();
+            dataAdapter.Fill(table);
+
+            myConnection.Close();
+            return table;
         }
         
         #endregion End Get Region
