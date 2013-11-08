@@ -447,11 +447,11 @@ namespace CUITAdmin
             SqlConnection myConnection = DBConnect();
 
             SqlCommand myCommand = new SqlCommand(
-                "INSERT INTO Instrument_Rate (Rate_Name, Rate, InstrumentID)" +
-                "VALUES (@rateName, @rate, @instrumentID)",
+                "INSERT INTO Instrument_Rate (Rate_Type, Rate, InstrumentID)" +
+                "VALUES (@rateType, @rate, @instrumentID)",
                 myConnection);
 
-            myCommand.Parameters.AddWithValue("@rateName", rateName);
+            myCommand.Parameters.AddWithValue("@rateType", rateName);
             myCommand.Parameters.AddWithValue("@rate", rate);
             myCommand.Parameters.AddWithValue("@instrumentID", instrumentID);
 
