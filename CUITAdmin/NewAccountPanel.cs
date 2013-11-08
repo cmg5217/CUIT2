@@ -20,9 +20,18 @@ namespace CUITAdmin
         TextBox txtBalance = new TextBox();
         TextBox txtCostCenter = new TextBox();
         TextBox txtWBSNumber = new TextBox();
+        TextBox txtZipCode = new TextBox();
+        ComboBox cboState = new ComboBox();
+        TextBox txtCity = new TextBox();
+        TextBox txtStreet = new TextBox();
+        TextBox txtTaxID = new TextBox();
         Label lblAccountName = new Label();
         Label lblAccountNumber = new Label();
         Label lblMaxCharge = new Label();
+        Label lblZipCode = new Label();
+        Label lblState = new Label();
+        Label lblCity = new Label();
+        Label lblStreet = new Label();
         Label lblAccountExpiration = new Label();
         Label lblContacts = new Label();
         DateTimePicker dtpAccountExpiration = new DateTimePicker();
@@ -31,6 +40,7 @@ namespace CUITAdmin
         Label lblNotes = new Label();
         Label lblCostCenter = new Label();
         Label lblWBSNumber = new Label();
+        Label lblTaxID = new Label();
         RichTextBox txtNotes = new RichTextBox();
         Button btnSubmit = new Button();
         Button btnNewContact = new Button();
@@ -74,20 +84,65 @@ namespace CUITAdmin
 
             //Label lblAccountExpiration = new Label();
             lblAccountExpiration.Text = "Account Expiration:";
-            lblAccountExpiration.Location = new Point(10, 100);
+            lblAccountExpiration.Location = new Point(10, 130);
             this.Controls.Add(lblAccountExpiration);
 
             //DateTimePicker dtpAccountExpiration = new DateTimePicker();
-            dtpAccountExpiration.Location = new Point(110, 100);
+            dtpAccountExpiration.Location = new Point(110, 130);
             this.Controls.Add(dtpAccountExpiration);
+
+            //Label lblZipCode = new Label();
+            this.Controls.Add(this.lblZipCode);
+            lblZipCode.Text = "Zip Code:";
+            lblZipCode.Location = new Point(10, 250);
+
+            //TextBox txtZipCode = new TextBox();
+            this.Controls.Add(this.txtZipCode);
+            txtZipCode.SetBounds(110, 250, 200, 20);
+
+            //Label lblState = new Label();
+            this.Controls.Add(this.lblState);
+            lblState.Text = "State:";
+            lblState.Location = new Point(10, 220);
+
+            //ComboBox cboState = new ComboBox();
+            this.Controls.Add(this.cboState);
+            this.cboState.Location = new Point(110, 220);
+            this.cboState.Name = "cboState";
+            this.cboState.Size = new System.Drawing.Size(200, 20);
+            List<string> states = new List<string> { "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming" };
+            foreach (string s in states)
+            {
+                cboState.Items.Add(s);
+            }
+            this.cboState.SelectedItem = "Pennsylvania";
+            this.cboState.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+
+            //Label lblCity = new Label();
+            this.Controls.Add(this.lblCity);
+            lblCity.Text = "City:";
+            lblCity.Location = new Point(10, 190);
+
+            //TextBox txtCity = new TextBox();
+            this.Controls.Add(this.txtCity);
+            txtCity.SetBounds(110, 190, 200, 20);
+
+            //Label lblStreet = new Label();
+            this.Controls.Add(this.lblStreet);
+            lblStreet.Text = "Street:";
+            lblStreet.Location = new Point(10, 160);
+
+            //TextBox txtStreet = new TextBox();
+            this.Controls.Add(this.txtStreet);
+            txtStreet.SetBounds(110, 160, 200, 20);
 
             //Label lblRateType = new Label();
             lblRateType.Text = "Rate Type:";
-            lblRateType.Location = new Point(10, 130);
+            lblRateType.Location = new Point(325, 70);
             this.Controls.Add(lblRateType);
 
             //ComboBox cboRateType = new ComboBox();
-            cboRateType.SetBounds(110, 130, 200, 20);
+            cboRateType.SetBounds(425, 70, 200, 20);
             this.Controls.Add(cboRateType);
             cboRateType.Items.Add("");
             cboRateType.Items.Add("Internal Academic");
@@ -98,20 +153,21 @@ namespace CUITAdmin
 
             //Label lblBalance = new Label();
             lblBalance.Text = "Balance:";
-            lblBalance.Location = new Point(10, 160);
+            lblBalance.Location = new Point(10, 100);
             this.Controls.Add(lblBalance);
 
             //TextBox txtBalance = new TextBox();
-            txtBalance.SetBounds(110, 160, 200, 20);
+            txtBalance.SetBounds(110, 100, 200, 20);
+            txtBalance.Text = "0.00";
             this.Controls.Add(txtBalance);
 
             //Label lblContacts = new Label();
             lblContacts.Text = "Contacts:";
-            lblContacts.Location = new Point(10, 190);
+            lblContacts.Location = new Point(10, 280);
             this.Controls.Add(lblContacts);
             
             //ComboBox cboContacts = new ComboBox();
-            cboContacts.SetBounds(110, 190, 200, 20);
+            cboContacts.SetBounds(110, 280, 200, 20);
             this.Controls.Add(cboContacts);
             this.cboContacts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboContacts.Click += new EventHandler(cboContact_Click);
@@ -119,39 +175,48 @@ namespace CUITAdmin
 
             //Label lblCostCenter = new Label();
             lblCostCenter.Text = "Cost Center:";
-            lblCostCenter.Location = new Point(10, 220);
+            lblCostCenter.Location = new Point(325, 10);
             this.Controls.Add(lblCostCenter);
 
             //TextBox txtCostCenter = new TextBox();
-            txtCostCenter.SetBounds(110, 220, 200, 20);
+            txtCostCenter.SetBounds(425, 10, 200, 20);
             this.Controls.Add(txtCostCenter);
 
             //Label lblWBSNumber = new Label();
             lblWBSNumber.Text = "WBSNumber:";
-            lblWBSNumber.Location = new Point(10, 250);
+            lblWBSNumber.Location = new Point(325, 40);
             this.Controls.Add(lblWBSNumber);
 
             //TextBox txtWBSNumber = new TextBox();
-            txtWBSNumber.SetBounds(110, 250, 200, 20);
+            txtWBSNumber.SetBounds(425, 40, 200, 20);
             this.Controls.Add(txtWBSNumber);
+
+            //Label lblTaxID = new Label();
+            lblTaxID.Text = "Tax ID:";
+            lblTaxID.Location = new Point(325, 100);
+            this.Controls.Add(lblTaxID);
+
+            //TextBox txtTaxID = new TextBox();
+            txtTaxID.SetBounds(425, 100, 200, 20);
+            this.Controls.Add(txtTaxID);
 
             //Label lblNotes = new Label();
             lblNotes.Text = "Notes:";
-            lblNotes.Location = new Point(325, 10);
+            lblNotes.Location = new Point(325, 130);
             this.Controls.Add(lblNotes);
 
             //RichTextBox txtNotes = new RichTextBox();
-            txtNotes.SetBounds(325, 40, 280, 142);
+            txtNotes.SetBounds(425, 130, 200, 142);
             this.Controls.Add(txtNotes);
 
             //Button btnSubmit = new Button();
             btnSubmit.Text = "Submit";
-            btnSubmit.Location = new Point(525, 190);
+            btnSubmit.Location = new Point(525, 280);
             this.Controls.Add(btnSubmit);
             btnSubmit.Click += new EventHandler(this.btnSubmit_Click);
 
             //Button btnNewContact = new Button();
-            btnNewContact.Location = new Point(315,190);
+            btnNewContact.Location = new Point(315,280);
             btnNewContact.Name = "btnNewContact";
             btnNewContact.Size = new System.Drawing.Size(24, 21);
             btnNewContact.Text = "...";
@@ -197,7 +262,7 @@ namespace CUITAdmin
             {
                 dbManager.AddAccount(txtAccountNumber.Text, txtAccountName.Text, int.Parse(txtMaxCharge.Text), dtpAccountExpiration.Value, 
                     cboRateType.SelectedItem.ToString(), int.Parse(cboContacts.SelectedValue.ToString()), txtNotes.Text, txtCostCenter.Text, txtWBSNumber.Text, int.Parse(txtBalance.Text),
-                    "street", "city", "state", 12345);
+                    txtStreet.Text, txtCity.Text, cboState.SelectedItem.ToString(), int.Parse(txtZipCode.Text));
 
                 containingForm.Close();
             }
@@ -225,20 +290,6 @@ namespace CUITAdmin
             if (!System.Text.RegularExpressions.Regex.IsMatch(txtAccountNumber.Text, numberPattern))
             {
                 txtAccountNumber.BackColor = System.Drawing.Color.Red;
-                error = true;
-            }
-
-            string CostCenterPattern = "^[\\w\\W]+$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtCostCenter.Text, CostCenterPattern))
-            {
-                txtCostCenter.BackColor = System.Drawing.Color.Red;
-                error = true;
-            }
-
-            string WBSPattern = "^[\\w\\W]+$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtWBSNumber.Text, WBSPattern))
-            {
-                txtWBSNumber.BackColor = System.Drawing.Color.Red;
                 error = true;
             }
 

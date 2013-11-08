@@ -71,7 +71,6 @@ namespace CUITAdmin
             this.Location = new System.Drawing.Point(3, 2);
             this.Name = "newUserContactPanel";
             this.Size = new System.Drawing.Size(526, 209);
-            this.TabIndex = 0;
             // 
             // lblFirstName
             // 
@@ -159,7 +158,7 @@ namespace CUITAdmin
             this.txtFirstName.Location = new System.Drawing.Point(108, 13);
             this.txtFirstName.Name = "txtFirstName";
             this.txtFirstName.Size = new System.Drawing.Size(134, 20);
-            this.txtFirstName.TabIndex = 15;
+            this.txtFirstName.TabIndex = 0;
             // 
             // txtLastName
             // 

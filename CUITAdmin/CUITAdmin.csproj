@@ -13,7 +13,8 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
-    <PublishUrl>publish\</PublishUrl>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>C:\Users\Apple-Seed\Desktop\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -23,10 +24,11 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
+    <AutorunEnabled>true</AutorunEnabled>
+    <ApplicationRevision>1</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -47,6 +49,18 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>5BFB2DA2702A7530BD46396055AF4B6B2A568369</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>CUITAdmin_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="itextsharp">
@@ -74,6 +88,12 @@
     <Compile Include="DBManager.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="ExcelManager.cs" />
+    <Compile Include="LineSeparator.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LineSeparator.Designer.cs">
+      <DependentUpon>LineSeparator.cs</DependentUpon>
+    </Compile>
     <Compile Include="LogPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -85,6 +105,12 @@
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainLogin.Designer.cs">
+      <DependentUpon>MainLogin.cs</DependentUpon>
     </Compile>
     <Compile Include="NewEntryForm.cs">
       <SubType>Form</SubType>
@@ -122,6 +148,9 @@
     </Compile>
     <Compile Include="XmlManager.cs" />
     <Compile Include="XMLTestingClass.cs" />
+    <EmbeddedResource Include="LineSeparator.resx">
+      <DependentUpon>LineSeparator.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LogPanel.resx">
       <DependentUpon>LogPanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -150,6 +179,7 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="CUITAdmin_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

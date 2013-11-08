@@ -54,6 +54,7 @@ namespace CUITAdmin
                 myConnection.Open();
             } catch (Exception e) {
                 Debug.WriteLine(e.Message);
+                return null;
             }
             return myConnection;
         }
@@ -250,7 +251,7 @@ namespace CUITAdmin
             myConnection.Close();
         }
 
-        public void AddSupplyUse(string accountNumber, string supplyName, DateTime date, int quantity) {
+        public bool AddSupplyUse(string accountNumber, string supplyName, DateTime date, int quantity) {
             Debug.WriteLine(date.ToString());
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand();
@@ -266,17 +267,20 @@ namespace CUITAdmin
                 myCommand.ExecuteNonQuery();
             } catch (Exception e) {
                 Debug.WriteLine(e.Message);
+                return false;
             }
 
             myConnection.Close();
+
+            return true;
         }
 
 
-        public void AddTimeLog(string accountNumber, int userID, char approved, int instrumentID, DateTime startTime) {
-            AddTimeLog(accountNumber, userID, approved, instrumentID, startTime, DateTime.Now, true);
+        public bool AddTimeLog(string accountNumber, int userID, char approved, int instrumentID, DateTime startTime) {
+            return AddTimeLog(accountNumber, userID, approved, instrumentID, startTime, DateTime.Now, true);
         }
 
-        public void AddTimeLog(string accountNumber, int userID, char approved, int instrumentID, DateTime startTime, DateTime endTime, bool partialLog = false) {
+        public bool AddTimeLog(string accountNumber, int userID, char approved, int instrumentID, DateTime startTime, DateTime endTime, bool partialLog = false) {
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand();
             myCommand.Connection = myConnection;
@@ -294,9 +298,11 @@ namespace CUITAdmin
                 myCommand.ExecuteNonQuery();
             } catch (Exception e) {
                 Debug.WriteLine(e.Message);
+                return false;
             }
 
             myConnection.Close();
+            return true;
         }
 
         public void AddTimeLogEndTime(string accountNumber, int userID, int instrumentID, DateTime startTime, DateTime endTime) {
@@ -533,6 +539,21 @@ namespace CUITAdmin
         public DataTable GetAccounts() {
             SqlConnection myConnection = DBConnect();
             //Account_Number, Name, Max_Charge_Limit, Balance, First_Name, Last_Name
+            string myCommand = "SELECT * FROM Account";
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
+
+            DataTable table = new DataTable();
+
+            dataAdapter.Fill(table);
+
+            myConnection.Close();
+            return table;
+        }
+
+        public DataTable GetAccountsForExport()
+        {
+            SqlConnection myConnection = DBConnect();
+            //Account_Number, Name, Max_Charge_Limit, Balance, First_Name, Last_Name
             string myCommand = "SELECT * FROM Account acct left outer join Point_of_Contact poc on acct.PointOfContactID = poc.PersonID left outer join Person psn on poc.PersonID = psn.PersonID";
             SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
 
@@ -614,12 +635,12 @@ namespace CUITAdmin
             return table;
         }
 
-        public DataTable GetTimeLogs(string accountNumber, DateTime startDate, DateTime endDate, bool acceptNull = false) {
+        public DataTable GetUnbilledTimeLogs(string accountNumber, DateTime startDate, DateTime endDate, bool includeExceptions = false) {
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand(
-                "Select tl.Account_Number, acct.Name, i.InstrumentID, i.Name, tl.Start_Time, tl.End_Time, tl.Current_Rate, tl.Time_Increment " +
+                "Select tl.Account_Number, tl.UserID, acct.Name, i.InstrumentID, i.Name, tl.Start_Time, tl.End_Time, tl.Current_Rate, tl.Time_Increment " +
                 "From Time_Log tl INNER JOIN Account acct on tl.Account_Number = acct.Account_Number INNER JOIN Instrument i on tl.InstrumentID = i.InstrumentID " +
-                "WHERE tl.Account_Number = @accountNumber and tl.Start_Time between @startDate and @endDate" + ((!acceptNull) ? " and tl.End_Time IS NOT NULL" : "")
+                "WHERE tl.Account_Number = @accountNumber and tl.Start_Time between @startDate and @endDate and tl.Billed IS NULL" + ((!includeExceptions) ? " and tl.End_Time IS NOT NULL and tl.Approved = 'Y'" : "")
                 , myConnection);
 
             myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
@@ -651,12 +672,32 @@ namespace CUITAdmin
             return table;
         }
         
-        public DataTable GetSupplyUse(string accountNumber, DateTime startDate, DateTime endDate) {
+        public DataTable GetUnbilledSupplyUse(string accountNumber, DateTime startDate, DateTime endDate) {
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand(
+                "Select su.Account_Number, su.Date, su.Supply_Name, su.Quantity, su.Current_Cost " +
+                "FROM Supply_Use su Inner JOIN Account acct on su.Account_Number = acct.Account_Number " +
+                "WHERE su.Date Between @startDate and @endDate and su.Account_Number = @accountNumber and Billed IS NULL and Approved = 'Y'", myConnection);
+
+            myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
+            myCommand.Parameters.AddWithValue("@startDate", startDate);
+            myCommand.Parameters.AddWithValue("@endDate", endDate);
+
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+
+            DataTable table = new DataTable();
+            dataAdapter.Fill(table);
+
+            myConnection.Close();
+            return table;
+        }
+
+        public DataTable GetSupplyUseExceptions(string accountNumber, DateTime startDate, DateTime endDate) {
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand(
                 "Select su.Account_Number, su.Supply_Name, su.Quantity, su.Current_Cost " +
                 "FROM Supply_Use su Inner JOIN Account acct on su.Account_Number = acct.Account_Number " +
-                "WHERE su.Date Between @startDate and @endDate and su.Account_Number = @accountNumber", myConnection);
+                "WHERE Approved IS NULL", myConnection);
 
             myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
             myCommand.Parameters.AddWithValue("@startDate", startDate);
@@ -854,12 +895,12 @@ namespace CUITAdmin
 
             // Initialize and populate the lines that will represent a line item billing for an instrument
             invoice.instrumets = new List<InvoiceInstrumentLine>();
-            DataTable timeLogs = GetTimeLogs(accountNumber, startDate, endDate, false);
+            DataTable timeLogs = GetUnbilledTimeLogs(accountNumber, startDate, endDate, false);
             GenerateInvoiceInstrumentLines(invoice, timeLogs);
 
             // Initialize and populate the lines that will represent a line item billing for a supply
             invoice.supplies = new List<InvoiceSupplyLine>();
-            DataTable supplyUses = GetSupplyUse(accountNumber, startDate, endDate);
+            DataTable supplyUses = GetUnbilledSupplyUse(accountNumber, startDate, endDate);
             GenerateInvoiceSupplyLines(invoice, supplyUses);
 
             // Set up a datatable that will be passed back to the server to be added
@@ -972,7 +1013,10 @@ namespace CUITAdmin
                     instrumentToUpdate.hours += duration.TotalHours;
                 }
 
-
+                UpdateTimeLogBillingStatus(currentRow["Account_Number"].ToString(),
+                                           Convert.ToInt32(currentRow["UserID"]),
+                                           Convert.ToInt32(currentRow["InstrumentID"]),
+                                           (DateTime)currentRow["Start_Time"]);
                 
             }
 
@@ -1013,6 +1057,10 @@ namespace CUITAdmin
                 } else {
                     supplyToUpdate.quantity += Convert.ToDouble(currentRow["Quantity"]);
                 }
+
+                UpdateSupplyBillingStatus(currentRow["Account_Number"].ToString(), 
+                                          currentRow["Supply_Name"].ToString(),
+                                          (DateTime)currentRow["Date"]);
             }
 
             foreach (InvoiceSupplyLine currentLine in invoice.supplies) {
@@ -1036,9 +1084,62 @@ namespace CUITAdmin
                 Debug.Write(e.ToString());
             }
         }
-        
+
+        #region Update Functions
+
+        public void UpdateTimeLogBillingStatus(string accountNumber, int userID, int instrumentID, DateTime startTime) {
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand(
+                "UPDATE Time_Log " +
+                "SET Billed = @invoiceDate " +
+                "WHERE Account_Number = @accountNumber and UserID = @userID and InstrumentID = @instrumentID and Start_Time = @startTime", myConnection);
+
+            myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
+            myCommand.Parameters.AddWithValue("@userID", userID);
+            myCommand.Parameters.AddWithValue("@instrumentID", instrumentID);
+            myCommand.Parameters.AddWithValue("@startTime", startTime);
+
+            DateTime serverTime;
+            GetServerDateTime(out serverTime);
+            myCommand.Parameters.AddWithValue("@invoiceDate", serverTime);
+
+            try {
+                myCommand.ExecuteNonQuery();
+            } catch (Exception e) {
+                Debug.WriteLine(e.Message);
+            }
+
+            myConnection.Close();
+        }
+
+        public void UpdateSupplyBillingStatus(string accountNumber, string supplyName, DateTime date) {
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand(
+                "UPDATE Supply_Use " +
+                "SET Billed = @invoiceDate " +
+                "WHERE Account_Number = @accountNumber and Supply_Name = @supplyName and Date = @date", myConnection);
+
+            myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
+            myCommand.Parameters.AddWithValue("@supplyName", supplyName);
+            myCommand.Parameters.AddWithValue("@date", date);
+
+            DateTime serverTime;
+            GetServerDateTime(out serverTime);
+            myCommand.Parameters.AddWithValue("@invoiceDate", serverTime);
+
+            try {
+                myCommand.ExecuteNonQuery();
+            } catch (Exception e) {
+                Debug.WriteLine(e.Message);
+            }
+
+            myConnection.Close();
+        }
+
+        #endregion
+
         #region Invoice Classes
-        
+
         private class Invoice {
             public string accountNumber { get; set; }
             public string accountName { get; set; }

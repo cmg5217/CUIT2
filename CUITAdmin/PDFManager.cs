@@ -51,6 +51,56 @@ namespace CUITAdmin
         }
 
 
+       public bool GeneratePDF(int invoiceID){
+           DBManager dbManager = DBManager.Instance;
+
+           string offset = "";
+           DataTable invoice = dbManager.GetInvoice(invoiceID);
+           if (invoice.Rows.Count == 0) return false;
+           DataTable invoiceTime = dbManager.GetInvoiceTimeLine(invoiceID);
+           DataTable invoiceSupply = dbManager.GetInvoiceSupplyLine(invoiceID);
+           DataTable getacc = dbManager.GetAccounts();
+           //convert date time to invoice friendly format
+           DateTime poststart = DateTime.Parse(invoice.Rows[0]["Posting_Start_Date"].ToString());
+           DateTime postend = DateTime.Parse(invoice.Rows[0]["Posting_End_Date"].ToString());
+           //MessageBox.Show(test.ToShortDateString().ToString());
+
+
+           //AddAddress("Name", "Street", "City", "State", "Zip");
+           AddAddress(getacc.Rows[0]["Name"].ToString(),
+               getacc.Rows[0]["Street"].ToString(), //add street to invocie
+               getacc.Rows[0]["City"].ToString(), // add city to invoice
+               getacc.Rows[0]["State"].ToString(), //add state to invoice
+               getacc.Rows[0]["Zip"].ToString()); //add zip to invoice
+
+           //AddService("Instrument", "StartPostDate", "EndPostDate","hours", "rate ($/hr)", "unit(hours days ects)");
+
+           AddPostDate(poststart.ToShortDateString().ToString(), postend.ToShortDateString().ToString());
+
+           foreach (DataRow currentRow in invoiceTime.Rows)
+           {
+
+               AddService(
+                   currentRow["Name"].ToString(), //insert time into the invoice
+                   poststart.ToShortDateString().ToString(), //insert start date into invoice
+                   postend.ToShortDateString().ToString(),  //insert end date into invoice
+                   currentRow["Hours"].ToString(), //insert hours into invoice
+                   currentRow["Rate"].ToString(), //insert dollars per hour into invoice
+                   "hour");// unit of biling displayed on invoice
+               AddCharge(currentRow["Line_Amount"].ToString()); //add charge to invoice
+               offset += "\r\n\r\n";
+           }
+
+           AddDate(DateTime.Now.ToString()); //Add todays date to the invoice
+           AddInvoiceID(invoice.Rows[0]["InvoiceID"].ToString()); // add invoice id to invoice
+           AddBalance(offset + "$" + invoice.Rows[0]["Total_Balance"].ToString()); // add balance to invoice
+
+           PDFClose();
+           return true;
+       }
+
+
+
        // crete the directory if it does not exist (/Invoices/[currentyear])
        public void CreateFolderifDoesNotExist()
        {
@@ -144,7 +194,7 @@ namespace CUITAdmin
             DataTable invoice = dbManager.GetInvoice(invoiceNumber);
             DataTable invoiceTime = dbManager.GetInvoiceTimeLine(invoiceNumber);
             DataTable invoiceSupply = dbManager.GetInvoiceSupplyLine(invoiceNumber);
-            DataTable getacc = dbManager.GetAccounts();
+            DataTable getacc = dbManager.GetAccountsForExport();
             //convert date time to invoice friendly format
             DateTime poststart = DateTime.Parse(invoice.Rows[0]["Posting_Start_Date"].ToString());
             DateTime postend = DateTime.Parse(invoice.Rows[0]["Posting_End_Date"].ToString());

@@ -33,7 +33,7 @@ namespace CUITAdmin.Properties {
                 return ((string)(this["CUIT_TRIALConnectionString"]));
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
@@ -45,6 +45,7 @@ namespace CUITAdmin.Properties {
                 this["InvoicePath"] = value;
             }
         }
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("false")]
