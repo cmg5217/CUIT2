@@ -30,11 +30,14 @@
         {
             this.tbpExports = new System.Windows.Forms.TabPage();
             this.grpInvoiceExport = new System.Windows.Forms.GroupBox();
-            this.txtAccount = new System.Windows.Forms.Label();
-            this.txtMonth = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnExportAll = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.comboBoxSelectAccount = new System.Windows.Forms.ComboBox();
-            this.comboBoxSelectMonth = new System.Windows.Forms.ComboBox();
+            this.txtAccount = new System.Windows.Forms.Label();
             this.btnInvoiceExport = new System.Windows.Forms.Button();
+            this.txtMonth = new System.Windows.Forms.Label();
+            this.comboBoxSelectMonth = new System.Windows.Forms.ComboBox();
             this.grpStandaloneFileExport = new System.Windows.Forms.GroupBox();
             this.btnImportLogs = new System.Windows.Forms.Button();
             this.btnExportStandaloneFile = new System.Windows.Forms.Button();
@@ -110,11 +113,10 @@
             this.btnManualTimeAdd = new System.Windows.Forms.Button();
             this.lblDuration = new System.Windows.Forms.Label();
             this.lblFundingSource = new System.Windows.Forms.Label();
-            this.btnExportAll = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tbpExports.SuspendLayout();
             this.grpInvoiceExport.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.grpStandaloneFileExport.SuspendLayout();
             this.tbpAccountAdmin.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.AdminDataGridView)).BeginInit();
@@ -131,8 +133,6 @@
             this.groupBox7.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox9.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tbpExports
@@ -161,23 +161,37 @@
             this.grpInvoiceExport.TabStop = false;
             this.grpInvoiceExport.Text = "Export Invoice";
             // 
-            // txtAccount
+            // groupBox1
             // 
-            this.txtAccount.AutoSize = true;
-            this.txtAccount.Location = new System.Drawing.Point(70, 15);
-            this.txtAccount.Name = "txtAccount";
-            this.txtAccount.Size = new System.Drawing.Size(50, 13);
-            this.txtAccount.TabIndex = 5;
-            this.txtAccount.Text = "Account:";
+            this.groupBox1.Controls.Add(this.btnExportAll);
+            this.groupBox1.Location = new System.Drawing.Point(6, 56);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(200, 48);
+            this.groupBox1.TabIndex = 8;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "All Accounts";
             // 
-            // txtMonth
+            // btnExportAll
             // 
-            this.txtMonth.AutoSize = true;
-            this.txtMonth.Location = new System.Drawing.Point(18, 32);
-            this.txtMonth.Name = "txtMonth";
-            this.txtMonth.Size = new System.Drawing.Size(40, 13);
-            this.txtMonth.TabIndex = 4;
-            this.txtMonth.Text = "Month:";
+            this.btnExportAll.Location = new System.Drawing.Point(73, 16);
+            this.btnExportAll.Name = "btnExportAll";
+            this.btnExportAll.Size = new System.Drawing.Size(121, 23);
+            this.btnExportAll.TabIndex = 6;
+            this.btnExportAll.Text = "Export";
+            this.btnExportAll.UseVisualStyleBackColor = true;
+            this.btnExportAll.Click += new System.EventHandler(this.btnExportAll_Click);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.comboBoxSelectAccount);
+            this.groupBox2.Controls.Add(this.txtAccount);
+            this.groupBox2.Controls.Add(this.btnInvoiceExport);
+            this.groupBox2.Location = new System.Drawing.Point(7, 110);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(200, 90);
+            this.groupBox2.TabIndex = 9;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Single Account";
             // 
             // comboBoxSelectAccount
             // 
@@ -191,6 +205,34 @@
             this.comboBoxSelectAccount.Name = "comboBoxSelectAccount";
             this.comboBoxSelectAccount.Size = new System.Drawing.Size(121, 21);
             this.comboBoxSelectAccount.TabIndex = 3;
+            // 
+            // txtAccount
+            // 
+            this.txtAccount.AutoSize = true;
+            this.txtAccount.Location = new System.Drawing.Point(70, 15);
+            this.txtAccount.Name = "txtAccount";
+            this.txtAccount.Size = new System.Drawing.Size(50, 13);
+            this.txtAccount.TabIndex = 5;
+            this.txtAccount.Text = "Account:";
+            // 
+            // btnInvoiceExport
+            // 
+            this.btnInvoiceExport.Location = new System.Drawing.Point(73, 58);
+            this.btnInvoiceExport.Name = "btnInvoiceExport";
+            this.btnInvoiceExport.Size = new System.Drawing.Size(121, 23);
+            this.btnInvoiceExport.TabIndex = 1;
+            this.btnInvoiceExport.Text = " Export";
+            this.btnInvoiceExport.UseVisualStyleBackColor = true;
+            this.btnInvoiceExport.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // txtMonth
+            // 
+            this.txtMonth.AutoSize = true;
+            this.txtMonth.Location = new System.Drawing.Point(18, 32);
+            this.txtMonth.Name = "txtMonth";
+            this.txtMonth.Size = new System.Drawing.Size(40, 13);
+            this.txtMonth.TabIndex = 4;
+            this.txtMonth.Text = "Month:";
             // 
             // comboBoxSelectMonth
             // 
@@ -213,16 +255,6 @@
             this.comboBoxSelectMonth.Name = "comboBoxSelectMonth";
             this.comboBoxSelectMonth.Size = new System.Drawing.Size(121, 21);
             this.comboBoxSelectMonth.TabIndex = 2;
-            // 
-            // btnInvoiceExport
-            // 
-            this.btnInvoiceExport.Location = new System.Drawing.Point(73, 58);
-            this.btnInvoiceExport.Name = "btnInvoiceExport";
-            this.btnInvoiceExport.Size = new System.Drawing.Size(121, 23);
-            this.btnInvoiceExport.TabIndex = 1;
-            this.btnInvoiceExport.Text = " Export";
-            this.btnInvoiceExport.UseVisualStyleBackColor = true;
-            this.btnInvoiceExport.Click += new System.EventHandler(this.button4_Click);
             // 
             // grpStandaloneFileExport
             // 
@@ -614,6 +646,7 @@
             this.chkStandalone.Text = "Standalone Mode";
             this.chkStandalone.UseVisualStyleBackColor = true;
             this.chkStandalone.CheckedChanged += new System.EventHandler(this.chkStandalone_CheckedChanged);
+            this.chkStandalone.Click += new System.EventHandler(this.chkStandalone_Click);
             // 
             // grpExportPath
             // 
@@ -984,38 +1017,6 @@
             this.lblFundingSource.TabIndex = 4;
             this.lblFundingSource.Text = "Funding Source:";
             // 
-            // btnExportAll
-            // 
-            this.btnExportAll.Location = new System.Drawing.Point(73, 16);
-            this.btnExportAll.Name = "btnExportAll";
-            this.btnExportAll.Size = new System.Drawing.Size(121, 23);
-            this.btnExportAll.TabIndex = 6;
-            this.btnExportAll.Text = "Export";
-            this.btnExportAll.UseVisualStyleBackColor = true;
-            this.btnExportAll.Click += new System.EventHandler(this.btnExportAll_Click);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.btnExportAll);
-            this.groupBox1.Location = new System.Drawing.Point(6, 56);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(200, 48);
-            this.groupBox1.TabIndex = 8;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "All Accounts";
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.comboBoxSelectAccount);
-            this.groupBox2.Controls.Add(this.txtAccount);
-            this.groupBox2.Controls.Add(this.btnInvoiceExport);
-            this.groupBox2.Location = new System.Drawing.Point(7, 110);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(200, 90);
-            this.groupBox2.TabIndex = 9;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Single Account";
-            // 
             // frmCUITAdminMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1031,6 +1032,9 @@
             this.tbpExports.ResumeLayout(false);
             this.grpInvoiceExport.ResumeLayout(false);
             this.grpInvoiceExport.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.grpStandaloneFileExport.ResumeLayout(false);
             this.tbpAccountAdmin.ResumeLayout(false);
             this.tbpAccountAdmin.PerformLayout();
@@ -1054,9 +1058,6 @@
             this.groupBox8.PerformLayout();
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }

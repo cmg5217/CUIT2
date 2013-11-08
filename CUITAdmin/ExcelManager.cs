@@ -35,19 +35,19 @@ namespace CUITAdmin
             generateExcel(new System.Data.DataTable[] { invoiceDataTable });
         }
 
+        
+
         static public void generateExcel(System.Data.DataTable[] invoiceArray)
+
         {
 
             string excelfilename = @"\" + DateTime.Now.ToString("MMMMMMMM yyyy") + ".xls";
             //checks if the files exists and delets it if it does exits            
             if (File.Exists(pathname + excelfilename))
             {
-
-                File.Delete(pathname + excelfilename);
-                
+              File.Delete(pathname + excelfilename);                
             }
-            
-
+    
             //copies the template from the bin folder to a predetermined location
             System.IO.File.Copy(@"GLSU Template.xls", pathname + excelfilename);
             string path = pathname + excelfilename;
@@ -69,8 +69,9 @@ namespace CUITAdmin
            
             //pull information from the database
             DateTime poststart = DateTime.Parse(invoiceArray[0].Rows[0]["Posting_Start_Date"].ToString());
-
-
+            //string balance = (invoiceDataTable.Rows[0]["Total_Balance"].ToString());
+            string invoiceid = invoiceArray[0].Rows[0]["InvoiceID"].ToString();
+            string account = invoiceArray[0].Rows[0]["Name"].ToString();
             //DataTable invoice = dbManager.GetInvoice(invoiceID);
 
             
@@ -79,6 +80,15 @@ namespace CUITAdmin
             
             //Posting Date
             mWSheet1.Cells[4, 3] = poststart;
+
+            //change then business area to 25
+            mWSheet1.Cells[8, 7] = "25";
+
+            //change the invoice #
+            mWSheet1.Cells[8, 6] = "InvoiceID:" + invoiceid + "    AccountID:" + account;
+
+            //change the funding source(account)
+            mWSheet1.Cells[8, 7] = "25";
 
             
             for (int i = 0; i < invoiceArray.Length; i++ )
@@ -117,6 +127,12 @@ namespace CUITAdmin
             {
                 Marshal.ReleaseComObject(oXL);
                 oXL = null;
+            }
+
+            Process excelProcess = Process.GetProcessesByName("EXCEL")[0];
+            if (!excelProcess.CloseMainWindow())
+            {
+                excelProcess.Kill();
             }
 
         }
