@@ -233,14 +233,18 @@ namespace CUITAdmin {
 
             // --Adjust Controls--
             cboInstrument.Enabled = false;
+            instrument = cboInstrument.SelectedValue.ToString();
+            
+            
             cboFundingSource.Enabled = false;
+            account = cboFundingSource.SelectedValue.ToString();
+            cboFundingSource.DataSource = null;
+
             lblAuthenticating.Text = "Authentification Successful";
 
             txtUsername.Enabled = false;
             txtPassword.Clear();
             
-
-
             btnStartLog.Text = "End";
 
             timeElapsed = new System.Timers.Timer();
@@ -248,8 +252,6 @@ namespace CUITAdmin {
 
             passwordValidated = false; // Set passwordValidated back to false, used to validate before ending the log
 
-            instrument = cboInstrument.SelectedValue.ToString();
-            account = cboFundingSource.SelectedValue.ToString();
 
             if (standalone) {
                 xmlManager.AddPartialLog(txtUsername.Text, 
@@ -257,8 +259,6 @@ namespace CUITAdmin {
                     instrument,
                     DateTime.Now.ToString());
             } else {
-            // To-Do: Add Query to add partial log with start time
-                
 
                 if (dbManager.GetServerDateTime(out currentTime)) {
                     dbManager.AddTimeLog(account, dbManager.GetUserID(username), 'Y',
@@ -267,8 +267,6 @@ namespace CUITAdmin {
                     MessageBox.Show("Error: Could not connect to server. \r\nCheck connection or contact your server administrater");
                 }
             }
-
-            
             
         }
 

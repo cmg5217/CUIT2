@@ -54,6 +54,7 @@ namespace CUITAdmin
                 myConnection.Open();
             } catch (Exception e) {
                 Debug.WriteLine(e.Message);
+                return null;
             }
             return myConnection;
         }
@@ -250,7 +251,7 @@ namespace CUITAdmin
             myConnection.Close();
         }
 
-        public void AddSupplyUse(string accountNumber, string supplyName, DateTime date, int quantity) {
+        public bool AddSupplyUse(string accountNumber, string supplyName, DateTime date, int quantity) {
             Debug.WriteLine(date.ToString());
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand();
@@ -266,17 +267,20 @@ namespace CUITAdmin
                 myCommand.ExecuteNonQuery();
             } catch (Exception e) {
                 Debug.WriteLine(e.Message);
+                return false;
             }
 
             myConnection.Close();
+
+            return true;
         }
 
 
-        public void AddTimeLog(string accountNumber, int userID, char approved, int instrumentID, DateTime startTime) {
-            AddTimeLog(accountNumber, userID, approved, instrumentID, startTime, DateTime.Now, true);
+        public bool AddTimeLog(string accountNumber, int userID, char approved, int instrumentID, DateTime startTime) {
+            return AddTimeLog(accountNumber, userID, approved, instrumentID, startTime, DateTime.Now, true);
         }
 
-        public void AddTimeLog(string accountNumber, int userID, char approved, int instrumentID, DateTime startTime, DateTime endTime, bool partialLog = false) {
+        public bool AddTimeLog(string accountNumber, int userID, char approved, int instrumentID, DateTime startTime, DateTime endTime, bool partialLog = false) {
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand();
             myCommand.Connection = myConnection;
@@ -294,9 +298,11 @@ namespace CUITAdmin
                 myCommand.ExecuteNonQuery();
             } catch (Exception e) {
                 Debug.WriteLine(e.Message);
+                return false;
             }
 
             myConnection.Close();
+            return true;
         }
 
         public void AddTimeLogEndTime(string accountNumber, int userID, int instrumentID, DateTime startTime, DateTime endTime) {

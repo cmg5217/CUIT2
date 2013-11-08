@@ -107,9 +107,9 @@ namespace CUITAdmin
                 cboBillingSupplyFunding.DisplayMember = "Name";
                 cboBillingSupplyFunding.ValueMember = "Account_Number";
 
-                cboBillingSupplyName.DataSource = dbManager.GetInstruments();
-                cboBillingSupplyName.DisplayMember = "Name";
-                cboBillingSupplyName.ValueMember = "InstrumentID";
+                cboBillingSupplyName.DataSource = dbManager.GetSupplies();
+                cboBillingSupplyName.DisplayMember = "Supply_Name";
+                cboBillingSupplyName.ValueMember = "Supply_Name";
 
                 dgvTimeLogRequests.DataSource = dbManager.GetTimeLogsExceptions();
                 FindAndRenameDGVColumn("Account_Name", "Account Name", dgvTimeLogRequests);
@@ -248,7 +248,26 @@ namespace CUITAdmin
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
+            int duration;
+            if (!(int.TryParse(txtManualLogDuration.Text, out duration))) {
+                txtManualLogDuration.BackColor = Color.Red;
+                return;
+            }
 
+            txtManualTimeDuration.BackColor = Color.White;
+
+            string accountNumber = cboManualLogFunding.SelectedValue.ToString();
+            int instrumentID = int.Parse(cboManualLogInstrument.SelectedValue.ToString());
+            int userID = int.Parse(cboManualLogUser.SelectedValue.ToString());
+            DateTime startTime = dtpManualLog.Value;
+            DateTime endTime = startTime.AddMinutes(int.Parse(txtManualLogDuration.Text));
+
+            if (dbManager.AddTimeLog(accountNumber, userID, 'Y', instrumentID, startTime, endTime)) {
+                MessageBox.Show("Time log successfully added");
+            } else {
+                MessageBox.Show("There was an error executing your request. \r\n" + 
+                                "Please check your connection or contact your server admin");
+            }
         }
 
         private void tbpAccountAdmin_Click(object sender, EventArgs e)
@@ -680,6 +699,32 @@ namespace CUITAdmin
 
 
             }
+        }
+
+        private void btnBillingSupplyAdd_Click(object sender, EventArgs e) {
+            
+            int quantity;
+
+            if(!(int.TryParse(txtBillingSupplyQuantity.Text, out quantity))){
+                txtBillingSupplyQuantity.BackColor = Color.Red;
+                return;
+            }
+            txtBillingSupplyQuantity.BackColor = Color.White;
+
+            string accountNumber = cboBillingSupplyFunding.SelectedValue.ToString();
+            string supplyName = cboBillingSupplyName.SelectedValue.ToString();
+            DateTime serverTime;
+            dbManager.GetServerDateTime(out serverTime);
+            if (dbManager.AddSupplyUse(accountNumber, supplyName, serverTime, quantity)) {
+                MessageBox.Show("Supply use successfully added");
+            } else {
+                MessageBox.Show("There was an error executing your request. \r\n" +
+                "Please check your connection or contact your server admin");
+            }
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e) {
+
         }
     }
 }
