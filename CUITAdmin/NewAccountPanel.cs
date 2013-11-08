@@ -41,7 +41,7 @@ namespace CUITAdmin
         Label lblCostCenter = new Label();
         Label lblWBSNumber = new Label();
         Label lblTaxID = new Label();
-        RichTextBox txtNotes = new RichTextBox();
+        RichTextBox rtbNotes = new RichTextBox();
         Button btnSubmit = new Button();
         Button btnNewContact = new Button();
         DBManager dbManager;
@@ -51,8 +51,6 @@ namespace CUITAdmin
             dbManager = DBManager.Instance;
             containingForm = pForm;
             pForm.Controls.Add(this);
-            //this.Location = new Point(10, 10);
-            //this.Size = new Size(650, 460);
             this.SetBounds(10, 10, 680, 380);
 
             //Label lblAccountName = new Label();
@@ -63,7 +61,7 @@ namespace CUITAdmin
             //TextBox txtAccountName = new TextBox();
             txtAccountName.SetBounds(110, 10, 200, 20);
             this.Controls.Add(txtAccountName);
-
+            txtAccountName.TabIndex = 0;
             //Label lblAccountNumber = new Label();
             lblAccountNumber.Text = "Account Number:";
             lblAccountNumber.Location = new Point(10, 40);
@@ -144,10 +142,8 @@ namespace CUITAdmin
             //ComboBox cboRateType = new ComboBox();
             cboRateType.SetBounds(425, 70, 200, 20);
             this.Controls.Add(cboRateType);
-            cboRateType.Items.Add("");
-            cboRateType.Items.Add("Internal Academic");
-            cboRateType.Items.Add("External Academic");
-            cboRateType.Items.Add("Industry");
+            cboRateType.DataSource = dbManager.GetRateTypes();
+            cboRateType.DisplayMember = "Name";
             cboRateType.SelectedIndex = 0;
             this.cboRateType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 
@@ -205,13 +201,13 @@ namespace CUITAdmin
             lblNotes.Location = new Point(325, 130);
             this.Controls.Add(lblNotes);
 
-            //RichTextBox txtNotes = new RichTextBox();
-            txtNotes.SetBounds(425, 130, 200, 142);
-            this.Controls.Add(txtNotes);
+            //RichTextBox rtbNotes = new RichTextBox();
+            rtbNotes.SetBounds(425, 130, 200, 142);
+            this.Controls.Add(rtbNotes);
 
             //Button btnSubmit = new Button();
             btnSubmit.Text = "Submit";
-            btnSubmit.Location = new Point(525, 280);
+            btnSubmit.Location = new Point(550, 280);
             this.Controls.Add(btnSubmit);
             btnSubmit.Click += new EventHandler(this.btnSubmit_Click);
 
@@ -224,6 +220,25 @@ namespace CUITAdmin
             tip.SetToolTip(this.btnNewContact, "Add New Contact");
             this.Controls.Add(btnNewContact);
             btnNewContact.Click += new EventHandler(this.btnNewContact_Click);
+
+            //sets all of the tab indexes
+            txtAccountName.TabIndex = 0;
+            txtAccountNumber.TabIndex = 1;
+            txtMaxCharge.TabIndex = 2;
+            txtBalance.TabIndex = 3;
+            dtpAccountExpiration.TabIndex = 4;
+            txtStreet.TabIndex = 5;
+            txtCity.TabIndex = 6;
+            cboState.TabIndex = 7;
+            txtZipCode.TabIndex = 8;
+            cboContacts.TabIndex = 9;
+            btnNewContact.TabIndex = 10;
+            txtCostCenter.TabIndex = 11;
+            txtWBSNumber.TabIndex = 12;
+            cboRateType.TabIndex = 13;
+            txtTaxID.TabIndex = 14;
+            rtbNotes.TabIndex = 15;
+            btnSubmit.TabIndex = 16;
 
             containingForm.AcceptButton = btnSubmit;
         }
@@ -261,7 +276,7 @@ namespace CUITAdmin
             else
             {
                 dbManager.AddAccount(txtAccountNumber.Text, txtAccountName.Text, int.Parse(txtMaxCharge.Text), dtpAccountExpiration.Value, 
-                    cboRateType.SelectedItem.ToString(), int.Parse(cboContacts.SelectedValue.ToString()), txtNotes.Text, txtCostCenter.Text, txtWBSNumber.Text, int.Parse(txtBalance.Text),
+                    cboRateType.SelectedItem.ToString(), int.Parse(cboContacts.SelectedValue.ToString()), rtbNotes.Text, txtCostCenter.Text, txtWBSNumber.Text, int.Parse(txtBalance.Text),
                     txtStreet.Text, txtCity.Text, cboState.SelectedItem.ToString(), int.Parse(txtZipCode.Text));
 
                 containingForm.Close();
@@ -274,6 +289,9 @@ namespace CUITAdmin
             txtAccountNumber.BackColor = System.Drawing.Color.White;
             txtMaxCharge.BackColor = System.Drawing.Color.White;
             cboRateType.BackColor = System.Drawing.Color.White;
+            txtZipCode.BackColor = System.Drawing.Color.White;
+            txtCity.BackColor = System.Drawing.Color.White;
+            txtStreet.BackColor = System.Drawing.Color.White;
             txtBalance.BackColor = System.Drawing.Color.White;
             txtWBSNumber.BackColor = System.Drawing.Color.White;
             txtCostCenter.BackColor = System.Drawing.Color.White;
@@ -303,6 +321,27 @@ namespace CUITAdmin
             if (cboRateType.SelectedIndex == 0)
             {
                 lblRateType.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string zipPattern = "^([0-9]{5})\\-?([0-9]{4})?$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtZipCode.Text, zipPattern))
+            {
+                txtZipCode.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string cityPattern = "^[A-Za-z\\s-\\.]+$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtCity.Text, cityPattern))
+            {
+                txtCity.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string streetPattern = "^[\\w\\s-\\.]+$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtStreet.Text, streetPattern))
+            {
+                txtStreet.BackColor = System.Drawing.Color.Red;
                 error = true;
             }
 
