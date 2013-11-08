@@ -71,18 +71,34 @@
             this.lblManualLogDuration = new System.Windows.Forms.Label();
             this.lblManualLogFunding = new System.Windows.Forms.Label();
             this.grpTimeLogExceptions = new System.Windows.Forms.GroupBox();
+            this.btnRefresh = new System.Windows.Forms.Button();
             this.dgvTimeLogRequests = new System.Windows.Forms.DataGridView();
             this.btnSubmit = new System.Windows.Forms.Button();
             this.InvoiceExportPath = new System.Windows.Forms.FolderBrowserDialog();
-            this.tbpSettings = new System.Windows.Forms.TabPage();
-            this.chkStandalone = new System.Windows.Forms.CheckBox();
-            this.grpExportPath = new System.Windows.Forms.GroupBox();
-            this.lblExportPath = new System.Windows.Forms.Label();
-            this.txtInvoiceExportPath = new System.Windows.Forms.TextBox();
-            this.btnSetInvoiceExportPath = new System.Windows.Forms.Button();
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tbpTracking = new System.Windows.Forms.TabPage();
             this.tbpManualRequests = new System.Windows.Forms.TabPage();
+            this.grpAccountSettings = new System.Windows.Forms.GroupBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.txtAcctManagementPhone = new System.Windows.Forms.TextBox();
+            this.txtAcctManagementEmail = new System.Windows.Forms.TextBox();
+            this.txtAcctManagementZip = new System.Windows.Forms.TextBox();
+            this.cboAcctManagementState = new System.Windows.Forms.ComboBox();
+            this.txtAcctManagementCity = new System.Windows.Forms.TextBox();
+            this.txtAcctManagementStreet = new System.Windows.Forms.TextBox();
+            this.bnAcctManagementSubmit = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.lblAcctManagementPw = new System.Windows.Forms.Label();
+            this.lblAcctManagementUn = new System.Windows.Forms.Label();
+            this.txtAcctManagementConfirmPw = new System.Windows.Forms.TextBox();
+            this.txtAcctManagementNewPw = new System.Windows.Forms.TextBox();
+            this.txtAcctManagementPassword = new System.Windows.Forms.TextBox();
+            this.txtAcctManagementUserame = new System.Windows.Forms.TextBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.label12 = new System.Windows.Forms.Label();
@@ -113,7 +129,14 @@
             this.btnManualTimeAdd = new System.Windows.Forms.Button();
             this.lblDuration = new System.Windows.Forms.Label();
             this.lblFundingSource = new System.Windows.Forms.Label();
-            this.btnRefresh = new System.Windows.Forms.Button();
+            this.chkStandalone = new System.Windows.Forms.CheckBox();
+            this.grpExportPath = new System.Windows.Forms.GroupBox();
+            this.lblExportPath = new System.Windows.Forms.Label();
+            this.txtInvoiceExportPath = new System.Windows.Forms.TextBox();
+            this.btnSetInvoiceExportPath = new System.Windows.Forms.Button();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.lineSeparator1 = new CUITAdmin.LineSeparator();
             this.tbpExports.SuspendLayout();
             this.grpInvoiceExport.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -127,17 +150,18 @@
             this.grpManualTimeLog.SuspendLayout();
             this.grpTimeLogExceptions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTimeLogRequests)).BeginInit();
-            this.tbpSettings.SuspendLayout();
-            this.grpExportPath.SuspendLayout();
             this.tabControlMain.SuspendLayout();
             this.tbpManualRequests.SuspendLayout();
+            this.grpAccountSettings.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox9.SuspendLayout();
+            this.grpExportPath.SuspendLayout();
             this.SuspendLayout();
             // 
             // tbpExports
             // 
+            this.tbpExports.Controls.Add(this.grpExportPath);
             this.tbpExports.Controls.Add(this.grpInvoiceExport);
             this.tbpExports.Controls.Add(this.grpStandaloneFileExport);
             this.tbpExports.Location = new System.Drawing.Point(4, 22);
@@ -147,7 +171,6 @@
             this.tbpExports.TabIndex = 2;
             this.tbpExports.Text = "Exports";
             this.tbpExports.UseVisualStyleBackColor = true;
-            this.tbpExports.Click += new System.EventHandler(this.tbpExports_Click);
             // 
             // grpInvoiceExport
             // 
@@ -155,9 +178,9 @@
             this.grpInvoiceExport.Controls.Add(this.groupBox2);
             this.grpInvoiceExport.Controls.Add(this.txtMonth);
             this.grpInvoiceExport.Controls.Add(this.comboBoxSelectMonth);
-            this.grpInvoiceExport.Location = new System.Drawing.Point(232, 366);
+            this.grpInvoiceExport.Location = new System.Drawing.Point(131, 230);
             this.grpInvoiceExport.Name = "grpInvoiceExport";
-            this.grpInvoiceExport.Size = new System.Drawing.Size(216, 206);
+            this.grpInvoiceExport.Size = new System.Drawing.Size(243, 206);
             this.grpInvoiceExport.TabIndex = 7;
             this.grpInvoiceExport.TabStop = false;
             this.grpInvoiceExport.Text = "Export Invoice";
@@ -167,7 +190,7 @@
             this.groupBox1.Controls.Add(this.btnExportAll);
             this.groupBox1.Location = new System.Drawing.Point(6, 56);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(200, 48);
+            this.groupBox1.Size = new System.Drawing.Size(231, 48);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "All Accounts";
@@ -189,7 +212,7 @@
             this.groupBox2.Controls.Add(this.btnInvoiceExport);
             this.groupBox2.Location = new System.Drawing.Point(7, 110);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(200, 90);
+            this.groupBox2.Size = new System.Drawing.Size(230, 90);
             this.groupBox2.TabIndex = 9;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Single Account";
@@ -259,20 +282,21 @@
             // 
             // grpStandaloneFileExport
             // 
+            this.grpStandaloneFileExport.Controls.Add(this.chkStandalone);
             this.grpStandaloneFileExport.Controls.Add(this.btnImportLogs);
             this.grpStandaloneFileExport.Controls.Add(this.btnExportStandaloneFile);
-            this.grpStandaloneFileExport.Location = new System.Drawing.Point(232, 260);
+            this.grpStandaloneFileExport.Location = new System.Drawing.Point(380, 230);
             this.grpStandaloneFileExport.Name = "grpStandaloneFileExport";
-            this.grpStandaloneFileExport.Size = new System.Drawing.Size(216, 100);
+            this.grpStandaloneFileExport.Size = new System.Drawing.Size(189, 206);
             this.grpStandaloneFileExport.TabIndex = 2;
             this.grpStandaloneFileExport.TabStop = false;
             this.grpStandaloneFileExport.Text = "Standalone Files";
             // 
             // btnImportLogs
             // 
-            this.btnImportLogs.Location = new System.Drawing.Point(52, 59);
+            this.btnImportLogs.Location = new System.Drawing.Point(34, 67);
             this.btnImportLogs.Name = "btnImportLogs";
-            this.btnImportLogs.Size = new System.Drawing.Size(103, 23);
+            this.btnImportLogs.Size = new System.Drawing.Size(121, 23);
             this.btnImportLogs.TabIndex = 1;
             this.btnImportLogs.Text = "Import Logs";
             this.btnImportLogs.UseVisualStyleBackColor = true;
@@ -280,9 +304,9 @@
             // 
             // btnExportStandaloneFile
             // 
-            this.btnExportStandaloneFile.Location = new System.Drawing.Point(52, 29);
+            this.btnExportStandaloneFile.Location = new System.Drawing.Point(34, 29);
             this.btnExportStandaloneFile.Name = "btnExportStandaloneFile";
-            this.btnExportStandaloneFile.Size = new System.Drawing.Size(103, 23);
+            this.btnExportStandaloneFile.Size = new System.Drawing.Size(121, 23);
             this.btnExportStandaloneFile.TabIndex = 0;
             this.btnExportStandaloneFile.Text = "Export Standalone";
             this.btnExportStandaloneFile.UseVisualStyleBackColor = true;
@@ -303,7 +327,6 @@
             this.tbpAccountAdmin.TabIndex = 1;
             this.tbpAccountAdmin.Text = "Account Admin";
             this.tbpAccountAdmin.UseVisualStyleBackColor = true;
-            this.tbpAccountAdmin.Click += new System.EventHandler(this.tbpAccountAdmin_Click);
             // 
             // btnAccountAdminNew
             // 
@@ -607,6 +630,15 @@
             this.grpTimeLogExceptions.TabStop = false;
             this.grpTimeLogExceptions.Text = "Time Log Exceptions";
             // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Location = new System.Drawing.Point(509, 325);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(75, 23);
+            this.btnRefresh.TabIndex = 9;
+            this.btnRefresh.Text = "Refresh";
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            // 
             // dgvTimeLogRequests
             // 
             this.dgvTimeLogRequests.AllowUserToAddRows = false;
@@ -628,72 +660,11 @@
             this.btnSubmit.Text = "Submit";
             this.btnSubmit.UseVisualStyleBackColor = true;
             // 
-            // tbpSettings
-            // 
-            this.tbpSettings.Controls.Add(this.chkStandalone);
-            this.tbpSettings.Controls.Add(this.grpExportPath);
-            this.tbpSettings.Location = new System.Drawing.Point(4, 22);
-            this.tbpSettings.Name = "tbpSettings";
-            this.tbpSettings.Size = new System.Drawing.Size(683, 589);
-            this.tbpSettings.TabIndex = 3;
-            this.tbpSettings.Text = "Settings";
-            this.tbpSettings.UseVisualStyleBackColor = true;
-            // 
-            // chkStandalone
-            // 
-            this.chkStandalone.AutoSize = true;
-            this.chkStandalone.Location = new System.Drawing.Point(149, 207);
-            this.chkStandalone.Name = "chkStandalone";
-            this.chkStandalone.Size = new System.Drawing.Size(110, 17);
-            this.chkStandalone.TabIndex = 6;
-            this.chkStandalone.Text = "Standalone Mode";
-            this.chkStandalone.UseVisualStyleBackColor = true;
-            this.chkStandalone.CheckedChanged += new System.EventHandler(this.chkStandalone_CheckedChanged);
-            // 
-            // grpExportPath
-            // 
-            this.grpExportPath.Controls.Add(this.lblExportPath);
-            this.grpExportPath.Controls.Add(this.txtInvoiceExportPath);
-            this.grpExportPath.Controls.Add(this.btnSetInvoiceExportPath);
-            this.grpExportPath.Location = new System.Drawing.Point(130, 244);
-            this.grpExportPath.Name = "grpExportPath";
-            this.grpExportPath.Size = new System.Drawing.Size(423, 100);
-            this.grpExportPath.TabIndex = 5;
-            this.grpExportPath.TabStop = false;
-            this.grpExportPath.Text = "Export Invoice";
-            // 
-            // lblExportPath
-            // 
-            this.lblExportPath.AutoSize = true;
-            this.lblExportPath.Location = new System.Drawing.Point(19, 29);
-            this.lblExportPath.Name = "lblExportPath";
-            this.lblExportPath.Size = new System.Drawing.Size(93, 13);
-            this.lblExportPath.TabIndex = 3;
-            this.lblExportPath.Text = "Enter Export Path:";
-            // 
-            // txtInvoiceExportPath
-            // 
-            this.txtInvoiceExportPath.Location = new System.Drawing.Point(19, 60);
-            this.txtInvoiceExportPath.Name = "txtInvoiceExportPath";
-            this.txtInvoiceExportPath.Size = new System.Drawing.Size(276, 20);
-            this.txtInvoiceExportPath.TabIndex = 2;
-            // 
-            // btnSetInvoiceExportPath
-            // 
-            this.btnSetInvoiceExportPath.Location = new System.Drawing.Point(301, 58);
-            this.btnSetInvoiceExportPath.Name = "btnSetInvoiceExportPath";
-            this.btnSetInvoiceExportPath.Size = new System.Drawing.Size(103, 23);
-            this.btnSetInvoiceExportPath.TabIndex = 0;
-            this.btnSetInvoiceExportPath.Text = "Browse";
-            this.btnSetInvoiceExportPath.UseVisualStyleBackColor = true;
-            this.btnSetInvoiceExportPath.Click += new System.EventHandler(this.button5_Click_1);
-            // 
             // tabControlMain
             // 
             this.tabControlMain.Controls.Add(this.tbpBilling);
             this.tabControlMain.Controls.Add(this.tbpAccountAdmin);
             this.tabControlMain.Controls.Add(this.tbpExports);
-            this.tabControlMain.Controls.Add(this.tbpSettings);
             this.tabControlMain.Controls.Add(this.tbpTracking);
             this.tabControlMain.Controls.Add(this.tbpManualRequests);
             this.tabControlMain.Location = new System.Drawing.Point(12, 12);
@@ -715,14 +686,209 @@
             // 
             // tbpManualRequests
             // 
+            this.tbpManualRequests.Controls.Add(this.grpAccountSettings);
             this.tbpManualRequests.Controls.Add(this.groupBox7);
             this.tbpManualRequests.Location = new System.Drawing.Point(4, 22);
             this.tbpManualRequests.Name = "tbpManualRequests";
             this.tbpManualRequests.Padding = new System.Windows.Forms.Padding(3);
             this.tbpManualRequests.Size = new System.Drawing.Size(683, 589);
             this.tbpManualRequests.TabIndex = 4;
-            this.tbpManualRequests.Text = "Manual Requests";
+            this.tbpManualRequests.Text = "Account Requests";
             this.tbpManualRequests.UseVisualStyleBackColor = true;
+            // 
+            // grpAccountSettings
+            // 
+            this.grpAccountSettings.Controls.Add(this.label14);
+            this.grpAccountSettings.Controls.Add(this.label15);
+            this.grpAccountSettings.Controls.Add(this.label13);
+            this.grpAccountSettings.Controls.Add(this.lineSeparator1);
+            this.grpAccountSettings.Controls.Add(this.label11);
+            this.grpAccountSettings.Controls.Add(this.label8);
+            this.grpAccountSettings.Controls.Add(this.label7);
+            this.grpAccountSettings.Controls.Add(this.label6);
+            this.grpAccountSettings.Controls.Add(this.txtAcctManagementPhone);
+            this.grpAccountSettings.Controls.Add(this.txtAcctManagementEmail);
+            this.grpAccountSettings.Controls.Add(this.txtAcctManagementZip);
+            this.grpAccountSettings.Controls.Add(this.cboAcctManagementState);
+            this.grpAccountSettings.Controls.Add(this.txtAcctManagementCity);
+            this.grpAccountSettings.Controls.Add(this.txtAcctManagementStreet);
+            this.grpAccountSettings.Controls.Add(this.bnAcctManagementSubmit);
+            this.grpAccountSettings.Controls.Add(this.label5);
+            this.grpAccountSettings.Controls.Add(this.label1);
+            this.grpAccountSettings.Controls.Add(this.lblAcctManagementPw);
+            this.grpAccountSettings.Controls.Add(this.lblAcctManagementUn);
+            this.grpAccountSettings.Controls.Add(this.txtAcctManagementConfirmPw);
+            this.grpAccountSettings.Controls.Add(this.txtAcctManagementNewPw);
+            this.grpAccountSettings.Controls.Add(this.txtAcctManagementPassword);
+            this.grpAccountSettings.Controls.Add(this.txtAcctManagementUserame);
+            this.grpAccountSettings.Location = new System.Drawing.Point(6, 253);
+            this.grpAccountSettings.Name = "grpAccountSettings";
+            this.grpAccountSettings.Size = new System.Drawing.Size(671, 330);
+            this.grpAccountSettings.TabIndex = 13;
+            this.grpAccountSettings.TabStop = false;
+            this.grpAccountSettings.Text = "Account Management";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(376, 272);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(126, 13);
+            this.label13.TabIndex = 20;
+            this.label13.Text = "( - all fields are optional - )";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(346, 244);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(25, 13);
+            this.label11.TabIndex = 18;
+            this.label11.Text = "Zip:";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(346, 218);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(35, 13);
+            this.label8.TabIndex = 17;
+            this.label8.Text = "State:";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(346, 192);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(27, 13);
+            this.label7.TabIndex = 16;
+            this.label7.Text = "City:";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(346, 166);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(38, 13);
+            this.label6.TabIndex = 15;
+            this.label6.Text = "Street:";
+            // 
+            // txtAcctManagementPhone
+            // 
+            this.txtAcctManagementPhone.Location = new System.Drawing.Point(164, 243);
+            this.txtAcctManagementPhone.Name = "txtAcctManagementPhone";
+            this.txtAcctManagementPhone.Size = new System.Drawing.Size(144, 20);
+            this.txtAcctManagementPhone.TabIndex = 14;
+            // 
+            // txtAcctManagementEmail
+            // 
+            this.txtAcctManagementEmail.Location = new System.Drawing.Point(164, 216);
+            this.txtAcctManagementEmail.Name = "txtAcctManagementEmail";
+            this.txtAcctManagementEmail.Size = new System.Drawing.Size(144, 20);
+            this.txtAcctManagementEmail.TabIndex = 13;
+            // 
+            // txtAcctManagementZip
+            // 
+            this.txtAcctManagementZip.Location = new System.Drawing.Point(390, 241);
+            this.txtAcctManagementZip.Name = "txtAcctManagementZip";
+            this.txtAcctManagementZip.Size = new System.Drawing.Size(188, 20);
+            this.txtAcctManagementZip.TabIndex = 12;
+            // 
+            // cboAcctManagementState
+            // 
+            this.cboAcctManagementState.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboAcctManagementState.FormattingEnabled = true;
+            this.cboAcctManagementState.Location = new System.Drawing.Point(390, 215);
+            this.cboAcctManagementState.Name = "cboAcctManagementState";
+            this.cboAcctManagementState.Size = new System.Drawing.Size(188, 21);
+            this.cboAcctManagementState.TabIndex = 11;
+            // 
+            // txtAcctManagementCity
+            // 
+            this.txtAcctManagementCity.Location = new System.Drawing.Point(390, 189);
+            this.txtAcctManagementCity.Name = "txtAcctManagementCity";
+            this.txtAcctManagementCity.Size = new System.Drawing.Size(188, 20);
+            this.txtAcctManagementCity.TabIndex = 10;
+            // 
+            // txtAcctManagementStreet
+            // 
+            this.txtAcctManagementStreet.Location = new System.Drawing.Point(390, 163);
+            this.txtAcctManagementStreet.Name = "txtAcctManagementStreet";
+            this.txtAcctManagementStreet.Size = new System.Drawing.Size(188, 20);
+            this.txtAcctManagementStreet.TabIndex = 8;
+            // 
+            // bnAcctManagementSubmit
+            // 
+            this.bnAcctManagementSubmit.Location = new System.Drawing.Point(503, 267);
+            this.bnAcctManagementSubmit.Name = "bnAcctManagementSubmit";
+            this.bnAcctManagementSubmit.Size = new System.Drawing.Size(75, 23);
+            this.bnAcctManagementSubmit.TabIndex = 0;
+            this.bnAcctManagementSubmit.Text = "Submit";
+            this.bnAcctManagementSubmit.UseVisualStyleBackColor = true;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(69, 192);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(94, 13);
+            this.label5.TabIndex = 7;
+            this.label5.Text = "Confirm Password:";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(69, 166);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(81, 13);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "New Password:";
+            // 
+            // lblAcctManagementPw
+            // 
+            this.lblAcctManagementPw.AutoSize = true;
+            this.lblAcctManagementPw.Location = new System.Drawing.Point(208, 75);
+            this.lblAcctManagementPw.Name = "lblAcctManagementPw";
+            this.lblAcctManagementPw.Size = new System.Drawing.Size(56, 13);
+            this.lblAcctManagementPw.TabIndex = 5;
+            this.lblAcctManagementPw.Text = "Password:";
+            // 
+            // lblAcctManagementUn
+            // 
+            this.lblAcctManagementUn.AutoSize = true;
+            this.lblAcctManagementUn.Location = new System.Drawing.Point(206, 49);
+            this.lblAcctManagementUn.Name = "lblAcctManagementUn";
+            this.lblAcctManagementUn.Size = new System.Drawing.Size(58, 13);
+            this.lblAcctManagementUn.TabIndex = 4;
+            this.lblAcctManagementUn.Text = "Username:";
+            // 
+            // txtAcctManagementConfirmPw
+            // 
+            this.txtAcctManagementConfirmPw.Location = new System.Drawing.Point(164, 189);
+            this.txtAcctManagementConfirmPw.Name = "txtAcctManagementConfirmPw";
+            this.txtAcctManagementConfirmPw.Size = new System.Drawing.Size(144, 20);
+            this.txtAcctManagementConfirmPw.TabIndex = 3;
+            // 
+            // txtAcctManagementNewPw
+            // 
+            this.txtAcctManagementNewPw.Location = new System.Drawing.Point(164, 163);
+            this.txtAcctManagementNewPw.Name = "txtAcctManagementNewPw";
+            this.txtAcctManagementNewPw.Size = new System.Drawing.Size(144, 20);
+            this.txtAcctManagementNewPw.TabIndex = 2;
+            // 
+            // txtAcctManagementPassword
+            // 
+            this.txtAcctManagementPassword.Location = new System.Drawing.Point(270, 72);
+            this.txtAcctManagementPassword.Name = "txtAcctManagementPassword";
+            this.txtAcctManagementPassword.Size = new System.Drawing.Size(144, 20);
+            this.txtAcctManagementPassword.TabIndex = 1;
+            // 
+            // txtAcctManagementUserame
+            // 
+            this.txtAcctManagementUserame.Location = new System.Drawing.Point(270, 46);
+            this.txtAcctManagementUserame.Name = "txtAcctManagementUserame";
+            this.txtAcctManagementUserame.Size = new System.Drawing.Size(144, 20);
+            this.txtAcctManagementUserame.TabIndex = 0;
             // 
             // groupBox7
             // 
@@ -1019,15 +1185,79 @@
             this.lblFundingSource.TabIndex = 4;
             this.lblFundingSource.Text = "Funding Source:";
             // 
-            // btnRefresh
+            // chkStandalone
             // 
-            this.btnRefresh.Location = new System.Drawing.Point(509, 325);
-            this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(75, 23);
-            this.btnRefresh.TabIndex = 9;
-            this.btnRefresh.Text = "Refresh";
-            this.btnRefresh.UseVisualStyleBackColor = true;
-            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            this.chkStandalone.AutoSize = true;
+            this.chkStandalone.Location = new System.Drawing.Point(34, 141);
+            this.chkStandalone.Name = "chkStandalone";
+            this.chkStandalone.Size = new System.Drawing.Size(110, 17);
+            this.chkStandalone.TabIndex = 9;
+            this.chkStandalone.Text = "Standalone Mode";
+            this.chkStandalone.UseVisualStyleBackColor = true;
+            // 
+            // grpExportPath
+            // 
+            this.grpExportPath.Controls.Add(this.lblExportPath);
+            this.grpExportPath.Controls.Add(this.txtInvoiceExportPath);
+            this.grpExportPath.Controls.Add(this.btnSetInvoiceExportPath);
+            this.grpExportPath.Location = new System.Drawing.Point(131, 124);
+            this.grpExportPath.Name = "grpExportPath";
+            this.grpExportPath.Size = new System.Drawing.Size(438, 100);
+            this.grpExportPath.TabIndex = 8;
+            this.grpExportPath.TabStop = false;
+            this.grpExportPath.Text = "Export Invoice";
+            // 
+            // lblExportPath
+            // 
+            this.lblExportPath.AutoSize = true;
+            this.lblExportPath.Location = new System.Drawing.Point(25, 29);
+            this.lblExportPath.Name = "lblExportPath";
+            this.lblExportPath.Size = new System.Drawing.Size(93, 13);
+            this.lblExportPath.TabIndex = 3;
+            this.lblExportPath.Text = "Enter Export Path:";
+            // 
+            // txtInvoiceExportPath
+            // 
+            this.txtInvoiceExportPath.Location = new System.Drawing.Point(25, 60);
+            this.txtInvoiceExportPath.Name = "txtInvoiceExportPath";
+            this.txtInvoiceExportPath.Size = new System.Drawing.Size(276, 20);
+            this.txtInvoiceExportPath.TabIndex = 2;
+            // 
+            // btnSetInvoiceExportPath
+            // 
+            this.btnSetInvoiceExportPath.Location = new System.Drawing.Point(307, 58);
+            this.btnSetInvoiceExportPath.Name = "btnSetInvoiceExportPath";
+            this.btnSetInvoiceExportPath.Size = new System.Drawing.Size(103, 23);
+            this.btnSetInvoiceExportPath.TabIndex = 0;
+            this.btnSetInvoiceExportPath.Text = "Browse";
+            this.btnSetInvoiceExportPath.UseVisualStyleBackColor = true;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(70, 219);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(35, 13);
+            this.label14.TabIndex = 14;
+            this.label14.Text = "Email:";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(69, 246);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(41, 13);
+            this.label15.TabIndex = 15;
+            this.label15.Text = "Phone:";
+            // 
+            // lineSeparator1
+            // 
+            this.lineSeparator1.Location = new System.Drawing.Point(48, 126);
+            this.lineSeparator1.MaximumSize = new System.Drawing.Size(2000, 2);
+            this.lineSeparator1.MinimumSize = new System.Drawing.Size(0, 2);
+            this.lineSeparator1.Name = "lineSeparator1";
+            this.lineSeparator1.Size = new System.Drawing.Size(578, 2);
+            this.lineSeparator1.TabIndex = 19;
             // 
             // frmCUITAdminMain
             // 
@@ -1037,10 +1267,10 @@
             this.ClientSize = new System.Drawing.Size(712, 639);
             this.Controls.Add(this.tabControlMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
             this.Name = "frmCUITAdminMain";
-            this.Text = "CUITAdmin";
+            this.Text = "CUIT - Clarion University Instrument Tracking";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.Resize += new System.EventHandler(this.frmCUITAdminMain_Resize);
             this.tbpExports.ResumeLayout(false);
             this.grpInvoiceExport.ResumeLayout(false);
             this.grpInvoiceExport.PerformLayout();
@@ -1048,6 +1278,7 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.grpStandaloneFileExport.ResumeLayout(false);
+            this.grpStandaloneFileExport.PerformLayout();
             this.tbpAccountAdmin.ResumeLayout(false);
             this.tbpAccountAdmin.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.AdminDataGridView)).EndInit();
@@ -1059,17 +1290,17 @@
             this.grpManualTimeLog.PerformLayout();
             this.grpTimeLogExceptions.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvTimeLogRequests)).EndInit();
-            this.tbpSettings.ResumeLayout(false);
-            this.tbpSettings.PerformLayout();
-            this.grpExportPath.ResumeLayout(false);
-            this.grpExportPath.PerformLayout();
             this.tabControlMain.ResumeLayout(false);
             this.tbpManualRequests.ResumeLayout(false);
+            this.grpAccountSettings.ResumeLayout(false);
+            this.grpAccountSettings.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             this.groupBox8.ResumeLayout(false);
             this.groupBox8.PerformLayout();
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
+            this.grpExportPath.ResumeLayout(false);
+            this.grpExportPath.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1117,12 +1348,7 @@
         private System.Windows.Forms.DataGridView dgvTimeLogRequests;
         private System.Windows.Forms.Button btnInvoiceExport;
         private System.Windows.Forms.FolderBrowserDialog InvoiceExportPath;
-        private System.Windows.Forms.TabPage tbpSettings;
-        private System.Windows.Forms.GroupBox grpExportPath;
-        private System.Windows.Forms.TextBox txtInvoiceExportPath;
-        private System.Windows.Forms.Button btnSetInvoiceExportPath;
         private System.Windows.Forms.GroupBox grpInvoiceExport;
-        private System.Windows.Forms.Label lblExportPath;
         private System.Windows.Forms.TabPage tbpManualRequests;
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.GroupBox groupBox8;
@@ -1158,11 +1384,39 @@
         private System.Windows.Forms.ComboBox comboBoxSelectAccount;
         private System.Windows.Forms.Label txtAccount;
         private System.Windows.Forms.Label txtMonth;
-        private System.Windows.Forms.CheckBox chkStandalone;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btnExportAll;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.GroupBox grpAccountSettings;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblAcctManagementPw;
+        private System.Windows.Forms.Label lblAcctManagementUn;
+        private System.Windows.Forms.TextBox txtAcctManagementConfirmPw;
+        private System.Windows.Forms.TextBox txtAcctManagementNewPw;
+        private System.Windows.Forms.TextBox txtAcctManagementPassword;
+        private System.Windows.Forms.TextBox txtAcctManagementUserame;
+        private System.Windows.Forms.TextBox txtAcctManagementCity;
+        private System.Windows.Forms.TextBox txtAcctManagementStreet;
+        private System.Windows.Forms.Button bnAcctManagementSubmit;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox txtAcctManagementZip;
+        private System.Windows.Forms.ComboBox cboAcctManagementState;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox txtAcctManagementPhone;
+        private System.Windows.Forms.TextBox txtAcctManagementEmail;
+        private LineSeparator lineSeparator1;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.GroupBox grpExportPath;
+        private System.Windows.Forms.Label lblExportPath;
+        private System.Windows.Forms.TextBox txtInvoiceExportPath;
+        private System.Windows.Forms.Button btnSetInvoiceExportPath;
+        private System.Windows.Forms.CheckBox chkStandalone;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
     }
 }
 

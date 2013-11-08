@@ -44,7 +44,10 @@ namespace CUITAdmin
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+
+            tabControlMain.Location = new Point((this.Size.Width / 2) - (tabControlMain.Size.Width/2) - 7, 
+                                                (this.Size.Height / 2) - (tabControlMain.Size.Height/2) - 19);
+                                      //new Point(0, 0);
             /// manually setting standalone to true so that we can test
             /// To-DO:: Make sure to remove this to work on the server
             if (Properties.Settings.Default.StandaloneMode == "true")
@@ -88,6 +91,8 @@ namespace CUITAdmin
             InitializeExportTab();
         }
 
+        #region Billing Tab
+
         private void InitializeBillingTab() {
             if (Settings.Default.StandaloneMode == "false") {
                 cboManualLogUser.DataSource = dbManager.GetUsers();
@@ -120,35 +125,57 @@ namespace CUITAdmin
             }
         }
 
-        private void InitializeRequestTab() {
-            if (Settings.Default.StandaloneMode == "false") {
-
-            cboManualTimeInstrument.DataSource = dbManager.GetInstruments();
-            cboManualTimeInstrument.DisplayMember = "Name";
-            cboManualTimeInstrument.ValueMember = "InstrumentID";            
-            
-            
-            cboManualSupplyItem.DataSource = dbManager.GetInstruments();
-            cboManualSupplyItem.DisplayMember = "Name";
-            cboManualSupplyItem.ValueMember = "InstrumentID";
-            } else {
-                //TO-DO Add XML to load     
-
-            }
-        }
-
-        private void InitializeSettingsTab() {
-            if (Properties.Settings.Default.StandaloneMode == "true") {
-                chkStandalone.Checked = true;
-            }
-        }
-
-        private void InitializeExportTab()
+        private void btnAdd_Click(object sender, EventArgs e)
         {
-            comboBoxSelectAccount.DataSource = dbManager.GetAccounts();
-            comboBoxSelectAccount.DisplayMember = "Name";
-            comboBoxSelectAccount.ValueMember = "Account_Number";
+            int duration;
+            if (!(int.TryParse(txtManualLogDuration.Text, out duration))) {
+                txtManualLogDuration.BackColor = Color.Red;
+                return;
+            }
+
+            txtManualTimeDuration.BackColor = Color.White;
+
+            string accountNumber = cboManualLogFunding.SelectedValue.ToString();
+            int instrumentID = int.Parse(cboManualLogInstrument.SelectedValue.ToString());
+            int userID = int.Parse(cboManualLogUser.SelectedValue.ToString());
+            DateTime startTime = dtpManualLog.Value;
+            DateTime endTime = startTime.AddMinutes(int.Parse(txtManualLogDuration.Text));
+
+            if (dbManager.AddTimeLog(accountNumber, userID, 'Y', instrumentID, startTime, endTime)) {
+                MessageBox.Show("Time log successfully added");
+            } else {
+                MessageBox.Show("There was an error executing your request. \r\n" + 
+                                "Please check your connection or contact your server admin");
+            }
         }
+
+        private void btnBillingSupplyAdd_Click(object sender, EventArgs e) {
+            
+            int quantity;
+
+            if(!(int.TryParse(txtBillingSupplyQuantity.Text, out quantity))){
+                txtBillingSupplyQuantity.BackColor = Color.Red;
+                return;
+            }
+            txtBillingSupplyQuantity.BackColor = Color.White;
+
+            string accountNumber = cboBillingSupplyFunding.SelectedValue.ToString();
+            string supplyName = cboBillingSupplyName.SelectedValue.ToString();
+            DateTime serverTime;
+            dbManager.GetServerDateTime(out serverTime);
+            if (dbManager.AddSupplyUse(accountNumber, supplyName, serverTime, quantity)) {
+                MessageBox.Show("Supply use successfully added");
+            } else {
+                MessageBox.Show("There was an error executing your request. \r\n" +
+                "Please check your connection or contact your server admin");
+            }
+        }
+        
+
+        
+        #endregion
+
+        #region Admin Tab
 
         // Called in the onload of the tab page to prevent unnecessary calls to the DB5
         private void InitializeAdminTab()
@@ -182,99 +209,6 @@ namespace CUITAdmin
             ;
         }
 
-
-        private void FindAndRenameDGVColumn(string searchName, string newHeader, DataGridView dgv) {
-            foreach (DataGridViewColumn col in dgv.Columns) {
-                if (col.Name == searchName) {
-                    col.HeaderText = newHeader;
-                    return;
-                }
-            }
-
-        }
-
-        private void BindReturnKeys() {
-            //Time Log manual request username field clicks validate on enter key pressed
-            txtManualTimeUsername.KeyDown += (sender1, args) => {
-                if (args.KeyCode == Keys.Return) {
-                    btnManualTimeValidate.PerformClick();
-                }
-            };
-
-            
-
-            //Time Log manual request password field clicks validate on enter key pressed
-            txtManualTimePassword.KeyDown += (sender1, args) => {
-                if (args.KeyCode == Keys.Return) {
-                    btnManualTimeValidate.PerformClick();
-                }
-            };
-
-            //Time Log manual request duration field clicks add on enter key pressed
-            txtManualTimeDuration.KeyDown += (sender1, args) => {
-                if (args.KeyCode == Keys.Return) {
-                    btnManualTimeAdd.PerformClick();
-                }
-            };
-
-            //Supplies manual request username field clicks validate on enter key pressed
-            txtManualSupplyUsername.KeyDown += (sender1, args) => {
-                if (args.KeyCode == Keys.Return) {
-                    btnManualSupplyValidate.PerformClick();
-                }
-            };
-
-            //Supplies manual request password field clicks validate on enter key pressed
-            txtManualSupplyPassword.KeyDown += (sender1, args) => {
-                if (args.KeyCode == Keys.Return) {
-                    btnManualSupplyValidate.PerformClick();
-                }
-            };
-
-            //Supplies manual request quantity field clicks add on enter key pressed
-            txtManualSupplyQuantity.KeyDown += (sender1, args) => {
-                if (args.KeyCode == Keys.Return) {
-                    btnManualSupplyAdd.PerformClick();
-                }
-            };
-        }
-
-        private void adminEditViewLoad(object sender, EventArgs e)
-        {
-
-            InitializeAdminTab();
-
-        }
-
-        private void btnAdd_Click(object sender, EventArgs e)
-        {
-            int duration;
-            if (!(int.TryParse(txtManualLogDuration.Text, out duration))) {
-                txtManualLogDuration.BackColor = Color.Red;
-                return;
-            }
-
-            txtManualTimeDuration.BackColor = Color.White;
-
-            string accountNumber = cboManualLogFunding.SelectedValue.ToString();
-            int instrumentID = int.Parse(cboManualLogInstrument.SelectedValue.ToString());
-            int userID = int.Parse(cboManualLogUser.SelectedValue.ToString());
-            DateTime startTime = dtpManualLog.Value;
-            DateTime endTime = startTime.AddMinutes(int.Parse(txtManualLogDuration.Text));
-
-            if (dbManager.AddTimeLog(accountNumber, userID, 'Y', instrumentID, startTime, endTime)) {
-                MessageBox.Show("Time log successfully added");
-            } else {
-                MessageBox.Show("There was an error executing your request. \r\n" + 
-                                "Please check your connection or contact your server admin");
-            }
-        }
-
-        private void tbpAccountAdmin_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnAccountAdminNew_Click(object sender, EventArgs e)
         {
             string addNewCase = cboAccountAdminNew.Text;
@@ -282,9 +216,35 @@ namespace CUITAdmin
             newForm.ShowDialog(); //Displays forms modally
         }
 
-        private void tbpExports_Click(object sender, EventArgs e)
+        #endregion
+
+        #region Settings Tab
+
+        private void InitializeSettingsTab() {
+            if (Properties.Settings.Default.StandaloneMode == "true") {
+                chkStandalone.Checked = true;
+            }
+        }
+
+        private void chkStandalone_CheckedChanged(object sender, EventArgs e) {
+
+            if (chkStandalone.Checked) {
+                Properties.Settings.Default.StandaloneMode = "true";
+                Properties.Settings.Default.Save();
+            } else {
+                Properties.Settings.Default.StandaloneMode = "false";
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        #endregion
+
+        #region Export Tab
+        private void InitializeExportTab()
         {
-            
+            comboBoxSelectAccount.DataSource = dbManager.GetAccounts();
+            comboBoxSelectAccount.DisplayMember = "Name";
+            comboBoxSelectAccount.ValueMember = "Account_Number";
         }
 
         private void genPDF(int invoiceID) {
@@ -434,12 +394,68 @@ namespace CUITAdmin
             }
         }
 
-        private void InitializeTabs(string accountType)
+        private void btnExportAll_Click(object sender, EventArgs e)
         {
-            switch (accountType)
-            {
-                case "admin":
-                    break;
+            if (Settings.Default["InvoicePath"].ToString() == "") {
+                MessageBox.Show("You have not selected the export path. Please go to the Settings tab and select an export path.");
+
+            } else {
+                //parse the date in the combobox and calculate the end of the month
+                string date = comboBoxSelectMonth.Text;
+                DateTime datetime = DateTime.ParseExact(date, "MMMMMMMM", CultureInfo.InvariantCulture);
+                DateTime endtime = datetime.AddMonths(1);
+                endtime = endtime.AddSeconds(-1);
+                //MessageBox.Show(endtime.ToString());
+                //the offset 
+
+                int invoiceID;
+                //dbManager.GenerateInvoice("1", DateTime.Now.AddDays(-5), DateTime.Now, out invoiceID);
+                //dbManager.GenerateInvoice(comboBoxSelectAccount.SelectedValue.ToString(), datetime, endtime, out invoiceID);
+
+                List<int> invoiceIDs = new List<int>();
+
+                dbManager.GenerateAllInvoices(datetime, endtime, out invoiceIDs);
+
+                List<DataTable> invoices = new List<DataTable>();
+
+                foreach (int currentInvoice in invoiceIDs) {
+                    genPDF(currentInvoice);
+                    invoices.Add(dbManager.GetInvoice(currentInvoice));
+
+                }
+
+                //  }
+                //  catch (Exception)
+                //  {
+                //     MessageBox.Show("Error writing file. Check that this file is not currently\n" 
+                //                   +"open in a PDF reader such as Adobe Reader.");
+                // }
+
+                ExcelManager.generateExcel(invoices.ToArray());
+
+
+            }
+        }
+
+
+        #endregion
+
+        #region Request Tab
+
+        private void InitializeRequestTab() {
+            if (Settings.Default.StandaloneMode == "false") {
+
+            cboManualTimeInstrument.DataSource = dbManager.GetInstruments();
+            cboManualTimeInstrument.DisplayMember = "Name";
+            cboManualTimeInstrument.ValueMember = "InstrumentID";            
+            
+            
+            cboManualSupplyItem.DataSource = dbManager.GetInstruments();
+            cboManualSupplyItem.DisplayMember = "Name";
+            cboManualSupplyItem.ValueMember = "InstrumentID";
+            } else {
+                //TO-DO Add XML to load     
+
             }
         }
 
@@ -633,99 +649,157 @@ namespace CUITAdmin
             }
         }
 
-        private void btnPreview_Click(object sender, EventArgs e)
-        {
-           
+        private bool validateAccountRequest() {
+            txtAcctManagementPhone.BackColor = System.Drawing.Color.White;
+            txtAcctManagementZip.BackColor = System.Drawing.Color.White;
+            txtAcctManagementCity.BackColor = System.Drawing.Color.White;
+            txtAcctManagementStreet.BackColor = System.Drawing.Color.White;
+            txtAcctManagementEmail.BackColor = System.Drawing.Color.White;
+            txtAcctManagementNewPw.BackColor = System.Drawing.Color.White;
+            txtAcctManagementConfirmPw.BackColor = System.Drawing.Color.White;
+            
+            bool error = false;
+            string phonePattern = "^\\D?(\\d{3})\\D?\\D?(\\d{3})\\D?(\\d{4})$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementPhone.Text, phonePattern))
+            {
+                txtAcctManagementPhone.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string zipPattern = "^([0-9]{5})\\-?([0-9]{4})?$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementZip.Text, zipPattern))
+            {
+                txtAcctManagementZip.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string cityPattern = "^[A-Za-z\\s-\\.]+$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementCity.Text, cityPattern))
+            {
+                txtAcctManagementCity.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string streetPattern = "^[\\w\\s-\\.]+$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementStreet.Text, streetPattern))
+            {
+                txtAcctManagementStreet.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string emailPattern = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementEmail.Text, emailPattern))
+            {
+                txtAcctManagementEmail.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            string passwordPattern = "^([1-zA-Z0-1@.\\s]{5,20})$";
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementNewPw.Text, passwordPattern))
+            {
+                txtAcctManagementNewPw.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }            
+                
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementConfirmPw.Text, passwordPattern))
+            {
+                txtAcctManagementConfirmPw.BackColor = System.Drawing.Color.Red;
+                error = true;
+            }
+
+            return error;
+        }
+    
+        #endregion
+
+
+
+
+        private void FindAndRenameDGVColumn(string searchName, string newHeader, DataGridView dgv) {
+            foreach (DataGridViewColumn col in dgv.Columns) {
+                if (col.Name == searchName) {
+                    col.HeaderText = newHeader;
+                    return;
+                }
+            }
+
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void BindReturnKeys() {
+            //Time Log manual request username field clicks validate on enter key pressed
+            txtManualTimeUsername.KeyDown += (sender1, args) => {
+                if (args.KeyCode == Keys.Return) {
+                    btnManualTimeValidate.PerformClick();
+                }
+            };
+
+            
+
+            //Time Log manual request password field clicks validate on enter key pressed
+            txtManualTimePassword.KeyDown += (sender1, args) => {
+                if (args.KeyCode == Keys.Return) {
+                    btnManualTimeValidate.PerformClick();
+                }
+            };
+
+            //Time Log manual request duration field clicks add on enter key pressed
+            txtManualTimeDuration.KeyDown += (sender1, args) => {
+                if (args.KeyCode == Keys.Return) {
+                    btnManualTimeAdd.PerformClick();
+                }
+            };
+
+            //Supplies manual request username field clicks validate on enter key pressed
+            txtManualSupplyUsername.KeyDown += (sender1, args) => {
+                if (args.KeyCode == Keys.Return) {
+                    btnManualSupplyValidate.PerformClick();
+                }
+            };
+
+            //Supplies manual request password field clicks validate on enter key pressed
+            txtManualSupplyPassword.KeyDown += (sender1, args) => {
+                if (args.KeyCode == Keys.Return) {
+                    btnManualSupplyValidate.PerformClick();
+                }
+            };
+
+            //Supplies manual request quantity field clicks add on enter key pressed
+            txtManualSupplyQuantity.KeyDown += (sender1, args) => {
+                if (args.KeyCode == Keys.Return) {
+                    btnManualSupplyAdd.PerformClick();
+                }
+            };
+        }
+
+        private void adminEditViewLoad(object sender, EventArgs e)
         {
+
+            InitializeAdminTab();
 
         }
 
+
+
+
+        private void InitializeTabs(string accountType)
+        {
+            switch (accountType)
+            {
+                case "admin":
+                    break;
+            }
+        }
+
+        // TO-DO Make editable
         private void dgvTimeLogRequests_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
             MessageBox.Show("Header " + e + " Clicked");
         }
 
-        private void chkStandalone_CheckedChanged(object sender, EventArgs e) {
-
-            if (chkStandalone.Checked) {
-                Properties.Settings.Default.StandaloneMode = "true";
-                Properties.Settings.Default.Save();
-            } else {
-                Properties.Settings.Default.StandaloneMode = "false";
-                Properties.Settings.Default.Save();
-            }
+        private void frmCUITAdminMain_Resize(object sender, EventArgs e) {
+            tabControlMain.Location = new Point((this.Size.Width / 2) - (tabControlMain.Size.Width / 2) - 7,
+                                    (this.Size.Height / 2) - (tabControlMain.Size.Height / 2) - 19);
         }
 
-        private void btnExportAll_Click(object sender, EventArgs e)
-        {
-            if (Settings.Default["InvoicePath"].ToString() == "") {
-                MessageBox.Show("You have not selected the export path. Please go to the Settings tab and select an export path.");
-
-            } else {
-                //parse the date in the combobox and calculate the end of the month
-                string date = comboBoxSelectMonth.Text;
-                DateTime datetime = DateTime.ParseExact(date, "MMMMMMMM", CultureInfo.InvariantCulture);
-                DateTime endtime = datetime.AddMonths(1);
-                endtime = endtime.AddSeconds(-1);
-                //MessageBox.Show(endtime.ToString());
-                //the offset 
-
-                int invoiceID;
-                //dbManager.GenerateInvoice("1", DateTime.Now.AddDays(-5), DateTime.Now, out invoiceID);
-                //dbManager.GenerateInvoice(comboBoxSelectAccount.SelectedValue.ToString(), datetime, endtime, out invoiceID);
-
-                List<int> invoiceIDs = new List<int>();
-
-                dbManager.GenerateAllInvoices(datetime, endtime, out invoiceIDs);
-
-                List<DataTable> invoices = new List<DataTable>();
-
-                foreach (int currentInvoice in invoiceIDs) {
-                    genPDF(currentInvoice);
-                    invoices.Add(dbManager.GetInvoice(currentInvoice));
-
-                }
-
-                //  }
-                //  catch (Exception)
-                //  {
-                //     MessageBox.Show("Error writing file. Check that this file is not currently\n" 
-                //                   +"open in a PDF reader such as Adobe Reader.");
-                // }
-
-                ExcelManager.generateExcel(invoices.ToArray());
-
-
-            }
-        }
-
-        private void btnBillingSupplyAdd_Click(object sender, EventArgs e) {
-            
-            int quantity;
-
-            if(!(int.TryParse(txtBillingSupplyQuantity.Text, out quantity))){
-                txtBillingSupplyQuantity.BackColor = Color.Red;
-                return;
-            }
-            txtBillingSupplyQuantity.BackColor = Color.White;
-
-            string accountNumber = cboBillingSupplyFunding.SelectedValue.ToString();
-            string supplyName = cboBillingSupplyName.SelectedValue.ToString();
-            DateTime serverTime;
-            dbManager.GetServerDateTime(out serverTime);
-            if (dbManager.AddSupplyUse(accountNumber, supplyName, serverTime, quantity)) {
-                MessageBox.Show("Supply use successfully added");
-            } else {
-                MessageBox.Show("There was an error executing your request. \r\n" +
-                "Please check your connection or contact your server admin");
-            }
-        }
-
-        private void btnRefresh_Click(object sender, EventArgs e) {
-
-        }
     }
 }
 
