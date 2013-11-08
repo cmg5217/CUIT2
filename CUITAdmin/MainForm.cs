@@ -277,7 +277,7 @@ namespace CUITAdmin
             if (invoice.Rows.Count == 0) return;
             DataTable invoiceTime = dbManager.GetInvoiceTimeLine(invoiceID);
             DataTable invoiceSupply = dbManager.GetInvoiceSupplyLine(invoiceID);
-            DataTable getacc = dbManager.GetAccounts();
+            DataTable getacc = dbManager.GetAccountsForExport();
             //convert date time to invoice friendly format
             DateTime poststart = DateTime.Parse(invoice.Rows[0]["Posting_Start_Date"].ToString());
             DateTime postend = DateTime.Parse(invoice.Rows[0]["Posting_End_Date"].ToString());
@@ -353,7 +353,7 @@ namespace CUITAdmin
                 DataTable invoice = dbManager.GetInvoice(invoiceID);
                 DataTable invoiceTime = dbManager.GetInvoiceTimeLine(invoiceID);
                 DataTable invoiceSupply = dbManager.GetInvoiceSupplyLine(invoiceID);
-                DataTable getacc = dbManager.GetAccounts();
+                DataTable getacc = dbManager.GetAccountsForExport();
                 //convert date time to invoice friendly format
                 DateTime poststart = DateTime.Parse(invoice.Rows[0]["Posting_Start_Date"].ToString());
                 DateTime postend = DateTime.Parse(invoice.Rows[0]["Posting_End_Date"].ToString());

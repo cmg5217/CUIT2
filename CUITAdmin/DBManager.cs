@@ -533,6 +533,21 @@ namespace CUITAdmin
         public DataTable GetAccounts() {
             SqlConnection myConnection = DBConnect();
             //Account_Number, Name, Max_Charge_Limit, Balance, First_Name, Last_Name
+            string myCommand = "SELECT * FROM Account";
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
+
+            DataTable table = new DataTable();
+
+            dataAdapter.Fill(table);
+
+            myConnection.Close();
+            return table;
+        }
+
+        public DataTable GetAccountsForExport()
+        {
+            SqlConnection myConnection = DBConnect();
+            //Account_Number, Name, Max_Charge_Limit, Balance, First_Name, Last_Name
             string myCommand = "SELECT * FROM Account acct left outer join Point_of_Contact poc on acct.PointOfContactID = poc.PersonID left outer join Person psn on poc.PersonID = psn.PersonID";
             SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
 

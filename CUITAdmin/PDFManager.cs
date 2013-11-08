@@ -144,7 +144,7 @@ namespace CUITAdmin
             DataTable invoice = dbManager.GetInvoice(invoiceNumber);
             DataTable invoiceTime = dbManager.GetInvoiceTimeLine(invoiceNumber);
             DataTable invoiceSupply = dbManager.GetInvoiceSupplyLine(invoiceNumber);
-            DataTable getacc = dbManager.GetAccounts();
+            DataTable getacc = dbManager.GetAccountsForExport();
             //convert date time to invoice friendly format
             DateTime poststart = DateTime.Parse(invoice.Rows[0]["Posting_Start_Date"].ToString());
             DateTime postend = DateTime.Parse(invoice.Rows[0]["Posting_End_Date"].ToString());
