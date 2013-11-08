@@ -29,6 +29,10 @@
         private void InitializeComponent()
         {
             this.tbpExports = new System.Windows.Forms.TabPage();
+            this.grpExportPath = new System.Windows.Forms.GroupBox();
+            this.lblExportPath = new System.Windows.Forms.Label();
+            this.txtInvoiceExportPath = new System.Windows.Forms.TextBox();
+            this.btnSetInvoiceExportPath = new System.Windows.Forms.Button();
             this.grpInvoiceExport = new System.Windows.Forms.GroupBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnExportAll = new System.Windows.Forms.Button();
@@ -39,6 +43,7 @@
             this.txtMonth = new System.Windows.Forms.Label();
             this.comboBoxSelectMonth = new System.Windows.Forms.ComboBox();
             this.grpStandaloneFileExport = new System.Windows.Forms.GroupBox();
+            this.chkStandalone = new System.Windows.Forms.CheckBox();
             this.btnImportLogs = new System.Windows.Forms.Button();
             this.btnExportStandaloneFile = new System.Windows.Forms.Button();
             this.tbpAccountAdmin = new System.Windows.Forms.TabPage();
@@ -79,7 +84,10 @@
             this.tbpTracking = new System.Windows.Forms.TabPage();
             this.tbpManualRequests = new System.Windows.Forms.TabPage();
             this.grpAccountSettings = new System.Windows.Forms.GroupBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
+            this.lineSeparator1 = new CUITAdmin.LineSeparator();
             this.label11 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
@@ -129,15 +137,8 @@
             this.btnManualTimeAdd = new System.Windows.Forms.Button();
             this.lblDuration = new System.Windows.Forms.Label();
             this.lblFundingSource = new System.Windows.Forms.Label();
-            this.chkStandalone = new System.Windows.Forms.CheckBox();
-            this.grpExportPath = new System.Windows.Forms.GroupBox();
-            this.lblExportPath = new System.Windows.Forms.Label();
-            this.txtInvoiceExportPath = new System.Windows.Forms.TextBox();
-            this.btnSetInvoiceExportPath = new System.Windows.Forms.Button();
-            this.label14 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
-            this.lineSeparator1 = new CUITAdmin.LineSeparator();
             this.tbpExports.SuspendLayout();
+            this.grpExportPath.SuspendLayout();
             this.grpInvoiceExport.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -156,7 +157,6 @@
             this.groupBox7.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox9.SuspendLayout();
-            this.grpExportPath.SuspendLayout();
             this.SuspendLayout();
             // 
             // tbpExports
@@ -171,6 +171,44 @@
             this.tbpExports.TabIndex = 2;
             this.tbpExports.Text = "Exports";
             this.tbpExports.UseVisualStyleBackColor = true;
+            // 
+            // grpExportPath
+            // 
+            this.grpExportPath.Controls.Add(this.lblExportPath);
+            this.grpExportPath.Controls.Add(this.txtInvoiceExportPath);
+            this.grpExportPath.Controls.Add(this.btnSetInvoiceExportPath);
+            this.grpExportPath.Location = new System.Drawing.Point(131, 124);
+            this.grpExportPath.Name = "grpExportPath";
+            this.grpExportPath.Size = new System.Drawing.Size(438, 100);
+            this.grpExportPath.TabIndex = 8;
+            this.grpExportPath.TabStop = false;
+            this.grpExportPath.Text = "Export Invoice";
+            // 
+            // lblExportPath
+            // 
+            this.lblExportPath.AutoSize = true;
+            this.lblExportPath.Location = new System.Drawing.Point(25, 29);
+            this.lblExportPath.Name = "lblExportPath";
+            this.lblExportPath.Size = new System.Drawing.Size(93, 13);
+            this.lblExportPath.TabIndex = 3;
+            this.lblExportPath.Text = "Enter Export Path:";
+            // 
+            // txtInvoiceExportPath
+            // 
+            this.txtInvoiceExportPath.Location = new System.Drawing.Point(25, 60);
+            this.txtInvoiceExportPath.Name = "txtInvoiceExportPath";
+            this.txtInvoiceExportPath.Size = new System.Drawing.Size(276, 20);
+            this.txtInvoiceExportPath.TabIndex = 2;
+            // 
+            // btnSetInvoiceExportPath
+            // 
+            this.btnSetInvoiceExportPath.Location = new System.Drawing.Point(307, 58);
+            this.btnSetInvoiceExportPath.Name = "btnSetInvoiceExportPath";
+            this.btnSetInvoiceExportPath.Size = new System.Drawing.Size(103, 23);
+            this.btnSetInvoiceExportPath.TabIndex = 0;
+            this.btnSetInvoiceExportPath.Text = "Browse";
+            this.btnSetInvoiceExportPath.UseVisualStyleBackColor = true;
+            this.btnSetInvoiceExportPath.Click += new System.EventHandler(this.btnSetInvoiceExportPath_Click);
             // 
             // grpInvoiceExport
             // 
@@ -247,7 +285,7 @@
             this.btnInvoiceExport.TabIndex = 1;
             this.btnInvoiceExport.Text = " Export";
             this.btnInvoiceExport.UseVisualStyleBackColor = true;
-            this.btnInvoiceExport.Click += new System.EventHandler(this.button4_Click);
+            this.btnInvoiceExport.Click += new System.EventHandler(this.btnInvoiceExport_Click);
             // 
             // txtMonth
             // 
@@ -292,6 +330,16 @@
             this.grpStandaloneFileExport.TabStop = false;
             this.grpStandaloneFileExport.Text = "Standalone Files";
             // 
+            // chkStandalone
+            // 
+            this.chkStandalone.AutoSize = true;
+            this.chkStandalone.Location = new System.Drawing.Point(34, 141);
+            this.chkStandalone.Name = "chkStandalone";
+            this.chkStandalone.Size = new System.Drawing.Size(110, 17);
+            this.chkStandalone.TabIndex = 9;
+            this.chkStandalone.Text = "Standalone Mode";
+            this.chkStandalone.UseVisualStyleBackColor = true;
+            // 
             // btnImportLogs
             // 
             this.btnImportLogs.Location = new System.Drawing.Point(34, 67);
@@ -300,7 +348,6 @@
             this.btnImportLogs.TabIndex = 1;
             this.btnImportLogs.Text = "Import Logs";
             this.btnImportLogs.UseVisualStyleBackColor = true;
-            this.btnImportLogs.Click += new System.EventHandler(this.button2_Click);
             // 
             // btnExportStandaloneFile
             // 
@@ -728,6 +775,24 @@
             this.grpAccountSettings.TabStop = false;
             this.grpAccountSettings.Text = "Account Management";
             // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(70, 219);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(35, 13);
+            this.label14.TabIndex = 14;
+            this.label14.Text = "Email:";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(69, 246);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(41, 13);
+            this.label15.TabIndex = 15;
+            this.label15.Text = "Phone:";
+            // 
             // label13
             // 
             this.label13.AutoSize = true;
@@ -736,6 +801,15 @@
             this.label13.Size = new System.Drawing.Size(126, 13);
             this.label13.TabIndex = 20;
             this.label13.Text = "( - all fields are optional - )";
+            // 
+            // lineSeparator1
+            // 
+            this.lineSeparator1.Location = new System.Drawing.Point(48, 126);
+            this.lineSeparator1.MaximumSize = new System.Drawing.Size(2000, 2);
+            this.lineSeparator1.MinimumSize = new System.Drawing.Size(0, 2);
+            this.lineSeparator1.Name = "lineSeparator1";
+            this.lineSeparator1.Size = new System.Drawing.Size(578, 2);
+            this.lineSeparator1.TabIndex = 19;
             // 
             // label11
             // 
@@ -1185,80 +1259,6 @@
             this.lblFundingSource.TabIndex = 4;
             this.lblFundingSource.Text = "Funding Source:";
             // 
-            // chkStandalone
-            // 
-            this.chkStandalone.AutoSize = true;
-            this.chkStandalone.Location = new System.Drawing.Point(34, 141);
-            this.chkStandalone.Name = "chkStandalone";
-            this.chkStandalone.Size = new System.Drawing.Size(110, 17);
-            this.chkStandalone.TabIndex = 9;
-            this.chkStandalone.Text = "Standalone Mode";
-            this.chkStandalone.UseVisualStyleBackColor = true;
-            // 
-            // grpExportPath
-            // 
-            this.grpExportPath.Controls.Add(this.lblExportPath);
-            this.grpExportPath.Controls.Add(this.txtInvoiceExportPath);
-            this.grpExportPath.Controls.Add(this.btnSetInvoiceExportPath);
-            this.grpExportPath.Location = new System.Drawing.Point(131, 124);
-            this.grpExportPath.Name = "grpExportPath";
-            this.grpExportPath.Size = new System.Drawing.Size(438, 100);
-            this.grpExportPath.TabIndex = 8;
-            this.grpExportPath.TabStop = false;
-            this.grpExportPath.Text = "Export Invoice";
-            // 
-            // lblExportPath
-            // 
-            this.lblExportPath.AutoSize = true;
-            this.lblExportPath.Location = new System.Drawing.Point(25, 29);
-            this.lblExportPath.Name = "lblExportPath";
-            this.lblExportPath.Size = new System.Drawing.Size(93, 13);
-            this.lblExportPath.TabIndex = 3;
-            this.lblExportPath.Text = "Enter Export Path:";
-            // 
-            // txtInvoiceExportPath
-            // 
-            this.txtInvoiceExportPath.Location = new System.Drawing.Point(25, 60);
-            this.txtInvoiceExportPath.Name = "txtInvoiceExportPath";
-            this.txtInvoiceExportPath.Size = new System.Drawing.Size(276, 20);
-            this.txtInvoiceExportPath.TabIndex = 2;
-            // 
-            // btnSetInvoiceExportPath
-            // 
-            this.btnSetInvoiceExportPath.Location = new System.Drawing.Point(307, 58);
-            this.btnSetInvoiceExportPath.Name = "btnSetInvoiceExportPath";
-            this.btnSetInvoiceExportPath.Size = new System.Drawing.Size(103, 23);
-            this.btnSetInvoiceExportPath.TabIndex = 0;
-            this.btnSetInvoiceExportPath.Text = "Browse";
-            this.btnSetInvoiceExportPath.UseVisualStyleBackColor = true;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(70, 219);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(35, 13);
-            this.label14.TabIndex = 14;
-            this.label14.Text = "Email:";
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(69, 246);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(41, 13);
-            this.label15.TabIndex = 15;
-            this.label15.Text = "Phone:";
-            // 
-            // lineSeparator1
-            // 
-            this.lineSeparator1.Location = new System.Drawing.Point(48, 126);
-            this.lineSeparator1.MaximumSize = new System.Drawing.Size(2000, 2);
-            this.lineSeparator1.MinimumSize = new System.Drawing.Size(0, 2);
-            this.lineSeparator1.Name = "lineSeparator1";
-            this.lineSeparator1.Size = new System.Drawing.Size(578, 2);
-            this.lineSeparator1.TabIndex = 19;
-            // 
             // frmCUITAdminMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1272,6 +1272,8 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Resize += new System.EventHandler(this.frmCUITAdminMain_Resize);
             this.tbpExports.ResumeLayout(false);
+            this.grpExportPath.ResumeLayout(false);
+            this.grpExportPath.PerformLayout();
             this.grpInvoiceExport.ResumeLayout(false);
             this.grpInvoiceExport.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -1299,8 +1301,6 @@
             this.groupBox8.PerformLayout();
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
-            this.grpExportPath.ResumeLayout(false);
-            this.grpExportPath.PerformLayout();
             this.ResumeLayout(false);
 
         }
