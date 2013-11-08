@@ -124,6 +124,9 @@
     <Compile Include="NewInstrumentPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="NewRateTypePanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="NewSupplyPanel.cs">
       <SubType>Component</SubType>
     </Compile>

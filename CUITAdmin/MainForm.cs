@@ -193,6 +193,10 @@ namespace CUITAdmin
             else if (cboAccountAdminView.SelectedItem == "Instruments")
             {
                 AdminDataGridView.DataSource = dbManager.GetInstruments();
+            } 
+            else if (cboAccountAdminView.SelectedItem == "Rate Types") 
+            {
+                AdminDataGridView.DataSource = dbManager.GetRateTypes();
             }
             else if (cboAccountAdminView.SelectedItem == "Supplies")
             {
@@ -259,7 +263,6 @@ namespace CUITAdmin
         {
             if (Settings.Default["InvoicePath"].ToString() == "") {
                 MessageBox.Show("You have not selected the export path. Please go to the Settings tab and select an export path.");
-
             } else {
                 //parse the date in the combobox and calculate the end of the month
                 string date = comboBoxSelectMonth.Text;
@@ -293,8 +296,6 @@ namespace CUITAdmin
                 // }
 
                 ExcelManager.generateExcel(invoices.ToArray());
-
-
             }
         }
 
@@ -318,7 +319,7 @@ namespace CUITAdmin
                 DataTable invoice = dbManager.GetInvoice(invoiceID);
                 DataTable invoiceTime = dbManager.GetInvoiceTimeLine(invoiceID);
                 DataTable invoiceSupply = dbManager.GetInvoiceSupplyLine(invoiceID);
-                DataTable getacc = dbManager.GetAccounts();
+                DataTable getacc = dbManager.GetAccountsForExport();
                 //convert date time to invoice friendly format
                 DateTime poststart = DateTime.Parse(invoice.Rows[0]["Posting_Start_Date"].ToString());
                 DateTime postend = DateTime.Parse(invoice.Rows[0]["Posting_End_Date"].ToString());

@@ -14,7 +14,6 @@ namespace CUITAdmin
 
         public NewEntryForm(string addNewCase)
         {
-            InitializeComponent();
 
             DBManager dbManager = DBManager.Instance;
 
@@ -22,14 +21,20 @@ namespace CUITAdmin
             {
                 case "Account":
                     NewAccountPanel myAcctForm = new NewAccountPanel(this);
-                    this.SetBounds(350, 350, 680, 340);
+                    this.SetBounds(350, 350, 680, 380);
                     this.Text = "New Account Form";
                     break;
 
                 case "Instrument":
                     NewInstrumentPanel myInstrumentForm = new NewInstrumentPanel(this);
-                    this.SetBounds(350, 350, 340, 300);
+                    this.SetBounds(350, 350, 340, 320);
                     this.Text = "New Instrument Form";
+                    break;
+
+                case "Rate Type":
+                    NewRateTypePanel myRateForm = new NewRateTypePanel(this);
+                    this.SetBounds(350, 350, 300, 300);
+                    this.Text = "New Rate Type Form";
                     break;
 
                 case "Supply":

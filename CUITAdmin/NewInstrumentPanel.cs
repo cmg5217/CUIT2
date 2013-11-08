@@ -4,21 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Data;
 
 namespace CUITAdmin
 {
     class NewInstrumentPanel : Panel
     {
         Button btnSubmit = new Button();
-        TextBox txtIndustry = new TextBox();
-        TextBox txtExternalAcademic = new TextBox();
-        TextBox txtInternalAcademic = new TextBox();
         TextBox txtTimeIncrement = new TextBox();
         ComboBox cboBillingType = new ComboBox();
         TextBox txtInstrumentName = new TextBox();
-        Label lblIndustry = new Label();
-        Label lblExternalAcademic = new Label();
-        Label lblInternalAcademic = new Label();
+        DataGridView dgvInstrumentRates = new DataGridView();
+        Label lblInstrumentRates = new Label();
         Label lblTimeIncrement = new Label();
         Label lblBillingType = new Label();
         Label lblInstrumentName = new Label();
@@ -44,53 +41,41 @@ namespace CUITAdmin
             // pnlNewInstrument
             // 
             this.Controls.Add(this.btnSubmit);
-            this.Controls.Add(this.txtIndustry);
-            this.Controls.Add(this.txtExternalAcademic);
-            this.Controls.Add(this.txtInternalAcademic);
             this.Controls.Add(this.txtTimeIncrement);
             this.Controls.Add(this.cboBillingType);
             this.Controls.Add(this.txtInstrumentName);
-            this.Controls.Add(this.lblIndustry);
-            this.Controls.Add(this.lblExternalAcademic);
-            this.Controls.Add(this.lblInternalAcademic);
             this.Controls.Add(this.lblTimeIncrement);
             this.Controls.Add(this.lblBillingType);
             this.Controls.Add(this.lblInstrumentName);
+            this.Controls.Add(this.lblInstrumentRates);
+            this.Controls.Add(this.dgvInstrumentRates);
             this.Location = new System.Drawing.Point(12, 12);
             this.Name = "pnlNewInstrument";
-            this.Size = new System.Drawing.Size(285, 228);
+            this.Size = new System.Drawing.Size(285, 328);
             this.TabIndex = 0;
             // 
             // btnSubmit
             // 
-            this.btnSubmit.Location = new System.Drawing.Point(190, 179);
+            this.btnSubmit.Location = new System.Drawing.Point(190, 229);
             this.btnSubmit.Name = "btnSubmit";
             this.btnSubmit.Size = new System.Drawing.Size(75, 23);
             this.btnSubmit.TabIndex = 12;
             this.btnSubmit.Text = "Submit";
             this.btnSubmit.UseVisualStyleBackColor = true;
             this.btnSubmit.Click += new EventHandler(this.btnSubmit_Click);
-            // 
-            // txtIndustry
-            // 
-            this.txtIndustry.Location = new System.Drawing.Point(166, 152);
-            this.txtIndustry.Name = "txtIndustry";
-            this.txtIndustry.Size = new System.Drawing.Size(100, 20);
-            this.txtIndustry.TabIndex = 11;
-            // 
-            // txtExternalAcademic
-            // 
-            this.txtExternalAcademic.Location = new System.Drawing.Point(166, 125);
-            this.txtExternalAcademic.Name = "txtExternalAcademic";
-            this.txtExternalAcademic.Size = new System.Drawing.Size(100, 20);
-            this.txtExternalAcademic.TabIndex = 10;
-            // 
-            // txtInternalAcademic
-            // 
-            this.txtInternalAcademic.Location = new System.Drawing.Point(166, 98);
-            this.txtInternalAcademic.Name = "txtInternalAcademic";
-            this.txtInternalAcademic.Size = new System.Drawing.Size(100, 20);
-            this.txtInternalAcademic.TabIndex = 9;
+            //
+            // dgvInstrumentRates
+            //
+            this.dgvInstrumentRates.Location = new System.Drawing.Point(21, 120);
+            this.dgvInstrumentRates.Name = "dgvInstrumentRates";
+            this.dgvInstrumentRates.Size = new System.Drawing.Size(245, 100);
+            this.dgvInstrumentRates.TabIndex = 9;
+            this.dgvInstrumentRates.RowHeadersVisible = false;
+            DataTable sourceTable = dbManager.GetRateTypes();
+            sourceTable.Columns.Add(new DataColumn("Rate"));
+            this.dgvInstrumentRates.DataSource = sourceTable;
+            this.dgvInstrumentRates.Columns["Name"].ReadOnly = true;
+            this.dgvInstrumentRates.AllowUserToAddRows = false;
             // 
             // txtTimeIncrement
             // 
@@ -109,6 +94,7 @@ namespace CUITAdmin
             cboBillingType.Items.Add("Per Use");
             cboBillingType.SelectedItem = "Time";
             this.cboBillingType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboBillingType.SelectedIndexChanged += new EventHandler(this.timeIncrementEnabled);
             // 
             // txtInstrumentName
             // 
@@ -116,33 +102,15 @@ namespace CUITAdmin
             this.txtInstrumentName.Name = "txtInstrumentName";
             this.txtInstrumentName.Size = new System.Drawing.Size(100, 20);
             this.txtInstrumentName.TabIndex = 6;
-            // 
-            // lblIndustry
-            // 
-            this.lblIndustry.AutoSize = true;
-            this.lblIndustry.Location = new System.Drawing.Point(18, 155);
-            this.lblIndustry.Name = "lblIndustry";
-            this.lblIndustry.Size = new System.Drawing.Size(73, 13);
-            this.lblIndustry.TabIndex = 5;
-            this.lblIndustry.Text = "Industry Rate:";
-            // 
-            // lblExternalAcademic
-            // 
-            this.lblExternalAcademic.AutoSize = true;
-            this.lblExternalAcademic.Location = new System.Drawing.Point(18, 128);
-            this.lblExternalAcademic.Name = "lblExternalAcademic";
-            this.lblExternalAcademic.Size = new System.Drawing.Size(124, 13);
-            this.lblExternalAcademic.TabIndex = 4;
-            this.lblExternalAcademic.Text = "External Academic Rate:";
-            // 
-            // lblInternalAcademic
-            // 
-            this.lblInternalAcademic.AutoSize = true;
-            this.lblInternalAcademic.Location = new System.Drawing.Point(18, 101);
-            this.lblInternalAcademic.Name = "lblInternalAcademic";
-            this.lblInternalAcademic.Size = new System.Drawing.Size(121, 13);
-            this.lblInternalAcademic.TabIndex = 3;
-            this.lblInternalAcademic.Text = "Internal Academic Rate:";
+            //
+            // lblInstrumentRates
+            //
+            this.lblInstrumentRates.AutoSize = true;
+            this.lblInstrumentRates.Location = new System.Drawing.Point(18, 101);
+            this.lblInstrumentRates.Name = "lblInstrumentRates";
+            this.lblInstrumentRates.Size = new System.Drawing.Size(83, 13);
+            this.lblInstrumentRates.TabIndex = 10;
+            this.lblInstrumentRates.Text = "Instrument Rates:";
             // 
             // lblTimeIncrement
             // 
@@ -172,56 +140,62 @@ namespace CUITAdmin
             this.lblInstrumentName.Text = "Instrument Name:";
         }
 
+        private void timeIncrementEnabled(object sender, EventArgs e)
+        {
+            if (cboBillingType.SelectedItem == "Time")
+                txtTimeIncrement.Enabled = true;
+            else
+                txtTimeIncrement.Enabled = false;
+        }
+
         private void btnSubmit_Click(object sender, EventArgs e)
         {
             if (errorChecked())
                 MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
             else
             {
-                dbManager.AddInstrument(txtInstrumentName.Text, cboBillingType.SelectedItem.ToString(), int.Parse(txtTimeIncrement.Text));
+                int instrumentID;
+
+                dbManager.AddInstrument(txtInstrumentName.Text, cboBillingType.SelectedItem.ToString(), 
+                    (txtTimeIncrement.Text == "") ? 0 : int.Parse(txtTimeIncrement.Text), out instrumentID);
+                            //I hate you chris ^^^
+                DataTable ratesTable = (DataTable)dgvInstrumentRates.DataSource;
+                foreach (DataRow row in ratesTable.Rows)
+                {
+                    dbManager.AddInstrumentRate(row["Name"].ToString(), int.Parse(row["Rate"].ToString()), instrumentID);
+                }
                 containingForm.Close();
             }
         }
 
         private Boolean errorChecked()
         {
-            txtIndustry.BackColor = System.Drawing.Color.White;
-            txtExternalAcademic.BackColor = System.Drawing.Color.White;
-            txtInternalAcademic.BackColor = System.Drawing.Color.White;
             txtTimeIncrement.BackColor = System.Drawing.Color.White;
             cboBillingType.BackColor = System.Drawing.Color.White;
             txtInstrumentName.BackColor = System.Drawing.Color.White;
 
             bool error = false;
 
-            string industryPattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtIndustry.Text, industryPattern))
+            string ratePattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$";
+            DataTable ratesTable = (DataTable)dgvInstrumentRates.DataSource;
+            foreach (DataRow row in ratesTable.Rows)
             {
-                txtIndustry.BackColor = System.Drawing.Color.Red;
-                error = true;
+                if (!System.Text.RegularExpressions.Regex.IsMatch(row["Rate"].ToString(), ratePattern))
+                {
+                    lblInstrumentRates.BackColor = System.Drawing.Color.Red;
+                    error = true;
+                }
             }
-
-            string externalPattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtExternalAcademic.Text, externalPattern))
-            {
-                txtExternalAcademic.BackColor = System.Drawing.Color.Red;
-                error = true;
+            if (cboBillingType.SelectedItem == "Time")
+            { 
+                string timePattern = "^[0-9]+$";
+                if (!System.Text.RegularExpressions.Regex.IsMatch(txtTimeIncrement.Text, timePattern))
+                {
+                    txtTimeIncrement.BackColor = System.Drawing.Color.Red;
+                    error = true;
+                }
             }
-
-            string internalPattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtInternalAcademic.Text, internalPattern))
-            {
-                txtInternalAcademic.BackColor = System.Drawing.Color.Red;
-                error = true;
-            }
-
-            string timePattern = "^[0-9]+$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtTimeIncrement.Text, timePattern))
-            {
-                txtTimeIncrement.BackColor = System.Drawing.Color.Red;
-                error = true;
-            }
-
+            
             string namePattern = "^[A-Za-z\\s-\\.]+$";
             if (!System.Text.RegularExpressions.Regex.IsMatch(txtInstrumentName.Text, namePattern))
             {
