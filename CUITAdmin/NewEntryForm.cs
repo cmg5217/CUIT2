@@ -22,7 +22,7 @@ namespace CUITAdmin
             {
                 case "Account":
                     NewAccountPanel myAcctForm = new NewAccountPanel(this);
-                    this.SetBounds(350, 350, 680, 300);
+                    this.SetBounds(350, 350, 680, 340);
                     this.Text = "New Account Form";
                     break;
 

@@ -118,8 +118,6 @@ namespace CUITAdmin
             myConnection.Close();
         }
 
-
-
         public void AddPointOfContact(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email, string notes) {
             string throwaway;
             AddPointOfContact(firstName, lastName, street, city, state, zip, phoneNumber, email, notes, out throwaway);
@@ -152,8 +150,8 @@ namespace CUITAdmin
         }
 
         // TESTED 11-4
-        public void AddAccount(string accountNumber, string name, int maxChargeLimit, DateTime accountExpiration, string rateType, int managerID, 
-            string notes, string costCenter, string wbsNumber, int balance, string street, string city, string state, int zip) {
+        public void AddAccount(string accountNumber, string name, double maxChargeLimit, DateTime accountExpiration, string rateType, int managerID, 
+            string notes, string costCenter, string wbsNumber, double balance, string street, string city, string state, int zip) {
             SqlConnection myConnection = DBConnect();
 
             SqlCommand myCommand = new SqlCommand("INSERT into Account " +
@@ -234,7 +232,7 @@ namespace CUITAdmin
             myConnection.Close();
         }
 
-        public void AddSupply(string supplyName, int cost, string unit) {
+        public void AddSupply(string supplyName, double cost, string unit) {
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand("INSERT INTO Supply(Supply_Name, Cost, Unit)" +
                 "VALUES(@supplyName, @cost, @unit)", myConnection);
@@ -323,12 +321,12 @@ namespace CUITAdmin
             myConnection.Close();
         }
 
-        public void AddInvoice(DateTime dateGenerated, DateTime postingStartDate, DateTime postingEndDate, string accountNumber, int totalBalance) {
+        public void AddInvoice(DateTime dateGenerated, DateTime postingStartDate, DateTime postingEndDate, string accountNumber, double totalBalance) {
             int throwaway;
             AddInvoice(dateGenerated, postingStartDate, postingEndDate, accountNumber, totalBalance, out throwaway);
         }
 
-        public void AddInvoice(DateTime dateGenerated, DateTime postingStartDate, DateTime postingEndDate, string accountNumber, int totalBalance, out int invoiceID) {
+        public void AddInvoice(DateTime dateGenerated, DateTime postingStartDate, DateTime postingEndDate, string accountNumber, double totalBalance, out int invoiceID) {
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand("INSERT INTO Invoice (Posting_Start_Date, Account_Number, Total_Balance, Posting_End_Date, Date_Generated) " +
                 "VALUES(@postingStartDate, @accountNumber, @totalBalance, @postingEndDate, @dateGenerated)" +
@@ -355,7 +353,7 @@ namespace CUITAdmin
         }
 
         // TO-DO Test
-        public void AddInvoiceSupplyLine(string supplyName, int lineAmount, int invoiceID) {
+        public void AddInvoiceSupplyLine(string supplyName, double lineAmount, int invoiceID) {
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand("INSERT INTO Invoice_Supply_Line (Supply_Name, Line_Amount, InvoiceID)" +
                 "VALUES (@supplyName, @lineAmount, @invoiceID)", myConnection);
@@ -374,7 +372,7 @@ namespace CUITAdmin
         }
 
         // TO-DO test
-        public void AddInvoiceTimeLine(string instrumentID, int hours, int lineAmount, int invoiceID) {
+        public void AddInvoiceTimeLine(string instrumentID, double hours, double lineAmount, int invoiceID) {
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand("INSERT INTO Invoice_Time_Line(InstrumentID, Hours, Line_Amount, InvoiceID) " +
                 "VALUES(@InstrumentID, @hours, @lineAmount, @invoiceID)", myConnection);
@@ -430,7 +428,7 @@ namespace CUITAdmin
             myConnection.Close();
         }
 
-        public void AddInstrumentRate(string rateName, int rate, int instrumentID) {
+        public void AddInstrumentRate(string rateName, double rate, int instrumentID) {
 
             SqlConnection myConnection = DBConnect();
 
@@ -750,7 +748,7 @@ namespace CUITAdmin
 
             DataTable table = new DataTable();
             dataAdapter.Fill(table);
-
+        
             myConnection.Close();
             return table;
         }
@@ -783,78 +781,17 @@ namespace CUITAdmin
         #endregion End Get Region
 
 
-        public void GenerateAllInvoices(DateTime startDate, DateTime endDate) {
+        public void GenerateAllInvoices(DateTime startDate, DateTime endDate, out List<int> invoicesGenerated) {
+            List<string> accounts = GetAccountNumberList();
+            List<int> invoiceNumbers = new List<int>();
 
-            DataTable timeLogs = GetTimeLogsFromRange(startDate, endDate, false);
-
-            DataRowCollection rows = timeLogs.Rows;
-
-            List<Invoice> invoices = new List<Invoice>();
-
-
-
-            // Loop through all timelogs in the data table
-            foreach (DataRow currentRow in rows) {
-
-                Invoice invoiceToUpdate = null;
-                InvoiceInstrumentLine instrumentToUpdate = null;
-                bool foundFlag = false;
-
-
-                // Check if an invoice with the current account number has already been generated for the account in the current row
-                foreach (Invoice currentInvoice in invoices) {
-                    if (currentRow["Account_Number"].ToString() == currentInvoice.accountNumber) {
-                        invoiceToUpdate = currentInvoice;
-                        foundFlag = true;
-                        break;
-                    }
-                }
-
-                // If there was no invoice, create one.
-                if (!foundFlag) {
-
-                    invoiceToUpdate = new Invoice {
-                        accountNumber = currentRow["Account_Number"].ToString(),
-                        accountName = currentRow["Name"].ToString(),
-                        instrumets = new List<InvoiceInstrumentLine>(),
-                        supplies = new List<InvoiceSupplyLine>(),
-                        dateGenerated = DateTime.Now
-                    };
-
-                    DateTime startTime = (DateTime)currentRow["Start_Time"];
-                    DateTime endTime = (DateTime)currentRow["End_Time"];
-                    TimeSpan duration = endTime - startTime;
-
-
-                    instrumentToUpdate = new InvoiceInstrumentLine {
-                        name = currentRow["Name1"].ToString(),
-                        id = (int)currentRow["InstrumentID"],
-                        hours = duration.TotalHours,
-                        rate = (double)currentRow["Current_Rate"],
-                    };
-
-                    invoices.Add(invoiceToUpdate);
-                }
-
-                foundFlag = false;
-
-
-
-                foreach (InvoiceInstrumentLine currentInstrument in invoiceToUpdate.instrumets) {
-                    if (currentInstrument.id == (int)currentRow["InstrumentID"] &&
-                        currentInstrument.rate == (double)currentRow["InstrumentID"]) {
-                        instrumentToUpdate = currentInstrument;
-                        foundFlag = true;
-                        break;
-                    }
-                }
-
-                if (!foundFlag) {
-                    instrumentToUpdate = new InvoiceInstrumentLine();
-                }
-
-
+            foreach (string currentAccount in accounts) {
+                int invoiceNumber;
+                GenerateInvoice(currentAccount, startDate, endDate, out invoiceNumber);
+                invoiceNumbers.Add(invoiceNumber);
             }
+
+            invoicesGenerated = invoiceNumbers;
         }
 
         public bool GenerateInvoice(string accountNumber, DateTime startDate, DateTime endDate)

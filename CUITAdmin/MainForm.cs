@@ -193,7 +193,6 @@ namespace CUITAdmin
 
         }
 
-
         private void BindReturnKeys() {
             //Time Log manual request username field clicks validate on enter key pressed
             txtManualTimeUsername.KeyDown += (sender1, args) => {
@@ -261,12 +260,59 @@ namespace CUITAdmin
         {
             string addNewCase = cboAccountAdminNew.Text;
             Form newForm = new NewEntryForm(addNewCase);
-            newForm.Show();
+            newForm.ShowDialog(); //Displays forms modally
         }
 
         private void tbpExports_Click(object sender, EventArgs e)
         {
+            
+        }
 
+        private void genPDF(int invoiceID) {
+            string offset = "";
+            DataTable invoice = dbManager.GetInvoice(invoiceID);
+            if (invoice.Rows.Count == 0) return;
+            DataTable invoiceTime = dbManager.GetInvoiceTimeLine(invoiceID);
+            DataTable invoiceSupply = dbManager.GetInvoiceSupplyLine(invoiceID);
+            DataTable getacc = dbManager.GetAccounts();
+            //convert date time to invoice friendly format
+            DateTime poststart = DateTime.Parse(invoice.Rows[0]["Posting_Start_Date"].ToString());
+            DateTime postend = DateTime.Parse(invoice.Rows[0]["Posting_End_Date"].ToString());
+            //MessageBox.Show(test.ToShortDateString().ToString());
+
+            // try
+            // {
+
+            pdfManager = new PDFManager();
+            //pdfManager.AddAddress("Name", "Street", "City", "State", "Zip");
+            pdfManager.AddAddress(getacc.Rows[0]["Name"].ToString(),
+                getacc.Rows[0]["Street"].ToString(), //add street to invocie
+                getacc.Rows[0]["City"].ToString(), // add city to invoice
+                getacc.Rows[0]["State"].ToString(), //add state to invoice
+                getacc.Rows[0]["Zip"].ToString()); //add zip to invoice
+
+            //pdfManager.AddService("Instrument", "StartPostDate", "EndPostDate","hours", "rate ($/hr)", "unit(hours days ects)");
+
+            pdfManager.AddPostDate(poststart.ToShortDateString().ToString(), postend.ToShortDateString().ToString());
+
+            foreach (DataRow currentRow in invoiceTime.Rows) {
+
+                pdfManager.AddService(
+                    currentRow["Name"].ToString(), //insert time into the invoice
+                    poststart.ToShortDateString().ToString(), //insert start date into invoice
+                    postend.ToShortDateString().ToString(),  //insert end date into invoice
+                    currentRow["Hours"].ToString(), //insert hours into invoice
+                    currentRow["Rate"].ToString(), //insert dollars per hour into invoice
+                    "hour");// unit of biling displayed on invoice
+                pdfManager.AddCharge(currentRow["Line_Amount"].ToString()); //add charge to invoice
+                offset += "\r\n\r\n";
+            }
+
+            pdfManager.AddDate(DateTime.Now.ToString()); //Add todays date to the invoice
+            pdfManager.AddInvoiceID(invoice.Rows[0]["InvoiceID"].ToString()); // add invoice id to invoice
+            pdfManager.AddBalance(offset + "$" + invoice.Rows[0]["Total_Balance"].ToString()); // add balance to invoice
+
+            pdfManager.PDFClose();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -595,7 +641,45 @@ namespace CUITAdmin
 
         private void btnExportAll_Click(object sender, EventArgs e)
         {
+            if (Settings.Default["InvoicePath"].ToString() == "") {
+                MessageBox.Show("You have not selected the export path. Please go to the Settings tab and select an export path.");
 
+            } else {
+                //parse the date in the combobox and calculate the end of the month
+                string date = comboBoxSelectMonth.Text;
+                DateTime datetime = DateTime.ParseExact(date, "MMMMMMMM", CultureInfo.InvariantCulture);
+                DateTime endtime = datetime.AddMonths(1);
+                endtime = endtime.AddSeconds(-1);
+                //MessageBox.Show(endtime.ToString());
+                //the offset 
+
+                int invoiceID;
+                //dbManager.GenerateInvoice("1", DateTime.Now.AddDays(-5), DateTime.Now, out invoiceID);
+                //dbManager.GenerateInvoice(comboBoxSelectAccount.SelectedValue.ToString(), datetime, endtime, out invoiceID);
+
+                List<int> invoiceIDs = new List<int>();
+
+                dbManager.GenerateAllInvoices(datetime, endtime, out invoiceIDs);
+
+                List<DataTable> invoices = new List<DataTable>();
+
+                foreach (int currentInvoice in invoiceIDs) {
+                    genPDF(currentInvoice);
+                    invoices.Add(dbManager.GetInvoice(currentInvoice));
+
+                }
+
+                //  }
+                //  catch (Exception)
+                //  {
+                //     MessageBox.Show("Error writing file. Check that this file is not currently\n" 
+                //                   +"open in a PDF reader such as Adobe Reader.");
+                // }
+
+                ExcelManager.generateExcel(invoices.ToArray());
+
+
+            }
         }
     }
 }

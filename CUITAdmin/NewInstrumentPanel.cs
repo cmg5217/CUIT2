@@ -178,7 +178,7 @@ namespace CUITAdmin
                 MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
             else
             {
-                //dbManager.AddInstrument(blahblahblah);
+                dbManager.AddInstrument(txtInstrumentName.Text, cboBillingType.SelectedItem.ToString(), int.Parse(txtTimeIncrement.Text));
                 containingForm.Close();
             }
         }

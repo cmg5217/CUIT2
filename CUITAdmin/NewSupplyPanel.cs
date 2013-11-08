@@ -23,10 +23,11 @@ namespace CUITAdmin
         Label lblUnit = new Label();
         Label lblSupplyName = new Label();
         NewEntryForm containingForm;
-        
+        DBManager dbManager;
 
         public NewSupplyPanel(NewEntryForm pForm)
         {
+            dbManager = DBManager.Instance;
             containingForm = pForm;
             pForm.Controls.Add(this);
             this.Location = new Point(10, 10);
@@ -172,7 +173,7 @@ namespace CUITAdmin
                 MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
             else
             {
-                MessageBox.Show("There were no errors. Form submitted.");
+                dbManager.AddSupply(txtSupplyName.Text, Double.Parse(txtSupplyCost.Text), txtUnit.Text);
                 containingForm.Close();
             }
         }
