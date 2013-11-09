@@ -152,15 +152,15 @@ namespace CUITAdmin
 
         // TESTED 11-4
         public void AddAccount(string accountNumber, string name, double maxChargeLimit, DateTime accountExpiration, string rateType, int managerID, 
-            string notes, string costCenter, string wbsNumber, double balance, string street, string city, string state, int zip) {
+            string notes, string costCenter, string wbsNumber, double balance, string street, string city, string state, int zip, string taxID) {
             SqlConnection myConnection = DBConnect();
 
             SqlCommand myCommand = new SqlCommand("INSERT into Account " +
             "(Account_Number, Name, Max_Charge_Limit, Account_Expiration, Rate_Type, PointOfContactID, Notes, Cost_Center, " +
-            "WBS_Number, Balance, Street, City, State, Zip) " +
+            "WBS_Number, Balance, Street, City, State, Zip, Tax_ID) " +
 
             "VALUES (@accountNumber, @name, @maxChargeLimit, @accountExpiration, @rateType, @pointOfContact, " +
-            "@notes, @costCenter, @wbsNumber, @balance, @street, @city, @state, @zip)", myConnection);
+            "@notes, @costCenter, @wbsNumber, @balance, @street, @city, @state, @zip, @taxID)", myConnection);
 
 
             myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
@@ -177,6 +177,7 @@ namespace CUITAdmin
             myCommand.Parameters.AddWithValue("@city", city);
             myCommand.Parameters.AddWithValue("@state", state);
             myCommand.Parameters.AddWithValue("@zip", zip);
+            myCommand.Parameters.AddWithValue("@taxID", taxID);
 
             try {
                 myCommand.ExecuteNonQuery();

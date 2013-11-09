@@ -172,7 +172,7 @@ namespace CUITAdmin
             this.txtEmail.Location = new System.Drawing.Point(361, 13);
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(147, 20);
-            this.txtEmail.TabIndex = 18;
+            this.txtEmail.TabIndex = 23;
             // 
             // txtStreet
             // 
@@ -215,14 +215,14 @@ namespace CUITAdmin
             this.txtPhone.Location = new System.Drawing.Point(361, 40);
             this.txtPhone.Name = "txtPhone";
             this.txtPhone.Size = new System.Drawing.Size(147, 20);
-            this.txtPhone.TabIndex = 23;
+            this.txtPhone.TabIndex = 24;
             // 
             // rtbNotes
             // 
             this.rtbNotes.Location = new System.Drawing.Point(306, 67);
             this.rtbNotes.Name = "rtbNotes";
             this.rtbNotes.Size = new System.Drawing.Size(202, 101);
-            this.rtbNotes.TabIndex = 24;
+            this.rtbNotes.TabIndex = 25;
             this.rtbNotes.Text = "";
             // 
             // btnSubmit

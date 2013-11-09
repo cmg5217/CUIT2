@@ -144,6 +144,7 @@ namespace CUITAdmin
             this.Controls.Add(cboRateType);
             cboRateType.DataSource = dbManager.GetRateTypes();
             cboRateType.DisplayMember = "Name";
+            cboRateType.ValueMember = "Name";
             cboRateType.SelectedIndex = 0;
             this.cboRateType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 
@@ -275,9 +276,9 @@ namespace CUITAdmin
 
             else
             {
-                dbManager.AddAccount(txtAccountNumber.Text, txtAccountName.Text, int.Parse(txtMaxCharge.Text), dtpAccountExpiration.Value, 
-                    cboRateType.SelectedItem.ToString(), int.Parse(cboContacts.SelectedValue.ToString()), rtbNotes.Text, txtCostCenter.Text, txtWBSNumber.Text, int.Parse(txtBalance.Text),
-                    txtStreet.Text, txtCity.Text, cboState.SelectedItem.ToString(), int.Parse(txtZipCode.Text));
+                dbManager.AddAccount(txtAccountNumber.Text, txtAccountName.Text, double.Parse(txtMaxCharge.Text), dtpAccountExpiration.Value, 
+                    cboRateType.SelectedValue.ToString(), int.Parse(cboContacts.SelectedValue.ToString()), rtbNotes.Text, txtCostCenter.Text, txtWBSNumber.Text, double.Parse(txtBalance.Text),
+                    txtStreet.Text, txtCity.Text, cboState.SelectedItem.ToString(), int.Parse(txtZipCode.Text), txtTaxID.Text);
 
                 containingForm.Close();
             }
@@ -288,7 +289,6 @@ namespace CUITAdmin
             txtAccountName.BackColor = System.Drawing.Color.White;
             txtAccountNumber.BackColor = System.Drawing.Color.White;
             txtMaxCharge.BackColor = System.Drawing.Color.White;
-            cboRateType.BackColor = System.Drawing.Color.White;
             txtZipCode.BackColor = System.Drawing.Color.White;
             txtCity.BackColor = System.Drawing.Color.White;
             txtStreet.BackColor = System.Drawing.Color.White;
@@ -315,12 +315,6 @@ namespace CUITAdmin
             if (!System.Text.RegularExpressions.Regex.IsMatch(txtMaxCharge.Text, chargePattern))
             {
                 txtMaxCharge.BackColor = System.Drawing.Color.Red;
-                error = true;
-            }
-
-            if (cboRateType.SelectedIndex == 0)
-            {
-                lblRateType.BackColor = System.Drawing.Color.Red;
                 error = true;
             }
 
