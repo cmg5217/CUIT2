@@ -309,7 +309,7 @@ namespace CUITAdmin
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand(
                 "UPDATE Time_Log " +
-                "SET End_Time = @endTime " +
+                "SET End_Time = @endTime, Approved = 'Y'" +
                 "WHERE Account_Number = @accountNumber and UserID = @userID and InstrumentID = @instrumentID and Start_Time = @startTime", myConnection);
             
             myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
@@ -453,7 +453,7 @@ namespace CUITAdmin
             SqlConnection myConnection = DBConnect();
 
             SqlCommand myCommand = new SqlCommand(
-                "INSERT INTO Instrument_Rate (Rate_Name, Rate, InstrumentID)" +
+                "INSERT INTO Instrument_Rate (Rate_Type, Rate, InstrumentID)" +
                 "VALUES (@rateName, @rate, @instrumentID)",
                 myConnection);
 
@@ -659,7 +659,7 @@ namespace CUITAdmin
         public DataTable GetTimeLogsExceptions() {
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand(
-                "Select u.Username, acct.Name as Account_Name, i.Name as Instrument_Name, tl.Start_Time, tl.End_Time, tl.Approved, tl.Account_Number, i.InstrumentID, tl.Current_Rate " +
+                "Select u.Username, acct.Name as Account_Name, i.Name as Instrument_Name, tl.Start_Time, tl.End_Time, tl.Approved, tl.Account_Number, i.InstrumentID, tl.Current_Rate, u.PersonID " +
                 "From Users u INNER JOIN Time_Log tl on u.PersonID = tl.UserID INNER JOIN Account acct on tl.Account_Number = acct.Account_Number INNER JOIN Instrument i on tl.InstrumentID = i.InstrumentID " +
                 "WHERE tl.End_Time IS NULL OR tl.Approved IS NULL", myConnection);
 
@@ -702,6 +702,24 @@ namespace CUITAdmin
             myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
             myCommand.Parameters.AddWithValue("@startDate", startDate);
             myCommand.Parameters.AddWithValue("@endDate", endDate);
+
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+
+            DataTable table = new DataTable();
+            dataAdapter.Fill(table);
+
+            myConnection.Close();
+            return table;
+        }
+
+        public DataTable GetUser(int userID){
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand(
+                "SELECT usr.*, psn.*, ptc.First_Name as 'Contact_First_Name', ptc.Last_Name as 'Contact_Last_Name' " +
+                "FROM Users usr left outer join Person psn on usr.PersonID = psn.PersonID left outer join Person ptc on usr.ContactID = ptc.PersonID " + 
+                "WHERE usr.PersonID = @userID", myConnection);
+
+            myCommand.Parameters.AddWithValue("@userID", userID);
 
             SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
 
@@ -1069,7 +1087,7 @@ namespace CUITAdmin
             }
         }
 
-
+        // Used to add a group of rows from a DataTable to a table on the db
         public void SendDataTable(DataTable tableToSend, string destinationTable) {
 
             SqlConnection myConnection = DBConnect();
@@ -1126,6 +1144,70 @@ namespace CUITAdmin
             DateTime serverTime;
             GetServerDateTime(out serverTime);
             myCommand.Parameters.AddWithValue("@invoiceDate", serverTime);
+
+            try {
+                myCommand.ExecuteNonQuery();
+            } catch (Exception e) {
+                Debug.WriteLine(e.Message);
+            }
+
+            myConnection.Close();
+        }
+
+        public void UpdateUser(int userID, string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email,
+            string username, string password, string department, string type, string notes, int contactID = -1) {
+
+
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand();
+            myCommand.Connection = myConnection;
+            myCommand.CommandText = "updateUser";
+            myCommand.CommandType = System.Data.CommandType.StoredProcedure;
+
+            myCommand.Parameters.AddWithValue("@userID", userID);
+
+            if (firstName != "" ) myCommand.Parameters.AddWithValue("@firstName", firstName);
+            if (lastName != "" ) myCommand.Parameters.AddWithValue("@lastName", lastName);
+            if (street != "" ) myCommand.Parameters.AddWithValue("@street", street);
+            if (city != "" ) myCommand.Parameters.AddWithValue("@city", city);
+            if (state != "" ) myCommand.Parameters.AddWithValue("@state", state);
+            if (zip != "" ) myCommand.Parameters.AddWithValue("@zip", zip);
+            if (phoneNumber != "" ) myCommand.Parameters.AddWithValue("@phoneNumber", phoneNumber);
+            if (email != "" ) myCommand.Parameters.AddWithValue("@email", email);
+            if (username != "" ) myCommand.Parameters.AddWithValue("@userName", username);
+
+            if (password != "") {
+                password = PasswordHash.getHashSha512(password);
+                myCommand.Parameters.AddWithValue("@password", password);
+            }
+
+            if (department != "" ) myCommand.Parameters.AddWithValue("@department", department);
+            if (type != "" ) myCommand.Parameters.AddWithValue("@type", type);
+            if (notes != "" ) myCommand.Parameters.AddWithValue("@notes", notes);
+            if (contactID != -1) myCommand.Parameters.AddWithValue("@contactID", contactID);
+
+            try {
+                myCommand.ExecuteNonQuery();
+            } catch (Exception e) {
+                Debug.WriteLine(e.Message);
+            }
+
+            myConnection.Close();
+
+        }
+
+        public void UpdateTimeLogApproval(string accountNumber, int userID, int instrumentID, DateTime startTime, char approval) {
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand(
+                "UPDATE Time_Log " +
+                "SET Approved = @approval " +
+                "WHERE Account_Number = @accountNumber and UserID = @userID and InstrumentID = @instrumentID and Start_Time = @startTime", myConnection);
+
+            myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
+            myCommand.Parameters.AddWithValue("@userID", userID);
+            myCommand.Parameters.AddWithValue("@instrumentID", instrumentID);
+            myCommand.Parameters.AddWithValue("@startTime", startTime);
+            myCommand.Parameters.AddWithValue("@approval", approval);
 
             try {
                 myCommand.ExecuteNonQuery();

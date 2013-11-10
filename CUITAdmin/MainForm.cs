@@ -66,7 +66,7 @@ namespace CUITAdmin
             //dgvTimeLogRequests.DataSource = ds;
             //cboAccountAdminView.SelectedValue = "Accounts";
             // Resize the DataGridView columns to fit the newly loaded content.
-            AdminDataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader);
+            dgvAdmin.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader);
             //loads the path for the invoice export from app.config
             txtInvoiceExportPath.Text = Settings.Default["InvoicePath"].ToString();
             //get the moth from user input
@@ -85,7 +85,10 @@ namespace CUITAdmin
 
         #region Billing Tab
 
+        DataTable timeLogExceptions;
         private void InitializeBillingTab() {
+            editedRows = new List<int>();
+
             if (Settings.Default.StandaloneMode == "false") {
                 cboManualLogUser.DataSource = dbManager.GetUsers();
                 cboManualLogUser.DisplayMember = "Username";
@@ -108,13 +111,50 @@ namespace CUITAdmin
                 cboBillingSupplyName.DisplayMember = "Supply_Name";
                 cboBillingSupplyName.ValueMember = "Supply_Name";
 
-                dgvTimeLogRequests.DataSource = dbManager.GetTimeLogsExceptions();
-                FindAndRenameDGVColumn("Account_Name", "Account Name", dgvTimeLogRequests);
-                FindAndRenameDGVColumn("Account_Number", "Account Number", dgvTimeLogRequests);
+                InitializeTimeLogDGV();
             } else {
                 //TO-DO Add XML to load accounts
 
             }
+        }
+
+        private void InitializeTimeLogDGV() {
+            timeLogExceptions = dbManager.GetTimeLogsExceptions();
+
+            timeLogExceptions.Columns.Add(new DataColumn("Duration"));
+
+            foreach (DataRow currentRow in timeLogExceptions.Rows) {
+                if (currentRow["End_Time"].ToString() == "") continue;
+                TimeSpan duration = (DateTime)currentRow["End_Time"] - (DateTime)currentRow["Start_Time"];
+                currentRow["Duration"] = duration.TotalMinutes;
+            }
+
+            timeLogExceptions.Columns.Remove("End_Time");
+
+            dgvTimeLogRequests.DataSource = timeLogExceptions;
+
+            FindAndRenameDGVColumn("Account_Name", "Account Name", dgvTimeLogRequests);
+            FindAndRenameDGVColumn("Account_Number", "Account Number", dgvTimeLogRequests);
+
+            foreach (DataGridViewColumn col in dgvTimeLogRequests.Columns) {
+                if (!(col.Name == "Duration" || col.Name == "Approved")) {
+                    col.ReadOnly = true;
+                }
+            }
+
+            dgvTimeLogRequests.Columns["Duration"].DisplayIndex = 4;
+            dgvTimeLogRequests.Columns["Duration"].HeaderText = "Duration (min)";
+
+
+            foreach (DataGridViewRow row in dgvTimeLogRequests.Rows) {
+                if (!(row.Cells["Duration"].Value.ToString() == "")) {
+                    row.Cells["Duration"].ReadOnly = true;
+                }
+                if (!(row.Cells["Approved"].Value.ToString() == "")) {
+                    row.Cells["Approved"].ReadOnly = true;
+                }
+            }
+
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -162,10 +202,69 @@ namespace CUITAdmin
                 "Please check your connection or contact your server admin");
             }
         }
-        
 
-        
-        #endregion
+
+        List<int> editedRows;
+        private void dgvTimeLogRequests_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
+            if (dgvTimeLogRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString() == "") {
+                editedRows.Remove(e.RowIndex);
+            } else {
+                editedRows.Add(e.RowIndex);
+            }
+        }
+
+        // TO-DO: further test and make sure the errors looks good.
+        private void btnSubmit_Click(object sender, EventArgs e) {
+            bool error = false;
+
+            foreach (int rowIndex in editedRows) {
+                string approved = dgvTimeLogRequests.Rows[rowIndex].Cells["Approved"].Value.ToString();
+                
+                DataRow editedRow = timeLogExceptions.Rows[rowIndex];
+
+
+
+                int minutesToAdd;
+                bool success = int.TryParse(dgvTimeLogRequests.Rows[rowIndex].Cells["Duration"].Value.ToString(), out minutesToAdd);
+
+                DateTime endTime = ((DateTime)editedRow["Start_Time"]).AddMinutes(minutesToAdd);
+                
+                
+                if ( approved == "Y") {
+
+                    dbManager.AddTimeLogEndTime(
+                        editedRow["Account_Number"].ToString(),
+                        int.Parse(editedRow["PersonID"].ToString()),
+                        int.Parse(editedRow["InstrumentID"].ToString()),
+                        (DateTime)editedRow["Start_Time"], 
+                        endTime);
+
+                } else if (approved == "N"){
+
+                    dbManager.UpdateTimeLogApproval(
+                        editedRow["Account_Number"].ToString(),
+                        int.Parse(editedRow["PersonID"].ToString()),
+                        int.Parse(editedRow["InstrumentID"].ToString()),
+                        (DateTime)editedRow["Start_Time"],
+                        'N');
+                } else if (approved == ""){
+                
+                } else {
+                    success = false;
+                }
+
+                if (!success) error = true;
+            }
+            if (error) MessageBox.Show("There was an error with the input values, please make sure you enter numbers only for duration and 'Y' / 'N' for Approved");
+            editedRows = new List<int>();
+            InitializeTimeLogDGV();
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e) {
+            InitializeTimeLogDGV();
+        }
+
+        #endregion  Billing Tab
 
         #region Admin Tab
 
@@ -180,27 +279,27 @@ namespace CUITAdmin
             Supplies*/
             if (cboAccountAdminView.SelectedItem == "Accounts")
             {
-                AdminDataGridView.DataSource = dbManager.GetAccounts();
+                dgvAdmin.DataSource = dbManager.GetAccounts();
             }
             else if (cboAccountAdminView.SelectedItem == "Contacts")
             {
-                AdminDataGridView.DataSource = dbManager.GetContacts();
+                dgvAdmin.DataSource = dbManager.GetContacts();
             }
             else if (cboAccountAdminView.SelectedItem == "Users")
             {
-                AdminDataGridView.DataSource = dbManager.GetUsers();
+                dgvAdmin.DataSource = dbManager.GetUsers();
             }
             else if (cboAccountAdminView.SelectedItem == "Instruments")
             {
-                AdminDataGridView.DataSource = dbManager.GetInstruments();
+                dgvAdmin.DataSource = dbManager.GetInstruments();
             } 
             else if (cboAccountAdminView.SelectedItem == "Rate Types") 
             {
-                AdminDataGridView.DataSource = dbManager.GetRateTypes();
+                dgvAdmin.DataSource = dbManager.GetRateTypes();
             }
             else if (cboAccountAdminView.SelectedItem == "Supplies")
             {
-                AdminDataGridView.DataSource = dbManager.GetSupplies();
+                dgvAdmin.DataSource = dbManager.GetSupplies();
             }
             ;
         }
@@ -212,7 +311,38 @@ namespace CUITAdmin
             newForm.ShowDialog(); //Displays forms modally
         }
 
-        #endregion
+        private void AdminDataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e) {
+            /*
+            Accounts
+            Contacts
+            Users
+            Instruments
+            Rate Types
+            Supplies
+             */
+
+            string primaryKey = "";
+            string addNewCase = "";
+            switch (cboAccountAdminView.Text) {
+                case "Users":
+
+                    primaryKey = dgvAdmin.Rows[e.RowIndex].Cells["PersonID"].Value.ToString();
+                    addNewCase = "Edit User";
+
+                    break;
+                default:
+                    return;
+            }
+
+            
+            Form newForm = new NewEntryForm(addNewCase, primaryKey);
+            newForm.ShowDialog(); //Displays forms modally
+
+        }
+
+
+        
+        #endregion Admin Tab
 
         #region Settings Tab
 
@@ -233,7 +363,7 @@ namespace CUITAdmin
             }
         }
 
-        #endregion
+        #endregion Settings Tab
 
         #region Export Tab
         private void InitializeExportTab()
@@ -272,7 +402,6 @@ namespace CUITAdmin
                 //MessageBox.Show(endtime.ToString());
                 //the offset 
 
-                int invoiceID;
                 //dbManager.GenerateInvoice("1", DateTime.Now.AddDays(-5), DateTime.Now, out invoiceID);
                 //dbManager.GenerateInvoice(comboBoxSelectAccount.SelectedValue.ToString(), datetime, endtime, out invoiceID);
 
@@ -283,6 +412,7 @@ namespace CUITAdmin
                 List<DataTable> invoices = new List<DataTable>();
 
                 foreach (int currentInvoice in invoiceIDs) {
+
                     genPDF(currentInvoice);
                     invoices.Add(dbManager.GetInvoice(currentInvoice));
 
@@ -373,7 +503,7 @@ namespace CUITAdmin
         }
 
 
-        #endregion
+        #endregion Export Tab
 
         #region Request Tab
 
@@ -391,6 +521,11 @@ namespace CUITAdmin
             } else {
                 //TO-DO Add XML to load     
 
+            }
+
+            List<string> states = new List<string> { "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming" };
+            foreach (string s in states) {
+                cboAcctManagementState.Items.Add(s);
             }
         }
 
@@ -584,7 +719,10 @@ namespace CUITAdmin
             }
         }
 
+        // Check any fields in Account Management that are not blank
         private bool validateAccountRequest() {
+            bool error = false;
+
             txtAcctManagementPhone.BackColor = System.Drawing.Color.White;
             txtAcctManagementZip.BackColor = System.Drawing.Color.White;
             txtAcctManagementCity.BackColor = System.Drawing.Color.White;
@@ -593,60 +731,113 @@ namespace CUITAdmin
             txtAcctManagementNewPw.BackColor = System.Drawing.Color.White;
             txtAcctManagementConfirmPw.BackColor = System.Drawing.Color.White;
             
-            bool error = false;
+            // Phone
             string phonePattern = "^\\D?(\\d{3})\\D?\\D?(\\d{3})\\D?(\\d{4})$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementPhone.Text, phonePattern))
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementPhone.Text, phonePattern) && txtAcctManagementPhone.Text != "")
             {
                 txtAcctManagementPhone.BackColor = System.Drawing.Color.Red;
                 error = true;
             }
 
+            // Zip
             string zipPattern = "^([0-9]{5})\\-?([0-9]{4})?$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementZip.Text, zipPattern))
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementZip.Text, zipPattern) && txtAcctManagementZip.Text != "")
             {
                 txtAcctManagementZip.BackColor = System.Drawing.Color.Red;
                 error = true;
             }
 
+            // City
             string cityPattern = "^[A-Za-z\\s-\\.]+$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementCity.Text, cityPattern))
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementCity.Text, cityPattern) && txtAcctManagementCity.Text != "")
             {
                 txtAcctManagementCity.BackColor = System.Drawing.Color.Red;
                 error = true;
             }
 
+            // Street
             string streetPattern = "^[\\w\\s-\\.]+$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementStreet.Text, streetPattern))
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementStreet.Text, streetPattern) && txtAcctManagementStreet.Text != "")
             {
                 txtAcctManagementStreet.BackColor = System.Drawing.Color.Red;
                 error = true;
             }
 
+            //Email
             string emailPattern = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementEmail.Text, emailPattern))
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementEmail.Text, emailPattern) && txtAcctManagementEmail.Text != "")
             {
                 txtAcctManagementEmail.BackColor = System.Drawing.Color.Red;
                 error = true;
             }
 
+            // New Password
             string passwordPattern = "^([1-zA-Z0-1@.\\s]{5,20})$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementNewPw.Text, passwordPattern))
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementNewPw.Text, passwordPattern) && txtAcctManagementNewPw.Text != "")
             {
                 txtAcctManagementNewPw.BackColor = System.Drawing.Color.Red;
                 error = true;
+
             }            
-                
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementConfirmPw.Text, passwordPattern))
+               
+            // Confirm Password
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementConfirmPw.Text, passwordPattern) && txtAcctManagementConfirmPw.Text != "")
             {
                 txtAcctManagementConfirmPw.BackColor = System.Drawing.Color.Red;
                 error = true;
             }
 
+            if (txtAcctManagementConfirmPw.Text != txtAcctManagementNewPw.Text) error = true;
+
             return error;
 
         }
-    
-        #endregion
+        
+        private void txtAcctManagementConfirmPw_TextChanged(object sender, EventArgs e) {
+            if (txtAcctManagementConfirmPw.Text != txtAcctManagementNewPw.Text) {
+                lblAcctManagementPwMessage.Text = "Passwords don't match";
+            } else {
+                lblAcctManagementPwMessage.Text = "";
+            }
+
+        }
+
+        private void txtAcctManagementNewPw_TextChanged(object sender, EventArgs e) {
+            if (txtAcctManagementNewPw.Text != txtAcctManagementConfirmPw.Text && txtAcctManagementConfirmPw.Text != "") {
+                lblAcctManagementPwMessage.Text = "Passwords don't match";
+            } else {
+                lblAcctManagementPwMessage.Text = "";
+            }
+        }
+     
+        private void bnAcctManagementSubmit_Click(object sender, EventArgs e) {
+            bool error = false;
+            string errorMessage = "";
+            if (!dbManager.CheckPassword(txtAcctManagementUserame.Text, txtAcctManagementPassword.Text)) {
+                error = true;
+                errorMessage += "Username or password invalid. \r\n\r\n";
+            }
+
+            if (validateAccountRequest()) {
+                error = true;
+                errorMessage += "There were errors on the form, please correct them and submit again.";
+            }
+
+            if (!error) {
+                int userID = dbManager.GetUserID(txtAcctManagementUserame.Text);
+
+                string state;
+                if (cboAcctManagementState.SelectedItem == null) state = "";
+                else state = cboAcctManagementState.SelectedItem.ToString();
+
+                dbManager.UpdateUser(userID, "", "", txtAcctManagementStreet.Text, txtAcctManagementCity.Text, state,
+                    txtAcctManagementZip.Text, txtAcctManagementPhone.Text, txtAcctManagementEmail.Text, "", txtAcctManagementNewPw.Text, "", "", "");
+            } else {
+                MessageBox.Show(errorMessage);
+            }
+        }
+
+        #endregion Request Tab
 
 
 
@@ -778,6 +969,13 @@ namespace CUITAdmin
                 }
             }
         }
+
+
+
+
+
+
+
 
     }
 }

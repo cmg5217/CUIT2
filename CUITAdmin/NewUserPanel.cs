@@ -13,6 +13,8 @@ namespace CUITAdmin
 {
     class NewUserPanel : Panel
     {
+        string mode;
+        int userID;
         Button btnSubmit = new Button();
         Button btnNewContact = new Button();
         ComboBox cboContacts = new ComboBox();
@@ -43,9 +45,18 @@ namespace CUITAdmin
         Label lblUsername = new Label();
         NewEntryForm containingForm;
         DBManager dbManager;
+        DataRow user;
         
         public NewUserPanel(NewEntryForm pForm)
-        {
+            :this(pForm, "add") { }
+
+        public NewUserPanel(NewEntryForm pForm, int userID)
+            : this(pForm, "edit") {
+            this.userID = userID;
+            populateControls();
+        }
+
+        private NewUserPanel(NewEntryForm pForm, string mode) {
             dbManager = DBManager.Instance;
             containingForm = pForm;
             pForm.Controls.Add(this);
@@ -54,6 +65,32 @@ namespace CUITAdmin
 
             addControls();
             containingForm.AcceptButton = btnSubmit;
+            this.mode = mode;
+        }
+
+        private void populateControls() {
+            user = dbManager.GetUser(userID).Rows[0];
+
+            txtFirstName.Text = user["First_Name"].ToString();
+            txtLastName.Text = user["Last_Name"].ToString();
+            txtUsername.Text = user["Username"].ToString();
+
+            for (int i = 0; i < cboContacts.Items.Count; i++ ) {
+                cboContacts.SelectedIndex = i;
+                if (cboContacts.SelectedValue.ToString() == user["ContactID"].ToString()) {
+                    break;
+                }
+            }
+
+            rtbNotes.Text = user["Notes"].ToString();
+            txtPhone.Text = user["Phone_Number"].ToString();
+            txtZipCode.Text = user["Zip"].ToString();
+            cboState.Text = user["State"].ToString();
+            txtCity.Text = user["City"].ToString();
+            txtStreet.Text = user["Street"].ToString();
+            txtEmail.Text = user["Email"].ToString();
+            txtDepartment.Text = user["Department"].ToString();
+
         }
 
         private void addControls()
@@ -208,6 +245,8 @@ namespace CUITAdmin
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.Size = new System.Drawing.Size(134, 20);
             this.txtPassword.TabIndex = 14;
+            Random rand = new Random();
+            this.txtPassword.Text = "tp" + rand.Next(1000000, 9999999);
             // 
             // txtUsername
             // 
@@ -363,9 +402,15 @@ namespace CUITAdmin
                 MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
             else
             {
-                dbManager.AddUser(txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text, 
-                    cboState.SelectedItem.ToString(), txtZipCode.Text, txtPhone.Text, txtEmail.Text, txtUsername.Text, 
-                    txtPassword.Text, txtDepartment.Text, "U", rtbNotes.Text, int.Parse(cboContacts.SelectedValue.ToString()));
+                if (mode == "new") {
+                    dbManager.AddUser(txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text,
+                        cboState.SelectedItem.ToString(), txtZipCode.Text, txtPhone.Text, txtEmail.Text, txtUsername.Text,
+                        txtPassword.Text, txtDepartment.Text, "U", rtbNotes.Text, int.Parse(cboContacts.SelectedValue.ToString()));
+                } else if (mode == "edit") {
+                    dbManager.UpdateUser(int.Parse(user["PersonID"].ToString()), txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text,
+                        cboState.Text, txtZipCode.Text, txtPhone.Text, txtEmail.Text, "", txtPassword.Text, txtDepartment.Text,
+                        "", rtbNotes.Text, int.Parse(cboContacts.SelectedValue.ToString()));
+                }
 
                 containingForm.Close();
             }

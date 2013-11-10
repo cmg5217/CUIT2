@@ -53,7 +53,7 @@
             this.lblAccountAdminView = new System.Windows.Forms.Label();
             this.cboAccountAdminView = new System.Windows.Forms.ComboBox();
             this.txtAccountAdminSearch = new System.Windows.Forms.TextBox();
-            this.AdminDataGridView = new System.Windows.Forms.DataGridView();
+            this.dgvAdmin = new System.Windows.Forms.DataGridView();
             this.tbpBilling = new System.Windows.Forms.TabPage();
             this.grpManualEntries = new System.Windows.Forms.GroupBox();
             this.grpBillingSupplies = new System.Windows.Forms.GroupBox();
@@ -87,7 +87,6 @@
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.lineSeparator1 = new CUITAdmin.LineSeparator();
             this.label11 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
@@ -137,6 +136,8 @@
             this.btnManualTimeAdd = new System.Windows.Forms.Button();
             this.lblDuration = new System.Windows.Forms.Label();
             this.lblFundingSource = new System.Windows.Forms.Label();
+            this.lblAcctManagementPwMessage = new System.Windows.Forms.Label();
+            this.lineSeparator1 = new CUITAdmin.LineSeparator();
             this.tbpExports.SuspendLayout();
             this.grpExportPath.SuspendLayout();
             this.grpInvoiceExport.SuspendLayout();
@@ -144,7 +145,7 @@
             this.groupBox2.SuspendLayout();
             this.grpStandaloneFileExport.SuspendLayout();
             this.tbpAccountAdmin.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.AdminDataGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAdmin)).BeginInit();
             this.tbpBilling.SuspendLayout();
             this.grpManualEntries.SuspendLayout();
             this.grpBillingSupplies.SuspendLayout();
@@ -366,7 +367,7 @@
             this.tbpAccountAdmin.Controls.Add(this.lblAccountAdminView);
             this.tbpAccountAdmin.Controls.Add(this.cboAccountAdminView);
             this.tbpAccountAdmin.Controls.Add(this.txtAccountAdminSearch);
-            this.tbpAccountAdmin.Controls.Add(this.AdminDataGridView);
+            this.tbpAccountAdmin.Controls.Add(this.dgvAdmin);
             this.tbpAccountAdmin.Location = new System.Drawing.Point(4, 22);
             this.tbpAccountAdmin.Name = "tbpAccountAdmin";
             this.tbpAccountAdmin.Padding = new System.Windows.Forms.Padding(3);
@@ -443,16 +444,17 @@
             this.txtAccountAdminSearch.Size = new System.Drawing.Size(100, 20);
             this.txtAccountAdminSearch.TabIndex = 1;
             // 
-            // AdminDataGridView
+            // dgvAdmin
             // 
-            this.AdminDataGridView.AllowUserToAddRows = false;
-            this.AdminDataGridView.AllowUserToDeleteRows = false;
-            this.AdminDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.AdminDataGridView.Location = new System.Drawing.Point(6, 37);
-            this.AdminDataGridView.Name = "AdminDataGridView";
-            this.AdminDataGridView.ReadOnly = true;
-            this.AdminDataGridView.Size = new System.Drawing.Size(671, 546);
-            this.AdminDataGridView.TabIndex = 0;
+            this.dgvAdmin.AllowUserToAddRows = false;
+            this.dgvAdmin.AllowUserToDeleteRows = false;
+            this.dgvAdmin.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvAdmin.Location = new System.Drawing.Point(6, 37);
+            this.dgvAdmin.Name = "dgvAdmin";
+            this.dgvAdmin.ReadOnly = true;
+            this.dgvAdmin.Size = new System.Drawing.Size(671, 546);
+            this.dgvAdmin.TabIndex = 0;
+            this.dgvAdmin.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.AdminDataGridView_CellDoubleClick);
             // 
             // tbpBilling
             // 
@@ -687,17 +689,19 @@
             this.btnRefresh.TabIndex = 9;
             this.btnRefresh.Text = "Refresh";
             this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
             // dgvTimeLogRequests
             // 
             this.dgvTimeLogRequests.AllowUserToAddRows = false;
             this.dgvTimeLogRequests.AllowUserToDeleteRows = false;
             this.dgvTimeLogRequests.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvTimeLogRequests.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.dgvTimeLogRequests.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.dgvTimeLogRequests.Location = new System.Drawing.Point(7, 20);
             this.dgvTimeLogRequests.Name = "dgvTimeLogRequests";
             this.dgvTimeLogRequests.Size = new System.Drawing.Size(658, 299);
             this.dgvTimeLogRequests.TabIndex = 8;
+            this.dgvTimeLogRequests.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTimeLogRequests_CellEndEdit);
             this.dgvTimeLogRequests.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTimeLogRequests_RowHeaderMouseClick);
             // 
             // btnSubmit
@@ -708,6 +712,7 @@
             this.btnSubmit.TabIndex = 7;
             this.btnSubmit.Text = "Submit";
             this.btnSubmit.UseVisualStyleBackColor = true;
+            this.btnSubmit.Click += new System.EventHandler(this.btnSubmit_Click);
             // 
             // tabControlMain
             // 
@@ -747,6 +752,7 @@
             // 
             // grpAccountSettings
             // 
+            this.grpAccountSettings.Controls.Add(this.lblAcctManagementPwMessage);
             this.grpAccountSettings.Controls.Add(this.label14);
             this.grpAccountSettings.Controls.Add(this.label15);
             this.grpAccountSettings.Controls.Add(this.label13);
@@ -780,7 +786,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(70, 219);
+            this.label14.Location = new System.Drawing.Point(70, 229);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(35, 13);
             this.label14.TabIndex = 14;
@@ -789,7 +795,7 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(69, 246);
+            this.label15.Location = new System.Drawing.Point(69, 256);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(41, 13);
             this.label15.TabIndex = 15;
@@ -803,15 +809,6 @@
             this.label13.Size = new System.Drawing.Size(126, 13);
             this.label13.TabIndex = 20;
             this.label13.Text = "( - all fields are optional - )";
-            // 
-            // lineSeparator1
-            // 
-            this.lineSeparator1.Location = new System.Drawing.Point(48, 126);
-            this.lineSeparator1.MaximumSize = new System.Drawing.Size(2000, 2);
-            this.lineSeparator1.MinimumSize = new System.Drawing.Size(0, 2);
-            this.lineSeparator1.Name = "lineSeparator1";
-            this.lineSeparator1.Size = new System.Drawing.Size(578, 2);
-            this.lineSeparator1.TabIndex = 19;
             // 
             // label11
             // 
@@ -851,24 +848,24 @@
             // 
             // txtAcctManagementPhone
             // 
-            this.txtAcctManagementPhone.Location = new System.Drawing.Point(164, 243);
+            this.txtAcctManagementPhone.Location = new System.Drawing.Point(164, 253);
             this.txtAcctManagementPhone.Name = "txtAcctManagementPhone";
             this.txtAcctManagementPhone.Size = new System.Drawing.Size(144, 20);
-            this.txtAcctManagementPhone.TabIndex = 14;
+            this.txtAcctManagementPhone.TabIndex = 5;
             // 
             // txtAcctManagementEmail
             // 
-            this.txtAcctManagementEmail.Location = new System.Drawing.Point(164, 216);
+            this.txtAcctManagementEmail.Location = new System.Drawing.Point(164, 226);
             this.txtAcctManagementEmail.Name = "txtAcctManagementEmail";
             this.txtAcctManagementEmail.Size = new System.Drawing.Size(144, 20);
-            this.txtAcctManagementEmail.TabIndex = 13;
+            this.txtAcctManagementEmail.TabIndex = 4;
             // 
             // txtAcctManagementZip
             // 
             this.txtAcctManagementZip.Location = new System.Drawing.Point(390, 241);
             this.txtAcctManagementZip.Name = "txtAcctManagementZip";
             this.txtAcctManagementZip.Size = new System.Drawing.Size(188, 20);
-            this.txtAcctManagementZip.TabIndex = 12;
+            this.txtAcctManagementZip.TabIndex = 9;
             // 
             // cboAcctManagementState
             // 
@@ -877,30 +874,31 @@
             this.cboAcctManagementState.Location = new System.Drawing.Point(390, 215);
             this.cboAcctManagementState.Name = "cboAcctManagementState";
             this.cboAcctManagementState.Size = new System.Drawing.Size(188, 21);
-            this.cboAcctManagementState.TabIndex = 11;
+            this.cboAcctManagementState.TabIndex = 8;
             // 
             // txtAcctManagementCity
             // 
             this.txtAcctManagementCity.Location = new System.Drawing.Point(390, 189);
             this.txtAcctManagementCity.Name = "txtAcctManagementCity";
             this.txtAcctManagementCity.Size = new System.Drawing.Size(188, 20);
-            this.txtAcctManagementCity.TabIndex = 10;
+            this.txtAcctManagementCity.TabIndex = 7;
             // 
             // txtAcctManagementStreet
             // 
             this.txtAcctManagementStreet.Location = new System.Drawing.Point(390, 163);
             this.txtAcctManagementStreet.Name = "txtAcctManagementStreet";
             this.txtAcctManagementStreet.Size = new System.Drawing.Size(188, 20);
-            this.txtAcctManagementStreet.TabIndex = 8;
+            this.txtAcctManagementStreet.TabIndex = 6;
             // 
             // bnAcctManagementSubmit
             // 
             this.bnAcctManagementSubmit.Location = new System.Drawing.Point(503, 267);
             this.bnAcctManagementSubmit.Name = "bnAcctManagementSubmit";
             this.bnAcctManagementSubmit.Size = new System.Drawing.Size(75, 23);
-            this.bnAcctManagementSubmit.TabIndex = 0;
+            this.bnAcctManagementSubmit.TabIndex = 10;
             this.bnAcctManagementSubmit.Text = "Submit";
             this.bnAcctManagementSubmit.UseVisualStyleBackColor = true;
+            this.bnAcctManagementSubmit.Click += new System.EventHandler(this.bnAcctManagementSubmit_Click);
             // 
             // label5
             // 
@@ -942,20 +940,25 @@
             // 
             this.txtAcctManagementConfirmPw.Location = new System.Drawing.Point(164, 189);
             this.txtAcctManagementConfirmPw.Name = "txtAcctManagementConfirmPw";
+            this.txtAcctManagementConfirmPw.PasswordChar = '*';
             this.txtAcctManagementConfirmPw.Size = new System.Drawing.Size(144, 20);
             this.txtAcctManagementConfirmPw.TabIndex = 3;
+            this.txtAcctManagementConfirmPw.TextChanged += new System.EventHandler(this.txtAcctManagementConfirmPw_TextChanged);
             // 
             // txtAcctManagementNewPw
             // 
             this.txtAcctManagementNewPw.Location = new System.Drawing.Point(164, 163);
             this.txtAcctManagementNewPw.Name = "txtAcctManagementNewPw";
+            this.txtAcctManagementNewPw.PasswordChar = '*';
             this.txtAcctManagementNewPw.Size = new System.Drawing.Size(144, 20);
             this.txtAcctManagementNewPw.TabIndex = 2;
+            this.txtAcctManagementNewPw.TextChanged += new System.EventHandler(this.txtAcctManagementNewPw_TextChanged);
             // 
             // txtAcctManagementPassword
             // 
             this.txtAcctManagementPassword.Location = new System.Drawing.Point(270, 72);
             this.txtAcctManagementPassword.Name = "txtAcctManagementPassword";
+            this.txtAcctManagementPassword.PasswordChar = '*';
             this.txtAcctManagementPassword.Size = new System.Drawing.Size(144, 20);
             this.txtAcctManagementPassword.TabIndex = 1;
             // 
@@ -1261,6 +1264,23 @@
             this.lblFundingSource.TabIndex = 4;
             this.lblFundingSource.Text = "Funding Source:";
             // 
+            // lblAcctManagementPwMessage
+            // 
+            this.lblAcctManagementPwMessage.AutoSize = true;
+            this.lblAcctManagementPwMessage.Location = new System.Drawing.Point(166, 211);
+            this.lblAcctManagementPwMessage.Name = "lblAcctManagementPwMessage";
+            this.lblAcctManagementPwMessage.Size = new System.Drawing.Size(0, 13);
+            this.lblAcctManagementPwMessage.TabIndex = 21;
+            // 
+            // lineSeparator1
+            // 
+            this.lineSeparator1.Location = new System.Drawing.Point(48, 126);
+            this.lineSeparator1.MaximumSize = new System.Drawing.Size(2000, 2);
+            this.lineSeparator1.MinimumSize = new System.Drawing.Size(0, 2);
+            this.lineSeparator1.Name = "lineSeparator1";
+            this.lineSeparator1.Size = new System.Drawing.Size(578, 2);
+            this.lineSeparator1.TabIndex = 19;
+            // 
             // frmCUITAdminMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1285,7 +1305,7 @@
             this.grpStandaloneFileExport.PerformLayout();
             this.tbpAccountAdmin.ResumeLayout(false);
             this.tbpAccountAdmin.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.AdminDataGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAdmin)).EndInit();
             this.tbpBilling.ResumeLayout(false);
             this.grpManualEntries.ResumeLayout(false);
             this.grpBillingSupplies.ResumeLayout(false);
@@ -1321,7 +1341,7 @@
         private System.Windows.Forms.Label lblAccountAdminView;
         private System.Windows.Forms.ComboBox cboAccountAdminView;
         private System.Windows.Forms.TextBox txtAccountAdminSearch;
-        private System.Windows.Forms.DataGridView AdminDataGridView;
+        private System.Windows.Forms.DataGridView dgvAdmin;
         private System.Windows.Forms.TabPage tbpBilling;
         private System.Windows.Forms.GroupBox grpManualEntries;
         private System.Windows.Forms.GroupBox grpBillingSupplies;
@@ -1419,6 +1439,7 @@
         private System.Windows.Forms.CheckBox chkStandalone;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label lblAcctManagementPwMessage;
     }
 }
 
