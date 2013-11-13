@@ -57,5 +57,17 @@ namespace CUITAdmin.Properties {
                 this["StandaloneMode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public string GLSUexport {
+            get {
+                return ((string)(this["GLSUexport"]));
+            }
+            set {
+                this["GLSUexport"] = value;
+            }
+        }
     }
 }

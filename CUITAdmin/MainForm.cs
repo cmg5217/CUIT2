@@ -69,12 +69,14 @@ namespace CUITAdmin
             AdminDataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader);
             //loads the path for the invoice export from app.config
             txtInvoiceExportPath.Text = Settings.Default["InvoicePath"].ToString();
-            //get the moth from user input
+            //set the current month in the export pdf combobox
             DateTime now = DateTime.Now;
             comboBoxSelectMonth.Text = ((now.ToString("MMMMMMMMM")));
             txtInvoiceExportPath.Text = Properties.Settings.Default.InvoicePath;
             //text export path
             txtInvoiceExportPath.Text = Properties.Settings.Default.InvoicePath;
+            //load setting for glsu checkbox
+            InitializeGLSUCheckbox();
             // Sets up the return keys for the manual entry tab
             BindReturnKeys();
             InitializeBillingTab();
@@ -217,8 +219,17 @@ namespace CUITAdmin
         #region Settings Tab
 
         private void InitializeSettingsTab() {
-            if (Properties.Settings.Default.StandaloneMode == "true") {
+            if (Properties.Settings.Default.StandaloneMode == "true")
+            {
                 chkStandalone.Checked = true;
+            }
+        }
+
+        private void InitializeGLSUCheckbox()
+        {
+            if (Properties.Settings.Default.GLSUexport == "false")
+            {
+                chkGLSU.Checked = false;
             }
         }
 
@@ -261,9 +272,14 @@ namespace CUITAdmin
 
         private void btnExportAll_Click(object sender, EventArgs e)
         {
-            if (Settings.Default["InvoicePath"].ToString() == "") {
-                MessageBox.Show("You have not selected the export path. Please go to the Settings tab and select an export path.");
-            } else {
+
+            if (Settings.Default["InvoicePath"].ToString() == "")
+            {
+                MessageBox.Show("You have not selected the export path. Please select an export path first.");
+
+            }
+            else
+            {
                 //parse the date in the combobox and calculate the end of the month
                 string date = comboBoxSelectMonth.Text;
                 DateTime datetime = DateTime.ParseExact(date, "MMMMMMMM", CultureInfo.InvariantCulture);
@@ -271,39 +287,25 @@ namespace CUITAdmin
                 endtime = endtime.AddSeconds(-1);
                 //MessageBox.Show(endtime.ToString());
                 //the offset 
-
-                int invoiceID;
+                string offset = "";
+                List<int> invoiceIDs;
                 //dbManager.GenerateInvoice("1", DateTime.Now.AddDays(-5), DateTime.Now, out invoiceID);
-                //dbManager.GenerateInvoice(comboBoxSelectAccount.SelectedValue.ToString(), datetime, endtime, out invoiceID);
-
-                List<int> invoiceIDs = new List<int>();
-
                 dbManager.GenerateAllInvoices(datetime, endtime, out invoiceIDs);
 
-                List<DataTable> invoices = new List<DataTable>();
-
-                foreach (int currentInvoice in invoiceIDs) {
-                    genPDF(currentInvoice);
-                    invoices.Add(dbManager.GetInvoice(currentInvoice));
-
+                foreach (int currentInvoice in invoiceIDs)
+                {
+                    GenerateSingleInvoice(currentInvoice, datetime, endtime, ref offset);
                 }
-
-                //  }
-                //  catch (Exception)
-                //  {
-                //     MessageBox.Show("Error writing file. Check that this file is not currently\n" 
-                //                   +"open in a PDF reader such as Adobe Reader.");
-                // }
-
-                ExcelManager.generateExcel(invoices.ToArray());
             }
         }
 
         private void btnInvoiceExport_Click(object sender, EventArgs e) {
             if (Settings.Default["InvoicePath"].ToString() == "") {
-                MessageBox.Show("You have not selected the export path. Please go to the Settings tab and select an export path.");
+                MessageBox.Show("You have not selected the export path. Please select an export path first.");
 
-            } else {
+            }
+            else
+            {
                 //parse the date in the combobox and calculate the end of the month
                 string date = comboBoxSelectMonth.Text;
                 DateTime datetime = DateTime.ParseExact(date, "MMMMMMMM", CultureInfo.InvariantCulture);
@@ -315,61 +317,100 @@ namespace CUITAdmin
                 int invoiceID;
                 //dbManager.GenerateInvoice("1", DateTime.Now.AddDays(-5), DateTime.Now, out invoiceID);
                 dbManager.GenerateInvoice(comboBoxSelectAccount.SelectedValue.ToString(), datetime, endtime, out invoiceID);
-
-                DataTable invoice = dbManager.GetInvoice(invoiceID);
-                DataTable invoiceTime = dbManager.GetInvoiceTimeLine(invoiceID);
-                DataTable invoiceSupply = dbManager.GetInvoiceSupplyLine(invoiceID);
-                DataTable getacc = dbManager.GetAccountsForExport();
-                //convert date time to invoice friendly format
-                DateTime poststart = DateTime.Parse(invoice.Rows[0]["Posting_Start_Date"].ToString());
-                DateTime postend = DateTime.Parse(invoice.Rows[0]["Posting_End_Date"].ToString());
-                //MessageBox.Show(test.ToShortDateString().ToString());
-
-                // try
-                // {
-
-                pdfManager = new PDFManager();
-                //pdfManager.AddAddress("Name", "Street", "City", "State", "Zip");
-                pdfManager.AddAddress(getacc.Rows[0]["Name"].ToString(),
-                    getacc.Rows[0]["Street"].ToString(), //add street to invocie
-                    getacc.Rows[0]["City"].ToString(), // add city to invoice
-                    getacc.Rows[0]["State"].ToString(), //add state to invoice
-                    getacc.Rows[0]["Zip"].ToString()); //add zip to invoice
-
-                //pdfManager.AddService("Instrument", "StartPostDate", "EndPostDate","hours", "rate ($/hr)", "unit(hours days ects)");
-
-                pdfManager.AddPostDate(poststart.ToShortDateString().ToString(), postend.ToShortDateString().ToString());
-
-                foreach (DataRow currentRow in invoiceTime.Rows) {
-
-                    pdfManager.AddService(
-                        currentRow["Name"].ToString(), //insert time into the invoice
-                        poststart.ToShortDateString().ToString(), //insert start date into invoice
-                        postend.ToShortDateString().ToString(),  //insert end date into invoice
-                        currentRow["Hours"].ToString(), //insert hours into invoice
-                        currentRow["Rate"].ToString(), //insert dollars per hour into invoice
-                        "hour");// unit of biling displayed on invoice
-                    pdfManager.AddCharge(currentRow["Line_Amount"].ToString()); //add charge to invoice
-                    offset += "\r\n\r\n";
-                }
-
-                pdfManager.AddDate(DateTime.Now.ToString()); //Add todays date to the invoice
-                pdfManager.AddInvoiceID(invoice.Rows[0]["InvoiceID"].ToString()); // add invoice id to invoice
-                pdfManager.AddBalance(offset + "$" + invoice.Rows[0]["Total_Balance"].ToString()); // add balance to invoice
-
-                pdfManager.PDFClose();
-                //  }
-                //  catch (Exception)
-                //  {
-                //     MessageBox.Show("Error writing file. Check that this file is not currently\n" 
-                //                   +"open in a PDF reader such as Adobe Reader.");
-                // }
-
-                ExcelManager.generateExcel(invoice);
-
-
+                
+                
+                GenerateSingleInvoice(invoiceID, datetime, endtime, ref offset);
+                return;
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             }
          
+        }
+
+        private void GenerateSingleInvoice(int invoiceID, DateTime datetime, DateTime endtime, ref string offset)
+        {
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            
+
+            DataTable invoice = dbManager.GetInvoice(invoiceID);
+            if (invoice.Rows.Count == 0)
+            {
+
+                MessageBox.Show("No invoices");
+                return;
+            }
+
+            DataTable invoiceTime = dbManager.GetInvoiceTimeLine(invoiceID);
+            DataTable invoiceSupply = dbManager.GetInvoiceSupplyLine(invoiceID);
+            //convert date time to invoice friendly format
+            DateTime poststart = DateTime.Parse(invoice.Rows[0]["Posting_Start_Date"].ToString());
+            DateTime postend = DateTime.Parse(invoice.Rows[0]["Posting_End_Date"].ToString());
+            string accounttype = (invoice.Rows[0]["Rate_Type"].ToString());
+            //string timeIncriment = (invoice.Rows[0]["Time_Increment"].ToString());
+            //MessageBox.Show(timeIncriment);
+            //MessageBox.Show(accounttype);
+            string exportpath = "Invoice - " + invoiceID + ".pdf";
+            bool path = false;
+            bool excelgenar = false;
+
+            // try
+            // {
+            //if the rate is industry, then add an accounts receivable folder
+            if (accounttype == "Industry")
+            {
+                //pdfManager.changeDirectoryRate(true);
+                exportpath = @"Accounts Receivable\Invoice - " + invoiceID + ".pdf";
+                path = true;
+                excelgenar = true;
+            }
+
+            pdfManager = new PDFManager(exportpath, path);
+
+            //pdfManager.AddAddress("Name", "Street", "City", "State", "Zip");
+            pdfManager.AddAddress(invoice.Rows[0]["Name"].ToString(),
+                invoice.Rows[0]["Street"].ToString(), //add street to invocie
+                invoice.Rows[0]["City"].ToString(), // add city to invoice
+                invoice.Rows[0]["State"].ToString(), //add state to invoice
+                invoice.Rows[0]["Zip"].ToString()); //add zip to invoice
+
+            //pdfManager.AddService("Instrument", "StartPostDate", "EndPostDate","hours", "rate ($/hr)", "unit(hours days ects)");
+
+            pdfManager.AddPostDate(poststart.ToShortDateString().ToString(), postend.ToShortDateString().ToString());
+
+            foreach (DataRow currentRow in invoiceTime.Rows)
+            {
+                double computedRate = Convert.ToDouble(currentRow["Line_Amount"])/Convert.ToDouble(currentRow["Rate"]);
+
+
+                pdfManager.AddService(
+                    currentRow["Name"].ToString(), //insert time into the invoice
+                    poststart.ToShortDateString().ToString(), //insert start date into invoice
+                    postend.ToShortDateString().ToString(),  //insert end date into invoice
+                    currentRow["Hours"].ToString(), //insert hours into invoice
+                    computedRate.ToString(), //insert dollars per hour into invoice
+                    "hour");// unit of biling displayed on invoice
+                pdfManager.AddCharge(currentRow["Line_Amount"].ToString()); //add charge to invoice
+                offset += "\r\n\r\n";
+            }
+
+            pdfManager.AddDate(DateTime.Now.ToString()); //Add todays date to the invoice
+            pdfManager.AddInvoiceID(invoice.Rows[0]["InvoiceID"].ToString()); // add invoice id to invoice
+            pdfManager.AddBalance(offset + "$" + invoice.Rows[0]["Total_Balance"].ToString()); // add balance to invoice
+
+            pdfManager.PDFClose();
+            //  }
+            //  catch (Exception)
+            //  {
+            //     MessageBox.Show("Error writing file. Check that this file is not currently\n" 
+            //                   +"open in a PDF reader such as Adobe Reader.");
+            // }
+
+            if (chkGLSU.Checked == true)
+            {
+                ExcelManager.generateAR(excelgenar);
+                ExcelManager.generateExcel(invoice);
+            }
+            return;
         }
 
 
@@ -740,11 +781,16 @@ namespace CUITAdmin
         private void chkStandalone_Click(object sender, EventArgs e)
         {
 
+          
+        }
+
+        private void chkStandalone_Click_1(object sender, EventArgs e)
+        {
             //standalone mode on
             if (chkStandalone.Checked)
             {
                 //
-                DialogResult dialogResult = MessageBox.Show("In order to enable standalone mode, the application must restart. Any logs in progress will be lost. Do you want to continue?", "Standaloen mode", MessageBoxButtons.YesNo);
+                DialogResult dialogResult = MessageBox.Show("In order to enable standalone mode, the application must restart. Any logs in progress will be lost. Do you want to continue?", "Standalone mode", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
                     Properties.Settings.Default.StandaloneMode = "true";
@@ -754,11 +800,12 @@ namespace CUITAdmin
                 }
                 else if (dialogResult == DialogResult.No)
                 {
-                    MessageBox.Show("Settings not changed, you are not in standalone mode.");
                     chkStandalone.Checked = false;
+                    MessageBox.Show("Settings not changed, you are not in standalone mode.");
+
                 }
 
-                                
+
             }
             //standalone mode off
             else
@@ -773,9 +820,29 @@ namespace CUITAdmin
                 }
                 else if (dialogResult == DialogResult.No)
                 {
-                    MessageBox.Show("Settings not changed, you are still in standalone mode.");
                     chkStandalone.Checked = true;
+                    MessageBox.Show("Settings not changed, you are still in standalone mode.");
+
                 }
+            }
+        }
+
+        private void chkStandalone_CheckedChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void chkGLSU_Click(object sender, EventArgs e)
+        {
+            if (chkGLSU.Checked)
+            {
+                Properties.Settings.Default.GLSUexport = "true";
+                Properties.Settings.Default.Save();
+            }
+            else
+            {
+                Properties.Settings.Default.GLSUexport = "false";
+                Properties.Settings.Default.Save();
             }
         }
 

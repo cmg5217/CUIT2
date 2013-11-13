@@ -785,6 +785,7 @@ namespace CUITAdmin
             SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
 
             DataTable table = new DataTable();
+
             dataAdapter.Fill(table);
 
             myConnection.Close();
@@ -870,8 +871,10 @@ namespace CUITAdmin
 
             foreach (string currentAccount in accounts) {
                 int invoiceNumber;
-                GenerateInvoice(currentAccount, startDate, endDate, out invoiceNumber);
-                invoiceNumbers.Add(invoiceNumber);
+                if (GenerateInvoice(currentAccount, startDate, endDate, out invoiceNumber))
+                {
+                    invoiceNumbers.Add(invoiceNumber);
+                }
             }
 
             invoicesGenerated = invoiceNumbers;

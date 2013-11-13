@@ -34,6 +34,7 @@
             this.txtInvoiceExportPath = new System.Windows.Forms.TextBox();
             this.btnSetInvoiceExportPath = new System.Windows.Forms.Button();
             this.grpInvoiceExport = new System.Windows.Forms.GroupBox();
+            this.chkGLSU = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnExportAll = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -87,7 +88,6 @@
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.lineSeparator1 = new CUITAdmin.LineSeparator();
             this.label11 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
@@ -137,6 +137,7 @@
             this.btnManualTimeAdd = new System.Windows.Forms.Button();
             this.lblDuration = new System.Windows.Forms.Label();
             this.lblFundingSource = new System.Windows.Forms.Label();
+            this.lineSeparator1 = new CUITAdmin.LineSeparator();
             this.tbpExports.SuspendLayout();
             this.grpExportPath.SuspendLayout();
             this.grpInvoiceExport.SuspendLayout();
@@ -212,21 +213,35 @@
             // 
             // grpInvoiceExport
             // 
+            this.grpInvoiceExport.Controls.Add(this.chkGLSU);
             this.grpInvoiceExport.Controls.Add(this.groupBox1);
             this.grpInvoiceExport.Controls.Add(this.groupBox2);
             this.grpInvoiceExport.Controls.Add(this.txtMonth);
             this.grpInvoiceExport.Controls.Add(this.comboBoxSelectMonth);
             this.grpInvoiceExport.Location = new System.Drawing.Point(131, 230);
             this.grpInvoiceExport.Name = "grpInvoiceExport";
-            this.grpInvoiceExport.Size = new System.Drawing.Size(243, 206);
+            this.grpInvoiceExport.Size = new System.Drawing.Size(243, 232);
             this.grpInvoiceExport.TabIndex = 7;
             this.grpInvoiceExport.TabStop = false;
             this.grpInvoiceExport.Text = "Export Invoice";
             // 
+            // chkGLSU
+            // 
+            this.chkGLSU.AutoSize = true;
+            this.chkGLSU.Checked = true;
+            this.chkGLSU.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkGLSU.Location = new System.Drawing.Point(80, 29);
+            this.chkGLSU.Name = "chkGLSU";
+            this.chkGLSU.Size = new System.Drawing.Size(135, 17);
+            this.chkGLSU.TabIndex = 10;
+            this.chkGLSU.Text = "Export GLSU Template";
+            this.chkGLSU.UseVisualStyleBackColor = true;
+            this.chkGLSU.Click += new System.EventHandler(this.chkGLSU_Click);
+            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.btnExportAll);
-            this.groupBox1.Location = new System.Drawing.Point(6, 56);
+            this.groupBox1.Location = new System.Drawing.Point(6, 81);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(231, 48);
             this.groupBox1.TabIndex = 8;
@@ -248,7 +263,7 @@
             this.groupBox2.Controls.Add(this.comboBoxSelectAccount);
             this.groupBox2.Controls.Add(this.txtAccount);
             this.groupBox2.Controls.Add(this.btnInvoiceExport);
-            this.groupBox2.Location = new System.Drawing.Point(7, 110);
+            this.groupBox2.Location = new System.Drawing.Point(7, 135);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(230, 90);
             this.groupBox2.TabIndex = 9;
@@ -290,7 +305,7 @@
             // txtMonth
             // 
             this.txtMonth.AutoSize = true;
-            this.txtMonth.Location = new System.Drawing.Point(18, 32);
+            this.txtMonth.Location = new System.Drawing.Point(18, 57);
             this.txtMonth.Name = "txtMonth";
             this.txtMonth.Size = new System.Drawing.Size(40, 13);
             this.txtMonth.TabIndex = 4;
@@ -313,7 +328,7 @@
             "October",
             "November",
             "December"});
-            this.comboBoxSelectMonth.Location = new System.Drawing.Point(79, 29);
+            this.comboBoxSelectMonth.Location = new System.Drawing.Point(79, 54);
             this.comboBoxSelectMonth.Name = "comboBoxSelectMonth";
             this.comboBoxSelectMonth.Size = new System.Drawing.Size(121, 21);
             this.comboBoxSelectMonth.TabIndex = 2;
@@ -325,7 +340,7 @@
             this.grpStandaloneFileExport.Controls.Add(this.btnExportStandaloneFile);
             this.grpStandaloneFileExport.Location = new System.Drawing.Point(380, 230);
             this.grpStandaloneFileExport.Name = "grpStandaloneFileExport";
-            this.grpStandaloneFileExport.Size = new System.Drawing.Size(189, 206);
+            this.grpStandaloneFileExport.Size = new System.Drawing.Size(189, 232);
             this.grpStandaloneFileExport.TabIndex = 2;
             this.grpStandaloneFileExport.TabStop = false;
             this.grpStandaloneFileExport.Text = "Standalone Files";
@@ -333,12 +348,14 @@
             // chkStandalone
             // 
             this.chkStandalone.AutoSize = true;
-            this.chkStandalone.Location = new System.Drawing.Point(34, 141);
+            this.chkStandalone.Location = new System.Drawing.Point(34, 146);
             this.chkStandalone.Name = "chkStandalone";
             this.chkStandalone.Size = new System.Drawing.Size(110, 17);
             this.chkStandalone.TabIndex = 9;
             this.chkStandalone.Text = "Standalone Mode";
             this.chkStandalone.UseVisualStyleBackColor = true;
+            this.chkStandalone.CheckedChanged += new System.EventHandler(this.chkStandalone_CheckedChanged_1);
+            this.chkStandalone.Click += new System.EventHandler(this.chkStandalone_Click_1);
             // 
             // btnImportLogs
             // 
@@ -804,15 +821,6 @@
             this.label13.TabIndex = 20;
             this.label13.Text = "( - all fields are optional - )";
             // 
-            // lineSeparator1
-            // 
-            this.lineSeparator1.Location = new System.Drawing.Point(48, 126);
-            this.lineSeparator1.MaximumSize = new System.Drawing.Size(2000, 2);
-            this.lineSeparator1.MinimumSize = new System.Drawing.Size(0, 2);
-            this.lineSeparator1.Name = "lineSeparator1";
-            this.lineSeparator1.Size = new System.Drawing.Size(578, 2);
-            this.lineSeparator1.TabIndex = 19;
-            // 
             // label11
             // 
             this.label11.AutoSize = true;
@@ -1261,6 +1269,15 @@
             this.lblFundingSource.TabIndex = 4;
             this.lblFundingSource.Text = "Funding Source:";
             // 
+            // lineSeparator1
+            // 
+            this.lineSeparator1.Location = new System.Drawing.Point(48, 126);
+            this.lineSeparator1.MaximumSize = new System.Drawing.Size(2000, 2);
+            this.lineSeparator1.MinimumSize = new System.Drawing.Size(0, 2);
+            this.lineSeparator1.Name = "lineSeparator1";
+            this.lineSeparator1.Size = new System.Drawing.Size(578, 2);
+            this.lineSeparator1.TabIndex = 19;
+            // 
             // frmCUITAdminMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1419,6 +1436,7 @@
         private System.Windows.Forms.CheckBox chkStandalone;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.CheckBox chkGLSU;
     }
 }
 
