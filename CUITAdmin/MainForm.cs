@@ -170,14 +170,8 @@ namespace CUITAdmin
         #region Admin Tab
 
         // Called in the onload of the tab page to prevent unnecessary calls to the DB5
-        private void InitializeAdminTab()
+        public void updateAdminDGV()
         {
-
-            /*Accounts
-            Contacts
-            Users
-            Instruments
-            Supplies*/
             if (cboAccountAdminView.SelectedItem == "Accounts")
             {
                 AdminDataGridView.DataSource = dbManager.GetAccounts();
@@ -202,13 +196,12 @@ namespace CUITAdmin
             {
                 AdminDataGridView.DataSource = dbManager.GetSupplies();
             }
-            ;
         }
 
         private void btnAccountAdminNew_Click(object sender, EventArgs e)
         {
             string addNewCase = cboAccountAdminNew.Text;
-            Form newForm = new NewEntryForm(addNewCase);
+            Form newForm = new NewEntryForm(addNewCase, this);
             newForm.ShowDialog(); //Displays forms modally
         }
 
@@ -709,7 +702,7 @@ namespace CUITAdmin
         private void adminEditViewLoad(object sender, EventArgs e)
         {
 
-            InitializeAdminTab();
+            updateAdminDGV();
 
         }
 

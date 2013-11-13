@@ -11,10 +11,10 @@ namespace CUITAdmin
 {
     public partial class NewEntryForm : Form
     {
-
-        public NewEntryForm(string addNewCase)
+        frmCUITAdminMain containingForm;
+        public NewEntryForm(string addNewCase, frmCUITAdminMain containingForm)
         {
-
+            this.containingForm = containingForm;
             DBManager dbManager = DBManager.Instance;
 
             switch (addNewCase)
@@ -45,7 +45,7 @@ namespace CUITAdmin
 
                 case "User":
                     NewUserPanel myUserPanel = new NewUserPanel(this);
-                    this.SetBounds(350, 350, 555, 300);
+                    this.SetBounds(350, 350, 545, 630);
                     this.Text = "New User Form";
                     break;
 
@@ -55,7 +55,11 @@ namespace CUITAdmin
                     this.Text = "New Contact Form";
                     break;
             }
-            
         }
+        
+        public void updateAdminDGV()
+            {
+                containingForm.updateAdminDGV();
+            }
     }
 }

@@ -108,6 +108,8 @@ namespace CUITAdmin
                 {
                     dbManager.AddInstrumentRate(txtRateName.Text, int.Parse(row["Rate"].ToString()), int.Parse(row["InstrumentID"].ToString()));
                 }
+
+                containingForm.updateAdminDGV();
                 containingForm.Close();
             }
         }

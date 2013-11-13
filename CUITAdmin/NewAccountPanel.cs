@@ -279,7 +279,8 @@ namespace CUITAdmin
                 dbManager.AddAccount(txtAccountNumber.Text, txtAccountName.Text, double.Parse(txtMaxCharge.Text), dtpAccountExpiration.Value, 
                     cboRateType.SelectedValue.ToString(), int.Parse(cboContacts.SelectedValue.ToString()), rtbNotes.Text, txtCostCenter.Text, txtWBSNumber.Text, double.Parse(txtBalance.Text),
                     txtStreet.Text, txtCity.Text, cboState.SelectedItem.ToString(), int.Parse(txtZipCode.Text), txtTaxID.Text);
-
+                
+                containingForm.updateAdminDGV();
                 containingForm.Close();
             }
         }
@@ -351,7 +352,7 @@ namespace CUITAdmin
 
         private void btnNewContact_Click(object sender, EventArgs e)
         {
-            NewEntryForm newContact = new NewEntryForm("Point of Contact");
+            NewEntryForm newContact = new NewEntryForm("Point of Contact", null);
             newContact.ShowDialog();
         }
     }

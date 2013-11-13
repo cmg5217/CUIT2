@@ -245,6 +245,8 @@ namespace CUITAdmin
             {
                 dbManager.AddPointOfContact(txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text, 
                     cboState.SelectedItem.ToString(), txtZipCode.Text, txtPhone.Text, txtEmail.Text, rtbNotes.Text);
+
+                containingForm.updateAdminDGV();
                 containingForm.Close();
             }
         }

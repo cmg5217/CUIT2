@@ -61,9 +61,18 @@ namespace CUITAdmin
 
         #region Add Functions
 
+
+        public void AddUser(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email,
+            string username, string password, string department, string type, string notes, int contactID)
+        {
+            int throwaway;
+            AddUser(firstName, lastName, street, city, state, zip, phoneNumber, email,
+             username, password, department, type, notes, contactID, out throwaway);
+        }
+
         // TESTED 11-4
         public void AddUser(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email,
-            string username, string password, string department, string type, string notes, int contactID) {
+            string username, string password, string department, string type, string notes, int contactID, out int personID) {
 
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand();
@@ -87,12 +96,17 @@ namespace CUITAdmin
             myCommand.Parameters.AddWithValue("@department", department);
             myCommand.Parameters.AddWithValue("@type", type);
             myCommand.Parameters.AddWithValue("@notes", notes);
-            myCommand.Parameters.AddWithValue("@contactID", contactID);
+            SqlParameter returnValue = myCommand.Parameters.Add("@personID", SqlDbType.Int);
+            returnValue.Direction = ParameterDirection.Output;
+            
+            if (contactID > 0) myCommand.Parameters.AddWithValue("@contactID", contactID);
 
             try {
                 myCommand.ExecuteNonQuery();
+                personID = int.Parse(myCommand.Parameters["@personID"].Value.ToString());
             } catch (Exception e) {
                 Debug.WriteLine(e.Message);
+                personID = 0;
             }
 
             myConnection.Close();
