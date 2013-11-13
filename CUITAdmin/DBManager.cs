@@ -960,7 +960,6 @@ namespace CUITAdmin
                 System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
             }
 
-
             myConnection.Close();
             return table;
         }
@@ -1068,8 +1067,10 @@ namespace CUITAdmin
 
             foreach (string currentAccount in accounts) {
                 int invoiceNumber;
-                GenerateInvoice(currentAccount, startDate, endDate, out invoiceNumber);
-                invoiceNumbers.Add(invoiceNumber);
+                if (GenerateInvoice(currentAccount, startDate, endDate, out invoiceNumber))
+                {
+                    invoiceNumbers.Add(invoiceNumber);
+                }
             }
 
             invoicesGenerated = invoiceNumbers;

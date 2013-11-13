@@ -13,11 +13,11 @@ namespace CUITAdmin
 {
     class ExcelManager
     {
-        private const int ROW_OFFSET = 8,
-                                 ACCOUNT_COLUMN = 2,
-                                 BALANCE_COL = 5,
-                                 COST_CENTER_COL = 8,
-                                 WBS_COL = 12;
+        /* private const int ROW_OFFSET = 8,
+                                  ACCOUNT_COLUMN = 2,
+                                  BALANCE_COL = 5,
+                                  COST_CENTER_COL = 8,
+                                  WBS_COL = 12;*/
 
 
         private static Microsoft.Office.Interop.Excel.Workbook mWorkBook;
@@ -28,20 +28,33 @@ namespace CUITAdmin
         private static System.Data.DataTable invoiceDataTable;
         DBManager dbManager;
 
+        static public void generateAR(bool createme)
+        {
 
+            if (createme == true)
+            {
+                pathname = Settings.Default["InvoicePath"].ToString() + @"\Invoices\" +(DateTime.Now.Year)+@"\Accounts Receivable";
+            }
+
+        }
 
         static public void generateExcel(System.Data.DataTable invoiceDataTable)
         {
             generateExcel(new System.Data.DataTable[] { invoiceDataTable });
         }
-
         
-
         static public void generateExcel(System.Data.DataTable[] invoiceArray)
 
         {
 
-            string excelfilename = @"\" + DateTime.Now.ToString("MMMMMMMM yyyy") + ".xls";
+            //if the excel process is open, kill it. This will not close excel documents which do not have changes saved to them.
+            Process[] processes = Process.GetProcessesByName("EXCEL");
+            if (processes.Length > 0)
+                processes[0].Kill();
+
+
+            string invoiceid = invoiceArray[0].Rows[0]["InvoiceID"].ToString();
+            string excelfilename = @"\" + DateTime.Now.ToString("MM-dd-yyyy") + " - Invoice " + invoiceid+".xls";
             //checks if the files exists and delets it if it does exits            
             if (File.Exists(pathname + excelfilename))
             {
@@ -65,15 +78,18 @@ namespace CUITAdmin
             Microsoft.Office.Interop.Excel.Range range = mWSheet1.UsedRange;
             int colCount = range.Columns.Count;
             int rowCount = range.Rows.Count;
-
-           
             //pull information from the database
             DateTime poststart = DateTime.Parse(invoiceArray[0].Rows[0]["Posting_Start_Date"].ToString());
             //string balance = (invoiceDataTable.Rows[0]["Total_Balance"].ToString());
-            string invoiceid = invoiceArray[0].Rows[0]["InvoiceID"].ToString();
+            
             string account = invoiceArray[0].Rows[0]["Name"].ToString();
             //DataTable invoice = dbManager.GetInvoice(invoiceID);
+            string balance = (invoiceArray[0].Rows[0]["Total_Balance"].ToString());
+            string wbs = invoiceArray[0].Rows[0]["WBS_Number"].ToString();
+            string costcenter = invoiceArray[0].Rows[0]["Cost_Center"].ToString();
 
+            //cost center
+            mWSheet1.Cells[9, 8] = costcenter;
             
             //Document Date
             mWSheet1.Cells[4, 2] = DateTime.Now.ToString("M/d/yyyy");
@@ -81,21 +97,32 @@ namespace CUITAdmin
             //Posting Date
             mWSheet1.Cells[4, 3] = poststart;
 
+            //balance
+            mWSheet1.Cells[9, 5] = balance;
+            mWSheet1.Cells[8, 5] = balance;
+
+            //wbs element
+            mWSheet1.Cells[9, 12] = wbs;
+
+
             //change then business area to 25
             mWSheet1.Cells[8, 7] = "25";
+            mWSheet1.Cells[9, 7] = "25";
 
             //change the invoice #
             mWSheet1.Cells[8, 6] = "InvoiceID:" + invoiceid + "    AccountID:" + account;
+            mWSheet1.Cells[9, 6] = "InvoiceID:" + invoiceid + "    AccountID:" + account;
+
 
             //change the funding source(account)
             mWSheet1.Cells[8, 7] = "25";
 
             
-            for (int i = 0; i < invoiceArray.Length; i++ )
-            {
-                addLine(invoiceArray[i], i);
-
-            }
+            //for (int i = 0; i < invoiceArray.Length; i++ )
+            //{
+            //    addLine(invoiceArray[i], i);
+            //
+            //}
 
 
             mWorkBook.SaveAs(path, Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookNormal,
@@ -137,14 +164,14 @@ namespace CUITAdmin
 
         }
 
-        private static void addLine(System.Data.DataTable invoiceDataTable, int index)
+        /*private static void addLine(System.Data.DataTable invoiceDataTable, int index)
         {
             string balance = (invoiceDataTable.Rows[0]["Total_Balance"].ToString());
             string account = invoiceDataTable.Rows[0]["Account_Number"].ToString(); //maybe change to account name
             string costcenter = invoiceDataTable.Rows[0]["Cost_Center"].ToString();
             string wbs = invoiceDataTable.Rows[0]["WBS_Number"].ToString();
             //Account
-            mWSheet1.Cells[ROW_OFFSET + index, ACCOUNT_COLUMN] = account;
+            //mWSheet1.Cells[ROW_OFFSET + index, ACCOUNT_COLUMN] = account;
 
             //Balance
             mWSheet1.Cells[ROW_OFFSET + index, BALANCE_COL] = balance;
@@ -153,7 +180,7 @@ namespace CUITAdmin
             mWSheet1.Cells[ROW_OFFSET + index, COST_CENTER_COL] = costcenter;
 
             //wbs
-            mWSheet1.Cells[ROW_OFFSET + index, WBS_COL] = wbs;
-        }
+            //mWSheet1.Cells[ROW_OFFSET + index, WBS_COL] = wbs;
+        }*/
     }
 }

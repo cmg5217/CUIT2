@@ -57,9 +57,10 @@ namespace CUITAdmin.Properties {
                 this["StandaloneMode"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool FullScreen {
             get {
@@ -67,6 +68,19 @@ namespace CUITAdmin.Properties {
             }
             set {
                 this["FullScreen"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public string GLSUexport {
+            get {
+                return ((string)(this["GLSUexport"]));
+            }
+            set {
+                this["GLSUexport"] = value;
+
             }
         }
     }

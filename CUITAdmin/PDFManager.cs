@@ -26,6 +26,7 @@ namespace CUITAdmin
         private static string filename = @"default.pdf";
         private static string pathname = Settings.Default["InvoicePath"].ToString() + @"\Invoices\" + (DateTime.Now.Year);
         private static string fullpath = pathname + filename;
+        private static bool path = true;
        
         public PDFManager()
             
@@ -33,13 +34,15 @@ namespace CUITAdmin
             //If the program has not been used on the user's
             //computer before, the path will default to the user's desktop.
             //TODO: make filename set to invoiceID
-            : this(filename)
+            : this(filename, path)
         {
         }
 
        
-       public PDFManager(string newFile){
-
+       public PDFManager(string newFile, bool path){
+           
+           changeDirectoryRate(path);
+           
            CreateFolderifDoesNotExist();
             // open the invoice template using PdfReader
             pdfReader = new PdfReader(PDF_TEMPLATE);
@@ -120,6 +123,23 @@ namespace CUITAdmin
             MessageBox.Show("Export Complete! \n" + "File has been exported to:\n" + pathname);
             
         }
+
+        //if the rate is external, place the invoice in the accounts receivable folder
+        public void changeDirectoryRate(bool exists)
+        {
+            if (exists == true)
+            {
+
+                if (!Directory.Exists(pathname + @"\Accounts Receivable"))
+                {
+                    Directory.CreateDirectory(pathname + @"\Accounts Receivable");
+                }
+            }
+        
+        
+        
+        }
+
         // Add Address //////////////
         public void AddAddress(string name, string street, string city, string state, string zip )
         {
