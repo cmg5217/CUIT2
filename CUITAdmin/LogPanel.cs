@@ -67,13 +67,14 @@ namespace CUITAdmin {
 
             xmlManager = XmlManager.Instance;
             dbManager = DBManager.Instance;
-
+            
 
 
             if (Properties.Settings.Default.StandaloneMode == "true") {
                 standalone = true;
             } else {
                 standalone = false;
+
                 cboInstrument.DataSource = dbManager.GetInstruments();
                 cboInstrument.DisplayMember = "Name";
                 cboInstrument.ValueMember = "InstrumentID";

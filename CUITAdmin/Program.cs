@@ -7,6 +7,7 @@ namespace CUITAdmin
 {
     static class Program
     {
+        public static char userType;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -15,7 +16,8 @@ namespace CUITAdmin
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmCUITAdminMain());
+            Application.Run(new Login());
+            if(userType != '\0') Application.Run(new frmCUITAdminMain(userType));
             //Application.Run(new TestForm());
         }
     }

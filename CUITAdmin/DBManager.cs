@@ -19,14 +19,18 @@ using System.Diagnostics;
 using System.ComponentModel;
 using System.Data;
 using System.Security.Cryptography;
+using System.Windows.Forms;
+using CUITAdmin.Properties;
+
 namespace CUITAdmin
 {
     class DBManager {
 
         static DBManager globalManager;
+        private Form mainForm;
+
 
         private DBManager() {
-            DBConnect();
         }
 
 
@@ -54,6 +58,16 @@ namespace CUITAdmin
                 myConnection.Open();
             } catch (Exception e) {
                 Debug.WriteLine(e.Message);
+                DialogResult dialogResult = MessageBox.Show("There was an error connecting to the server, please try again or contact your system administrator.\r\n\r\n" + 
+                                                            "Would you like to go into offline mode?", "Error", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes) {
+                    Properties.Settings.Default.StandaloneMode = "true";
+                    Properties.Settings.Default.Save();
+                    System.Diagnostics.Process.Start(Application.ExecutablePath); // to start new instance of application
+                    Application.Exit();
+                } else if (dialogResult == DialogResult.No) {
+                    Application.Exit();
+                }
                 return null;
             }
             return myConnection;
@@ -472,6 +486,25 @@ namespace CUITAdmin
         #endregion //End Add Region
 
 
+        public char GetUserType(string username) {
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand("SELECT Type FROM Users " +
+                                                  "WHERE Username = @username", myConnection);
+
+            myCommand.Parameters.AddWithValue("@username", username);
+
+            char userType = 'U';
+
+            try {
+                userType = Convert.ToChar(myCommand.ExecuteScalar());
+            } catch (Exception e) {
+                Debug.Write(e.ToString());
+            }
+
+            myConnection.Close();
+            return userType;
+        }
+
         public bool CheckPassword(string username, string password) {
 
             password = PasswordHash.getHashSha512(password);
@@ -538,13 +571,19 @@ namespace CUITAdmin
 
         public DataTable GetAccounts() {
             SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
             //Account_Number, Name, Max_Charge_Limit, Balance, First_Name, Last_Name
             string myCommand = "SELECT * FROM Account";
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
-
+            
             DataTable table = new DataTable();
-
-            dataAdapter.Fill(table);
+            try{
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
 
             myConnection.Close();
             return table;
@@ -553,13 +592,20 @@ namespace CUITAdmin
         public DataTable GetAccountsForExport()
         {
             SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+
             //Account_Number, Name, Max_Charge_Limit, Balance, First_Name, Last_Name
             string myCommand = "SELECT * FROM Account acct left outer join Point_of_Contact poc on acct.PointOfContactID = poc.PersonID left outer join Person psn on poc.PersonID = psn.PersonID";
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
-
+            
             DataTable table = new DataTable();
-
-            dataAdapter.Fill(table);
+            try{
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
 
             myConnection.Close();
             return table;
@@ -590,12 +636,19 @@ namespace CUITAdmin
 
         public DataTable GetInstruments() {
             SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+
             string myCommand = "SELECT Name, Billing_Unit, Time_Increment, InstrumentID FROM Instrument";
 
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
-
             DataTable table = new DataTable();
-            dataAdapter.Fill(table);
+            try{
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
 
             myConnection.Close();
             return table;
@@ -603,12 +656,19 @@ namespace CUITAdmin
 
         public DataTable GetSupplies() {
             SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+
             string myCommand = "SELECT * FROM Supply";
 
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
-
             DataTable table = new DataTable();
-            dataAdapter.Fill(table);
+            try{
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
 
             myConnection.Close();
             return table;
@@ -617,6 +677,10 @@ namespace CUITAdmin
         public DataTable GetTimeLogsFromRange(DateTime startDate, DateTime endDate, bool acceptNull = false)
         {
             SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+
             SqlCommand myCommand = new SqlCommand(
                 "Select tl.Account_Number, acct.Name, i.InstrumentID, i.Name, tl.Start_Time, tl.End_Time, tl.Current_Rate, tl.Time_Increment " +
                 "From Time_Log tl INNER JOIN Account acct on tl.Account_Number = acct.Account_Number INNER JOIN Instrument i on tl.InstrumentID = i.InstrumentID " +
@@ -626,10 +690,13 @@ namespace CUITAdmin
             myCommand.Parameters.AddWithValue("@startDate", startDate);
             myCommand.Parameters.AddWithValue("@endDate", endDate);
 
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
-
             DataTable table = new DataTable();
-            dataAdapter.Fill(table);
+            try{
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
 
             myConnection.Close();
             return table;
@@ -637,6 +704,10 @@ namespace CUITAdmin
 
         public DataTable GetUnbilledTimeLogs(string accountNumber, DateTime startDate, DateTime endDate, bool includeExceptions = false) {
             SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+
             SqlCommand myCommand = new SqlCommand(
                 "Select tl.Account_Number, tl.UserID, acct.Name, i.InstrumentID, i.Name, tl.Start_Time, tl.End_Time, tl.Current_Rate, tl.Time_Increment " +
                 "From Time_Log tl INNER JOIN Account acct on tl.Account_Number = acct.Account_Number INNER JOIN Instrument i on tl.InstrumentID = i.InstrumentID " +
@@ -647,10 +718,13 @@ namespace CUITAdmin
             myCommand.Parameters.AddWithValue("@startDate", startDate);
             myCommand.Parameters.AddWithValue("@endDate", endDate);
 
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
-
             DataTable table = new DataTable();
-            dataAdapter.Fill(table);
+            try{
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
 
             myConnection.Close();
             return table;
@@ -658,15 +732,23 @@ namespace CUITAdmin
 
         public DataTable GetTimeLogsExceptions() {
             SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+
             SqlCommand myCommand = new SqlCommand(
                 "Select u.Username, acct.Name as Account_Name, i.Name as Instrument_Name, tl.Start_Time, tl.End_Time, tl.Approved, tl.Account_Number, i.InstrumentID, tl.Current_Rate, u.PersonID " +
                 "From Users u INNER JOIN Time_Log tl on u.PersonID = tl.UserID INNER JOIN Account acct on tl.Account_Number = acct.Account_Number INNER JOIN Instrument i on tl.InstrumentID = i.InstrumentID " +
                 "WHERE tl.End_Time IS NULL OR tl.Approved IS NULL", myConnection);
 
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
-
             DataTable table = new DataTable();
-            dataAdapter.Fill(table);
+            try{
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
+
 
             myConnection.Close();
             return table;
@@ -674,6 +756,10 @@ namespace CUITAdmin
         
         public DataTable GetUnbilledSupplyUse(string accountNumber, DateTime startDate, DateTime endDate) {
             SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+
             SqlCommand myCommand = new SqlCommand(
                 "Select su.Account_Number, su.Date, su.Supply_Name, su.Quantity, su.Current_Cost " +
                 "FROM Supply_Use su Inner JOIN Account acct on su.Account_Number = acct.Account_Number " +
@@ -683,30 +769,37 @@ namespace CUITAdmin
             myCommand.Parameters.AddWithValue("@startDate", startDate);
             myCommand.Parameters.AddWithValue("@endDate", endDate);
 
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
-
             DataTable table = new DataTable();
-            dataAdapter.Fill(table);
+            try{
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
+
 
             myConnection.Close();
             return table;
         }
 
-        public DataTable GetSupplyUseExceptions(string accountNumber, DateTime startDate, DateTime endDate) {
+        public DataTable GetSupplyUseExceptions() {
             SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+
             SqlCommand myCommand = new SqlCommand(
-                "Select su.Account_Number, su.Supply_Name, su.Quantity, su.Current_Cost " +
+                "Select su.Account_Number, su.Supply_Name, su.Approved, su.Quantity, su.Current_Cost, su.Date " +
                 "FROM Supply_Use su Inner JOIN Account acct on su.Account_Number = acct.Account_Number " +
                 "WHERE Approved IS NULL", myConnection);
 
-            myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
-            myCommand.Parameters.AddWithValue("@startDate", startDate);
-            myCommand.Parameters.AddWithValue("@endDate", endDate);
-
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
-
             DataTable table = new DataTable();
-            dataAdapter.Fill(table);
+            try{
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
 
             myConnection.Close();
             return table;
@@ -714,6 +807,10 @@ namespace CUITAdmin
 
         public DataTable GetUser(int userID){
             SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+
             SqlCommand myCommand = new SqlCommand(
                 "SELECT usr.*, psn.*, ptc.First_Name as 'Contact_First_Name', ptc.Last_Name as 'Contact_Last_Name' " +
                 "FROM Users usr left outer join Person psn on usr.PersonID = psn.PersonID left outer join Person ptc on usr.ContactID = ptc.PersonID " + 
@@ -721,10 +818,14 @@ namespace CUITAdmin
 
             myCommand.Parameters.AddWithValue("@userID", userID);
 
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
-
             DataTable table = new DataTable();
-            dataAdapter.Fill(table);
+            try{
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
+
 
             myConnection.Close();
             return table;
@@ -732,12 +833,20 @@ namespace CUITAdmin
 
         public DataTable GetUsers() {
             SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+
             string myCommand = "SELECT First_Name, Last_Name, Username, psn.PersonID, Department FROM Users usr left outer join Person psn on usr.PersonID = psn.PersonID";
 
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
-
             DataTable table = new DataTable();
-            dataAdapter.Fill(table);
+            try{
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
+
 
             myConnection.Close();
             return table;
@@ -746,16 +855,24 @@ namespace CUITAdmin
         public DataTable GetInvoice(int invoiceID)
         {
             SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+
             SqlCommand myCommand = new SqlCommand("SELECT * " + 
                                                   "From Invoice iv INNER JOIN Account acct on iv.Account_Number = acct.Account_Number " +  
                                                   "Where InvoiceID = @invoiceID", myConnection);
 
             myCommand.Parameters.AddWithValue("@invoiceID", invoiceID);
 
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
-
             DataTable table = new DataTable();
-            dataAdapter.Fill(table);
+            try{
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
+
 
             myConnection.Close();
             return table;
@@ -764,6 +881,10 @@ namespace CUITAdmin
         public DataTable GetInvoiceTimeLine(int invoiceID)
         {
             SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+
             SqlCommand myCommand = new SqlCommand(
                 "SELECT * " +
                 "From Invoice_Time_Line tl INNER JOIN Instrument i on tl.InstrumentID = i.InstrumentID " +
@@ -771,10 +892,14 @@ namespace CUITAdmin
 
             myCommand.Parameters.AddWithValue("@invoiceID", invoiceID);
 
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
-
             DataTable table = new DataTable();
-            dataAdapter.Fill(table);
+            try{
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
+
 
             myConnection.Close();
             return table;
@@ -783,14 +908,22 @@ namespace CUITAdmin
         public DataTable GetInvoiceSupplyLine(int invoiceID)
         {
             SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+
             SqlCommand myCommand = new SqlCommand("SELECT * From Invoice_Supply_Line Where InvoiceID = @invoiceID", myConnection);
 
             myCommand.Parameters.AddWithValue("@invoiceID", invoiceID);
 
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
-
             DataTable table = new DataTable();
-            dataAdapter.Fill(table);
+            try{
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
+
 
             myConnection.Close();
             return table;
@@ -798,12 +931,20 @@ namespace CUITAdmin
 
         public DataTable GetContacts() {
             SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+
             string myCommand = "SELECT First_Name, Last_Name, psn.PersonID, Email FROM Point_of_Contact poc left outer join Person psn on poc.PersonID = psn.PersonID";
 
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
-
             DataTable table = new DataTable();
-            dataAdapter.Fill(table);
+            try{
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
+
 
             myConnection.Close();
             return table;
@@ -811,16 +952,24 @@ namespace CUITAdmin
 
         public DataTable GetUserAccounts(string username) {
             SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+
 
             SqlCommand myCommand = new SqlCommand("SELECT ua.Account_Number, a.Name FROM User_Account ua INNER JOIN Users u on ua.PersonID = u.PersonID INNER JOIN Account a on ua.Account_Number = a.Account_Number WHERE Username = @username", myConnection);
 
             myCommand.Parameters.AddWithValue("@username", username);
 
 
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
-
             DataTable table = new DataTable();
-            dataAdapter.Fill(table);
+            try{
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
+
         
             myConnection.Close();
             return table;
@@ -854,12 +1003,20 @@ namespace CUITAdmin
         public DataTable GetRateTypes()
         {
             SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+
             string myCommand = "SELECT * FROM Rate_Type";
 
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
-
             DataTable table = new DataTable();
-            dataAdapter.Fill(table);
+            try{
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
+
 
             myConnection.Close();
             return table;
@@ -868,12 +1025,20 @@ namespace CUITAdmin
         public DataTable GetInstrumentRates()
         {
             SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+
             string myCommand = "SELECT * FROM Instrument_Rate";
 
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
-
             DataTable table = new DataTable();
-            dataAdapter.Fill(table);
+            try{
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
+
 
             myConnection.Close();
             return table;
@@ -1247,5 +1412,30 @@ namespace CUITAdmin
             public int timeIncrement { get; set; }
         }
         #endregion
+
+        internal void BindForm(Form pmainForm) {
+            this.mainForm = pmainForm;
+        }
+
+        internal void UpdateSupplyApproval(string accountNumber, string supplyName, DateTime date, char approved) {
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand(
+                "UPDATE Supply_Use " +
+                "SET Approved = @approved " +
+                "WHERE Account_Number = @accountNumber and Supply_Name = @supplyName and Date = @date", myConnection);
+
+            myCommand.Parameters.AddWithValue("@approved", approved);
+            myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
+            myCommand.Parameters.AddWithValue("@supplyName", supplyName);
+            myCommand.Parameters.AddWithValue("@date", date);
+
+            try {
+                myCommand.ExecuteNonQuery();
+            } catch (Exception e) {
+                Debug.WriteLine(e.Message);
+            }
+
+            myConnection.Close();
+        }
     }
 }

@@ -28,6 +28,8 @@ namespace CUITAdmin
         public static string CONFIG_FILE = "";
         private bool standalone = false;
         private string accountType;
+        private char userType;
+
         LogPanel startPanel;
 
         XmlManager xmlManager;
@@ -37,13 +39,14 @@ namespace CUITAdmin
 
 
 
-        public frmCUITAdminMain()
+        public frmCUITAdminMain(char userType)
         {
+            this.userType = userType;
             InitializeComponent();
         }
 
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void Main_Load(object sender, EventArgs e)
         {
 
             tabControlMain.Location = new Point((this.Size.Width / 2) - (tabControlMain.Size.Width/2) - 7, 
@@ -55,10 +58,15 @@ namespace CUITAdmin
             {
                 standalone = true;
             }
+
             else standalone = false;
+
+            chkFullScreen.Checked = Settings.Default.FullScreen;
+            ToggleScreenMode();
 
             xmlManager = XmlManager.Instance;
             dbManager = DBManager.Instance;
+            dbManager.BindForm(this);
             startPanel = new LogPanel(tbpTracking, new Point(5,5));
 
             cboAccountAdminNew.SelectedItem = "Account";
@@ -85,11 +93,11 @@ namespace CUITAdmin
 
         #region Billing Tab
 
-        DataTable timeLogExceptions;
+        DataTable BillingExceptions;
         private void InitializeBillingTab() {
             editedRows = new List<int>();
 
-            if (Settings.Default.StandaloneMode == "false") {
+            if (!standalone) {
                 cboManualLogUser.DataSource = dbManager.GetUsers();
                 cboManualLogUser.DisplayMember = "Username";
                 cboManualLogUser.ValueMember = "PersonID";
@@ -111,47 +119,71 @@ namespace CUITAdmin
                 cboBillingSupplyName.DisplayMember = "Supply_Name";
                 cboBillingSupplyName.ValueMember = "Supply_Name";
 
-                InitializeTimeLogDGV();
+                cboBillingExceptions.SelectedIndex = 0;
+
+                InitializeExceptionDGV();
             } else {
                 //TO-DO Add XML to load accounts
 
             }
         }
 
-        private void InitializeTimeLogDGV() {
-            timeLogExceptions = dbManager.GetTimeLogsExceptions();
+        private void InitializeExceptionDGV() {
+            // reset the edited rows because we are switching between time logs and supplies
+            editedRows = new List<int>();
 
-            timeLogExceptions.Columns.Add(new DataColumn("Duration"));
+            if (cboBillingExceptions.SelectedItem.ToString() == "Time Logs") {
+                BillingExceptions = dbManager.GetTimeLogsExceptions();
 
-            foreach (DataRow currentRow in timeLogExceptions.Rows) {
-                if (currentRow["End_Time"].ToString() == "") continue;
-                TimeSpan duration = (DateTime)currentRow["End_Time"] - (DateTime)currentRow["Start_Time"];
-                currentRow["Duration"] = duration.TotalMinutes;
-            }
+                BillingExceptions.Columns.Add(new DataColumn("Duration"));
 
-            timeLogExceptions.Columns.Remove("End_Time");
-
-            dgvTimeLogRequests.DataSource = timeLogExceptions;
-
-            FindAndRenameDGVColumn("Account_Name", "Account Name", dgvTimeLogRequests);
-            FindAndRenameDGVColumn("Account_Number", "Account Number", dgvTimeLogRequests);
-
-            foreach (DataGridViewColumn col in dgvTimeLogRequests.Columns) {
-                if (!(col.Name == "Duration" || col.Name == "Approved")) {
-                    col.ReadOnly = true;
+                foreach (DataRow currentRow in BillingExceptions.Rows) {
+                    if (currentRow["End_Time"].ToString() == "") continue;
+                    TimeSpan duration = (DateTime)currentRow["End_Time"] - (DateTime)currentRow["Start_Time"];
+                    currentRow["Duration"] = duration.TotalMinutes;
                 }
-            }
 
-            dgvTimeLogRequests.Columns["Duration"].DisplayIndex = 4;
-            dgvTimeLogRequests.Columns["Duration"].HeaderText = "Duration (min)";
+                BillingExceptions.Columns.Remove("End_Time");
 
+                dgvTimeLogRequests.DataSource = BillingExceptions;
 
-            foreach (DataGridViewRow row in dgvTimeLogRequests.Rows) {
-                if (!(row.Cells["Duration"].Value.ToString() == "")) {
-                    row.Cells["Duration"].ReadOnly = true;
+                FindAndRenameDGVColumn("Account_Name", "Account Name", dgvTimeLogRequests);
+                FindAndRenameDGVColumn("Account_Number", "Account Number", dgvTimeLogRequests);
+
+                foreach (DataGridViewColumn col in dgvTimeLogRequests.Columns) {
+                    if (!(col.Name == "Duration" || col.Name == "Approved")) {
+                        col.ReadOnly = true;
+                    }
                 }
-                if (!(row.Cells["Approved"].Value.ToString() == "")) {
-                    row.Cells["Approved"].ReadOnly = true;
+
+                dgvTimeLogRequests.Columns["Duration"].DisplayIndex = 4;
+                dgvTimeLogRequests.Columns["Duration"].HeaderText = "Duration (min)";
+
+
+                foreach (DataGridViewRow row in dgvTimeLogRequests.Rows) {
+                    if (!(row.Cells["Duration"].Value.ToString() == "")) {
+                        row.Cells["Duration"].ReadOnly = true;
+                    }
+                    if (!(row.Cells["Approved"].Value.ToString() == "")) {
+                        row.Cells["Approved"].ReadOnly = true;
+                    }
+                }
+            } else {
+                BillingExceptions = dbManager.GetSupplyUseExceptions();
+
+                dgvTimeLogRequests.DataSource = BillingExceptions;
+
+                foreach (DataGridViewColumn col in dgvTimeLogRequests.Columns) {
+                    if (col.Name != "Approved") {
+                        col.ReadOnly = true;
+                    }
+                }
+
+
+                foreach (DataGridViewRow row in dgvTimeLogRequests.Rows) {
+                    if (!(row.Cells["Approved"].Value.ToString() == "")) {
+                        row.Cells["Approved"].ReadOnly = true;
+                    }
                 }
             }
 
@@ -220,49 +252,78 @@ namespace CUITAdmin
             foreach (int rowIndex in editedRows) {
                 string approved = dgvTimeLogRequests.Rows[rowIndex].Cells["Approved"].Value.ToString();
                 
-                DataRow editedRow = timeLogExceptions.Rows[rowIndex];
+                DataRow editedRow = BillingExceptions.Rows[rowIndex];
+
+                bool success; // used for error checking
+
+                if (cboBillingExceptions.SelectedItem.ToString() == "Time Logs") {///////////////// Start section for time exceptions
+                    int minutesToAdd;
+                    success = int.TryParse(dgvTimeLogRequests.Rows[rowIndex].Cells["Duration"].Value.ToString(), out minutesToAdd);
+
+                    DateTime endTime = ((DateTime)editedRow["Start_Time"]).AddMinutes(minutesToAdd);
 
 
+                    if (approved == "Y") {
 
-                int minutesToAdd;
-                bool success = int.TryParse(dgvTimeLogRequests.Rows[rowIndex].Cells["Duration"].Value.ToString(), out minutesToAdd);
+                        dbManager.AddTimeLogEndTime(
+                            editedRow["Account_Number"].ToString(),
+                            int.Parse(editedRow["PersonID"].ToString()),
+                            int.Parse(editedRow["InstrumentID"].ToString()),
+                            (DateTime)editedRow["Start_Time"],
+                            endTime);
 
-                DateTime endTime = ((DateTime)editedRow["Start_Time"]).AddMinutes(minutesToAdd);
-                
-                
-                if ( approved == "Y") {
+                    } else if (approved == "N") {
 
-                    dbManager.AddTimeLogEndTime(
-                        editedRow["Account_Number"].ToString(),
-                        int.Parse(editedRow["PersonID"].ToString()),
-                        int.Parse(editedRow["InstrumentID"].ToString()),
-                        (DateTime)editedRow["Start_Time"], 
-                        endTime);
+                        dbManager.UpdateTimeLogApproval(
+                            editedRow["Account_Number"].ToString(),
+                            int.Parse(editedRow["PersonID"].ToString()),
+                            int.Parse(editedRow["InstrumentID"].ToString()),
+                            (DateTime)editedRow["Start_Time"],
+                            'N');
+                    } else if (approved == "") {
 
-                } else if (approved == "N"){
+                    } else {
+                        success = false;
+                    }
 
-                    dbManager.UpdateTimeLogApproval(
-                        editedRow["Account_Number"].ToString(),
-                        int.Parse(editedRow["PersonID"].ToString()),
-                        int.Parse(editedRow["InstrumentID"].ToString()),
-                        (DateTime)editedRow["Start_Time"],
-                        'N');
-                } else if (approved == ""){
-                
-                } else {
-                    success = false;
+                    if (!success) error = true;
+                } else {/////////////////////////////////////////////////////////////////////////// Start section for supply exceptions
+                    
+                    
+                    
+                    if (approved == "Y") {
+
+                        dbManager.UpdateSupplyApproval(editedRow["Account_Number"].ToString(),
+                            editedRow["Supply_Name"].ToString(),
+                            (DateTime)editedRow["Date"],
+                            'Y');
+
+                    } else if (approved == "N") {
+
+                        dbManager.UpdateSupplyApproval(editedRow["Account_Number"].ToString(),
+                            editedRow["Supply_Name"].ToString(),
+                            (DateTime)editedRow["Date"],
+                            'N');
+                    } else if (approved == "") {
+
+                    } else {
+                        success = false;
+                    }
                 }
-
-                if (!success) error = true;
             }
             if (error) MessageBox.Show("There was an error with the input values, please make sure you enter numbers only for duration and 'Y' / 'N' for Approved");
             editedRows = new List<int>();
-            InitializeTimeLogDGV();
+            InitializeExceptionDGV();
         }
 
         private void btnRefresh_Click(object sender, EventArgs e) {
-            InitializeTimeLogDGV();
+            InitializeExceptionDGV();
         }
+
+        private void cboBillingExceptions_SelectedIndexChanged(object sender, EventArgs e) {
+            InitializeExceptionDGV();
+        }
+
 
         #endregion  Billing Tab
 
@@ -277,31 +338,21 @@ namespace CUITAdmin
             Users
             Instruments
             Supplies*/
-            if (cboAccountAdminView.SelectedItem == "Accounts")
-            {
-                dgvAdmin.DataSource = dbManager.GetAccounts();
+            if (!standalone) {
+                if (cboAccountAdminView.SelectedItem == "Accounts") {
+                    dgvAdmin.DataSource = dbManager.GetAccounts();
+                } else if (cboAccountAdminView.SelectedItem == "Contacts") {
+                    dgvAdmin.DataSource = dbManager.GetContacts();
+                } else if (cboAccountAdminView.SelectedItem == "Users") {
+                    dgvAdmin.DataSource = dbManager.GetUsers();
+                } else if (cboAccountAdminView.SelectedItem == "Instruments") {
+                    dgvAdmin.DataSource = dbManager.GetInstruments();
+                } else if (cboAccountAdminView.SelectedItem == "Rate Types") {
+                    dgvAdmin.DataSource = dbManager.GetRateTypes();
+                } else if (cboAccountAdminView.SelectedItem == "Supplies") {
+                    dgvAdmin.DataSource = dbManager.GetSupplies();
+                }
             }
-            else if (cboAccountAdminView.SelectedItem == "Contacts")
-            {
-                dgvAdmin.DataSource = dbManager.GetContacts();
-            }
-            else if (cboAccountAdminView.SelectedItem == "Users")
-            {
-                dgvAdmin.DataSource = dbManager.GetUsers();
-            }
-            else if (cboAccountAdminView.SelectedItem == "Instruments")
-            {
-                dgvAdmin.DataSource = dbManager.GetInstruments();
-            } 
-            else if (cboAccountAdminView.SelectedItem == "Rate Types") 
-            {
-                dgvAdmin.DataSource = dbManager.GetRateTypes();
-            }
-            else if (cboAccountAdminView.SelectedItem == "Supplies")
-            {
-                dgvAdmin.DataSource = dbManager.GetSupplies();
-            }
-            ;
         }
 
         private void btnAccountAdminNew_Click(object sender, EventArgs e)
@@ -347,30 +398,23 @@ namespace CUITAdmin
         #region Settings Tab
 
         private void InitializeSettingsTab() {
-            if (Properties.Settings.Default.StandaloneMode == "true") {
+            if (standalone) {
                 chkStandalone.Checked = true;
             }
         }
 
-        private void chkStandalone_CheckedChanged(object sender, EventArgs e) {
 
-            if (chkStandalone.Checked) {
-                Properties.Settings.Default.StandaloneMode = "true";
-                Properties.Settings.Default.Save();
-            } else {
-                Properties.Settings.Default.StandaloneMode = "false";
-                Properties.Settings.Default.Save();
-            }
-        }
-
+     
         #endregion Settings Tab
 
         #region Export Tab
-        private void InitializeExportTab()
-        {
-            comboBoxSelectAccount.DataSource = dbManager.GetAccounts();
-            comboBoxSelectAccount.DisplayMember = "Name";
-            comboBoxSelectAccount.ValueMember = "Account_Number";
+
+        private void InitializeExportTab() {
+            if (!standalone) {
+                comboBoxSelectAccount.DataSource = dbManager.GetAccounts();
+                comboBoxSelectAccount.DisplayMember = "Name";
+                comboBoxSelectAccount.ValueMember = "Account_Number";
+            }
         }
 
         private void genPDF(int invoiceID) {
@@ -501,7 +545,59 @@ namespace CUITAdmin
             }
          
         }
+        
+        private void chkStandalone_Click(object sender, EventArgs e)
+        {
 
+            //standalone mode on
+            if (chkStandalone.Checked)
+            {
+                //
+                DialogResult dialogResult = MessageBox.Show("In order to enable standalone mode, the application must restart. Any logs in progress will be lost. Do you want to continue?", "Standaloen mode", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    Properties.Settings.Default.StandaloneMode = "true";
+                    Properties.Settings.Default.Save();
+                    System.Diagnostics.Process.Start(Application.ExecutablePath); // to start new instance of application
+                    this.Close();
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    MessageBox.Show("Settings not changed, you are not in standalone mode.");
+                    chkStandalone.Checked = false;
+                }
+
+                                
+            }
+            //standalone mode off
+            else
+            {
+                DialogResult dialogResult = MessageBox.Show("In order to disable standalone mode, the application must restart. Any logs in progress will be lost. Do you want to continue?", "Standalone mode", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    Properties.Settings.Default.StandaloneMode = "false";
+                    Properties.Settings.Default.Save();
+                    System.Diagnostics.Process.Start(Application.ExecutablePath); // to start new instance of application
+                    this.Close();
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    MessageBox.Show("Settings not changed, you are still in standalone mode.");
+                    chkStandalone.Checked = true;
+                }
+            }
+        }
+
+        private void chkStandalone_CheckedChanged(object sender, EventArgs e) {
+
+            if (chkStandalone.Checked) {
+                Properties.Settings.Default.StandaloneMode = "true";
+                Properties.Settings.Default.Save();
+            } else {
+                Properties.Settings.Default.StandaloneMode = "false";
+                Properties.Settings.Default.Save();
+            }
+        }
 
         #endregion Export Tab
 
@@ -515,9 +611,9 @@ namespace CUITAdmin
             cboManualTimeInstrument.ValueMember = "InstrumentID";            
             
             
-            cboManualSupplyItem.DataSource = dbManager.GetInstruments();
-            cboManualSupplyItem.DisplayMember = "Name";
-            cboManualSupplyItem.ValueMember = "InstrumentID";
+            cboManualSupplyItem.DataSource = dbManager.GetSupplies();
+            cboManualSupplyItem.DisplayMember = "Supply_Name";
+            cboManualSupplyItem.ValueMember = "Supply_Name";
             } else {
                 //TO-DO Add XML to load     
 
@@ -564,7 +660,7 @@ namespace CUITAdmin
                     cboManualTimeAccount.DisplayMember = "Name";
                     cboManualTimeAccount.ValueMember = "Value";
                 } else {
-                    DataTable timeAcctTable = dbManager.GetAccounts();
+                    DataTable timeAcctTable = dbManager.GetUserAccounts(txtManualTimeUsername.Text);
                     if (timeAcctTable.Rows.Count == 0) MessageBox.Show("There are no accounts tied to this username.");
                     cboManualTimeAccount.DataSource = timeAcctTable;
                     cboManualTimeAccount.DisplayMember = "Name";
@@ -640,34 +736,51 @@ namespace CUITAdmin
         private bool supplyValid = false;
         private void btnManualSupplyValidate_Click(object sender, EventArgs e)
         {
+            bool pwValid = false;
+
+
             string username = txtManualSupplyUsername.Text;
             string password = txtManualSupplyPassword.Text;
             //supplies manual request log in validation
 
+            if (standalone) {
+                pwValid = xmlManager.CheckPassword(username, password);
+            } else {
+                pwValid = dbManager.CheckPassword(username, password);
+            }
 
 
-            if (xmlManager.CheckPassword(username, password))
+
+            if (pwValid)
             {
-                txtManualSupplyQuantity.Clear();
-                label12.Visible = false;
-                supplyValid = false;
-                cboManualSupplyAccount.DataSource = null;
-                cboManualSupplyAccount.Items.Clear();
-                
-                //code for populating the funding source combobox
-                BindingList<Data> comboItems = new BindingList<Data>();
-                if (!xmlManager.GetUserAccounts(txtManualSupplyUsername.Text, out comboItems)) {
-                    MessageBox.Show("There are no accounts tied to this username.");
-                    return;
+                if (standalone) {
+                    txtManualSupplyQuantity.Clear();
+                    label12.Visible = false;
+                    supplyValid = false;
+                    cboManualSupplyAccount.DataSource = null;
+                    cboManualSupplyAccount.Items.Clear();
+
+                    //code for populating the funding source combobox
+                    BindingList<Data> comboItems = new BindingList<Data>();
+                    if (!xmlManager.GetUserAccounts(txtManualSupplyUsername.Text, out comboItems)) {
+                        MessageBox.Show("There are no accounts tied to this username.");
+                        return;
+                    }
+                    cboManualSupplyAccount.DataSource = comboItems;
+                    cboManualSupplyAccount.DisplayMember = "Name";
+                    cboManualSupplyAccount.ValueMember = "Value"; 
+                } else {
+                    cboManualSupplyAccount.DataSource = dbManager.GetUserAccounts(username);
+
+                    cboManualSupplyAccount.DisplayMember = "Name";
+                    cboManualSupplyAccount.ValueMember = "Account_Number";
                 }
-                cboManualSupplyAccount.DataSource = comboItems;
-                cboManualSupplyAccount.DisplayMember = "Name";
-                cboManualSupplyAccount.ValueMember = "Value";
 
 
 
                 label12.Visible = true;
                 supplyValid = true;
+
             }
             else
             {
@@ -697,14 +810,19 @@ namespace CUITAdmin
             }
             else
             {
-                    string username = txtManualSupplyUsername.Text;
-                    string account = cboManualSupplyAccount.SelectedValue.ToString();
+                string username = txtManualSupplyUsername.Text;
+                string account = cboManualSupplyAccount.SelectedValue.ToString();
                 if (standalone) {
 
                     //adds the supply use log 
-                    string item = "item";// cboManualSupplyItem.SelectedValue.ToString();
+                    cboManualSupplyItem.SelectedValue.ToString();
                     string quantity = txtManualSupplyQuantity.Text;
+                    string item = cboManualSupplyItem.SelectedItem.ToString();
                     xmlManager.AddSupplyUse(username, account, item, quantity);
+                } else {
+                    DateTime serverTime;
+                    dbManager.GetServerDateTime(out serverTime);
+                    dbManager.AddSupplyUse(account, cboManualSupplyItem.SelectedValue.ToString(), serverTime, int.Parse(txtManualSupplyQuantity.Text));
                 }
                 //confirms the add with the user then resets the supply form
                 MessageBox.Show("Supply Manual Request Added");
@@ -922,60 +1040,41 @@ namespace CUITAdmin
             MessageBox.Show("Header " + e + " Clicked");
         }
 
+
         private void frmCUITAdminMain_Resize(object sender, EventArgs e) {
             tabControlMain.Location = new Point((this.Size.Width / 2) - (tabControlMain.Size.Width / 2) - 7,
                                     (this.Size.Height / 2) - (tabControlMain.Size.Height / 2) - 19);
         }
 
 
-        private void chkStandalone_Click(object sender, EventArgs e)
-        {
 
-            //standalone mode on
-            if (chkStandalone.Checked)
-            {
-                //
-                DialogResult dialogResult = MessageBox.Show("In order to enable standalone mode, the application must restart. Any logs in progress will be lost. Do you want to continue?", "Standaloen mode", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.Yes)
-                {
-                    Properties.Settings.Default.StandaloneMode = "true";
-                    Properties.Settings.Default.Save();
-                    System.Diagnostics.Process.Start(Application.ExecutablePath); // to start new instance of application
-                    this.Close();
-                }
-                else if (dialogResult == DialogResult.No)
-                {
-                    MessageBox.Show("Settings not changed, you are not in standalone mode.");
-                    chkStandalone.Checked = false;
-                }
+        private void chkFullScreen_Click(object sender, EventArgs e) {
 
-                                
+            if (chkFullScreen.Checked) {
+                Settings.Default.FullScreen = true;
+                Settings.Default.Save();
+
+            } else {
+                Settings.Default.FullScreen = false;
+                Settings.Default.Save();
             }
-            //standalone mode off
-            else
-            {
-                DialogResult dialogResult = MessageBox.Show("In order to disable standalone mode, the application must restart. Any logs in progress will be lost. Do you want to continue?", "Standalone mode", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.Yes)
-                {
-                    Properties.Settings.Default.StandaloneMode = "false";
-                    Properties.Settings.Default.Save();
-                    System.Diagnostics.Process.Start(Application.ExecutablePath); // to start new instance of application
-                    this.Close();
-                }
-                else if (dialogResult == DialogResult.No)
-                {
-                    MessageBox.Show("Settings not changed, you are still in standalone mode.");
-                    chkStandalone.Checked = true;
-                }
+
+            DialogResult dialogResult = MessageBox.Show("You must restart for these settings to take effect. Any current sessions will be lost. Would you like to restart now?", "Full Screen", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes) {
+                System.Diagnostics.Process.Start(Application.ExecutablePath); // to start new instance of application
+                this.Close();
             }
         }
 
-
-
-
-
-
-
+        private void ToggleScreenMode() {
+            if (Settings.Default.FullScreen) {
+                this.FormBorderStyle = FormBorderStyle.None;
+                WindowState = FormWindowState.Maximized;
+            } else {
+                this.WindowState = FormWindowState.Normal;
+                this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+            }
+        }
 
     }
 }

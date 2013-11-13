@@ -43,6 +43,7 @@
             this.txtMonth = new System.Windows.Forms.Label();
             this.comboBoxSelectMonth = new System.Windows.Forms.ComboBox();
             this.grpStandaloneFileExport = new System.Windows.Forms.GroupBox();
+            this.chkFullScreen = new System.Windows.Forms.CheckBox();
             this.chkStandalone = new System.Windows.Forms.CheckBox();
             this.btnImportLogs = new System.Windows.Forms.Button();
             this.btnExportStandaloneFile = new System.Windows.Forms.Button();
@@ -76,6 +77,7 @@
             this.lblManualLogDuration = new System.Windows.Forms.Label();
             this.lblManualLogFunding = new System.Windows.Forms.Label();
             this.grpTimeLogExceptions = new System.Windows.Forms.GroupBox();
+            this.cboBillingExceptions = new System.Windows.Forms.ComboBox();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.dgvTimeLogRequests = new System.Windows.Forms.DataGridView();
             this.btnSubmit = new System.Windows.Forms.Button();
@@ -84,9 +86,11 @@
             this.tbpTracking = new System.Windows.Forms.TabPage();
             this.tbpManualRequests = new System.Windows.Forms.TabPage();
             this.grpAccountSettings = new System.Windows.Forms.GroupBox();
+            this.lblAcctManagementPwMessage = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
+            this.lineSeparator1 = new CUITAdmin.LineSeparator();
             this.label11 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
@@ -136,8 +140,6 @@
             this.btnManualTimeAdd = new System.Windows.Forms.Button();
             this.lblDuration = new System.Windows.Forms.Label();
             this.lblFundingSource = new System.Windows.Forms.Label();
-            this.lblAcctManagementPwMessage = new System.Windows.Forms.Label();
-            this.lineSeparator1 = new CUITAdmin.LineSeparator();
             this.tbpExports.SuspendLayout();
             this.grpExportPath.SuspendLayout();
             this.grpInvoiceExport.SuspendLayout();
@@ -321,6 +323,7 @@
             // 
             // grpStandaloneFileExport
             // 
+            this.grpStandaloneFileExport.Controls.Add(this.chkFullScreen);
             this.grpStandaloneFileExport.Controls.Add(this.chkStandalone);
             this.grpStandaloneFileExport.Controls.Add(this.btnImportLogs);
             this.grpStandaloneFileExport.Controls.Add(this.btnExportStandaloneFile);
@@ -331,6 +334,17 @@
             this.grpStandaloneFileExport.TabStop = false;
             this.grpStandaloneFileExport.Text = "Standalone Files";
             // 
+            // chkFullScreen
+            // 
+            this.chkFullScreen.AutoSize = true;
+            this.chkFullScreen.Location = new System.Drawing.Point(34, 164);
+            this.chkFullScreen.Name = "chkFullScreen";
+            this.chkFullScreen.Size = new System.Drawing.Size(79, 17);
+            this.chkFullScreen.TabIndex = 10;
+            this.chkFullScreen.Text = "Full Screen";
+            this.chkFullScreen.UseVisualStyleBackColor = true;
+            this.chkFullScreen.Click += new System.EventHandler(this.chkFullScreen_Click);
+            // 
             // chkStandalone
             // 
             this.chkStandalone.AutoSize = true;
@@ -340,6 +354,7 @@
             this.chkStandalone.TabIndex = 9;
             this.chkStandalone.Text = "Standalone Mode";
             this.chkStandalone.UseVisualStyleBackColor = true;
+            this.chkStandalone.Click += new System.EventHandler(this.chkStandalone_Click);
             // 
             // btnImportLogs
             // 
@@ -671,6 +686,7 @@
             // 
             // grpTimeLogExceptions
             // 
+            this.grpTimeLogExceptions.Controls.Add(this.cboBillingExceptions);
             this.grpTimeLogExceptions.Controls.Add(this.btnRefresh);
             this.grpTimeLogExceptions.Controls.Add(this.dgvTimeLogRequests);
             this.grpTimeLogExceptions.Controls.Add(this.btnSubmit);
@@ -679,7 +695,20 @@
             this.grpTimeLogExceptions.Size = new System.Drawing.Size(671, 354);
             this.grpTimeLogExceptions.TabIndex = 8;
             this.grpTimeLogExceptions.TabStop = false;
-            this.grpTimeLogExceptions.Text = "Time Log Exceptions";
+            this.grpTimeLogExceptions.Text = "Usage Exceptions";
+            // 
+            // cboBillingExceptions
+            // 
+            this.cboBillingExceptions.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboBillingExceptions.FormattingEnabled = true;
+            this.cboBillingExceptions.Items.AddRange(new object[] {
+            "Time Logs",
+            "Supplies"});
+            this.cboBillingExceptions.Location = new System.Drawing.Point(7, 326);
+            this.cboBillingExceptions.Name = "cboBillingExceptions";
+            this.cboBillingExceptions.Size = new System.Drawing.Size(121, 21);
+            this.cboBillingExceptions.TabIndex = 10;
+            this.cboBillingExceptions.SelectedIndexChanged += new System.EventHandler(this.cboBillingExceptions_SelectedIndexChanged);
             // 
             // btnRefresh
             // 
@@ -783,6 +812,14 @@
             this.grpAccountSettings.TabStop = false;
             this.grpAccountSettings.Text = "Account Management";
             // 
+            // lblAcctManagementPwMessage
+            // 
+            this.lblAcctManagementPwMessage.AutoSize = true;
+            this.lblAcctManagementPwMessage.Location = new System.Drawing.Point(166, 211);
+            this.lblAcctManagementPwMessage.Name = "lblAcctManagementPwMessage";
+            this.lblAcctManagementPwMessage.Size = new System.Drawing.Size(0, 13);
+            this.lblAcctManagementPwMessage.TabIndex = 21;
+            // 
             // label14
             // 
             this.label14.AutoSize = true;
@@ -809,6 +846,15 @@
             this.label13.Size = new System.Drawing.Size(126, 13);
             this.label13.TabIndex = 20;
             this.label13.Text = "( - all fields are optional - )";
+            // 
+            // lineSeparator1
+            // 
+            this.lineSeparator1.Location = new System.Drawing.Point(48, 126);
+            this.lineSeparator1.MaximumSize = new System.Drawing.Size(2000, 2);
+            this.lineSeparator1.MinimumSize = new System.Drawing.Size(0, 2);
+            this.lineSeparator1.Name = "lineSeparator1";
+            this.lineSeparator1.Size = new System.Drawing.Size(578, 2);
+            this.lineSeparator1.TabIndex = 19;
             // 
             // label11
             // 
@@ -1264,23 +1310,6 @@
             this.lblFundingSource.TabIndex = 4;
             this.lblFundingSource.Text = "Funding Source:";
             // 
-            // lblAcctManagementPwMessage
-            // 
-            this.lblAcctManagementPwMessage.AutoSize = true;
-            this.lblAcctManagementPwMessage.Location = new System.Drawing.Point(166, 211);
-            this.lblAcctManagementPwMessage.Name = "lblAcctManagementPwMessage";
-            this.lblAcctManagementPwMessage.Size = new System.Drawing.Size(0, 13);
-            this.lblAcctManagementPwMessage.TabIndex = 21;
-            // 
-            // lineSeparator1
-            // 
-            this.lineSeparator1.Location = new System.Drawing.Point(48, 126);
-            this.lineSeparator1.MaximumSize = new System.Drawing.Size(2000, 2);
-            this.lineSeparator1.MinimumSize = new System.Drawing.Size(0, 2);
-            this.lineSeparator1.Name = "lineSeparator1";
-            this.lineSeparator1.Size = new System.Drawing.Size(578, 2);
-            this.lineSeparator1.TabIndex = 19;
-            // 
             // frmCUITAdminMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1291,7 +1320,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "frmCUITAdminMain";
             this.Text = "CUIT - Clarion University Instrument Tracking";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Load += new System.EventHandler(this.Main_Load);
             this.Resize += new System.EventHandler(this.frmCUITAdminMain_Resize);
             this.tbpExports.ResumeLayout(false);
             this.grpExportPath.ResumeLayout(false);
@@ -1440,6 +1469,8 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label lblAcctManagementPwMessage;
+        private System.Windows.Forms.CheckBox chkFullScreen;
+        private System.Windows.Forms.ComboBox cboBillingExceptions;
     }
 }
 
