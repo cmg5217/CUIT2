@@ -72,7 +72,9 @@ namespace CUITAdmin
             this.dgvInstrumentRates.TabIndex = 9;
             this.dgvInstrumentRates.RowHeadersVisible = false;
             DataTable sourceTable = dbManager.GetRateTypes();
+
             sourceTable.Columns.Add(new DataColumn("Rate"));
+
             this.dgvInstrumentRates.DataSource = sourceTable;
             this.dgvInstrumentRates.Columns["Name"].ReadOnly = true;
             this.dgvInstrumentRates.AllowUserToAddRows = false;
@@ -164,6 +166,8 @@ namespace CUITAdmin
                 {
                     dbManager.AddInstrumentRate(row["Name"].ToString(), int.Parse(row["Rate"].ToString()), instrumentID);
                 }
+
+                containingForm.updateAdminDGV();
                 containingForm.Close();
             }
         }

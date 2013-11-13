@@ -71,7 +71,6 @@ namespace CUITAdmin
             this.Location = new System.Drawing.Point(3, 2);
             this.Name = "newUserContactPanel";
             this.Size = new System.Drawing.Size(526, 209);
-            this.TabIndex = 0;
             // 
             // lblFirstName
             // 
@@ -159,7 +158,7 @@ namespace CUITAdmin
             this.txtFirstName.Location = new System.Drawing.Point(108, 13);
             this.txtFirstName.Name = "txtFirstName";
             this.txtFirstName.Size = new System.Drawing.Size(134, 20);
-            this.txtFirstName.TabIndex = 15;
+            this.txtFirstName.TabIndex = 0;
             // 
             // txtLastName
             // 
@@ -173,7 +172,7 @@ namespace CUITAdmin
             this.txtEmail.Location = new System.Drawing.Point(361, 13);
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(147, 20);
-            this.txtEmail.TabIndex = 18;
+            this.txtEmail.TabIndex = 23;
             // 
             // txtStreet
             // 
@@ -216,14 +215,14 @@ namespace CUITAdmin
             this.txtPhone.Location = new System.Drawing.Point(361, 40);
             this.txtPhone.Name = "txtPhone";
             this.txtPhone.Size = new System.Drawing.Size(147, 20);
-            this.txtPhone.TabIndex = 23;
+            this.txtPhone.TabIndex = 24;
             // 
             // rtbNotes
             // 
             this.rtbNotes.Location = new System.Drawing.Point(306, 67);
             this.rtbNotes.Name = "rtbNotes";
             this.rtbNotes.Size = new System.Drawing.Size(202, 101);
-            this.rtbNotes.TabIndex = 24;
+            this.rtbNotes.TabIndex = 25;
             this.rtbNotes.Text = "";
             // 
             // btnSubmit
@@ -246,6 +245,8 @@ namespace CUITAdmin
             {
                 dbManager.AddPointOfContact(txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text, 
                     cboState.SelectedItem.ToString(), txtZipCode.Text, txtPhone.Text, txtEmail.Text, rtbNotes.Text);
+
+                containingForm.updateAdminDGV();
                 containingForm.Close();
             }
         }

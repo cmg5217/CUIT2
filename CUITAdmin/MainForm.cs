@@ -84,12 +84,25 @@ namespace CUITAdmin
             //text export path
             txtInvoiceExportPath.Text = Properties.Settings.Default.InvoicePath;
             // Sets up the return keys for the manual entry tab
-            BindReturnKeys();
-            InitializeBillingTab();
+
+
             InitializeRequestTab();
-            InitializeSettingsTab();
-            InitializeExportTab();
+
+            if (userType == 'A') {
+                InitializeBillingTab();
+                InitializeSettingsTab();
+                InitializeExportTab();
+
+            } else {
+                tabControlMain.TabPages.Remove(tabControlMain.TabPages["tbpBilling"]);
+                tabControlMain.TabPages.Remove(tabControlMain.TabPages["tbpAccountAdmin"]);
+                tabControlMain.TabPages.Remove(tabControlMain.TabPages["tbpExports"]);
+            }
+
+            BindReturnKeys();
         }
+
+
 
         #region Billing Tab
 
@@ -330,35 +343,38 @@ namespace CUITAdmin
         #region Admin Tab
 
         // Called in the onload of the tab page to prevent unnecessary calls to the DB5
-        private void InitializeAdminTab()
+        public void updateAdminDGV()
         {
-
-            /*Accounts
-            Contacts
-            Users
-            Instruments
-            Supplies*/
-            if (!standalone) {
-                if (cboAccountAdminView.SelectedItem == "Accounts") {
-                    dgvAdmin.DataSource = dbManager.GetAccounts();
-                } else if (cboAccountAdminView.SelectedItem == "Contacts") {
-                    dgvAdmin.DataSource = dbManager.GetContacts();
-                } else if (cboAccountAdminView.SelectedItem == "Users") {
-                    dgvAdmin.DataSource = dbManager.GetUsers();
-                } else if (cboAccountAdminView.SelectedItem == "Instruments") {
-                    dgvAdmin.DataSource = dbManager.GetInstruments();
-                } else if (cboAccountAdminView.SelectedItem == "Rate Types") {
-                    dgvAdmin.DataSource = dbManager.GetRateTypes();
-                } else if (cboAccountAdminView.SelectedItem == "Supplies") {
-                    dgvAdmin.DataSource = dbManager.GetSupplies();
-                }
+            if (cboAccountAdminView.SelectedItem == "Accounts")
+            {
+                dgvAdmin.DataSource = dbManager.GetAccounts();
+            }
+            else if (cboAccountAdminView.SelectedItem == "Contacts")
+            {
+                dgvAdmin.DataSource = dbManager.GetContacts();
+            }
+            else if (cboAccountAdminView.SelectedItem == "Users")
+            {
+                dgvAdmin.DataSource = dbManager.GetUsers();
+            }
+            else if (cboAccountAdminView.SelectedItem == "Instruments")
+            {
+                dgvAdmin.DataSource = dbManager.GetInstruments();
+            } 
+            else if (cboAccountAdminView.SelectedItem == "Rate Types") 
+            {
+                dgvAdmin.DataSource = dbManager.GetRateTypes();
+            }
+            else if (cboAccountAdminView.SelectedItem == "Supplies")
+            {
+                dgvAdmin.DataSource = dbManager.GetSupplies();
             }
         }
 
         private void btnAccountAdminNew_Click(object sender, EventArgs e)
         {
             string addNewCase = cboAccountAdminNew.Text;
-            Form newForm = new NewEntryForm(addNewCase);
+            Form newForm = new NewEntryForm(addNewCase, this);
             newForm.ShowDialog(); //Displays forms modally
         }
 
@@ -386,7 +402,7 @@ namespace CUITAdmin
             }
 
             
-            Form newForm = new NewEntryForm(addNewCase, primaryKey);
+            Form newForm = new NewEntryForm(addNewCase, this, primaryKey);
             newForm.ShowDialog(); //Displays forms modally
 
         }
@@ -619,10 +635,12 @@ namespace CUITAdmin
 
             }
 
-            List<string> states = new List<string> { "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming" };
+            List<string> states = new List<string> { "", "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming" };
             foreach (string s in states) {
                 cboAcctManagementState.Items.Add(s);
             }
+
+            cboAcctManagementState.SelectedIndex = 0;
         }
 
         private bool timeValid = false;
@@ -950,9 +968,24 @@ namespace CUITAdmin
 
                 dbManager.UpdateUser(userID, "", "", txtAcctManagementStreet.Text, txtAcctManagementCity.Text, state,
                     txtAcctManagementZip.Text, txtAcctManagementPhone.Text, txtAcctManagementEmail.Text, "", txtAcctManagementNewPw.Text, "", "", "");
+
+                ClearAcctManagementFields();
             } else {
                 MessageBox.Show(errorMessage);
             }
+        }
+
+        private void ClearAcctManagementFields() {
+            txtAcctManagementStreet.Clear();
+            txtAcctManagementPassword.Clear();
+            txtAcctManagementStreet.Clear();
+            txtAcctManagementCity.Clear();
+            txtAcctManagementZip.Clear();
+            txtAcctManagementPhone.Clear();
+            txtAcctManagementEmail.Clear();
+            txtAcctManagementNewPw.Clear();
+            txtAcctManagementConfirmPw.Clear();
+            cboAcctManagementState.SelectedIndex = 0;
         }
 
         #endregion Request Tab
@@ -1018,7 +1051,7 @@ namespace CUITAdmin
         private void adminEditViewLoad(object sender, EventArgs e)
         {
 
-            InitializeAdminTab();
+            updateAdminDGV();
 
         }
 

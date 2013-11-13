@@ -49,7 +49,7 @@ namespace CUITAdmin
             this.btnSubmit.Location = new System.Drawing.Point(179, 210);
             this.btnSubmit.Name = "btnSubmit";
             this.btnSubmit.Size = new System.Drawing.Size(75, 23);
-            this.btnSubmit.TabIndex = 0;
+            this.btnSubmit.TabIndex = 4;
             this.btnSubmit.Text = "Submit";
             this.btnSubmit.UseVisualStyleBackColor = true;
             this.btnSubmit.Click += new EventHandler(this.btnSubmit_Click);
@@ -77,14 +77,14 @@ namespace CUITAdmin
             this.txtRateName.Location = new System.Drawing.Point(81, 12);
             this.txtRateName.Name = "txtRateName";
             this.txtRateName.Size = new System.Drawing.Size(173, 20);
-            this.txtRateName.TabIndex = 3;
+            this.txtRateName.TabIndex = 0;
             // 
             // dgvInstrumentRates
             // 
             this.dgvInstrumentRates.Location = new System.Drawing.Point(14, 54);
             this.dgvInstrumentRates.Name = "dgvInstrumentRates";
             this.dgvInstrumentRates.Size = new System.Drawing.Size(240, 150);
-            this.dgvInstrumentRates.TabIndex = 4;
+            this.dgvInstrumentRates.TabIndex = 3;
             this.dgvInstrumentRates.RowHeadersVisible = false;
             DataTable sourceTable = dbManager.GetInstruments();
             sourceTable.Columns.Add(new DataColumn("Rate"));
@@ -108,6 +108,8 @@ namespace CUITAdmin
                 {
                     dbManager.AddInstrumentRate(txtRateName.Text, int.Parse(row["Rate"].ToString()), int.Parse(row["InstrumentID"].ToString()));
                 }
+
+                containingForm.updateAdminDGV();
                 containingForm.Close();
             }
         }

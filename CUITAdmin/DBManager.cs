@@ -75,9 +75,18 @@ namespace CUITAdmin
 
         #region Add Functions
 
+
+        public void AddUser(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email,
+            string username, string password, string department, string type, string notes, int contactID)
+        {
+            int throwaway;
+            AddUser(firstName, lastName, street, city, state, zip, phoneNumber, email,
+             username, password, department, type, notes, contactID, out throwaway);
+        }
+
         // TESTED 11-4
         public void AddUser(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email,
-            string username, string password, string department, string type, string notes, int contactID) {
+            string username, string password, string department, string type, string notes, int contactID, out int personID) {
 
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand();
@@ -101,12 +110,17 @@ namespace CUITAdmin
             myCommand.Parameters.AddWithValue("@department", department);
             myCommand.Parameters.AddWithValue("@type", type);
             myCommand.Parameters.AddWithValue("@notes", notes);
-            myCommand.Parameters.AddWithValue("@contactID", contactID);
+            SqlParameter returnValue = myCommand.Parameters.Add("@personID", SqlDbType.Int);
+            returnValue.Direction = ParameterDirection.Output;
+            
+            if (contactID > 0) myCommand.Parameters.AddWithValue("@contactID", contactID);
 
             try {
                 myCommand.ExecuteNonQuery();
+                personID = int.Parse(myCommand.Parameters["@personID"].Value.ToString());
             } catch (Exception e) {
                 Debug.WriteLine(e.Message);
+                personID = 0;
             }
 
             myConnection.Close();
@@ -166,15 +180,15 @@ namespace CUITAdmin
 
         // TESTED 11-4
         public void AddAccount(string accountNumber, string name, double maxChargeLimit, DateTime accountExpiration, string rateType, int managerID, 
-            string notes, string costCenter, string wbsNumber, double balance, string street, string city, string state, int zip) {
+            string notes, string costCenter, string wbsNumber, double balance, string street, string city, string state, int zip, string taxID) {
             SqlConnection myConnection = DBConnect();
 
             SqlCommand myCommand = new SqlCommand("INSERT into Account " +
             "(Account_Number, Name, Max_Charge_Limit, Account_Expiration, Rate_Type, PointOfContactID, Notes, Cost_Center, " +
-            "WBS_Number, Balance, Street, City, State, Zip) " +
+            "WBS_Number, Balance, Street, City, State, Zip, Tax_ID) " +
 
             "VALUES (@accountNumber, @name, @maxChargeLimit, @accountExpiration, @rateType, @pointOfContact, " +
-            "@notes, @costCenter, @wbsNumber, @balance, @street, @city, @state, @zip)", myConnection);
+            "@notes, @costCenter, @wbsNumber, @balance, @street, @city, @state, @zip, @taxID)", myConnection);
 
 
             myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
@@ -191,6 +205,7 @@ namespace CUITAdmin
             myCommand.Parameters.AddWithValue("@city", city);
             myCommand.Parameters.AddWithValue("@state", state);
             myCommand.Parameters.AddWithValue("@zip", zip);
+            myCommand.Parameters.AddWithValue("@taxID", taxID);
 
             try {
                 myCommand.ExecuteNonQuery();
@@ -468,10 +483,10 @@ namespace CUITAdmin
 
             SqlCommand myCommand = new SqlCommand(
                 "INSERT INTO Instrument_Rate (Rate_Type, Rate, InstrumentID)" +
-                "VALUES (@rateName, @rate, @instrumentID)",
+                "VALUES (@rateType, @rate, @instrumentID)",
                 myConnection);
 
-            myCommand.Parameters.AddWithValue("@rateName", rateName);
+            myCommand.Parameters.AddWithValue("@rateType", rateName);
             myCommand.Parameters.AddWithValue("@rate", rate);
             myCommand.Parameters.AddWithValue("@instrumentID", instrumentID);
 

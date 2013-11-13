@@ -174,6 +174,8 @@ namespace CUITAdmin
             else
             {
                 dbManager.AddSupply(txtSupplyName.Text, Double.Parse(txtSupplyCost.Text), txtUnit.Text);
+
+                containingForm.updateAdminDGV();
                 containingForm.Close();
             }
         }
