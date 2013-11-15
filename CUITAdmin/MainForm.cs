@@ -34,7 +34,7 @@ namespace CUITAdmin
 
         XmlManager xmlManager;
         DBManager dbManager;
-        PDFManager pdfManager;
+  
         ExcelManager ExcelManager;
 
 
@@ -494,7 +494,10 @@ namespace CUITAdmin
                 foreach (int currentInvoice in invoiceIDs)
                 {
                     GenerateSingleInvoice(currentInvoice, datetime, endtime, ref offset);
+                    
                 }
+                //generate the instrument usage table
+                
             }
         }
 
@@ -515,8 +518,11 @@ namespace CUITAdmin
                 string offset = "";
                 int invoiceID;
                 //dbManager.GenerateInvoice("1", DateTime.Now.AddDays(-5), DateTime.Now, out invoiceID);
+
+
                 dbManager.GenerateInvoice(comboBoxSelectAccount.SelectedValue.ToString(), datetime, endtime, out invoiceID);
-                
+
+                invoiceID = 381;
                 
                 GenerateSingleInvoice(invoiceID, datetime, endtime, ref offset);
                 return;
@@ -525,84 +531,19 @@ namespace CUITAdmin
          
         }
 
+
+
         private void GenerateSingleInvoice(int invoiceID, DateTime datetime, DateTime endtime, ref string offset)
         {
             /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+            PDFManager pdfManager = new PDFManager();
+            pdfManager.GenerateInvoicePDF(invoiceID);
             
 
             DataTable invoice = dbManager.GetInvoice(invoiceID);
-            if (invoice.Rows.Count == 0)
-            {
-
-                MessageBox.Show("No invoices");
-                return;
-            }
-
-            DataTable invoiceTime = dbManager.GetInvoiceTimeLine(invoiceID);
-            DataTable invoiceSupply = dbManager.GetInvoiceSupplyLine(invoiceID);
-            //convert date time to invoice friendly format
-            DateTime poststart = DateTime.Parse(invoice.Rows[0]["Posting_Start_Date"].ToString());
-            DateTime postend = DateTime.Parse(invoice.Rows[0]["Posting_End_Date"].ToString());
-            string accounttype = (invoice.Rows[0]["Rate_Type"].ToString());
-            //string timeIncriment = (invoice.Rows[0]["Time_Increment"].ToString());
-            //MessageBox.Show(timeIncriment);
-            //MessageBox.Show(accounttype);
-            string exportpath = "Invoice - " + invoiceID + ".pdf";
-            bool path = false;
-            bool excelgenar = false;
-
-            // try
-            // {
-            //if the rate is industry, then add an accounts receivable folder
-            if (accounttype == "Industry")
-            {
-                //pdfManager.changeDirectoryRate(true);
-                exportpath = @"Accounts Receivable\Invoice - " + invoiceID + ".pdf";
-                path = true;
-                excelgenar = true;
-            }
-
-            pdfManager = new PDFManager(exportpath, path);
-
-            //pdfManager.AddAddress("Name", "Street", "City", "State", "Zip");
-            pdfManager.AddAddress(invoice.Rows[0]["Name"].ToString(),
-                invoice.Rows[0]["Street"].ToString(), //add street to invocie
-                invoice.Rows[0]["City"].ToString(), // add city to invoice
-                invoice.Rows[0]["State"].ToString(), //add state to invoice
-                invoice.Rows[0]["Zip"].ToString()); //add zip to invoice
-
-            //pdfManager.AddService("Instrument", "StartPostDate", "EndPostDate","hours", "rate ($/hr)", "unit(hours days ects)");
-
-            pdfManager.AddPostDate(poststart.ToShortDateString().ToString(), postend.ToShortDateString().ToString());
-
-            foreach (DataRow currentRow in invoiceTime.Rows)
-            {
-                double computedRate = Convert.ToDouble(currentRow["Line_Amount"])/Convert.ToDouble(currentRow["Rate"]) * 10;
-
-
-                pdfManager.AddService(
-                    currentRow["Name"].ToString(), //insert time into the invoice
-                    poststart.ToShortDateString().ToString(), //insert start date into invoice
-                    postend.ToShortDateString().ToString(),  //insert end date into invoice
-                    currentRow["Hours"].ToString(), //insert hours into invoice
-                    computedRate.ToString(), //insert dollars per hour into invoice
-                    "hour");// unit of biling displayed on invoice
-                pdfManager.AddCharge(currentRow["Line_Amount"].ToString()); //add charge to invoice
-                offset += "\r\n\r\n";
-            }
-
-            pdfManager.AddDate(DateTime.Now.ToString()); //Add todays date to the invoice
-            pdfManager.AddInvoiceID(invoice.Rows[0]["InvoiceID"].ToString()); // add invoice id to invoice
-            pdfManager.AddBalance(offset + "$" + invoice.Rows[0]["Total_Balance"].ToString()); // add balance to invoice
-
-            pdfManager.PDFClose();
-            //  }
-            //  catch (Exception)
-            //  {
-            //     MessageBox.Show("Error writing file. Check that this file is not currently\n" 
-            //                   +"open in a PDF reader such as Adobe Reader.");
-            // }
+            bool excelgenar = (invoice.Rows[0]["Rate_Type"].ToString() == "Industry");
 
             if (chkGLSU.Checked == true)
             {
@@ -611,6 +552,9 @@ namespace CUITAdmin
             }
             return;
         }
+
+        //generate the instrument use pdf
+
 
         private void chkGLSU_Click(object sender, EventArgs e)
         {

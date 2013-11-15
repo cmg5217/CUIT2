@@ -19,7 +19,7 @@ namespace CUITAdmin
 
         private static readonly object padlock = new object();
         //template pdf file in same directory as executable
-        private const string PDF_TEMPLATE = @"invoicetemplate.pdf";
+        private static string PDF_TEMPLATE = @"invoicetemplate.pdf";
         PdfReader pdfReader;
         PdfStamper pdfStamper;
         AcroFields pdfFormFields;
@@ -27,9 +27,9 @@ namespace CUITAdmin
         private static string pathname = Settings.Default["InvoicePath"].ToString() + @"\Invoices\" + (DateTime.Now.Year);
         private static string fullpath = pathname + filename;
         private static bool path = true;
-       
+
         public PDFManager()
-            
+
             //filename of exported invoiceis stored in app.config. 
             //If the program has not been used on the user's
             //computer before, the path will default to the user's desktop.
@@ -38,12 +38,34 @@ namespace CUITAdmin
         {
         }
 
-       
-       public PDFManager(string newFile, bool path){
-           
-           changeDirectoryRate(path);
-           
-           CreateFolderifDoesNotExist();
+        //change the pdf tempalte to instrument use
+        public void ChangeTemplateInst(bool useInstTemplate)
+        {
+
+            if (useInstTemplate == true)
+            {
+
+                PDF_TEMPLATE = @"servicetemplate.pdf";
+            }
+
+        }
+
+        public PDFManager(string newFile, bool path, string fileType = "")
+        {
+
+            switch (fileType)
+            {
+                case "timelog":
+                    PDF_TEMPLATE = @"servicetemplate.pdf";
+                    break;
+                case "invoice":
+                    PDF_TEMPLATE = @"invoicetemplate.pdf";
+                    break;
+            }
+
+            changeDirectoryRate(path);
+
+            CreateFolderifDoesNotExist();
             // open the invoice template using PdfReader
             pdfReader = new PdfReader(PDF_TEMPLATE);
 
@@ -54,64 +76,15 @@ namespace CUITAdmin
         }
 
 
-       public bool GeneratePDF(int invoiceID){
-           DBManager dbManager = DBManager.Instance;
 
-           string offset = "";
-           DataTable invoice = dbManager.GetInvoice(invoiceID);
-           if (invoice.Rows.Count == 0) return false;
-           DataTable invoiceTime = dbManager.GetInvoiceTimeLine(invoiceID);
-           DataTable invoiceSupply = dbManager.GetInvoiceSupplyLine(invoiceID);
-           DataTable getacc = dbManager.GetAccounts();
-           //convert date time to invoice friendly format
-           DateTime poststart = DateTime.Parse(invoice.Rows[0]["Posting_Start_Date"].ToString());
-           DateTime postend = DateTime.Parse(invoice.Rows[0]["Posting_End_Date"].ToString());
-           //MessageBox.Show(test.ToShortDateString().ToString());
-
-
-           //AddAddress("Name", "Street", "City", "State", "Zip");
-           AddAddress(getacc.Rows[0]["Name"].ToString(),
-               getacc.Rows[0]["Street"].ToString(), //add street to invocie
-               getacc.Rows[0]["City"].ToString(), // add city to invoice
-               getacc.Rows[0]["State"].ToString(), //add state to invoice
-               getacc.Rows[0]["Zip"].ToString()); //add zip to invoice
-
-           //AddService("Instrument", "StartPostDate", "EndPostDate","hours", "rate ($/hr)", "unit(hours days ects)");
-
-           AddPostDate(poststart.ToShortDateString().ToString(), postend.ToShortDateString().ToString());
-
-           foreach (DataRow currentRow in invoiceTime.Rows)
-           {
-
-               AddService(
-                   currentRow["Name"].ToString(), //insert time into the invoice
-                   poststart.ToShortDateString().ToString(), //insert start date into invoice
-                   postend.ToShortDateString().ToString(),  //insert end date into invoice
-                   currentRow["Hours"].ToString(), //insert hours into invoice
-                   currentRow["Rate"].ToString(), //insert dollars per hour into invoice
-                   "hour");// unit of biling displayed on invoice
-               AddCharge(currentRow["Line_Amount"].ToString()); //add charge to invoice
-               offset += "\r\n\r\n";
-           }
-
-           AddDate(DateTime.Now.ToString()); //Add todays date to the invoice
-           AddInvoiceID(invoice.Rows[0]["InvoiceID"].ToString()); // add invoice id to invoice
-           AddBalance(offset + "$" + invoice.Rows[0]["Total_Balance"].ToString()); // add balance to invoice
-
-           PDFClose();
-           return true;
-       }
-
-
-
-       // crete the directory if it does not exist (/Invoices/[currentyear])
-       public void CreateFolderifDoesNotExist()
-       {
-          if (!Directory.Exists(pathname))
-           {             
-               Directory.CreateDirectory(pathname );
-           }
-       }
+        // crete the directory if it does not exist (/Invoices/[currentyear])
+        public void CreateFolderifDoesNotExist()
+        {
+            if (!Directory.Exists(pathname))
+            {
+                Directory.CreateDirectory(pathname);
+            }
+        }
 
         public void PDFClose()
         {
@@ -121,7 +94,7 @@ namespace CUITAdmin
             pdfStamper.Close();
             //Display success message with the file path in the message
             MessageBox.Show("Export Complete! \n" + "File has been exported to:\n" + pathname);
-            
+
         }
 
         //if the rate is external, place the invoice in the accounts receivable folder
@@ -135,32 +108,57 @@ namespace CUITAdmin
                     Directory.CreateDirectory(pathname + @"\Accounts Receivable");
                 }
             }
-        
-        
-        
+
+
+
+        }
+        //////// Add instrument info instrument use pdf////////////
+        public void AddInstrument(string instrumentName, string usedDate, string usedDuration, string usedRate)
+        {
+            string fieldInst = pdfFormFields.GetField("instrument");
+            string fieldDate = pdfFormFields.GetField("date");
+            string fieldDuration = pdfFormFields.GetField("duration");
+            string fieldRate = pdfFormFields.GetField("rate");
+
+            pdfFormFields.SetField("instrument", fieldInst + instrumentName + "\r\n\r\n\r\n");
+            pdfFormFields.SetField("date", fieldDate + usedDate + "\r\n\r\n");
+            pdfFormFields.SetField("duration", fieldDuration + usedDuration + "\r\n\r\n\r\n");
+            pdfFormFields.SetField("rate", fieldRate + usedRate + "\r\n\r\n\r\n");
+        }
+
+        // Add Page Number //////////////
+        public void InsertPageNumber(string CurrentPage, string TotalPages)
+        {
+
+            pdfFormFields.SetField("PageNumber", CurrentPage + " of " + TotalPages);
         }
 
         // Add Address //////////////
-        public void AddAddress(string name, string street, string city, string state, string zip )
+        public void AddAddress(string name, string street, string city, string state, string zip)
         {
-            
+
             pdfFormFields.SetField("Address", name + Environment.NewLine
-               + street + Environment.NewLine + city +", "+ state +" "+ zip);
+               + street + Environment.NewLine + city + ", " + state + " " + zip);
         }
 
         //Add postdate/////////////
-        public void AddPostDate(string postStartDate, string postEndDate) {
+        public void AddPostDate(string postStartDate, string postEndDate)
+        {
 
             pdfFormFields.SetField("services", "Post Start Date: " + postStartDate + Environment.NewLine + "Post End Date: " + postEndDate + Environment.NewLine + Environment.NewLine);
-             
-        
+
+
         }
 
+        public int ServiceLines()
+        {
+            return pdfFormFields.GetField("services").Split('\n').Length;
+        }
 
         //Add Service//////////////
-        public void AddService(string service, string postStartDate, string postEndDate, string unitquantity, string rate, string unit)
+        public void AddService(string service, string unitquantity, string rate, string unit)
         {
-            
+
             string field = pdfFormFields.GetField("services");
             //old code
             //pdfFormFields.SetField("services", service +
@@ -168,8 +166,8 @@ namespace CUITAdmin
             //+ unitquantity + " " + unit + "s" + " @ $" + rate + "/" + unit + "" + ")" +
             //Environment.NewLine + Environment.NewLine); 
             ///
-            pdfFormFields.SetField("services", field + service 
-             + Environment.NewLine+ "("+ unitquantity +" "  + unit + "s" + " @ $" + rate 
+            pdfFormFields.SetField("services", field + service
+             + Environment.NewLine + "(" + unitquantity + " " + unit + "s" + " @ $" + rate
              + "/" + unit + "" + ")" + Environment.NewLine + Environment.NewLine);
 
 
@@ -180,30 +178,33 @@ namespace CUITAdmin
         {
             string field = pdfFormFields.GetField("charges");
 
-            pdfFormFields.SetField("charges", "\n\r\n" +field + "$" + chargeamount + "\r\n\r\n\r");                   
+            pdfFormFields.SetField("charges", "\n\r\n\n" + field + "$" + chargeamount + "\r\n\r\n\r");
         }
         //add balance/////////////////////
         public void AddBalance(string balance)
         {
-           
 
-            pdfFormFields.SetField("balance", Environment.NewLine + Environment.NewLine + Environment.NewLine +
-                Environment.NewLine + balance);
+
+            // pdfFormFields.SetField("balance", Environment.NewLine + Environment.NewLine + Environment.NewLine +
+            //     Environment.NewLine + balance);
+            pdfFormFields.SetField("balance", "\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \r" + balance);
+
         }
         //add date/////////////////////////
         public void AddDate(string Date)
         {
-            
-            pdfFormFields.SetField("Date", Date);           
+
+            pdfFormFields.SetField("Date", Date);
         }
         //add invoiceID/////////////////////////
         public void AddInvoiceID(string invoiceID)
         {
-         
+
             pdfFormFields.SetField("FillText1", invoiceID);
         }
 
-        public void GenerateOldInvoice(int invoiceNumber) {
+        public void GenerateOldInvoice(int invoiceNumber)
+        {
             DBManager dbManager = DBManager.Instance;
             //MessageBox.Show(endtime.ToString());
             //the offset 
@@ -237,8 +238,6 @@ namespace CUITAdmin
 
                 AddService(
                     currentRow["Name"].ToString(), //insert time into the invoice
-                    poststart.ToShortDateString().ToString(), //insert start date into invoice
-                    postend.ToShortDateString().ToString(),  //insert end date into invoice
                     currentRow["Hours"].ToString(), //insert hours into invoice
                     currentRow["Rate"].ToString(), //insert dollars per hour into invoice
                     "day");// unit of biling displayed on invoice
@@ -248,11 +247,117 @@ namespace CUITAdmin
 
             AddDate(DateTime.Now.ToString()); //Add todays date to the invoice
             AddInvoiceID(invoice.Rows[0]["InvoiceID"].ToString()); // add invoice id to invoice
-            AddBalance(offset + "$" + invoice.Rows[0]["Total_Balance"].ToString()); // add balance to invoice
+            //AddBalance(offset + "$" + invoice.Rows[0]["Total_Balance"].ToString()); // add balance to invoice
+            AddBalance("$" + invoice.Rows[0]["Total_Balance"].ToString()); // add balance to invoice
+
 
         }
 
-              
-       }
+        public void GenerateInvoicePDF(int invoiceID)
+        {
+            DBManager mymanager = DBManager.Instance;
+            DataTable invoice = mymanager.GetInvoice(invoiceID);
+            if (invoice.Rows.Count == 0)
+            {
+
+                MessageBox.Show("No invoices");
+                return;
+            }
+
+            DataTable invoiceTime = mymanager.GetInvoiceTimeLine(invoiceID);
+            DataTable invoiceSupply = mymanager.GetInvoiceSupplyLine(invoiceID);
+            //convert date time to invoice friendly format
+
+            string accounttype = (invoice.Rows[0]["Rate_Type"].ToString());
+            //string timeIncriment = (invoice.Rows[0]["Time_Increment"].ToString());
+            //MessageBox.Show(timeIncriment);
+            //MessageBox.Show(accounttype);
+            string exportpath = "Invoice - " + invoiceID + ".pdf";
+            bool path = false;
+            bool excelgenar = false;
+
+            // try
+            // {
+            //if the rate is industry, then add an accounts receivable folder
+            if (accounttype == "Industry")
+            {
+                //pdfManager.changeDirectoryRate(true);
+                exportpath = @"Accounts Receivable\Invoice - " + invoiceID + ".pdf";
+                path = true;
+                excelgenar = true;
+            }
+
+            GeneratePDF(invoice, invoiceTime, exportpath, path);
+        }
+
+        public void GenerateInstrumentUsePDF()
+        {
+
+        }
+
+        public void GenerateSupplyUsePDF()
+        {
+
+        }
+
+        public string GeneratePDF(DataTable invoice, DataTable invoiceTime, string exportpath, bool path)
+        {
+            string offset = "";
+            DateTime poststart = DateTime.Parse(invoice.Rows[0]["Posting_Start_Date"].ToString());
+            DateTime postend = DateTime.Parse(invoice.Rows[0]["Posting_End_Date"].ToString());
+            PDFManager pdfManager = new PDFManager(exportpath, path, "invoice");
+
+            //pdfManager.AddAddress("Name", "Street", "City", "State", "Zip");
+            pdfManager.AddAddress(invoice.Rows[0]["Name"].ToString(),
+                invoice.Rows[0]["Street"].ToString(), //add street to invocie
+                invoice.Rows[0]["City"].ToString(), // add city to invoice
+                invoice.Rows[0]["State"].ToString(), //add state to invoice
+                invoice.Rows[0]["Zip"].ToString()); //add zip to invoice
+
+            pdfManager.InsertPageNumber("4", "5");
+
+
+
+            //pdfManager.AddService("Instrument", "StartPostDate", "EndPostDate","hours", "rate ($/hr)", "unit(hours days ects)");
+
+            pdfManager.AddPostDate(poststart.ToShortDateString().ToString(), postend.ToShortDateString().ToString());
+
+            while (invoiceTime.Rows.Count > 0)
+            {
+                DataRow currentRow = invoiceTime.Rows[0];
+                double computedRate = Convert.ToDouble(currentRow["Line_Amount"]) / Convert.ToDouble(currentRow["Hours"]);
+
+
+                pdfManager.AddService(
+                    currentRow["Name"].ToString(), //insert time into the invoice
+                    currentRow["Hours"].ToString(), //insert hours into invoice
+                    computedRate.ToString(), //insert dollars per hour into invoice
+                    "hour");// unit of biling displayed on invoice
+                pdfManager.AddCharge(currentRow["Line_Amount"].ToString()); //add charge to invoice
+                offset += "\r\n\r\n";
+                invoiceTime.Rows.RemoveAt(0);
+            }
+
+            string services = pdfManager.GetFieldByName("services");
+            string services2 = pdfManager.GetFieldByName("charge");
+
+            string[] serviceLines = services.Split('\n');
+
+            for (int i = 0; i < services.Length; i++) { }
+
+                pdfManager.AddDate(DateTime.Now.ToString()); //Add todays date to the invoice
+            pdfManager.AddInvoiceID(invoice.Rows[0]["InvoiceID"].ToString()); // add invoice id to invoice
+            pdfManager.AddBalance(offset + "$" + invoice.Rows[0]["Total_Balance"].ToString()); // add balance to invoice
+
+            pdfManager.PDFClose();
+            return offset;
+        }
+
+
+        internal string GetFieldByName(string fieldName)
+        {
+            return pdfFormFields.GetField(fieldName);
+        }
+    }
 }
 

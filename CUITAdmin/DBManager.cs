@@ -1147,6 +1147,8 @@ namespace CUITAdmin
             int invoiceID;
             if(!int.TryParse(newID,out invoiceID)) return false;
 
+            GenerateInstrumentUse(timeLogs, invoiceID);
+
             // Go through each instrument line object and add it to the table to send
             foreach (InvoiceInstrumentLine currentInstrumentLine in invoice.instrumets) {
                 invoiceTimeLine.Rows.Add(
@@ -1190,6 +1192,9 @@ namespace CUITAdmin
 
 
                 foreach (InvoiceInstrumentLine currentInstrument in invoice.instrumets) {
+
+                    // Call Davids fuction here
+
                     if (currentInstrument.id == Convert.ToInt32(currentRow["InstrumentID"]) &&
                         currentInstrument.rate == Convert.ToDouble(currentRow["Current_Rate"]) &&
                         currentInstrument.timeIncrement == Convert.ToInt32(currentRow["Time_Increment"])) {
@@ -1236,6 +1241,10 @@ namespace CUITAdmin
                 bool foundFlag = false;
 
                 foreach (InvoiceSupplyLine currentSupply in invoice.supplies) {
+
+                    // Call Davids Supply Function Here
+                    //GenerateInstrumentUse();
+
                     if (currentSupply.name == currentRow["Supply_Name"].ToString() &&
                         currentSupply.currentCost == Convert.ToDouble(currentRow["Current_Cost"])) 
                     {
@@ -1266,6 +1275,32 @@ namespace CUITAdmin
                 currentLine.charges = currentLine.currentCost * currentLine.quantity;
                 invoice.totalBalance += currentLine.charges;
             }
+        }
+
+        private void GenerateInstrumentUse(DataTable timeLogsTable, int invoiceID)
+        {
+            //string to save the instrument use
+            string exportpath = "Instrument Use - " + invoiceID + ".pdf";
+
+            bool path = false;
+
+            PDFManager  pdfManager = new PDFManager(exportpath, path, "timelog");
+
+            pdfManager.AddDate(DateTime.Now.ToString()); //Add todays date to the invoice
+            pdfManager.AddInvoiceID(invoiceID.ToString()); // add invoice id to invoice
+            //AddInstrument(string instrumentName,string usedDate,string usedDuration, string usedRate)
+
+            foreach (DataRow currentRow in timeLogsTable.Rows)
+            {
+                string instrumentName = currentRow["Name1"].ToString();
+                string startTime = currentRow["Start_Time"].ToString();
+                TimeSpan durationDT = ((DateTime)currentRow["End_Time"]).Subtract( (DateTime) currentRow["Start_Time"]);
+                string duration = durationDT.TotalMinutes.ToString();
+                string currentRate = currentRow["Current_Rate"].ToString();
+                pdfManager.AddInstrument(instrumentName, startTime, duration, currentRate);
+            }
+            
+            pdfManager.PDFClose();
         }
 
         // Used to add a group of rows from a DataTable to a table on the db

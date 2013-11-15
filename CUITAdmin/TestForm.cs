@@ -19,13 +19,22 @@ namespace CUITAdmin {
             xmlManager = XmlManager.Instance;
         }
 
+        
         private void button1_Click(object sender, EventArgs e) 
         {
+
+
+
             xmlManager = XmlManager.Instance; 
             int count = 0;
             DBManager mymanager = DBManager.Instance;
             Random rand = new Random();
 
+            int invoiceID = 381;
+
+            PDFManager mypdf = new PDFManager();
+
+            mypdf.GenerateInvoicePDF(381);
             
 
             //DataTable testTable = mymanager.GetAccounts();
@@ -92,7 +101,7 @@ namespace CUITAdmin {
             #endregion
 
 
-            int invoiceID;
+            //int invoiceID;
 
             //TO-DO Remove these functions
             #region Generated from a different function now 

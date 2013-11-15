@@ -7,7 +7,8 @@ namespace CUITAdmin
 {
     static class Program
     {
-        public static char userType;
+        //TO-DO: Remove default value from usertype
+        public static char userType = 'A';
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
