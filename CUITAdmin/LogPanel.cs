@@ -72,6 +72,14 @@ namespace CUITAdmin {
 
             if (Properties.Settings.Default.StandaloneMode == "true") {
                 standalone = true;
+
+                BindingList<Data> instruments;
+                xmlManager.GetInstruments(out instruments);
+
+                cboInstrument.DataSource = instruments;
+                cboInstrument.DisplayMember = "Name";
+                cboInstrument.ValueMember = "Value";
+
             } else {
                 standalone = false;
 
@@ -343,15 +351,38 @@ namespace CUITAdmin {
 
             if (standalone) {
 
-            } else {
+                BindingList<Data> accounts;
+                BindingList<Data> instruments;
+                xmlManager.GetUserAccounts(txtUsername.Text, out accounts);
+
+
                 CustomInvoke(cboFundingSource,
                     delegate {
-                        cboFundingSource.DataSource = dbManager.GetUserAccounts(username);
+                        if (accounts.Count == 0) {
+                            MessageBox.Show("There were no accounts assigned to your username");
+                            return;
+                        }
+                        cboFundingSource.DataSource = accounts;
+                        cboFundingSource.DisplayMember = "Name";
+                        cboFundingSource.ValueMember = "Value";
+                        cboFundingSource.Focus();
+                    });                
+
+            } else { // Start server code
+                DataTable accounts = dbManager.GetUserAccounts(username);
+                CustomInvoke(cboFundingSource,
+                    delegate {
+                        if (accounts.Rows.Count == 0){
+                            MessageBox.Show("There were no accounts assigned to your username");
+                            return;
+                        }
+
+                        cboFundingSource.DataSource = accounts;
                         cboFundingSource.DisplayMember = "Name";
                         cboFundingSource.ValueMember = "Account_Number";
+                        cboFundingSource.Focus();
                     });
             }
-
         }
 
         // This prevents me from writing about 15 if statements, it's kinda like $() in javascript

@@ -5,6 +5,8 @@ using System.Text;
 using System.Configuration;
 using System.Xml;
 using System.ComponentModel;
+using System.Data;
+using System.IO;
 
 namespace CUITAdmin {
     class XmlManager {
@@ -17,9 +19,26 @@ namespace CUITAdmin {
         private XmlDocument xmlDoc;
 
         private XmlManager() {
-            xmlDoc = new XmlDocument();
-            xmlDoc.Load(FILE_LOCATION);
+            LoadFile();
             startedLogs = new List<XmlElement>();
+        }
+
+        private void LoadFile() {
+            StreamReader encryptedReader = new StreamReader(FILE_LOCATION);
+            string encryptedFile = encryptedReader.ReadToEnd();
+
+            SimpleAES aesEncryptor = new SimpleAES();
+            string decryptedFile = aesEncryptor.DecryptString(encryptedFile);
+
+            MemoryStream streamToLoad = new MemoryStream();
+            StreamWriter writer = new StreamWriter(streamToLoad);
+            writer.Write(decryptedFile);
+            writer.Flush();
+            streamToLoad.Position = 0;
+
+            xmlDoc = new XmlDocument();
+            //TO-DO create empty records file if there isn't one
+            xmlDoc.Load(streamToLoad);
         }
 
         public static XmlManager Instance {
@@ -94,7 +113,7 @@ namespace CUITAdmin {
             // finally add the user to the users element
             usersElement.AppendChild(userElement);
 
-            xmlDoc.Save(FILE_LOCATION);
+            EncryptedSave();
             return true;
         }
 
@@ -119,11 +138,11 @@ namespace CUITAdmin {
             string parentXPath = "//root/logs";
             string node = "log";
             string[] nodeNames = new string[]{
-                "username", "account_number","instrument",  "start_time"
+                "username", "account_number","instrument",  "start_time", "end_time"
             };
 
             string[] nodeValues = new string[]{
-                username, account, instrument, startTime
+                username, account, instrument, startTime, ""
             };
             return AddToXml(parentXPath, node, nodeNames, nodeValues);
         }
@@ -150,19 +169,19 @@ namespace CUITAdmin {
         }
 
 
-        public bool AddSupplyUse(string username, string accountnumber, string supply, int quanity)
+        public bool AddSupplyUse(string date, string accountnumber, string supply, int quanity)
         {
-            return AddSupplyUse(username, accountnumber, supply, quanity.ToString());
+            return AddSupplyUse(date, accountnumber, supply, quanity.ToString());
         }
 
-        public bool AddSupplyUse(string username, string accountnumber, string supply, string quantity) {
+        public bool AddSupplyUse(string date, string accountnumber, string supply, string quantity) {
             string parentXPath = "//root/supply_uses";
             string node = "supply_use";
             string[] nodeNames = new string[]{
-                "username", "account_number","supply_name",  "quantity"
+                "date", "account_number","supply_name",  "quantity"
             };
             string[] nodeValues = new string[]{
-                username, accountnumber, supply, quantity
+                date, accountnumber, supply, quantity
             };
             return AddToXml(parentXPath, node, nodeNames, nodeValues);
         }
@@ -194,7 +213,7 @@ namespace CUITAdmin {
             }
 
             parentNode.AppendChild(node);
-            xmlDoc.Save(FILE_LOCATION);
+            EncryptedSave();
 
             outElement = node;
             return true;
@@ -254,7 +273,7 @@ namespace CUITAdmin {
                 }
             }
 
-            xmlDoc.Save(FILE_LOCATION);
+            EncryptedSave();
 
             return true;
         }
@@ -345,6 +364,221 @@ namespace CUITAdmin {
             return true;
         }
 
+        public bool GetInstruments(out BindingList<Data> instrumentsOut) {
+
+            BindingList<Data> outInstruments = new BindingList<Data>();
+            XmlNode instruments = xmlDoc.SelectSingleNode("//root/instruments");
+                // loop through each account in the user
+            foreach (XmlElement currentInstrument in instruments)
+            {
+                outInstruments.Add(new Data
+                {
+                    Name = currentInstrument.SelectSingleNode("name").InnerText,
+                    Value = currentInstrument.SelectSingleNode("instrumentID").InnerText
+                });
+            }
+
+            instrumentsOut = outInstruments;
+
+            if (outInstruments.Count == 0)
+                return false;
+            return true;
+        }
+
+        public DataTable ImportTimeLogs() {
+            DataTable outTable = new DataTable();
+
+            outTable.Columns.Add("Username");
+            outTable.Columns.Add("Account_Number");
+            outTable.Columns.Add("Instrument");
+            outTable.Columns.Add("Start_Time");
+            outTable.Columns.Add("End_Time");
+            outTable.Columns.Add("Current_Rate");
+            outTable.Columns.Add("Time_Increment");
+            outTable.Columns.Add("Approved");
+
+            XmlNode logs = xmlDoc.SelectSingleNode("//root/logs");
+
+            foreach (XmlElement currentLog in logs.ChildNodes) {
+
+                string approved = (currentLog.SelectSingleNode("end_time").InnerText == "") ? "N" : "Y";
+
+                outTable.Rows.Add(
+                    currentLog.SelectSingleNode("username").InnerText,
+                    currentLog.SelectSingleNode("account_number").InnerText,
+                    currentLog.SelectSingleNode("instrument").InnerText,
+                    currentLog.SelectSingleNode("start_time").InnerText,
+                    currentLog.SelectSingleNode("end_time").InnerText,
+                    "",
+                    "",
+                    approved
+                    );
+            }
+
+            logs.RemoveAll();
+
+            return outTable;
+        }
+
+        public DataTable ImportSupplyUse() {
+            DataTable outTable = new DataTable();
+
+
+            outTable.Columns.Add("Account_Number");
+            outTable.Columns.Add("Supply_Name");
+            outTable.Columns.Add("Date");
+            outTable.Columns.Add("Quantity");
+            outTable.Columns.Add("Current_Cost");
+
+            XmlNode supplies = xmlDoc.SelectSingleNode("//root/supply_uses");
+
+            foreach (XmlElement currentUse in supplies.ChildNodes) {
+                outTable.Rows.Add(
+                    currentUse.SelectSingleNode("account_number").InnerText,
+                    currentUse.SelectSingleNode("supply_name").InnerText,
+                    currentUse.SelectSingleNode("date").InnerText,
+                    currentUse.SelectSingleNode("quantity").InnerText,
+                    ""
+                    );
+            }
+
+            supplies.RemoveAll();
+
+            return outTable;
+        }
+
+        public void CreateLogFile() {
+            MemoryStream unencryptedFile = new MemoryStream();
+            
+
+            DBManager dbManager = DBManager.Instance;
+
+            XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();
+            xmlWriterSettings.NewLineOnAttributes = true;
+            xmlWriterSettings.Indent = true;
+
+            XmlWriter xmlWriter = XmlWriter.Create(unencryptedFile, xmlWriterSettings);
+
+            xmlWriter.WriteStartDocument();
+            xmlWriter.WriteStartElement("root");
+
+
+
+            AddUsersToExport(dbManager, xmlWriter);
+            AddAccountsToExport(dbManager, xmlWriter);
+            AddInstrumentsToExport(dbManager, xmlWriter);
+            AddSuppliesToExport(dbManager, xmlWriter);
+
+            xmlWriter.WriteStartElement("logs");
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("supply_uses");
+            xmlWriter.WriteEndElement();
+
+
+
+            xmlWriter.WriteEndElement(); // end root node
+            xmlWriter.WriteEndDocument();
+
+            xmlWriter.Close();
+
+            unencryptedFile.Position = 0;
+            StreamReader reader = new StreamReader(unencryptedFile);
+            string fileToEncrypt = reader.ReadToEnd();
+
+            SimpleAES aesEncryptor = new SimpleAES();
+
+            string encryptedFile = aesEncryptor.EncryptToString(fileToEncrypt);
+
+            StreamWriter writer = new StreamWriter("records.xml");
+            writer.Write(encryptedFile);
+            writer.Close();
+
+            LoadFile();
+
+        }
+
+        private void AddSuppliesToExport(DBManager dbManager, XmlWriter xmlWriter) {
+            DataTable supplies = dbManager.GetSupplies();
+            xmlWriter.WriteStartElement("supplies");
+            foreach (DataRow row in supplies.Rows) {
+                xmlWriter.WriteStartElement("supply");
+                xmlWriter.WriteElementString("name", row["Supply_Name"].ToString());
+                xmlWriter.WriteEndElement();
+            }
+            xmlWriter.WriteEndElement();
+        }
+
+        private void AddInstrumentsToExport(DBManager dbManager, XmlWriter xmlWriter) {
+            DataTable instruments = dbManager.GetInstruments();
+            xmlWriter.WriteStartElement("instruments");
+            foreach (DataRow row in instruments.Rows) {
+                xmlWriter.WriteStartElement("instrument");
+                xmlWriter.WriteElementString("name", row["Name"].ToString());
+                xmlWriter.WriteElementString("instrumentID", row["InstrumentID"].ToString());
+                xmlWriter.WriteEndElement();
+            }
+            xmlWriter.WriteEndElement();
+        }
+
+        private void AddAccountsToExport(DBManager dbManager, XmlWriter xmlWriter) {
+            DataTable instruments = dbManager.GetAccounts();
+
+            xmlWriter.WriteStartElement("accounts");
+            foreach (DataRow row in instruments.Rows) {
+                xmlWriter.WriteStartElement("account");
+                xmlWriter.WriteElementString("account_number", row["Account_Number"].ToString());
+                xmlWriter.WriteElementString("account_name", row["Name"].ToString());
+                xmlWriter.WriteEndElement(); // end account node
+            }
+            xmlWriter.WriteEndElement(); // end accounts node
+        }
+
+        private void AddUsersToExport(DBManager dbManager, XmlWriter xmlWriter) {
+
+            DataTable users = dbManager.GetUsers(true);
+            xmlWriter.WriteStartElement("users");
+
+            foreach (DataRow row in users.Rows) {
+                xmlWriter.WriteStartElement("user");
+                xmlWriter.WriteElementString("username", row["Username"].ToString());
+                xmlWriter.WriteElementString("password", row["Password"].ToString());
+                xmlWriter.WriteElementString("type", row["Type"].ToString());
+
+                DataTable userAccounts = dbManager.GetUserAccounts(row["Username"].ToString());
+
+                xmlWriter.WriteStartElement("account_numbers");
+
+                foreach (DataRow accountRow in userAccounts.Rows) {
+                    xmlWriter.WriteElementString("account_number", accountRow["Account_Number"].ToString());
+                }
+
+                xmlWriter.WriteEndElement(); //End account_numbers node
+
+                xmlWriter.WriteEndElement(); //End user node
+            }
+
+            xmlWriter.WriteEndElement(); //end users node
+        }
+
+        private void EncryptedSave() {
+
+            StringWriter stringWriter = new StringWriter();
+            XmlTextWriter xmlTextWriter = new XmlTextWriter(stringWriter);
+
+            xmlDoc.WriteTo(xmlTextWriter);
+            string fileToEncrypt = stringWriter.ToString();
+
+            SimpleAES aesEncryptor = new SimpleAES();
+
+            string encryptedFile = aesEncryptor.EncryptToString(fileToEncrypt);
+
+            StreamWriter writer = new StreamWriter("records.xml");
+            writer.Write(encryptedFile);
+            writer.Close();
+        }
+
+
         /*
          XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.Load(FILE_LOCATION);
@@ -372,5 +606,6 @@ namespace CUITAdmin {
                     }
                 }
          */
+
     }
 }

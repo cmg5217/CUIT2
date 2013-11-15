@@ -913,7 +913,7 @@ namespace CUITAdmin
                     cboManualSupplyItem.SelectedValue.ToString();
                     string quantity = txtManualSupplyQuantity.Text;
                     string item = cboManualSupplyItem.SelectedItem.ToString();
-                    xmlManager.AddSupplyUse(username, account, item, quantity);
+                    xmlManager.AddSupplyUse(DateTime.Now.ToString(), account, item, quantity);
                 } else {
                     DateTime serverTime;
                     dbManager.GetServerDateTime(out serverTime);

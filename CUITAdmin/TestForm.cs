@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -21,12 +22,42 @@ namespace CUITAdmin {
 
         private void button1_Click(object sender, EventArgs e) 
         {
+            
+            
             xmlManager = XmlManager.Instance; 
             int count = 0;
             DBManager mymanager = DBManager.Instance;
             Random rand = new Random();
 
-            
+            xmlManager.CreateLogFile();
+
+            xmlManager.AddPartialLog("cmg5217", "1", "10", DateTime.Now.ToString());
+            xmlManager.AddSupplyUse(DateTime.Now.ToString(), "1", "Needles", 30);
+            xmlManager.AddSupplyUse(DateTime.Now.AddHours(-3).ToString(), "1", "Needles", 30);
+            xmlManager.AddLog("cmg5217", "1", "10", DateTime.Now.AddHours(-5).ToString(), DateTime.Now.ToString());
+            xmlManager.AddLog("cmg5217", "1", "10", DateTime.Now.AddHours(-6).ToString(), DateTime.Now.ToString());
+
+            DataTable test1 = xmlManager.ImportTimeLogs();
+            DataTable test2 = xmlManager.ImportSupplyUse();
+
+
+
+            /*
+            StreamReader reader = new StreamReader("records.xml");
+            string file = reader.ReadToEnd();
+            SimpleAES aes = new SimpleAES();
+            file = aes.EncryptToString(file);
+
+            StreamWriter writer = new StreamWriter("testencryption.txt");
+            writer.Write(file);
+            writer.Close();
+
+            string file2 = aes.DecryptString(file);
+
+            StreamWriter writer2 = new StreamWriter("testdecryption.txt");
+            writer2.Write(file2);
+            writer2.Close();
+            */
 
             //DataTable testTable = mymanager.GetAccounts();
             //testTable.TableName = "root";

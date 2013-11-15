@@ -846,13 +846,19 @@ namespace CUITAdmin
             return table;
         }
 
+
         public DataTable GetUsers() {
+            return GetUsers(false);
+        }
+
+        public DataTable GetUsers(bool includeAll) {
             SqlConnection myConnection = DBConnect();
             if (myConnection == null) {
                 return new DataTable();
             }
 
-            string myCommand = "SELECT First_Name, Last_Name, Username, psn.PersonID, Department FROM Users usr left outer join Person psn on usr.PersonID = psn.PersonID";
+            string myCommand = "SELECT First_Name, Last_Name, Username, psn.PersonID, Department " + ((includeAll) ? ", Password, Type ":"") + 
+                "FROM Users usr left outer join Person psn on usr.PersonID = psn.PersonID";
 
             DataTable table = new DataTable();
             try{
