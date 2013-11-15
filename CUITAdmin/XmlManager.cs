@@ -24,7 +24,21 @@ namespace CUITAdmin {
         }
 
         private void LoadFile() {
-            StreamReader encryptedReader = new StreamReader(FILE_LOCATION);
+
+            MemoryStream streamToLoad = LoadEncryptedFile(FILE_LOCATION);
+            xmlDoc = new XmlDocument();
+            //TO-DO create empty records file if there isn't one
+            try {
+                xmlDoc.Load(streamToLoad);
+            } catch {
+                System.Windows.Forms.MessageBox.Show("There was a problem loading the standalone file, it is missing or has been altered manually. Please import a new file");
+                CreateEmptyLogFile();
+            }
+        }
+
+        private MemoryStream LoadEncryptedFile(string filePath){
+
+            StreamReader encryptedReader = new StreamReader(filePath);
             string encryptedFile = encryptedReader.ReadToEnd();
 
             SimpleAES aesEncryptor = new SimpleAES();
@@ -36,9 +50,7 @@ namespace CUITAdmin {
             writer.Flush();
             streamToLoad.Position = 0;
 
-            xmlDoc = new XmlDocument();
-            //TO-DO create empty records file if there isn't one
-            xmlDoc.Load(streamToLoad);
+            return streamToLoad;
         }
 
         public static XmlManager Instance {
@@ -385,69 +397,81 @@ namespace CUITAdmin {
             return true;
         }
 
-        public DataTable ImportTimeLogs() {
+        public DataTable ImportTimeLogs(string filePath) {
             DataTable outTable = new DataTable();
 
             outTable.Columns.Add("Username");
             outTable.Columns.Add("Account_Number");
-            outTable.Columns.Add("Instrument");
-            outTable.Columns.Add("Start_Time");
-            outTable.Columns.Add("End_Time");
-            outTable.Columns.Add("Current_Rate");
-            outTable.Columns.Add("Time_Increment");
-            outTable.Columns.Add("Approved");
+            outTable.Columns.Add("InstrumentID", Type.GetType("System.Int32"));
+            outTable.Columns.Add("Start_Time", Type.GetType("System.DateTime"));
+            outTable.Columns.Add("End_Time", Type.GetType("System.DateTime"));
+            outTable.Columns.Add("Current_Rate", Type.GetType("System.Double"));
+            outTable.Columns.Add("Time_Increment", Type.GetType("System.Int32"));
+            outTable.Columns.Add("Approved", Type.GetType("System.Char"));
 
-            XmlNode logs = xmlDoc.SelectSingleNode("//root/logs");
+            MemoryStream fileToLoad = LoadEncryptedFile(filePath);
+
+            XmlDocument xmlImport = new XmlDocument();
+            xmlImport.Load(fileToLoad);
+
+
+            XmlNode logs = xmlImport.SelectSingleNode("//root/logs");
 
             foreach (XmlElement currentLog in logs.ChildNodes) {
 
-                string approved = (currentLog.SelectSingleNode("end_time").InnerText == "") ? "N" : "Y";
+                Char approved = (currentLog.SelectSingleNode("end_time").InnerText == "") ? 'N' : 'Y';
 
-                outTable.Rows.Add(
-                    currentLog.SelectSingleNode("username").InnerText,
-                    currentLog.SelectSingleNode("account_number").InnerText,
-                    currentLog.SelectSingleNode("instrument").InnerText,
-                    currentLog.SelectSingleNode("start_time").InnerText,
-                    currentLog.SelectSingleNode("end_time").InnerText,
-                    "",
-                    "",
-                    approved
-                    );
+                outTable.Rows.Add();
+
+                DataRow rowToUpdate = outTable.Rows[outTable.Rows.Count - 1];
+                                
+                rowToUpdate[0] = currentLog.SelectSingleNode("username").InnerText;
+                rowToUpdate[1] = currentLog.SelectSingleNode("account_number").InnerText;
+                rowToUpdate[2] = int.Parse(currentLog.SelectSingleNode("instrument").InnerText);
+                rowToUpdate[3] = DateTime.Parse(currentLog.SelectSingleNode("start_time").InnerText);
+
+                string endTimeString = currentLog.SelectSingleNode("end_time").InnerText;
+                if (endTimeString != "") rowToUpdate[4] = DateTime.Parse(endTimeString);
+                rowToUpdate[7] = approved;
+
             }
 
             logs.RemoveAll();
-
             return outTable;
         }
 
-        public DataTable ImportSupplyUse() {
+        public DataTable ImportSupplyUse(string filePath) {
             DataTable outTable = new DataTable();
 
+            MemoryStream fileToLoad = LoadEncryptedFile(filePath);
+
+            XmlDocument xmlImport = new XmlDocument();
+            xmlImport.Load(fileToLoad);
 
             outTable.Columns.Add("Account_Number");
             outTable.Columns.Add("Supply_Name");
-            outTable.Columns.Add("Date");
-            outTable.Columns.Add("Quantity");
-            outTable.Columns.Add("Current_Cost");
+            outTable.Columns.Add("Date", Type.GetType("System.DateTime"));
+            outTable.Columns.Add("Quantity", Type.GetType("System.Int32"));
+            outTable.Columns.Add("Current_Cost", Type.GetType("System.Double"));
 
-            XmlNode supplies = xmlDoc.SelectSingleNode("//root/supply_uses");
+
+
+            XmlNode supplies = xmlImport.SelectSingleNode("//root/supply_uses");
 
             foreach (XmlElement currentUse in supplies.ChildNodes) {
                 outTable.Rows.Add(
                     currentUse.SelectSingleNode("account_number").InnerText,
                     currentUse.SelectSingleNode("supply_name").InnerText,
                     currentUse.SelectSingleNode("date").InnerText,
-                    currentUse.SelectSingleNode("quantity").InnerText,
-                    ""
+                    currentUse.SelectSingleNode("quantity").InnerText
                     );
             }
 
             supplies.RemoveAll();
-
             return outTable;
         }
 
-        public void CreateLogFile() {
+        public void CreateLogFile(string fileDirectory = "") {
             MemoryStream unencryptedFile = new MemoryStream();
             
 
@@ -490,12 +514,66 @@ namespace CUITAdmin {
 
             string encryptedFile = aesEncryptor.EncryptToString(fileToEncrypt);
 
-            StreamWriter writer = new StreamWriter("records.xml");
+            StreamWriter writer = new StreamWriter( fileDirectory + "\\records.xml");
             writer.Write(encryptedFile);
             writer.Close();
 
             LoadFile();
 
+        }
+
+        // if there is no record file or if it is corrupted, create a blank file
+        private void CreateEmptyLogFile() {
+            MemoryStream unencryptedFile = new MemoryStream();
+
+            // Make the file more readable
+            XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();
+            xmlWriterSettings.NewLineOnAttributes = true;
+            xmlWriterSettings.Indent = true;
+
+            XmlWriter xmlWriter = XmlWriter.Create(unencryptedFile, xmlWriterSettings);
+
+            xmlWriter.WriteStartDocument();
+            xmlWriter.WriteStartElement("root");
+
+
+            xmlWriter.WriteStartElement("users");
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("accounts");
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("instruments");
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("supplies");
+            xmlWriter.WriteEndElement();
+
+
+            xmlWriter.WriteStartElement("logs");
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("supply_uses");
+            xmlWriter.WriteEndElement();
+
+
+
+            xmlWriter.WriteEndElement(); // end root node
+            xmlWriter.WriteEndDocument();
+
+            xmlWriter.Close();
+
+            unencryptedFile.Position = 0;
+            StreamReader reader = new StreamReader(unencryptedFile);
+            string fileToEncrypt = reader.ReadToEnd();
+
+            SimpleAES aesEncryptor = new SimpleAES();
+
+            string encryptedFile = aesEncryptor.EncryptToString(fileToEncrypt);
+
+            StreamWriter writer = new StreamWriter("records.xml");
+            writer.Write(encryptedFile);
+            writer.Close();
         }
 
         private void AddSuppliesToExport(DBManager dbManager, XmlWriter xmlWriter) {

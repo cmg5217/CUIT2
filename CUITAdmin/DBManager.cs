@@ -304,6 +304,15 @@ namespace CUITAdmin
             return true;
         }
 
+        public bool AddSupplyUseBulk(DataTable supplyUses) {
+            bool returnBool = true;
+            try {
+                returnBool = SendDataTable(supplyUses, "Supply_Use");
+            } catch (Exception e) {
+                MessageBox.Show(e.Message);
+            }
+            return returnBool;
+        }
 
         public bool AddTimeLog(string accountNumber, int userID, char approved, int instrumentID, DateTime startTime) {
             return AddTimeLog(accountNumber, userID, approved, instrumentID, startTime, DateTime.Now, true);
@@ -354,6 +363,16 @@ namespace CUITAdmin
             }
 
             myConnection.Close();
+        }
+       
+        public bool AddTimeLogBulk(DataTable timeLogs) {      
+            bool returnBool = true;
+            try {
+                returnBool = SendDataTable(timeLogs, "Time_Log");
+            } catch (Exception e) {
+                MessageBox.Show(e.Message);
+            }
+            return returnBool;
         }
 
         public void AddInvoice(DateTime dateGenerated, DateTime postingStartDate, DateTime postingEndDate, string accountNumber, double totalBalance) {
@@ -1063,7 +1082,51 @@ namespace CUITAdmin
             myConnection.Close();
             return table;
         }
-        
+
+        public DataTable GetImportDataTimeLog() {
+            SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+
+            string myCommand = "SELECT acct.Account_Number, ir.InstrumentID, ir.Rate, i.Time_Increment " + 
+                "FROM Account acct  INNER JOIN Rate_Type rt on rt.Name = acct.Rate_Type " + 
+                "INNER JOIN Instrument_Rate ir on ir.Rate_Type = rt.Name INNER JOIN Instrument i on i.InstrumentID = ir.InstrumentID";
+
+            DataTable table = new DataTable();
+            try {
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
+
+
+            myConnection.Close();
+            return table;
+        }
+
+        public DataTable GetImportDataSupplyUse() {
+            SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+
+            string myCommand = "SELECT Supply_Name, Cost FROM Supply";
+
+            DataTable table = new DataTable();
+            try {
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
+
+
+            myConnection.Close();
+            return table;
+        }
+
         #endregion End Get Region
 
 
@@ -1275,7 +1338,7 @@ namespace CUITAdmin
         }
 
         // Used to add a group of rows from a DataTable to a table on the db
-        public void SendDataTable(DataTable tableToSend, string destinationTable) {
+        private bool SendDataTable(DataTable tableToSend, string destinationTable) {
 
             SqlConnection myConnection = DBConnect();
 
@@ -1283,11 +1346,10 @@ namespace CUITAdmin
 
             bulkCopy.DestinationTableName = destinationTable;
 
-            try {
-                bulkCopy.WriteToServer(tableToSend);
-            } catch (Exception e) {
-                Debug.Write(e.ToString());
-            }
+
+            bulkCopy.WriteToServer(tableToSend);
+
+            return true;
         }
 
         #region Update Functions

@@ -3,7 +3,7 @@
  * TO-DO - Reorder tab stop on manual request, check tabstop for all pages
  * 
  * 
- */ 
+ */
 //////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
@@ -20,11 +20,9 @@ using System.IO;
 using CUITAdmin.Properties;
 using System.Globalization;
 
-namespace CUITAdmin
-{
-    public partial class frmCUITAdminMain : Form
-    {
-        
+namespace CUITAdmin {
+    public partial class frmCUITAdminMain : Form {
+
         public static string CONFIG_FILE = "";
         private bool standalone = false;
         private string accountType;
@@ -39,27 +37,22 @@ namespace CUITAdmin
 
 
 
-        public frmCUITAdminMain(char userType)
-        {
+        public frmCUITAdminMain(char userType) {
             this.userType = userType;
             InitializeComponent();
         }
 
 
-        private void Main_Load(object sender, EventArgs e)
-        {
+        private void Main_Load(object sender, EventArgs e) {
 
-            tabControlMain.Location = new Point((this.Size.Width / 2) - (tabControlMain.Size.Width/2) - 7, 
-                                                (this.Size.Height / 2) - (tabControlMain.Size.Height/2) - 19);
-                                      //new Point(0, 0);
+            tabControlMain.Location = new Point((this.Size.Width / 2) - (tabControlMain.Size.Width / 2) - 7,
+                                                (this.Size.Height / 2) - (tabControlMain.Size.Height / 2) - 19);
+            //new Point(0, 0);
             /// manually setting standalone to true so that we can test
             /// To-DO:: Make sure to remove this to work on the server
-            if (Properties.Settings.Default.StandaloneMode == "true")
-            {
+            if (Properties.Settings.Default.StandaloneMode == "true") {
                 standalone = true;
-            }
-
-            else standalone = false;
+            } else standalone = false;
 
             chkFullScreen.Checked = Settings.Default.FullScreen;
             ToggleScreenMode();
@@ -67,7 +60,7 @@ namespace CUITAdmin
             xmlManager = XmlManager.Instance;
             dbManager = DBManager.Instance;
             dbManager.BindForm(this);
-            startPanel = new LogPanel(tbpTracking, new Point(5,5));
+            startPanel = new LogPanel(tbpTracking, new Point(5, 5));
 
             cboAccountAdminNew.SelectedItem = "Account";
             cboAccountAdminView.SelectedItem = "Accounts";
@@ -204,8 +197,7 @@ namespace CUITAdmin
 
         }
 
-        private void btnAdd_Click(object sender, EventArgs e)
-        {
+        private void btnAdd_Click(object sender, EventArgs e) {
             int duration;
             if (!(int.TryParse(txtManualLogDuration.Text, out duration))) {
                 txtManualLogDuration.BackColor = Color.Red;
@@ -223,16 +215,16 @@ namespace CUITAdmin
             if (dbManager.AddTimeLog(accountNumber, userID, 'Y', instrumentID, startTime, endTime)) {
                 MessageBox.Show("Time log successfully added");
             } else {
-                MessageBox.Show("There was an error executing your request. \r\n" + 
+                MessageBox.Show("There was an error executing your request. \r\n" +
                                 "Please check your connection or contact your server admin");
             }
         }
 
         private void btnBillingSupplyAdd_Click(object sender, EventArgs e) {
-            
+
             int quantity;
 
-            if(!(int.TryParse(txtBillingSupplyQuantity.Text, out quantity))){
+            if (!(int.TryParse(txtBillingSupplyQuantity.Text, out quantity))) {
                 txtBillingSupplyQuantity.BackColor = Color.Red;
                 return;
             }
@@ -266,7 +258,7 @@ namespace CUITAdmin
 
             foreach (int rowIndex in editedRows) {
                 string approved = dgvTimeLogRequests.Rows[rowIndex].Cells["Approved"].Value.ToString();
-                
+
                 DataRow editedRow = BillingExceptions.Rows[rowIndex];
 
                 bool success; // used for error checking
@@ -303,9 +295,9 @@ namespace CUITAdmin
 
                     if (!success) error = true;
                 } else {/////////////////////////////////////////////////////////////////////////// Start section for supply exceptions
-                    
-                    
-                    
+
+
+
                     if (approved == "Y") {
 
                         dbManager.UpdateSupplyApproval(editedRow["Account_Number"].ToString(),
@@ -345,36 +337,23 @@ namespace CUITAdmin
         #region Admin Tab
 
         // Called in the onload of the tab page to prevent unnecessary calls to the DB5
-        public void updateAdminDGV()
-        {
-            if (cboAccountAdminView.SelectedItem == "Accounts")
-            {
+        public void updateAdminDGV() {
+            if (cboAccountAdminView.SelectedItem == "Accounts") {
                 dgvAdmin.DataSource = dbManager.GetAccounts();
-            }
-            else if (cboAccountAdminView.SelectedItem == "Contacts")
-            {
+            } else if (cboAccountAdminView.SelectedItem == "Contacts") {
                 dgvAdmin.DataSource = dbManager.GetContacts();
-            }
-            else if (cboAccountAdminView.SelectedItem == "Users")
-            {
+            } else if (cboAccountAdminView.SelectedItem == "Users") {
                 dgvAdmin.DataSource = dbManager.GetUsers();
-            }
-            else if (cboAccountAdminView.SelectedItem == "Instruments")
-            {
+            } else if (cboAccountAdminView.SelectedItem == "Instruments") {
                 dgvAdmin.DataSource = dbManager.GetInstruments();
-            } 
-            else if (cboAccountAdminView.SelectedItem == "Rate Types") 
-            {
+            } else if (cboAccountAdminView.SelectedItem == "Rate Types") {
                 dgvAdmin.DataSource = dbManager.GetRateTypes();
-            }
-            else if (cboAccountAdminView.SelectedItem == "Supplies")
-            {
+            } else if (cboAccountAdminView.SelectedItem == "Supplies") {
                 dgvAdmin.DataSource = dbManager.GetSupplies();
             }
         }
 
-        private void btnAccountAdminNew_Click(object sender, EventArgs e)
-        {
+        private void btnAccountAdminNew_Click(object sender, EventArgs e) {
             string addNewCase = cboAccountAdminNew.Text;
             Form newForm = new NewEntryForm(addNewCase, this);
             newForm.ShowDialog(); //Displays forms modally
@@ -403,30 +382,27 @@ namespace CUITAdmin
 
             }
 
-            
+
             Form newForm = new NewEntryForm(addNewCase, this, primaryKey);
             newForm.ShowDialog(); //Displays forms modally
 
         }
 
 
-        private void InitializeGLSUCheckbox()
-        {
-            if (Properties.Settings.Default.GLSUexport == "false")
-            {
+        private void InitializeGLSUCheckbox() {
+            if (Properties.Settings.Default.GLSUexport == "false") {
                 chkGLSU.Checked = false;
             }
         }
 
 
-        private void adminEditViewLoad(object sender, EventArgs e)
-        {
+        private void adminEditViewLoad(object sender, EventArgs e) {
 
             updateAdminDGV();
 
         }
-        
-        
+
+
         #endregion Admin Tab
 
         #region Settings Tab
@@ -438,7 +414,7 @@ namespace CUITAdmin
         }
 
 
-     
+
         #endregion Settings Tab
 
         #region Export Tab
@@ -452,13 +428,12 @@ namespace CUITAdmin
         }
 
         private void genPDF(int invoiceID) {
-            
+
         }
 
 
         private void btnSetInvoiceExportPath_Click(object sender, EventArgs e) {
-            if (InvoiceExportPath.ShowDialog() == DialogResult.OK)
-            {
+            if (InvoiceExportPath.ShowDialog() == DialogResult.OK) {
 
                 Properties.Settings.Default.InvoicePath = InvoiceExportPath.SelectedPath;
                 Properties.Settings.Default.Save();
@@ -467,16 +442,12 @@ namespace CUITAdmin
 
         }
 
-        private void btnExportAll_Click(object sender, EventArgs e)
-        {
+        private void btnExportAll_Click(object sender, EventArgs e) {
 
-            if (Settings.Default["InvoicePath"].ToString() == "")
-            {
+            if (Settings.Default["InvoicePath"].ToString() == "") {
                 MessageBox.Show("You have not selected the export path. Please select an export path first.");
 
-            }
-            else
-            {
+            } else {
                 //parse the date in the combobox and calculate the end of the month
                 string date = comboBoxSelectMonth.Text;
                 DateTime datetime = DateTime.ParseExact(date, "MMMMMMMM", CultureInfo.InvariantCulture);
@@ -491,8 +462,7 @@ namespace CUITAdmin
                 //dbManager.GenerateInvoice("1", DateTime.Now.AddDays(-5), DateTime.Now, out invoiceID);
                 dbManager.GenerateAllInvoices(datetime, endtime, out invoiceIDs);
 
-                foreach (int currentInvoice in invoiceIDs)
-                {
+                foreach (int currentInvoice in invoiceIDs) {
                     GenerateSingleInvoice(currentInvoice, datetime, endtime, ref offset);
                 }
             }
@@ -502,9 +472,7 @@ namespace CUITAdmin
             if (Settings.Default["InvoicePath"].ToString() == "") {
                 MessageBox.Show("You have not selected the export path. Please select an export path first.");
 
-            }
-            else
-            {
+            } else {
                 //parse the date in the combobox and calculate the end of the month
                 string date = comboBoxSelectMonth.Text;
                 DateTime datetime = DateTime.ParseExact(date, "MMMMMMMM", CultureInfo.InvariantCulture);
@@ -516,24 +484,22 @@ namespace CUITAdmin
                 int invoiceID;
                 //dbManager.GenerateInvoice("1", DateTime.Now.AddDays(-5), DateTime.Now, out invoiceID);
                 dbManager.GenerateInvoice(comboBoxSelectAccount.SelectedValue.ToString(), datetime, endtime, out invoiceID);
-                
-                
+
+
                 GenerateSingleInvoice(invoiceID, datetime, endtime, ref offset);
                 return;
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             }
-         
+
         }
 
-        private void GenerateSingleInvoice(int invoiceID, DateTime datetime, DateTime endtime, ref string offset)
-        {
+        private void GenerateSingleInvoice(int invoiceID, DateTime datetime, DateTime endtime, ref string offset) {
             /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            
+
 
             DataTable invoice = dbManager.GetInvoice(invoiceID);
-            if (invoice.Rows.Count == 0)
-            {
+            if (invoice.Rows.Count == 0) {
 
                 MessageBox.Show("No invoices");
                 return;
@@ -555,8 +521,7 @@ namespace CUITAdmin
             // try
             // {
             //if the rate is industry, then add an accounts receivable folder
-            if (accounttype == "Industry")
-            {
+            if (accounttype == "Industry") {
                 //pdfManager.changeDirectoryRate(true);
                 exportpath = @"Accounts Receivable\Invoice - " + invoiceID + ".pdf";
                 path = true;
@@ -576,9 +541,8 @@ namespace CUITAdmin
 
             pdfManager.AddPostDate(poststart.ToShortDateString().ToString(), postend.ToShortDateString().ToString());
 
-            foreach (DataRow currentRow in invoiceTime.Rows)
-            {
-                double computedRate = Convert.ToDouble(currentRow["Line_Amount"])/Convert.ToDouble(currentRow["Rate"]) * 10;
+            foreach (DataRow currentRow in invoiceTime.Rows) {
+                double computedRate = Convert.ToDouble(currentRow["Line_Amount"]) / Convert.ToDouble(currentRow["Rate"]) * 10;
 
 
                 pdfManager.AddService(
@@ -604,30 +568,24 @@ namespace CUITAdmin
             //                   +"open in a PDF reader such as Adobe Reader.");
             // }
 
-            if (chkGLSU.Checked == true)
-            {
+            if (chkGLSU.Checked == true) {
                 ExcelManager.generateAR(excelgenar);
                 ExcelManager.generateExcel(invoice);
             }
             return;
         }
 
-        private void chkGLSU_Click(object sender, EventArgs e)
-        {
-            if (chkGLSU.Checked)
-            {
+        private void chkGLSU_Click(object sender, EventArgs e) {
+            if (chkGLSU.Checked) {
                 Properties.Settings.Default.GLSUexport = "true";
                 Properties.Settings.Default.Save();
-            }
-            else
-            {
+            } else {
                 Properties.Settings.Default.GLSUexport = "false";
                 Properties.Settings.Default.Save();
             }
         }
 
-        private void chkStandalone_Click_1(object sender, EventArgs e)
-        {
+        private void chkStandalone_Click_1(object sender, EventArgs e) {
             //standalone mode on
             if (chkStandalone.Checked) {
                 //
@@ -658,7 +616,7 @@ namespace CUITAdmin
                     MessageBox.Show("Settings not changed, you are still in standalone mode.");
 
                 }
-            }                   
+            }
         }
 
         private void chkFullScreen_Click(object sender, EventArgs e) {
@@ -699,14 +657,14 @@ namespace CUITAdmin
         private void InitializeRequestTab() {
             if (Settings.Default.StandaloneMode == "false") {
 
-            cboManualTimeInstrument.DataSource = dbManager.GetInstruments();
-            cboManualTimeInstrument.DisplayMember = "Name";
-            cboManualTimeInstrument.ValueMember = "InstrumentID";            
-            
-            
-            cboManualSupplyItem.DataSource = dbManager.GetSupplies();
-            cboManualSupplyItem.DisplayMember = "Supply_Name";
-            cboManualSupplyItem.ValueMember = "Supply_Name";
+                cboManualTimeInstrument.DataSource = dbManager.GetInstruments();
+                cboManualTimeInstrument.DisplayMember = "Name";
+                cboManualTimeInstrument.ValueMember = "InstrumentID";
+
+
+                cboManualSupplyItem.DataSource = dbManager.GetSupplies();
+                cboManualSupplyItem.DisplayMember = "Supply_Name";
+                cboManualSupplyItem.ValueMember = "Supply_Name";
             } else {
                 //TO-DO Add XML to load     
 
@@ -721,8 +679,7 @@ namespace CUITAdmin
         }
 
         private bool timeValid = false;
-        private void btnManualTimeValidate_Click(object sender, EventArgs e)
-        {
+        private void btnManualTimeValidate_Click(object sender, EventArgs e) {
             bool pwValid = false;
 
             string username = txtManualTimeUsername.Text;
@@ -742,8 +699,7 @@ namespace CUITAdmin
             }
 
             //time log manual request log in validation
-            if (pwValid)
-            {
+            if (pwValid) {
                 if (standalone) {
                     //code for populating the funding source combobox
                     BindingList<Data> comboItems = new BindingList<Data>();
@@ -762,41 +718,33 @@ namespace CUITAdmin
                     cboManualTimeAccount.ValueMember = "Account_Number";
 
                 }
-            
+
 
                 lblValidate.Visible = true;
-                
+
 
 
                 timeValid = true;
-            }
-            else
-            {
+            } else {
                 MessageBox.Show("Your username or password is incorrect.");
                 txtManualTimeUsername.Focus();
             }
         }
 
-        private void btnManualTimeAdd_Click(object sender, EventArgs e)
-        {
+        private void btnManualTimeAdd_Click(object sender, EventArgs e) {
             //this is for adding the time log user manual request log
             txtManualTimeDuration.BackColor = System.Drawing.Color.White;
-            
+
             //RegEx pattern for duration field
             string durationPattern = "^[0-9]+$";
 
-            if (!timeValid)
-            {
+            if (!timeValid) {
                 MessageBox.Show("Your log in information is not valid.  Please log in to continue.");
                 txtManualTimeUsername.Focus();
-            }
-            else if (!System.Text.RegularExpressions.Regex.IsMatch(txtManualTimeDuration.Text, durationPattern))
-            {
+            } else if (!System.Text.RegularExpressions.Regex.IsMatch(txtManualTimeDuration.Text, durationPattern)) {
                 txtManualTimeDuration.BackColor = System.Drawing.Color.Red;
                 MessageBox.Show("Please input a simple integer to represent the durations in minutes.");
-            }
-            else
-            {
+            } else {
 
                 //adds the time log
                 string username = txtManualTimeUsername.Text;
@@ -829,8 +777,7 @@ namespace CUITAdmin
         }
 
         private bool supplyValid = false;
-        private void btnManualSupplyValidate_Click(object sender, EventArgs e)
-        {
+        private void btnManualSupplyValidate_Click(object sender, EventArgs e) {
             bool pwValid = false;
 
 
@@ -846,8 +793,7 @@ namespace CUITAdmin
 
 
 
-            if (pwValid)
-            {
+            if (pwValid) {
                 if (standalone) {
                     txtManualSupplyQuantity.Clear();
                     label12.Visible = false;
@@ -863,7 +809,7 @@ namespace CUITAdmin
                     }
                     cboManualSupplyAccount.DataSource = comboItems;
                     cboManualSupplyAccount.DisplayMember = "Name";
-                    cboManualSupplyAccount.ValueMember = "Value"; 
+                    cboManualSupplyAccount.ValueMember = "Value";
                 } else {
                     cboManualSupplyAccount.DataSource = dbManager.GetUserAccounts(username);
 
@@ -876,35 +822,27 @@ namespace CUITAdmin
                 label12.Visible = true;
                 supplyValid = true;
 
-            }
-            else
-            {
+            } else {
                 MessageBox.Show("Your username or password is incorrect.");
                 txtManualSupplyUsername.Focus();
             }
         }
 
-        private void btnManualSupplyAdd_Click(object sender, EventArgs e)
-        {
+        private void btnManualSupplyAdd_Click(object sender, EventArgs e) {
             //this is for adding the supplies user manual request log
             txtManualSupplyQuantity.BackColor = System.Drawing.Color.White;
-            
+
             //RegEx pattern for the quantity field
             string quantityPattern = "^[0-9]+$";
 
-            if (!supplyValid)
-            {
+            if (!supplyValid) {
                 MessageBox.Show("Your log in information is not valid.  Please log in to continue.");
                 txtManualSupplyUsername.Focus();
-            }
-            else if (!System.Text.RegularExpressions.Regex.IsMatch(txtManualSupplyQuantity.Text, quantityPattern))
-            {
+            } else if (!System.Text.RegularExpressions.Regex.IsMatch(txtManualSupplyQuantity.Text, quantityPattern)) {
                 txtManualSupplyQuantity.BackColor = System.Drawing.Color.Red;
                 MessageBox.Show("Please input a simple integer to represent the quantity in the unit of measurement appropriate.");
                 txtManualSupplyQuantity.Focus();
-            }
-            else
-            {
+            } else {
                 string username = txtManualSupplyUsername.Text;
                 string account = cboManualSupplyAccount.SelectedValue.ToString();
                 if (standalone) {
@@ -943,59 +881,52 @@ namespace CUITAdmin
             txtAcctManagementEmail.BackColor = System.Drawing.Color.White;
             txtAcctManagementNewPw.BackColor = System.Drawing.Color.White;
             txtAcctManagementConfirmPw.BackColor = System.Drawing.Color.White;
-            
+
             // Phone
             string phonePattern = "^\\D?(\\d{3})\\D?\\D?(\\d{3})\\D?(\\d{4})$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementPhone.Text, phonePattern) && txtAcctManagementPhone.Text != "")
-            {
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementPhone.Text, phonePattern) && txtAcctManagementPhone.Text != "") {
                 txtAcctManagementPhone.BackColor = System.Drawing.Color.Red;
                 error = true;
             }
 
             // Zip
             string zipPattern = "^([0-9]{5})\\-?([0-9]{4})?$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementZip.Text, zipPattern) && txtAcctManagementZip.Text != "")
-            {
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementZip.Text, zipPattern) && txtAcctManagementZip.Text != "") {
                 txtAcctManagementZip.BackColor = System.Drawing.Color.Red;
                 error = true;
             }
 
             // City
             string cityPattern = "^[A-Za-z\\s-\\.]+$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementCity.Text, cityPattern) && txtAcctManagementCity.Text != "")
-            {
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementCity.Text, cityPattern) && txtAcctManagementCity.Text != "") {
                 txtAcctManagementCity.BackColor = System.Drawing.Color.Red;
                 error = true;
             }
 
             // Street
             string streetPattern = "^[\\w\\s-\\.]+$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementStreet.Text, streetPattern) && txtAcctManagementStreet.Text != "")
-            {
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementStreet.Text, streetPattern) && txtAcctManagementStreet.Text != "") {
                 txtAcctManagementStreet.BackColor = System.Drawing.Color.Red;
                 error = true;
             }
 
             //Email
             string emailPattern = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementEmail.Text, emailPattern) && txtAcctManagementEmail.Text != "")
-            {
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementEmail.Text, emailPattern) && txtAcctManagementEmail.Text != "") {
                 txtAcctManagementEmail.BackColor = System.Drawing.Color.Red;
                 error = true;
             }
 
             // New Password
             string passwordPattern = "^([1-zA-Z0-1@.\\s]{5,20})$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementNewPw.Text, passwordPattern) && txtAcctManagementNewPw.Text != "")
-            {
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementNewPw.Text, passwordPattern) && txtAcctManagementNewPw.Text != "") {
                 txtAcctManagementNewPw.BackColor = System.Drawing.Color.Red;
                 error = true;
 
-            }            
-               
+            }
+
             // Confirm Password
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementConfirmPw.Text, passwordPattern) && txtAcctManagementConfirmPw.Text != "")
-            {
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtAcctManagementConfirmPw.Text, passwordPattern) && txtAcctManagementConfirmPw.Text != "") {
                 txtAcctManagementConfirmPw.BackColor = System.Drawing.Color.Red;
                 error = true;
             }
@@ -1005,7 +936,7 @@ namespace CUITAdmin
             return error;
 
         }
-        
+
         private void txtAcctManagementConfirmPw_TextChanged(object sender, EventArgs e) {
             if (txtAcctManagementConfirmPw.Text != txtAcctManagementNewPw.Text) {
                 lblAcctManagementPwMessage.Text = "Passwords don't match";
@@ -1022,7 +953,7 @@ namespace CUITAdmin
                 lblAcctManagementPwMessage.Text = "";
             }
         }
-     
+
         private void bnAcctManagementSubmit_Click(object sender, EventArgs e) {
             bool error = false;
             string errorMessage = "";
@@ -1131,8 +1062,70 @@ namespace CUITAdmin
                                     (this.Size.Height / 2) - (tabControlMain.Size.Height / 2) - 19);
         }
 
+        private void btnExportStandaloneFile_Click(object sender, EventArgs e) {
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
+            DialogResult result = dialog.ShowDialog();
+
+            if (result == DialogResult.OK) {
+                xmlManager.CreateLogFile(dialog.SelectedPath);
+            }
+        }
+
+        private void btnImportLogs_Click(object sender, EventArgs e) {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Multiselect = true;
+            DialogResult result = dialog.ShowDialog();
+
+            if (result == DialogResult.OK) {
+
+                // Create the 2 tables that you will send to the server
+                DataTable timeLogs = new DataTable();
+                DataTable supplyUses = new DataTable();
+
+                foreach (string currentFile in dialog.FileNames) {
+
+                    // Create the 2 tables that you will send to the server
+                    DataTable currentTimeLogs = xmlManager.ImportTimeLogs(currentFile);
+                    DataTable currentSupplyUses = xmlManager.ImportSupplyUse(currentFile);
+
+                    // Get the additional information to fill in all rows
+                    DataTable timeLogImportData = dbManager.GetImportDataTimeLog();
+                    DataTable supplyUseImportData = dbManager.GetImportDataSupplyUse();
+
+                    // Loop through and add the rate and time increment to each timelog
+                    foreach (DataRow row in currentTimeLogs.Rows) {
+                        foreach (DataRow importRow in timeLogImportData.Rows) {
+                            if (importRow["Account_Number"].ToString() == row["Account_Number"].ToString() &&
+                                importRow["InstrumentID"].ToString() == row["InstrumentID"].ToString()) {
+                                row["Current_Rate"] = importRow["Rate"];
+                                row["Time_Increment"] = importRow["Time_Increment"];
+                            }
+                        }
+                    }
+
+                    // Loop through and add the cost to each supply use
+                    foreach (DataRow row in currentSupplyUses.Rows) {
+                        foreach (DataRow importRow in supplyUseImportData.Rows) {
+                            if (importRow["Supply_Name"].ToString() == row["Supply_Name"].ToString()) {
+                                row["Current_Cost"] = importRow["Cost"];
+                            }
+                        }
+                    }
+
+                    timeLogs.Merge(currentTimeLogs);
+                    supplyUses.Merge(currentSupplyUses);
+                }
+
+                // send the imports to the server
+                dbManager.AddTimeLogBulk(timeLogs);
+                dbManager.AddSupplyUseBulk(supplyUses);
+            }
+        }
+
+        private void btnImportStandalone_Click(object sender, EventArgs e) {
+
+        }
 
 
     }
 }
-

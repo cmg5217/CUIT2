@@ -26,7 +26,7 @@ namespace CUITAdmin {
             
             xmlManager = XmlManager.Instance; 
             int count = 0;
-            DBManager mymanager = DBManager.Instance;
+            DBManager dbManager = DBManager.Instance;
             Random rand = new Random();
 
             xmlManager.CreateLogFile();
@@ -37,11 +37,40 @@ namespace CUITAdmin {
             xmlManager.AddLog("cmg5217", "1", "10", DateTime.Now.AddHours(-5).ToString(), DateTime.Now.ToString());
             xmlManager.AddLog("cmg5217", "1", "10", DateTime.Now.AddHours(-6).ToString(), DateTime.Now.ToString());
 
-            DataTable test1 = xmlManager.ImportTimeLogs();
-            DataTable test2 = xmlManager.ImportSupplyUse();
+            // Create the 2 tables that you will send to the server
+            DataTable timeLogs = xmlManager.ImportTimeLogs("records.xml");
+            DataTable supplyUses = xmlManager.ImportSupplyUse("records.xml");
+
+            // Get the additional information to fill in all rows
+            DataTable timeLogImportData = dbManager.GetImportDataTimeLog();
+            DataTable supplyUseImportData = dbManager.GetImportDataSupplyUse();
+
+            // Loop through and add the rate and time increment to each timelog
+            foreach (DataRow row in timeLogs.Rows) {
+                foreach (DataRow importRow in timeLogImportData.Rows) {
+                    if (importRow["Account_Number"].ToString() == row["Account_Number"].ToString() &&
+                        importRow["InstrumentID"].ToString() == row["InstrumentID"].ToString()) {
+                        row["Current_Rate"] = importRow["Rate"];
+                        row["Time_Increment"] = importRow["Time_Increment"];
+                    }
+                }
+            }
+
+            // Loop through and add the cost to each supply use
+            foreach (DataRow row in supplyUses.Rows) {
+                foreach (DataRow importRow in supplyUseImportData.Rows) {
+                    if (importRow["Supply_Name"].ToString() == row["Supply_Name"].ToString()) {
+                        row["Current_Cost"] = importRow["Cost"];
+                    }
+                }
+            }
+
+            // send the imports to the server
+            dbManager.AddTimeLogBulk(timeLogs);
+            dbManager.AddSupplyUseBulk(supplyUses);
 
 
-
+            Debug.Write("");
             /*
             StreamReader reader = new StreamReader("records.xml");
             string file = reader.ReadToEnd();
@@ -99,7 +128,7 @@ namespace CUITAdmin {
             //                        "teststreet", "testcity", "teststate", 12345);
             //Debug.WriteLine("Line" + (++count));
            
-            mymanager.AddUser("test", "lastName", "street", "city", "state", "12345", "8147587606", "test@test.com", "chris1", "tHeskull0135$",
+            dbManager.AddUser("test", "lastName", "street", "city", "state", "12345", "8147587606", "test@test.com", "chris1", "tHeskull0135$",
                 "computer science", "U", "Terrible Student", 4);
 
             //mymanager.AddUserAccount(1, "1");

@@ -44,6 +44,7 @@
             this.txtMonth = new System.Windows.Forms.Label();
             this.comboBoxSelectMonth = new System.Windows.Forms.ComboBox();
             this.grpStandaloneFileExport = new System.Windows.Forms.GroupBox();
+            this.btnImportStandalone = new System.Windows.Forms.Button();
             this.chkFullScreen = new System.Windows.Forms.CheckBox();
             this.chkStandalone = new System.Windows.Forms.CheckBox();
             this.btnImportLogs = new System.Windows.Forms.Button();
@@ -91,6 +92,7 @@
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
+            this.lineSeparator1 = new CUITAdmin.LineSeparator();
             this.label11 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
@@ -140,7 +142,6 @@
             this.btnManualTimeAdd = new System.Windows.Forms.Button();
             this.lblDuration = new System.Windows.Forms.Label();
             this.lblFundingSource = new System.Windows.Forms.Label();
-            this.lineSeparator1 = new CUITAdmin.LineSeparator();
             this.tbpExports.SuspendLayout();
             this.grpExportPath.SuspendLayout();
             this.grpInvoiceExport.SuspendLayout();
@@ -338,6 +339,7 @@
             // 
             // grpStandaloneFileExport
             // 
+            this.grpStandaloneFileExport.Controls.Add(this.btnImportStandalone);
             this.grpStandaloneFileExport.Controls.Add(this.chkFullScreen);
             this.grpStandaloneFileExport.Controls.Add(this.chkStandalone);
             this.grpStandaloneFileExport.Controls.Add(this.btnImportLogs);
@@ -349,10 +351,20 @@
             this.grpStandaloneFileExport.TabStop = false;
             this.grpStandaloneFileExport.Text = "Standalone Files";
             // 
+            // btnImportStandalone
+            // 
+            this.btnImportStandalone.Location = new System.Drawing.Point(34, 58);
+            this.btnImportStandalone.Name = "btnImportStandalone";
+            this.btnImportStandalone.Size = new System.Drawing.Size(121, 23);
+            this.btnImportStandalone.TabIndex = 11;
+            this.btnImportStandalone.Text = "Import Standalone";
+            this.btnImportStandalone.UseVisualStyleBackColor = true;
+            this.btnImportStandalone.Click += new System.EventHandler(this.btnImportStandalone_Click);
+            // 
             // chkFullScreen
             // 
             this.chkFullScreen.AutoSize = true;
-            this.chkFullScreen.Location = new System.Drawing.Point(34, 164);
+            this.chkFullScreen.Location = new System.Drawing.Point(34, 183);
             this.chkFullScreen.Name = "chkFullScreen";
             this.chkFullScreen.Size = new System.Drawing.Size(79, 17);
             this.chkFullScreen.TabIndex = 10;
@@ -363,7 +375,7 @@
             // chkStandalone
             // 
             this.chkStandalone.AutoSize = true;
-            this.chkStandalone.Location = new System.Drawing.Point(34, 146);
+            this.chkStandalone.Location = new System.Drawing.Point(34, 165);
             this.chkStandalone.Name = "chkStandalone";
             this.chkStandalone.Size = new System.Drawing.Size(110, 17);
             this.chkStandalone.TabIndex = 9;
@@ -373,12 +385,13 @@
             // 
             // btnImportLogs
             // 
-            this.btnImportLogs.Location = new System.Drawing.Point(34, 67);
+            this.btnImportLogs.Location = new System.Drawing.Point(34, 108);
             this.btnImportLogs.Name = "btnImportLogs";
             this.btnImportLogs.Size = new System.Drawing.Size(121, 23);
             this.btnImportLogs.TabIndex = 1;
             this.btnImportLogs.Text = "Import Logs";
             this.btnImportLogs.UseVisualStyleBackColor = true;
+            this.btnImportLogs.Click += new System.EventHandler(this.btnImportLogs_Click);
             // 
             // btnExportStandaloneFile
             // 
@@ -388,6 +401,7 @@
             this.btnExportStandaloneFile.TabIndex = 0;
             this.btnExportStandaloneFile.Text = "Export Standalone";
             this.btnExportStandaloneFile.UseVisualStyleBackColor = true;
+            this.btnExportStandaloneFile.Click += new System.EventHandler(this.btnExportStandaloneFile_Click);
             // 
             // tbpAccountAdmin
             // 
@@ -861,6 +875,16 @@
             this.label13.TabIndex = 20;
             this.label13.Text = "( - all fields are optional - )";
             // 
+            // lineSeparator1
+            // 
+            this.lineSeparator1.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.lineSeparator1.Location = new System.Drawing.Point(48, 126);
+            this.lineSeparator1.MaximumSize = new System.Drawing.Size(2000, 2);
+            this.lineSeparator1.MinimumSize = new System.Drawing.Size(0, 2);
+            this.lineSeparator1.Name = "lineSeparator1";
+            this.lineSeparator1.Size = new System.Drawing.Size(578, 2);
+            this.lineSeparator1.TabIndex = 19;
+            // 
             // label11
             // 
             this.label11.AutoSize = true;
@@ -1315,15 +1339,6 @@
             this.lblFundingSource.TabIndex = 4;
             this.lblFundingSource.Text = "Funding Source:";
             // 
-            // lineSeparator1
-            // 
-            this.lineSeparator1.Location = new System.Drawing.Point(48, 126);
-            this.lineSeparator1.MaximumSize = new System.Drawing.Size(2000, 2);
-            this.lineSeparator1.MinimumSize = new System.Drawing.Size(0, 2);
-            this.lineSeparator1.Name = "lineSeparator1";
-            this.lineSeparator1.Size = new System.Drawing.Size(578, 2);
-            this.lineSeparator1.TabIndex = 19;
-            // 
             // frmCUITAdminMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1486,6 +1501,7 @@
         private System.Windows.Forms.CheckBox chkFullScreen;
         private System.Windows.Forms.ComboBox cboBillingExceptions;
         private System.Windows.Forms.CheckBox chkGLSU;
+        private System.Windows.Forms.Button btnImportStandalone;
     }
 }
 
