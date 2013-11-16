@@ -54,19 +54,14 @@ namespace CUITAdmin
 
                 case "User":
                     NewUserPanel myUserPanel = new NewUserPanel(this);
-<<<<<<< HEAD
-                    this.SetBounds(350, 350, 545, 630);
-                    this.Text = "New User";
+                    this.SetBounds(350, 350, 545, 330);
+                    this.Text = "New User Form";
                     break;
 
                 case "Edit User":
                     NewUserPanel myUserEditPanel = new NewUserPanel(this, int.Parse(primaryKey));
-                    this.SetBounds(350, 350, 545, 630);
-                    this.Text = "Edit User";
-=======
                     this.SetBounds(350, 350, 545, 330);
-                    this.Text = "New User Form";
->>>>>>> shane
+                    this.Text = "Edit User";
                     break;
 
                 case "Point of Contact":

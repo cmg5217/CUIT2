@@ -47,15 +47,13 @@ namespace CUITAdmin
         DataTable userAccounts = new DataTable();
         NewEntryForm containingForm;
         DBManager dbManager;
-<<<<<<< HEAD
-        DataRow user;
-        bool[] userAccountAllowed;
-        string acctNum;
-=======
 
-        bool userAccountsAdded = false;
->>>>>>> shane
-        
+        DataRow user;
+
+        string acctNum;
+
+        bool userAccountsAdded = false, accountsEdited = true;
+  
         public NewUserPanel(NewEntryForm pForm)
             :this(pForm, "add") { }
 
@@ -63,6 +61,7 @@ namespace CUITAdmin
             : this(pForm, "edit") {
             this.userID = userID;
             populateControls();
+            accountsEdited = false;
         }
 
         private NewUserPanel(NewEntryForm pForm, string mode) {
@@ -439,49 +438,42 @@ namespace CUITAdmin
                 if (mode == "add") {
 
                     int contactID = 0;
-                    if (cboContacts.SelectedValue.ToString() != "") contactID = int.Parse(cboContacts.SelectedValue.ToString());
+                    if (cboContacts.SelectedValue.ToString() != "") 
+                        contactID = int.Parse(cboContacts.SelectedValue.ToString());
                     
                     int personID;
 
-<<<<<<< HEAD
                     dbManager.AddUser(txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text, 
                         cboState.SelectedItem.ToString(), txtZipCode.Text, txtPhone.Text, txtEmail.Text, txtUsername.Text, 
                         txtPassword.Text, txtDepartment.Text, "U", rtbNotes.Text, contactID, out personID);
 
-                    for(int i = 0; i < userAccountAllowed.Length; i++)
+                    for (int i = 0; i < userAccounts.Columns.Count; i++)
                     {
-                        if (userAccountAllowed[i])
+                        if (userAccounts.Columns[i].ColumnName != "Account_Number")
                         {
-                            dbManager.AddUserAccount(personID, dgvAccounts.Rows[i].Cells["Account_Number"].Value.ToString());
+                            userAccounts.Columns.RemoveAt(i);
                         }
-=======
-                for (int i = 0; i < userAccounts.Columns.Count; i++)
-                {
-                    if (userAccounts.Columns[i].ColumnName != "Account_Number")
-                    {
-                        userAccounts.Columns.RemoveAt(i);
->>>>>>> shane
                     }
 
+                    userAccounts.Columns.Add("PersonID", System.Type.GetType("System.Int32"));
+                    userAccounts.Columns[1].SetOrdinal(0);
+
+                    foreach (DataRow row in userAccounts.Rows)
+                    {
+                        row["PersonID"] = personID;
+                    }
+
+                    dbManager.AddUserAccounts(userAccounts);
+
                 } else if (mode == "edit") {
+                    int contactID;
+                    if (!int.TryParse(cboContacts.SelectedValue.ToString(), out contactID)) contactID = 0;
+
                     dbManager.UpdateUser(int.Parse(user["PersonID"].ToString()), txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text,
                         cboState.Text, txtZipCode.Text, txtPhone.Text, txtEmail.Text, "", txtPassword.Text, txtDepartment.Text,
-                        "", rtbNotes.Text, int.Parse(cboContacts.SelectedValue.ToString()));
+                        "", rtbNotes.Text, contactID);
                 }
 
-<<<<<<< HEAD
-=======
-                userAccounts.Columns.Add("PersonID", System.Type.GetType("System.Int32"));
-                userAccounts.Columns[1].SetOrdinal(0);
-
-                foreach (DataRow row in userAccounts.Rows)
-                {
-                    row["PersonID"] = personID;
-                }
-
-                dbManager.AddUserAccounts(userAccounts);
-
->>>>>>> shane
                 containingForm.updateAdminDGV();
                 containingForm.Close();
             }
@@ -572,14 +564,14 @@ namespace CUITAdmin
                 error = true;
             }
 
-            if (!dbManager.CheckUsername(txtUsername.Text))
+            if (mode == "Add" && !dbManager.CheckUsername(txtUsername.Text))
             {
                 error = true;
                 MessageBox.Show("The Username you entered was already taken.  Please enter a unique Username.");
                 txtUsername.Focus();
             }
 
-            if (!userAccountsAdded)
+            if (!userAccountsAdded && accountsEdited)
                 error = true;
 
             return error;
@@ -593,6 +585,7 @@ namespace CUITAdmin
 
         private void btnUserAccounts_Click(object sender, EventArgs e)
         {
+            accountsEdited = true;
             UserAccountsForm userAccounts = new UserAccountsForm(this, txtUsername.Text);
             userAccounts.ShowDialog();
         }

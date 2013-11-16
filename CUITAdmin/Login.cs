@@ -21,6 +21,8 @@ namespace CUITAdmin {
 
         private void Login_Load(object sender, EventArgs e) {
             dbManager = DBManager.Instance;
+            this.AcceptButton = btnLogin;
+            txtPassword.PasswordChar = '*';
         }
 
         private void btnLogin_Click(object sender, EventArgs e) {

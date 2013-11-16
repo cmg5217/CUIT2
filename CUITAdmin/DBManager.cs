@@ -1388,8 +1388,8 @@ namespace CUITAdmin
 
             if (department != "" ) myCommand.Parameters.AddWithValue("@department", department);
             if (type != "" ) myCommand.Parameters.AddWithValue("@type", type);
-            if (notes != "" ) myCommand.Parameters.AddWithValue("@notes", notes);
-            if (contactID != -1) myCommand.Parameters.AddWithValue("@contactID", contactID);
+            myCommand.Parameters.AddWithValue("@notes", notes);
+            if (contactID > 0) myCommand.Parameters.AddWithValue("@contactID", contactID);
 
             try {
                 myCommand.ExecuteNonQuery();
