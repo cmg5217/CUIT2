@@ -71,18 +71,6 @@ namespace CUITAdmin
             this.Close();
         }
 
-        private void btnAdd_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnRemove_Click(object sender, EventArgs e)
-        {
-
-        }
-
-
-
         private void AllAccountsHeaderButton_Click(object sender, DataGridViewCellMouseEventArgs e)
         {
            // DataRow rowToAdd = ((DataTable)dgvAllAccounts.DataSource).Rows[e.RowIndex];
