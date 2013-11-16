@@ -11,12 +11,13 @@ using System.Data;
 
 namespace CUITAdmin
 {
-    class NewUserPanel : Panel
+    public class NewUserPanel : Panel
     {
         string mode;
         int userID;
         Button btnSubmit = new Button();
         Button btnNewContact = new Button();
+        Button btnUserAccounts = new Button();
         ComboBox cboContacts = new ComboBox();
         RichTextBox rtbNotes = new RichTextBox();
         TextBox txtPhone = new TextBox();
@@ -43,12 +44,17 @@ namespace CUITAdmin
         Label lblFirstName = new Label();
         Label lblPassword = new Label();
         Label lblUsername = new Label();
-        DataGridView dgvAccounts = new DataGridView();
+        DataTable userAccounts = new DataTable();
         NewEntryForm containingForm;
         DBManager dbManager;
+<<<<<<< HEAD
         DataRow user;
         bool[] userAccountAllowed;
         string acctNum;
+=======
+
+        bool userAccountsAdded = false;
+>>>>>>> shane
         
         public NewUserPanel(NewEntryForm pForm)
             :this(pForm, "add") { }
@@ -96,9 +102,18 @@ namespace CUITAdmin
 
         }
 
+        public void setUserAccountsTable(DataTable table)
+        {
+            userAccounts = table;
+            if (userAccounts.Rows.Count >= 1)
+                userAccountsAdded = true;
+            else
+                userAccountsAdded = false;
+        }
+
         private void addControls()
         {
-            this.Controls.Add(this.dgvAccounts);
+            this.Controls.Add(this.btnUserAccounts);
             this.Controls.Add(this.btnSubmit);
             this.Controls.Add(this.btnNewContact);
             this.Controls.Add(this.cboContacts);
@@ -134,13 +149,23 @@ namespace CUITAdmin
             // 
             // btnSubmit
             // 
-            this.btnSubmit.Location = new System.Drawing.Point(430, 555);
+            this.btnSubmit.Location = new System.Drawing.Point(420, 250);
             this.btnSubmit.Name = "btnSubmit";
-            this.btnSubmit.Size = new System.Drawing.Size(75, 23);
+            this.btnSubmit.Size = new System.Drawing.Size(85, 23);
             this.btnSubmit.TabIndex = 27;
             this.btnSubmit.Text = "Submit";
             this.btnSubmit.UseVisualStyleBackColor = true;
             this.btnSubmit.Click += new EventHandler(this.btnSubmit_Click);
+            //
+            // btnUserAccounts
+            //
+            this.btnUserAccounts.Location = new System.Drawing.Point(310, 250);
+            this.btnUserAccounts.Name = "btnUserAccounts";
+            this.btnUserAccounts.Size = new System.Drawing.Size(100, 23);
+            this.btnUserAccounts.TabIndex = 26;
+            this.btnUserAccounts.Text = "Account Access";
+            this.btnUserAccounts.UseVisualStyleBackColor = true;
+            this.btnUserAccounts.Click += new EventHandler(this.btnUserAccounts_Click);
             // 
             // btnNewContact
             // 
@@ -375,18 +400,7 @@ namespace CUITAdmin
             this.lblUsername.Size = new System.Drawing.Size(58, 13);
             this.lblUsername.TabIndex = 0;
             this.lblUsername.Text = "Username:";
-            //
-            // dgvAccounts
-            //
-            this.dgvAccounts.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader);
-            this.dgvAccounts.DataSource = dbManager.GetAccounts();
-            this.dgvAccounts.AllowUserToAddRows = false;
-            this.dgvAccounts.AllowUserToDeleteRows = false;
-            this.dgvAccounts.Location = new System.Drawing.Point(10, 248);
-            this.dgvAccounts.Size = new System.Drawing.Size(495, 300);
-            userAccountAllowed = new bool[dgvAccounts.Rows.Count];
-
-            dgvAccounts.RowHeaderMouseClick += new DataGridViewCellMouseEventHandler(this.rowHeaderButton_Click);
+            
         }
 
         private void updateContactList()
@@ -411,24 +425,6 @@ namespace CUITAdmin
             cboContacts.ValueMember = "Value";
         }
 
-        private void rowHeaderButton_Click(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            if (userAccountAllowed[e.RowIndex])
-            {
-                userAccountAllowed[e.RowIndex] = false;
-                dgvAccounts.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.White;
-                dgvAccounts.Rows[e.RowIndex].HeaderCell.Style.BackColor = Color.White;
-                dgvAccounts.ClearSelection(); 
-            }
-            else
-            {
-                userAccountAllowed[e.RowIndex] = true;
-                dgvAccounts.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.PaleGreen;
-                dgvAccounts.Rows[e.RowIndex].HeaderCell.Style.BackColor = Color.PaleGreen;
-                dgvAccounts.ClearSelection();
-            }
-        }
-
         private void cboContact_Click(object sender, EventArgs e)
         {
             updateContactList();
@@ -437,7 +433,7 @@ namespace CUITAdmin
         private void btnSubmit_Click(object sender, EventArgs e)
         {
             if (errorCheck())
-                MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
+                MessageBox.Show("There were errors on the form or the user does not have access to any accounts.  Please correct errors and submit again.");
             else
             {
                 if (mode == "add") {
@@ -447,6 +443,7 @@ namespace CUITAdmin
                     
                     int personID;
 
+<<<<<<< HEAD
                     dbManager.AddUser(txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text, 
                         cboState.SelectedItem.ToString(), txtZipCode.Text, txtPhone.Text, txtEmail.Text, txtUsername.Text, 
                         txtPassword.Text, txtDepartment.Text, "U", rtbNotes.Text, contactID, out personID);
@@ -457,6 +454,13 @@ namespace CUITAdmin
                         {
                             dbManager.AddUserAccount(personID, dgvAccounts.Rows[i].Cells["Account_Number"].Value.ToString());
                         }
+=======
+                for (int i = 0; i < userAccounts.Columns.Count; i++)
+                {
+                    if (userAccounts.Columns[i].ColumnName != "Account_Number")
+                    {
+                        userAccounts.Columns.RemoveAt(i);
+>>>>>>> shane
                     }
 
                 } else if (mode == "edit") {
@@ -465,6 +469,19 @@ namespace CUITAdmin
                         "", rtbNotes.Text, int.Parse(cboContacts.SelectedValue.ToString()));
                 }
 
+<<<<<<< HEAD
+=======
+                userAccounts.Columns.Add("PersonID", System.Type.GetType("System.Int32"));
+                userAccounts.Columns[1].SetOrdinal(0);
+
+                foreach (DataRow row in userAccounts.Rows)
+                {
+                    row["PersonID"] = personID;
+                }
+
+                dbManager.AddUserAccounts(userAccounts);
+
+>>>>>>> shane
                 containingForm.updateAdminDGV();
                 containingForm.Close();
             }
@@ -551,8 +568,19 @@ namespace CUITAdmin
             if (!System.Text.RegularExpressions.Regex.IsMatch(txtUsername.Text, usernamePattern))
             {
                 txtUsername.BackColor = System.Drawing.Color.Red;
+                
                 error = true;
             }
+
+            if (!dbManager.CheckUsername(txtUsername.Text))
+            {
+                error = true;
+                MessageBox.Show("The Username you entered was already taken.  Please enter a unique Username.");
+                txtUsername.Focus();
+            }
+
+            if (!userAccountsAdded)
+                error = true;
 
             return error;
         }
@@ -561,6 +589,12 @@ namespace CUITAdmin
         {
             NewEntryForm newContact = new NewEntryForm("Point of Contact", null);
             newContact.ShowDialog();
+        }
+
+        private void btnUserAccounts_Click(object sender, EventArgs e)
+        {
+            UserAccountsForm userAccounts = new UserAccountsForm(this, txtUsername.Text);
+            userAccounts.ShowDialog();
         }
     }
 }

@@ -146,6 +146,12 @@
     <Compile Include="TestForm.Designer.cs">
       <DependentUpon>TestForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserAccountsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserAccountsForm.Designer.cs">
+      <DependentUpon>UserAccountsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="XmlManager.cs" />
     <Compile Include="XMLTestingClass.cs" />
     <EmbeddedResource Include="Login.resx">
@@ -178,6 +184,9 @@
     </Compile>
     <EmbeddedResource Include="TestForm.resx">
       <DependentUpon>TestForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserAccountsForm.resx">
+      <DependentUpon>UserAccountsForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config">
       <SubType>Designer</SubType>
