@@ -29,8 +29,6 @@ namespace CUITAdmin
             DBConnect();
         }
 
-
-
         public static DBManager Instance {
             get {
                 if (globalManager == null) {
@@ -132,6 +130,12 @@ namespace CUITAdmin
 
             myConnection.Close();
         }
+
+        public void AddUserAccounts(DataTable userAccounts)
+        {
+            SendDataTable(userAccounts, "User_Account");
+        }
+
 
         public void AddPointOfContact(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email, string notes) {
             string throwaway;
@@ -486,7 +490,6 @@ namespace CUITAdmin
 
         #endregion //End Add Region
 
-
         public bool CheckPassword(string username, string password) {
 
             password = PasswordHash.getHashSha512(password);
@@ -512,6 +515,30 @@ namespace CUITAdmin
             return (count == 1);
         }
 
+        public bool CheckUsername(string username)
+        {
+            SqlConnection myConnection = DBConnect();
+
+            SqlCommand myCommand = new SqlCommand(
+                "SELECT COUNT(Username) FROM Users " +
+                "WHERE Username = @username", myConnection);
+
+            myCommand.Parameters.AddWithValue("@username", username);
+
+            int count = 0;
+
+            try
+            {
+                count = (int)myCommand.ExecuteScalar();
+            }
+            catch (Exception e)
+            {
+                Debug.Write(e.ToString());
+            }
+
+            myConnection.Close();
+            return (count == 0);
+        }
 
         #region Get Functions
         
@@ -878,7 +905,6 @@ namespace CUITAdmin
         
         #endregion End Get Region
 
-
         public void GenerateAllInvoices(DateTime startDate, DateTime endDate, out List<int> invoicesGenerated) {
             List<string> accounts = GetAccountNumberList();
             List<int> invoiceNumbers = new List<int>();
@@ -989,9 +1015,7 @@ namespace CUITAdmin
             SendDataTable(invoiceSupplyLine, "Invoice_Supply_Line");
             invoiceNumber = invoiceID;
             return true;
-        }
-
-        
+        }     
 
         private void GenerateInvoiceInstrumentLines(Invoice invoice, DataTable timeLogs) {
 
@@ -1083,7 +1107,6 @@ namespace CUITAdmin
                 invoice.totalBalance += currentLine.charges;
             }
         }
-
 
         public void SendDataTable(DataTable tableToSend, string destinationTable) {
 
@@ -1180,5 +1203,6 @@ namespace CUITAdmin
             public int timeIncrement { get; set; }
         }
         #endregion
+
     }
 }

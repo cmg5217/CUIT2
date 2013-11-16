@@ -45,7 +45,7 @@ namespace CUITAdmin
 
                 case "User":
                     NewUserPanel myUserPanel = new NewUserPanel(this);
-                    this.SetBounds(350, 350, 545, 630);
+                    this.SetBounds(350, 350, 545, 330);
                     this.Text = "New User Form";
                     break;
 
