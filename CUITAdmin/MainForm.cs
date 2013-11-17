@@ -90,11 +90,14 @@ namespace CUITAdmin
 
             InitializeRequestTab();
 
-            if (userType == 'A') {
+            if (userType == 'A' && !standalone) {
                 InitializeBillingTab();
                 InitializeSettingsTab();
                 InitializeExportTab();
-
+            } else if(userType == 'A' && standalone){
+                InitializeSettingsTab();
+                tabControlMain.TabPages.Remove(tabControlMain.TabPages["tbpBilling"]);
+                tabControlMain.TabPages.Remove(tabControlMain.TabPages["tbpAccountAdmin"]);
             } else {
                 tabControlMain.TabPages.Remove(tabControlMain.TabPages["tbpBilling"]);
                 tabControlMain.TabPages.Remove(tabControlMain.TabPages["tbpAccountAdmin"]);
@@ -211,13 +214,20 @@ namespace CUITAdmin
                 txtManualLogDuration.BackColor = Color.Red;
                 return;
             }
+            
+            if (cboManualLogFunding.Items.Count == 0) {
+                cboManualLogFunding.BackColor = Color.Red;
+                return;
+            }
 
+            cboManualLogFunding.BackColor = Color.White;
             txtManualTimeDuration.BackColor = Color.White;
 
             string accountNumber = cboManualLogFunding.SelectedValue.ToString();
             int instrumentID = int.Parse(cboManualLogInstrument.SelectedValue.ToString());
             int userID = int.Parse(cboManualLogUser.SelectedValue.ToString());
             DateTime startTime = dtpManualLog.Value;
+            dtpManualLog.Value = DateTime.Now;
             DateTime endTime = startTime.AddMinutes(int.Parse(txtManualLogDuration.Text));
 
             if (dbManager.AddTimeLog(accountNumber, userID, 'Y', instrumentID, startTime, endTime)) {
@@ -242,7 +252,7 @@ namespace CUITAdmin
             string supplyName = cboBillingSupplyName.SelectedValue.ToString();
             DateTime serverTime;
             dbManager.GetServerDateTime(out serverTime);
-            if (dbManager.AddSupplyUse(accountNumber, supplyName, serverTime, quantity)) {
+            if (dbManager.AddSupplyUse(accountNumber, supplyName, serverTime, quantity, true)) {
                 MessageBox.Show("Supply use successfully added");
             } else {
                 MessageBox.Show("There was an error executing your request. \r\n" +
@@ -347,9 +357,11 @@ namespace CUITAdmin
         // Called in the onload of the tab page to prevent unnecessary calls to the DB5
         public void updateAdminDGV()
         {
+            bool inactive = chkAdminIncludeInactive.Checked;
+
             if (cboAccountAdminView.SelectedItem == "Accounts")
             {
-                dgvAdmin.DataSource = dbManager.GetAccounts();
+                dgvAdmin.DataSource = dbManager.GetAccounts(inactive);
             }
             else if (cboAccountAdminView.SelectedItem == "Contacts")
             {
@@ -482,26 +494,22 @@ namespace CUITAdmin
                 DateTime datetime = DateTime.ParseExact(date, "MMMMMMMM", CultureInfo.InvariantCulture);
                 DateTime endtime = datetime.AddMonths(1);
                 endtime = endtime.AddSeconds(-1);
-                //MessageBox.Show(endtime.ToString());
-                //the offset 
+
 
                 string offset = "";
                 List<int> invoiceIDs;
 
-                //dbManager.GenerateInvoice("1", DateTime.Now.AddDays(-5), DateTime.Now, out invoiceID);
                 dbManager.GenerateAllInvoices(datetime, endtime, out invoiceIDs);
 
+                PDFManager pdfManager = new PDFManager();
                 foreach (int currentInvoice in invoiceIDs)
                 {
-                    GenerateSingleInvoice(currentInvoice, datetime, endtime, ref offset);
-                    
+                    ExportSingleInvoice(currentInvoice);
                 }
-                //generate the instrument usage table
-                
             }
         }
 
-        private void btnInvoiceExport_Click(object sender, EventArgs e) {
+        private void btnExportSingle_Click(object sender, EventArgs e) {
             if (Settings.Default["InvoicePath"].ToString() == "") {
                 MessageBox.Show("You have not selected the export path. Please select an export path first.");
 
@@ -513,47 +521,33 @@ namespace CUITAdmin
                 DateTime datetime = DateTime.ParseExact(date, "MMMMMMMM", CultureInfo.InvariantCulture);
                 DateTime endtime = datetime.AddMonths(1);
                 endtime = endtime.AddSeconds(-1);
-                //MessageBox.Show(endtime.ToString());
-                //the offset 
-                string offset = "";
+
                 int invoiceID;
-                //dbManager.GenerateInvoice("1", DateTime.Now.AddDays(-5), DateTime.Now, out invoiceID);
+
 
 
                 dbManager.GenerateInvoice(comboBoxSelectAccount.SelectedValue.ToString(), datetime, endtime, out invoiceID);
 
-                invoiceID = 381;
-                
-                GenerateSingleInvoice(invoiceID, datetime, endtime, ref offset);
-                return;
-                ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //invoiceID = 396;
+
+                ExportSingleInvoice(invoiceID);
             }
          
         }
 
-
-
-        private void GenerateSingleInvoice(int invoiceID, DateTime datetime, DateTime endtime, ref string offset)
-        {
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
+        private void ExportSingleInvoice(int invoiceID) {
             PDFManager pdfManager = new PDFManager();
             pdfManager.GenerateInvoicePDF(invoiceID);
-            
+
 
             DataTable invoice = dbManager.GetInvoice(invoiceID);
             bool excelgenar = (invoice.Rows[0]["Rate_Type"].ToString() == "Industry");
 
-            if (chkGLSU.Checked == true)
-            {
-                ExcelManager.generateAR(excelgenar);
-                ExcelManager.generateExcel(invoice);
+            if (chkGLSU.Checked == true) {
+                //ExcelManager.generateAR(excelgenar);
+                //ExcelManager.generateExcel(invoice);
             }
-            return;
         }
-
-        //generate the instrument use pdf
 
 
         private void chkGLSU_Click(object sender, EventArgs e)
@@ -700,7 +694,10 @@ namespace CUITAdmin
                     cboManualTimeAccount.ValueMember = "Value";
                 } else {
                     DataTable timeAcctTable = dbManager.GetUserAccounts(txtManualTimeUsername.Text);
-                    if (timeAcctTable.Rows.Count == 0) MessageBox.Show("There are no accounts tied to this username.");
+                    if (timeAcctTable.Rows.Count == 0) {
+                        MessageBox.Show("There are no accounts tied to this username.");
+                        return;
+                    }
                     cboManualTimeAccount.DataSource = timeAcctTable;
                     cboManualTimeAccount.DisplayMember = "Name";
                     cboManualTimeAccount.ValueMember = "Account_Number";
@@ -809,7 +806,12 @@ namespace CUITAdmin
                     cboManualSupplyAccount.DisplayMember = "Name";
                     cboManualSupplyAccount.ValueMember = "Value"; 
                 } else {
-                    cboManualSupplyAccount.DataSource = dbManager.GetUserAccounts(username);
+                    DataTable accounts = dbManager.GetUserAccounts(txtManualTimeUsername.Text);
+                    if (accounts.Rows.Count == 0) {
+                        MessageBox.Show("There are no accounts tied to this username.");
+                        return;
+                    }
+                    cboManualSupplyAccount.DataSource = accounts;
 
                     cboManualSupplyAccount.DisplayMember = "Name";
                     cboManualSupplyAccount.ValueMember = "Account_Number";
@@ -1073,6 +1075,10 @@ namespace CUITAdmin
         private void frmCUITAdminMain_Resize(object sender, EventArgs e) {
             tabControlMain.Location = new Point((this.Size.Width / 2) - (tabControlMain.Size.Width / 2) - 7,
                                     (this.Size.Height / 2) - (tabControlMain.Size.Height / 2) - 19);
+        }
+
+        private void chkAdminIncludeInactive_CheckedChanged(object sender, EventArgs e) {
+            updateAdminDGV();
         }
 
 

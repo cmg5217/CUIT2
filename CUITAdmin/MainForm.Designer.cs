@@ -49,6 +49,7 @@
             this.btnImportLogs = new System.Windows.Forms.Button();
             this.btnExportStandaloneFile = new System.Windows.Forms.Button();
             this.tbpAccountAdmin = new System.Windows.Forms.TabPage();
+            this.chkAdminIncludeInactive = new System.Windows.Forms.CheckBox();
             this.btnAccountAdminNew = new System.Windows.Forms.Button();
             this.cboAccountAdminNew = new System.Windows.Forms.ComboBox();
             this.btnAccountAdminSearch = new System.Windows.Forms.Button();
@@ -91,6 +92,7 @@
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
+            this.lineSeparator1 = new CUITAdmin.LineSeparator();
             this.label11 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
@@ -140,7 +142,6 @@
             this.btnManualTimeAdd = new System.Windows.Forms.Button();
             this.lblDuration = new System.Windows.Forms.Label();
             this.lblFundingSource = new System.Windows.Forms.Label();
-            this.lineSeparator1 = new CUITAdmin.LineSeparator();
             this.tbpExports.SuspendLayout();
             this.grpExportPath.SuspendLayout();
             this.grpInvoiceExport.SuspendLayout();
@@ -303,7 +304,7 @@
             this.btnInvoiceExport.TabIndex = 1;
             this.btnInvoiceExport.Text = " Export";
             this.btnInvoiceExport.UseVisualStyleBackColor = true;
-            this.btnInvoiceExport.Click += new System.EventHandler(this.btnInvoiceExport_Click);
+            this.btnInvoiceExport.Click += new System.EventHandler(this.btnExportSingle_Click);
             // 
             // txtMonth
             // 
@@ -391,6 +392,7 @@
             // 
             // tbpAccountAdmin
             // 
+            this.tbpAccountAdmin.Controls.Add(this.chkAdminIncludeInactive);
             this.tbpAccountAdmin.Controls.Add(this.btnAccountAdminNew);
             this.tbpAccountAdmin.Controls.Add(this.cboAccountAdminNew);
             this.tbpAccountAdmin.Controls.Add(this.btnAccountAdminSearch);
@@ -405,6 +407,17 @@
             this.tbpAccountAdmin.TabIndex = 1;
             this.tbpAccountAdmin.Text = "Account Admin";
             this.tbpAccountAdmin.UseVisualStyleBackColor = true;
+            // 
+            // chkAdminIncludeInactive
+            // 
+            this.chkAdminIncludeInactive.AutoSize = true;
+            this.chkAdminIncludeInactive.Location = new System.Drawing.Point(18, 36);
+            this.chkAdminIncludeInactive.Name = "chkAdminIncludeInactive";
+            this.chkAdminIncludeInactive.Size = new System.Drawing.Size(145, 17);
+            this.chkAdminIncludeInactive.TabIndex = 7;
+            this.chkAdminIncludeInactive.Text = "Include Inactive Records";
+            this.chkAdminIncludeInactive.UseVisualStyleBackColor = true;
+            this.chkAdminIncludeInactive.CheckedChanged += new System.EventHandler(this.chkAdminIncludeInactive_CheckedChanged);
             // 
             // btnAccountAdminNew
             // 
@@ -479,10 +492,10 @@
             this.dgvAdmin.AllowUserToAddRows = false;
             this.dgvAdmin.AllowUserToDeleteRows = false;
             this.dgvAdmin.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvAdmin.Location = new System.Drawing.Point(6, 37);
+            this.dgvAdmin.Location = new System.Drawing.Point(6, 62);
             this.dgvAdmin.Name = "dgvAdmin";
             this.dgvAdmin.ReadOnly = true;
-            this.dgvAdmin.Size = new System.Drawing.Size(671, 546);
+            this.dgvAdmin.Size = new System.Drawing.Size(671, 521);
             this.dgvAdmin.TabIndex = 0;
             this.dgvAdmin.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.AdminDataGridView_CellDoubleClick);
             // 
@@ -860,6 +873,15 @@
             this.label13.Size = new System.Drawing.Size(126, 13);
             this.label13.TabIndex = 20;
             this.label13.Text = "( - all fields are optional - )";
+            // 
+            // lineSeparator1
+            // 
+            this.lineSeparator1.Location = new System.Drawing.Point(48, 126);
+            this.lineSeparator1.MaximumSize = new System.Drawing.Size(2000, 2);
+            this.lineSeparator1.MinimumSize = new System.Drawing.Size(0, 2);
+            this.lineSeparator1.Name = "lineSeparator1";
+            this.lineSeparator1.Size = new System.Drawing.Size(578, 2);
+            this.lineSeparator1.TabIndex = 19;
             // 
             // label11
             // 
@@ -1315,15 +1337,6 @@
             this.lblFundingSource.TabIndex = 4;
             this.lblFundingSource.Text = "Funding Source:";
             // 
-            // lineSeparator1
-            // 
-            this.lineSeparator1.Location = new System.Drawing.Point(48, 126);
-            this.lineSeparator1.MaximumSize = new System.Drawing.Size(2000, 2);
-            this.lineSeparator1.MinimumSize = new System.Drawing.Size(0, 2);
-            this.lineSeparator1.Name = "lineSeparator1";
-            this.lineSeparator1.Size = new System.Drawing.Size(578, 2);
-            this.lineSeparator1.TabIndex = 19;
-            // 
             // frmCUITAdminMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1486,6 +1499,7 @@
         private System.Windows.Forms.CheckBox chkFullScreen;
         private System.Windows.Forms.ComboBox cboBillingExceptions;
         private System.Windows.Forms.CheckBox chkGLSU;
+        private System.Windows.Forms.CheckBox chkAdminIncludeInactive;
     }
 }
 

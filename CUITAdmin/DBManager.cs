@@ -280,7 +280,7 @@ namespace CUITAdmin
             myConnection.Close();
         }
 
-        public bool AddSupplyUse(string accountNumber, string supplyName, DateTime date, int quantity) {
+        public bool AddSupplyUse(string accountNumber, string supplyName, DateTime date, int quantity, bool approved = false) {
             Debug.WriteLine(date.ToString());
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand();
@@ -290,6 +290,7 @@ namespace CUITAdmin
             myCommand.Parameters.AddWithValue("@AccountNumber", accountNumber);
             myCommand.Parameters.AddWithValue("@Supply_Name", supplyName);
             myCommand.Parameters.AddWithValue("@Date", date);
+            if (approved) myCommand.Parameters.AddWithValue("@Approved", 'Y');
             myCommand.Parameters.AddWithValue("@Quantity", quantity);
 
             try {
@@ -585,12 +586,16 @@ namespace CUITAdmin
         }
 
         public DataTable GetAccounts() {
+            return GetAccounts(false);
+        }
+
+        public DataTable GetAccounts(bool includeInvalid) {
             SqlConnection myConnection = DBConnect();
             if (myConnection == null) {
                 return new DataTable();
             }
             //Account_Number, Name, Max_Charge_Limit, Balance, First_Name, Last_Name
-            string myCommand = "SELECT * FROM Account";
+            string myCommand = "SELECT * FROM Account" + ((includeInvalid) ? "" : " WHERE Account_Expiration > GETDATE() and Active = 'Y'");
             
             DataTable table = new DataTable();
             try{
@@ -604,6 +609,7 @@ namespace CUITAdmin
             return table;
         }
 
+        // TO-DO: not used, we should remove this if we don't actually need it
         public DataTable GetAccountsForExport()
         {
             SqlConnection myConnection = DBConnect();
@@ -612,7 +618,8 @@ namespace CUITAdmin
             }
 
             //Account_Number, Name, Max_Charge_Limit, Balance, First_Name, Last_Name
-            string myCommand = "SELECT * FROM Account acct left outer join Point_of_Contact poc on acct.PointOfContactID = poc.PersonID left outer join Person psn on poc.PersonID = psn.PersonID";
+            string myCommand = "SELECT * FROM Account acct left outer join Point_of_Contact poc on acct.PointOfContactID = poc.PersonID left outer join Person psn on poc.PersonID = psn.PersonID " +
+                                "WHERE acct.Account_Expiration > GETDATE()";
             
             DataTable table = new DataTable();
             try{
@@ -625,6 +632,7 @@ namespace CUITAdmin
             myConnection.Close();
             return table;
         }
+
 
         public List<string> GetAccountNumberList() {
 
@@ -927,7 +935,8 @@ namespace CUITAdmin
                 return new DataTable();
             }
 
-            SqlCommand myCommand = new SqlCommand("SELECT * From Invoice_Supply_Line Where InvoiceID = @invoiceID", myConnection);
+            SqlCommand myCommand = new SqlCommand("SELECT i.*, su.Unit From Invoice_Supply_Line i INNER JOIN Supply su on su.Supply_Name = i.Supply_Name " +
+                "Where InvoiceID = @invoiceID", myConnection);
 
             myCommand.Parameters.AddWithValue("@invoiceID", invoiceID);
 
@@ -965,13 +974,19 @@ namespace CUITAdmin
         }
 
         public DataTable GetUserAccounts(string username) {
+            return GetUserAccounts(username, false);
+        }
+
+        public DataTable GetUserAccounts(string username, bool includeInvalid) {
             SqlConnection myConnection = DBConnect();
             if (myConnection == null) {
                 return new DataTable();
             }
 
 
-            SqlCommand myCommand = new SqlCommand("SELECT ua.Account_Number, a.Name FROM User_Account ua INNER JOIN Users u on ua.PersonID = u.PersonID INNER JOIN Account a on ua.Account_Number = a.Account_Number WHERE Username = @username", myConnection);
+            SqlCommand myCommand = new SqlCommand("SELECT ua.Account_Number, a.Name " +
+                    "FROM User_Account ua INNER JOIN Users u on ua.PersonID = u.PersonID INNER JOIN Account a on ua.Account_Number = a.Account_Number " +
+                    " WHERE Username = @username" + ((includeInvalid) ? "" : " and a.Account_Expiration > GETDATE() and Active = 'Y'"), myConnection);
 
             myCommand.Parameters.AddWithValue("@username", username);
 
@@ -981,6 +996,7 @@ namespace CUITAdmin
                 SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
                 dataAdapter.Fill(table);
             } catch (Exception e) {
+                Debug.Write(e.Message);
                 System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
             }
 
@@ -1225,7 +1241,11 @@ namespace CUITAdmin
             }
 
             foreach (InvoiceInstrumentLine currentLine in invoice.instrumets) {
-                currentLine.charges = (currentLine.hours * 60) / currentLine.timeIncrement * currentLine.rate;
+
+                double lineMin = currentLine.hours * 60;
+                int timeIncrements = (int)lineMin / currentLine.timeIncrement;
+                currentLine.charges = timeIncrements * currentLine.rate;
+                currentLine.hours = (double) timeIncrements * (double) currentLine.timeIncrement / 60;
                 invoice.totalBalance += currentLine.charges;
             }
 
@@ -1277,30 +1297,31 @@ namespace CUITAdmin
             }
         }
 
+
         private void GenerateInstrumentUse(DataTable timeLogsTable, int invoiceID)
         {
             //string to save the instrument use
+
+            List<string[]> instrumentUse = new List<string[]>();
+
             string exportpath = "Instrument Use - " + invoiceID + ".pdf";
-
-            bool path = false;
-
-            PDFManager  pdfManager = new PDFManager(exportpath, path, "timelog");
-
-            pdfManager.AddDate(DateTime.Now.ToString()); //Add todays date to the invoice
-            pdfManager.AddInvoiceID(invoiceID.ToString()); // add invoice id to invoice
-            //AddInstrument(string instrumentName,string usedDate,string usedDuration, string usedRate)
 
             foreach (DataRow currentRow in timeLogsTable.Rows)
             {
-                string instrumentName = currentRow["Name1"].ToString();
-                string startTime = currentRow["Start_Time"].ToString();
                 TimeSpan durationDT = ((DateTime)currentRow["End_Time"]).Subtract( (DateTime) currentRow["Start_Time"]);
                 string duration = durationDT.TotalMinutes.ToString();
-                string currentRate = currentRow["Current_Rate"].ToString();
-                pdfManager.AddInstrument(instrumentName, startTime, duration, currentRate);
+
+                string[] temp = new string[]{
+                currentRow["Name1"].ToString(),
+                currentRow["Start_Time"].ToString(),
+                duration,
+                currentRow["Current_Rate"].ToString()
+                };
             }
-            
-            pdfManager.PDFClose();
+
+            PDFManager pdfManager = new PDFManager();
+            //pdfManager.GenerateInstrumentUsePDF();
+
         }
 
         // Used to add a group of rows from a DataTable to a table on the db
