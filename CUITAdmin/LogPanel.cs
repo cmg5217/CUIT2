@@ -326,6 +326,7 @@ namespace CUITAdmin {
                     passwordValidated = true;
 
                     // Adjust form controls to allow user to start the log
+                    passwordTimer.Stop();
                     LoadStartLogControls();
 
                 } else {
@@ -344,45 +345,40 @@ namespace CUITAdmin {
         }
 
         public void LoadStartLogControls() {
-            CustomInvoke(cboFundingSource, delegate {cboFundingSource.Enabled = true;});
-            CustomInvoke(cboInstrument, delegate { cboInstrument.Enabled = true; });
-            CustomInvoke(btnStartLog, delegate { btnStartLog.Enabled = true; });
-            CustomInvoke(lblAuthenticating, delegate { lblAuthenticating.Text = "Authentication Successful"; });
 
             if (standalone) {
-
-                BindingList<Data> accounts;
-                BindingList<Data> instruments;
+                BindingList<Data> accounts = new BindingList<Data>();
                 xmlManager.GetUserAccounts(txtUsername.Text, out accounts);
-
-
+                if (accounts.Count == 0) {
+                    DisplayNoAccounts();
+                    return;
+                }
                 CustomInvoke(cboFundingSource,
                     delegate {
-                        if (accounts.Count == 0) {
-                            MessageBox.Show("There were no accounts assigned to your username");
-                            return;
-                        }
-                        cboFundingSource.DataSource = accounts;
-                        cboFundingSource.DisplayMember = "Name";
-                        cboFundingSource.ValueMember = "Value";
-                        cboFundingSource.Focus();
-                    });                
-
-            } else { // Start server code
-                DataTable accounts = dbManager.GetUserAccounts(username);
-                CustomInvoke(cboFundingSource,
-                    delegate {
-                        if (accounts.Rows.Count == 0){
-                            MessageBox.Show("There were no accounts assigned to your username");
-                            return;
-                        }
-
-                        cboFundingSource.DataSource = accounts;
+                        
+                        cboFundingSource.DataSource = dbManager.GetUserAccounts(username);
                         cboFundingSource.DisplayMember = "Name";
                         cboFundingSource.ValueMember = "Account_Number";
                         cboFundingSource.Focus();
                     });
+            } else {
+                DataTable accounts = dbManager.GetUserAccounts(username);
+                if (accounts.Rows.Count == 0) {
+                    DisplayNoAccounts();
+                    return;
+                }
+                CustomInvoke(cboFundingSource,
+                    delegate {
+                        cboFundingSource.DataSource = accounts;
+                        cboFundingSource.DisplayMember = "Name";
+                        cboFundingSource.ValueMember = "Account_Number";
+                    });
             }
+
+            CustomInvoke(cboFundingSource, delegate {cboFundingSource.Enabled = true;});
+            CustomInvoke(cboInstrument, delegate { cboInstrument.Enabled = true; });
+            CustomInvoke(btnStartLog, delegate { btnStartLog.Enabled = true; });
+            CustomInvoke(lblAuthenticating, delegate { lblAuthenticating.Text = "Authentication Successful"; });
         }
 
         // This prevents me from writing about 15 if statements, it's kinda like $() in javascript
@@ -396,6 +392,14 @@ namespace CUITAdmin {
                 // if it isn't let the function passed in be executed
                 action.Invoke();
             }
+        }
+
+        private void DisplayNoAccounts() {
+            MessageBox.Show("No accounts were found for this username");
+            passwordValidated = false;
+            CustomInvoke(txtUsername, delegate { txtUsername.Text = ""; });
+            CustomInvoke(txtPassword, delegate { txtPassword.Text = ""; });
+            passwordTimer.Stop();
         }
 
         private void MoveChildren(int yOffset) {

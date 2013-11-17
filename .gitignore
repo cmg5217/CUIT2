@@ -4,6 +4,8 @@ CUITAdmin/bin/Debug/*
 !invoicetemplate.pdf
 !records.xml
 !GLSU\ Template
+!supplytemplate.pdf
+!servicetemplate.pdf
 
 CUIT/CUITAdmin/bin/*
 CUIT/CUITClient/bin/*

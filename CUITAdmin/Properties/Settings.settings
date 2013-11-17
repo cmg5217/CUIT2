@@ -16,12 +16,11 @@
     <Setting Name="StandaloneMode" Type="System.String" Scope="User">
       <Value Profile="(Default)">false</Value>
     </Setting>
-
     <Setting Name="FullScreen" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
+    </Setting>
     <Setting Name="GLSUexport" Type="System.String" Scope="User">
       <Value Profile="(Default)">True</Value>
-    </Setting>
     </Setting>
   </Settings>
 </SettingsFile>

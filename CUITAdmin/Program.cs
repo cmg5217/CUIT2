@@ -7,6 +7,9 @@ namespace CUITAdmin
 {
     static class Program
     {
+
+        //TO-DO: Remove default value from usertype
+
         public static char userType = 'A';
         /// <summary>
         /// The main entry point for the application.
@@ -16,7 +19,7 @@ namespace CUITAdmin
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Login());
+            //Application.Run(new Login());
             if(userType != '\0') Application.Run(new frmCUITAdminMain(userType));
             //Application.Run(new TestForm());
         }
