@@ -43,16 +43,20 @@ namespace CUITAdmin {
         }
 
 
-        private void Main_Load(object sender, EventArgs e) {
+        private void Main_Load(object sender, EventArgs e)
+        {
 
-            tabControlMain.Location = new Point((this.Size.Width / 2) - (tabControlMain.Size.Width / 2) - 7,
-                                                (this.Size.Height / 2) - (tabControlMain.Size.Height / 2) - 19);
-            //new Point(0, 0);
+            tabControlMain.Location = new Point((this.Size.Width / 2) - (tabControlMain.Size.Width/2) - 7, 
+                                                (this.Size.Height / 2) - (tabControlMain.Size.Height/2) - 19);
+                                      //new Point(0, 0);
             /// manually setting standalone to true so that we can test
             /// To-DO:: Make sure to remove this to work on the server
-            if (Properties.Settings.Default.StandaloneMode == "true") {
+            if (Properties.Settings.Default.StandaloneMode == "true")
+            {
                 standalone = true;
-            } else standalone = false;
+            }
+
+            else standalone = false;
 
             chkFullScreen.Checked = Settings.Default.FullScreen;
             ToggleScreenMode();
@@ -60,13 +64,12 @@ namespace CUITAdmin {
             xmlManager = XmlManager.Instance;
             dbManager = DBManager.Instance;
             dbManager.BindForm(this);
-            startPanel = new LogPanel(tbpTracking, new Point(5, 5));
+            startPanel = new LogPanel(tbpTracking, new Point(5,5));
 
             cboAccountAdminNew.SelectedItem = "Account";
             cboAccountAdminView.SelectedItem = "Accounts";
             //dgvTimeLogRequests.DataSource = ds;
-            //cboAccountAdminVie
-SelectedValue = "Accounts";
+            //cboAccountAdminView.SelectedValue = "Accounts";
             // Resize the DataGridView columns to fit the newly loaded content.
             dgvAdmin.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader);
             //loads the path for the invoice export from app.config
@@ -84,17 +87,17 @@ SelectedValue = "Accounts";
 
             InitializeRequestTab();
 
-     && !standalonerType == 'A' && !standalone) {
-                              InitializeSettingsTab();
+            if (userType == 'A' && !standalone) {
+                InitializeBillingTab();
+                InitializeSettingsTab();
                 InitializeExportTab();
             } else if(userType == 'A' && standalone){
-pe == 'A' && staInitializeSettingsTab();
+                InitializeSettingsTab();
                 tabControlMain.TabPages.Remove(tabControlMain.TabPages["tbpBilling"]);
                 tabControlMain.TabPages.Remove(tabControlMain.TabPages["tbpAccountAdmin"]);
             } else {
                 tabControlMain.TabPages.Remove(tabControlMain.TabPages["tbpBilling"]);
                 tabControlMain.TabPages.Remove(tabControlMain.TabPages["tbpAccountAdmin"]);
-ages["tbpAccountAdmin"]);
                 tabControlMain.TabPages.Remove(tabControlMain.TabPages["tbpExports"]);
             }
 

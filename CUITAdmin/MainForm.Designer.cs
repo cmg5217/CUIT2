@@ -304,7 +304,6 @@
             this.btnInvoiceExport.Size = new System.Drawing.Size(121, 23);
             this.btnInvoiceExport.TabIndex = 1;
             this.btnInvoiceExport.Text = " Export";
-            this.btnInvoiceExport.UseVisualStyleBackColor = truebtnInvoiceExport_ClicktnInvoiceExport.Click += new System.EventHandler(this.btnExportSingle_Click);
             // 
             // txtMonth
             // 
@@ -359,7 +358,6 @@
             this.btnImportStandalone.TabIndex = 11;
             this.btnImportStandalone.Text = "Import Standalone";
             this.btnImportStandalone.UseVisualStyleBackColor = true;
-            this.btnImportStandalone.Click += new System.EventHandler(this.btnImportStandalone_Click);
             // 
             // chkFullScreen
             // 
@@ -889,10 +887,6 @@
             // 
             // lineSeparator1
             // 
-<<<<<<< HEAD
-            this.lineSeparator1.ForeColor = System.Drawing.SystemColors.ButtonFace;
-=======
->>>>>>> chris2
             this.lineSeparator1.Location = new System.Drawing.Point(48, 126);
             this.lineSeparator1.MaximumSize = new System.Drawing.Size(2000, 2);
             this.lineSeparator1.MinimumSize = new System.Drawing.Size(0, 2);
@@ -1516,11 +1510,8 @@
         private System.Windows.Forms.CheckBox chkFullScreen;
         private System.Windows.Forms.ComboBox cboBillingExceptions;
         private System.Windows.Forms.CheckBox chkGLSU;
-<<<<<<< HEAD
         private System.Windows.Forms.Button btnImportStandalone;
-=======
         private System.Windows.Forms.CheckBox chkAdminIncludeInactive;
->>>>>>> chris2
     }
 }
 

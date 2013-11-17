@@ -23,20 +23,12 @@ namespace CUITAdmin {
         
         private void button1_Click(object sender, EventArgs e) 
         {
-<<<<<<< HEAD
-            
-            
-=======
-
-
-
->>>>>>> chris2
             xmlManager = XmlManager.Instance; 
             int count = 0;
             DBManager dbManager = DBManager.Instance;
             Random rand = new Random();
 
-<<<<<<< HEAD
+
             xmlManager.CreateLogFile();
 
             xmlManager.AddPartialLog("cmg5217", "1", "10", DateTime.Now.ToString());
@@ -95,14 +87,14 @@ namespace CUITAdmin {
             writer2.Write(file2);
             writer2.Close();
             */
-=======
+
             int invoiceID = 381;
 
             PDFManager mypdf = new PDFManager();
 
             mypdf.GenerateInvoicePDF(381);
             
->>>>>>> chris2
+
 
             //DataTable testTable = mymanager.GetAccounts();
             //testTable.TableName = "root";
