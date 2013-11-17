@@ -136,7 +136,7 @@ namespace CUITAdmin {
             this.btnStartLog.Location = new System.Drawing.Point(462, 106);
             this.btnStartLog.Name = "btnStartLog";
             this.btnStartLog.Size = new System.Drawing.Size(75, 23);
-            this.btnStartLog.TabIndex = 0;
+            this.btnStartLog.TabIndex = 5;
             this.btnStartLog.Text = "Start";
             this.btnStartLog.UseVisualStyleBackColor = true;
             this.btnStartLog.Enabled = false;
@@ -197,7 +197,7 @@ namespace CUITAdmin {
             this.cboFundingSource.Location = new System.Drawing.Point(416, 51);
             this.cboFundingSource.Name = "cboFundingSource";
             this.cboFundingSource.Size = new System.Drawing.Size(121, 21);
-            this.cboFundingSource.TabIndex = 6;
+            this.cboFundingSource.TabIndex = 3;
             // 
             // lblFundingSource
             // 
@@ -214,7 +214,6 @@ namespace CUITAdmin {
             this.lblInstrument.Location = new System.Drawing.Point(329, 81);
             this.lblInstrument.Name = "lblInstrument";
             this.lblInstrument.Size = new System.Drawing.Size(59, 13);
-            this.lblInstrument.TabIndex = 8;
             this.lblInstrument.Text = "Instrument:";
             // 
             // cboInstrument
@@ -224,7 +223,7 @@ namespace CUITAdmin {
             this.cboInstrument.Location = new System.Drawing.Point(416, 77);
             this.cboInstrument.Name = "cboInstrument";
             this.cboInstrument.Size = new System.Drawing.Size(121, 21);
-            this.cboInstrument.TabIndex = 9;
+            this.cboInstrument.TabIndex = 4;
         }
 
         // Adjust the controls for an active log, called on btnStart_Clicked

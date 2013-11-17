@@ -102,9 +102,9 @@ namespace CUITAdmin
         }
 
         // Add Page Number //////////////
-        public void InsertPageNumber(AcroFields field, string CurrentPage, string TotalPages)
+        public void InsertPageNumber(AcroFields field, int CurrentPage, int TotalPages)
         {
-            field.SetField("PageNumber", CurrentPage + " of " + TotalPages);
+            field.SetField("PageNumber", CurrentPage.ToString() + " of " + TotalPages.ToString());
         }
 
         // Add Address //////////////
@@ -158,7 +158,7 @@ namespace CUITAdmin
         public void AddInvoiceID(AcroFields acroFields, string invoiceID)
         {
 
-            acroFields.SetField("FillText1", invoiceID);
+            acroFields.SetField("FillText1", "CARIPD-" + invoiceID + "-" + DateTime.Now.ToString("yy"));
         }
 
 
@@ -178,9 +178,6 @@ namespace CUITAdmin
 
         public void GenerateInvoicePDF(int invoiceID)
         {
-            
-            
-
             //Get the invoice from the database, we can extract this later
             DBManager dbManager = DBManager.Instance;
             DataTable invoice = dbManager.GetInvoice(invoiceID);
@@ -203,9 +200,6 @@ namespace CUITAdmin
 
             // open the invoice template using PdfReader
 
-
-
-
             if (invoice.Rows.Count == 0)
             {
                 MessageBox.Show("The invoice you are trying to export does not exist");
@@ -218,11 +212,7 @@ namespace CUITAdmin
 
             List<string> filesToMerge = new List<string>();
             int page = 1;
-            while (invoiceTime.Rows.Count > 0 || invoiceSupply.Rows.Count > 0) {
-                filesToMerge.Add(pathname + page + "temp.pdf");
-                CreateInvoicePage(invoice, invoiceTime, invoiceSupply, page + "temp.pdf");
-                page++;
-            }
+            CreateInvoicePage(invoice, invoiceTime, invoiceSupply, page, filesToMerge);
 
             //We will be using this file and if it already exists the program will crash
             if(File.Exists("merge.pdf")) File.Delete("merge.pdf"); 
@@ -241,10 +231,13 @@ namespace CUITAdmin
         }
         
 
-        private void CreateInvoicePage(DataTable invoice, DataTable invoiceTime, DataTable invoiceSupply, string fileName) {
+        private void CreateInvoicePage(DataTable invoice, DataTable invoiceTime, DataTable invoiceSupply, int page, List<string> filesToMerge) {
+            string filePath = pathname + page + "temp.pdf";
+            filesToMerge.Add(filePath);
+
 
             PdfReader pdfReader = new PdfReader(@"invoicetemplate.pdf");
-            FileStream fileStream = new FileStream(pathname + fileName, FileMode.Create);
+            FileStream fileStream = new FileStream(filePath, FileMode.Create);
             PdfStamper pdfStamper = new PdfStamper(pdfReader, fileStream);
             AcroFields acroFields = pdfStamper.AcroFields;
 
@@ -261,8 +254,6 @@ namespace CUITAdmin
                 invoice.Rows[0]["City"].ToString(), // add city to invoice
                 invoice.Rows[0]["State"].ToString(), //add state to invoice
                 invoice.Rows[0]["Zip"].ToString()); //add zip to invoice
-
-            InsertPageNumber(acroFields, "4", "5");
 
             AddPostDate(acroFields, poststart.ToShortDateString().ToString(), postend.ToShortDateString().ToString());
 
@@ -304,6 +295,13 @@ namespace CUITAdmin
                 fieldLines += 3;
 
             }
+
+            //Calls this function recursively to add additional pages
+            if (invoiceSupply.Rows.Count > 0 || invoiceTime.Rows.Count > 0) {
+                CreateInvoicePage(invoice, invoiceTime, invoiceSupply, page + 1, filesToMerge);
+            }
+
+            InsertPageNumber(acroFields, page, filesToMerge.Count());
 
             AddDate(acroFields, DateTime.Now.ToString()); //Add todays date to the invoice
             AddInvoiceID(acroFields, invoice.Rows[0]["InvoiceID"].ToString()); // add invoice id to invoice

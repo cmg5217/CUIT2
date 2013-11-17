@@ -40,7 +40,7 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.comboBoxSelectAccount = new System.Windows.Forms.ComboBox();
             this.txtAccount = new System.Windows.Forms.Label();
-            this.btnInvoiceExport = new System.Windows.Forms.Button();
+            this.btnExportSingle = new System.Windows.Forms.Button();
             this.txtMonth = new System.Windows.Forms.Label();
             this.comboBoxSelectMonth = new System.Windows.Forms.ComboBox();
             this.grpStandaloneFileExport = new System.Windows.Forms.GroupBox();
@@ -93,7 +93,6 @@
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.lineSeparator1 = new CUITAdmin.LineSeparator();
             this.label11 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
@@ -112,7 +111,7 @@
             this.txtAcctManagementConfirmPw = new System.Windows.Forms.TextBox();
             this.txtAcctManagementNewPw = new System.Windows.Forms.TextBox();
             this.txtAcctManagementPassword = new System.Windows.Forms.TextBox();
-            this.txtAcctManagementUserame = new System.Windows.Forms.TextBox();
+            this.txtAcctManagementUsername = new System.Windows.Forms.TextBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.label12 = new System.Windows.Forms.Label();
@@ -143,6 +142,7 @@
             this.btnManualTimeAdd = new System.Windows.Forms.Button();
             this.lblDuration = new System.Windows.Forms.Label();
             this.lblFundingSource = new System.Windows.Forms.Label();
+            this.lineSeparator1 = new CUITAdmin.LineSeparator();
             this.tbpExports.SuspendLayout();
             this.grpExportPath.SuspendLayout();
             this.grpInvoiceExport.SuspendLayout();
@@ -186,7 +186,7 @@
             this.grpExportPath.Location = new System.Drawing.Point(131, 124);
             this.grpExportPath.Name = "grpExportPath";
             this.grpExportPath.Size = new System.Drawing.Size(438, 100);
-            this.grpExportPath.TabIndex = 8;
+            this.grpExportPath.TabIndex = 1;
             this.grpExportPath.TabStop = false;
             this.grpExportPath.Text = "Export Invoice";
             // 
@@ -204,14 +204,14 @@
             this.txtInvoiceExportPath.Location = new System.Drawing.Point(25, 60);
             this.txtInvoiceExportPath.Name = "txtInvoiceExportPath";
             this.txtInvoiceExportPath.Size = new System.Drawing.Size(276, 20);
-            this.txtInvoiceExportPath.TabIndex = 2;
+            this.txtInvoiceExportPath.TabIndex = 1;
             // 
             // btnSetInvoiceExportPath
             // 
             this.btnSetInvoiceExportPath.Location = new System.Drawing.Point(307, 58);
             this.btnSetInvoiceExportPath.Name = "btnSetInvoiceExportPath";
             this.btnSetInvoiceExportPath.Size = new System.Drawing.Size(103, 23);
-            this.btnSetInvoiceExportPath.TabIndex = 0;
+            this.btnSetInvoiceExportPath.TabIndex = 2;
             this.btnSetInvoiceExportPath.Text = "Browse";
             this.btnSetInvoiceExportPath.UseVisualStyleBackColor = true;
             this.btnSetInvoiceExportPath.Click += new System.EventHandler(this.btnSetInvoiceExportPath_Click);
@@ -226,7 +226,7 @@
             this.grpInvoiceExport.Location = new System.Drawing.Point(131, 230);
             this.grpInvoiceExport.Name = "grpInvoiceExport";
             this.grpInvoiceExport.Size = new System.Drawing.Size(243, 232);
-            this.grpInvoiceExport.TabIndex = 7;
+            this.grpInvoiceExport.TabIndex = 2;
             this.grpInvoiceExport.TabStop = false;
             this.grpInvoiceExport.Text = "Export Invoice";
             // 
@@ -238,7 +238,7 @@
             this.chkGLSU.Location = new System.Drawing.Point(80, 29);
             this.chkGLSU.Name = "chkGLSU";
             this.chkGLSU.Size = new System.Drawing.Size(135, 17);
-            this.chkGLSU.TabIndex = 10;
+            this.chkGLSU.TabIndex = 3;
             this.chkGLSU.Text = "Export GLSU Template";
             this.chkGLSU.UseVisualStyleBackColor = true;
             this.chkGLSU.Click += new System.EventHandler(this.chkGLSU_Click);
@@ -258,7 +258,7 @@
             this.btnExportAll.Location = new System.Drawing.Point(73, 16);
             this.btnExportAll.Name = "btnExportAll";
             this.btnExportAll.Size = new System.Drawing.Size(121, 23);
-            this.btnExportAll.TabIndex = 6;
+            this.btnExportAll.TabIndex = 5;
             this.btnExportAll.Text = "Export";
             this.btnExportAll.UseVisualStyleBackColor = true;
             this.btnExportAll.Click += new System.EventHandler(this.btnExportAll_Click);
@@ -267,7 +267,7 @@
             // 
             this.groupBox2.Controls.Add(this.comboBoxSelectAccount);
             this.groupBox2.Controls.Add(this.txtAccount);
-            this.groupBox2.Controls.Add(this.btnInvoiceExport);
+            this.groupBox2.Controls.Add(this.btnExportSingle);
             this.groupBox2.Location = new System.Drawing.Point(7, 135);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(230, 90);
@@ -286,7 +286,7 @@
             this.comboBoxSelectAccount.Location = new System.Drawing.Point(73, 31);
             this.comboBoxSelectAccount.Name = "comboBoxSelectAccount";
             this.comboBoxSelectAccount.Size = new System.Drawing.Size(121, 21);
-            this.comboBoxSelectAccount.TabIndex = 3;
+            this.comboBoxSelectAccount.TabIndex = 6;
             // 
             // txtAccount
             // 
@@ -297,13 +297,14 @@
             this.txtAccount.TabIndex = 5;
             this.txtAccount.Text = "Account:";
             // 
-            // btnInvoiceExport
+            // btnExportSingle
             // 
-            this.btnInvoiceExport.Location = new System.Drawing.Point(73, 58);
-            this.btnInvoiceExport.Name = "btnInvoiceExport";
-            this.btnInvoiceExport.Size = new System.Drawing.Size(121, 23);
-            this.btnInvoiceExport.TabIndex = 1;
-            this.btnInvoiceExport.Text = " Export";
+            this.btnExportSingle.Location = new System.Drawing.Point(73, 58);
+            this.btnExportSingle.Name = "btnExportSingle";
+            this.btnExportSingle.Size = new System.Drawing.Size(121, 23);
+            this.btnExportSingle.TabIndex = 7;
+            this.btnExportSingle.Text = " Export";
+            this.btnExportSingle.Click += new System.EventHandler(this.btnExportSingle_Click);
             // 
             // txtMonth
             // 
@@ -334,7 +335,7 @@
             this.comboBoxSelectMonth.Location = new System.Drawing.Point(79, 54);
             this.comboBoxSelectMonth.Name = "comboBoxSelectMonth";
             this.comboBoxSelectMonth.Size = new System.Drawing.Size(121, 21);
-            this.comboBoxSelectMonth.TabIndex = 2;
+            this.comboBoxSelectMonth.TabIndex = 4;
             // 
             // grpStandaloneFileExport
             // 
@@ -346,7 +347,7 @@
             this.grpStandaloneFileExport.Location = new System.Drawing.Point(380, 230);
             this.grpStandaloneFileExport.Name = "grpStandaloneFileExport";
             this.grpStandaloneFileExport.Size = new System.Drawing.Size(189, 232);
-            this.grpStandaloneFileExport.TabIndex = 2;
+            this.grpStandaloneFileExport.TabIndex = 3;
             this.grpStandaloneFileExport.TabStop = false;
             this.grpStandaloneFileExport.Text = "Standalone Files";
             // 
@@ -355,7 +356,7 @@
             this.btnImportStandalone.Location = new System.Drawing.Point(34, 58);
             this.btnImportStandalone.Name = "btnImportStandalone";
             this.btnImportStandalone.Size = new System.Drawing.Size(121, 23);
-            this.btnImportStandalone.TabIndex = 11;
+            this.btnImportStandalone.TabIndex = 9;
             this.btnImportStandalone.Text = "Import Standalone";
             this.btnImportStandalone.UseVisualStyleBackColor = true;
             // 
@@ -365,7 +366,7 @@
             this.chkFullScreen.Location = new System.Drawing.Point(34, 183);
             this.chkFullScreen.Name = "chkFullScreen";
             this.chkFullScreen.Size = new System.Drawing.Size(79, 17);
-            this.chkFullScreen.TabIndex = 10;
+            this.chkFullScreen.TabIndex = 12;
             this.chkFullScreen.Text = "Full Screen";
             this.chkFullScreen.UseVisualStyleBackColor = true;
             this.chkFullScreen.Click += new System.EventHandler(this.chkFullScreen_Click);
@@ -376,7 +377,7 @@
             this.chkStandalone.Location = new System.Drawing.Point(34, 165);
             this.chkStandalone.Name = "chkStandalone";
             this.chkStandalone.Size = new System.Drawing.Size(110, 17);
-            this.chkStandalone.TabIndex = 9;
+            this.chkStandalone.TabIndex = 11;
             this.chkStandalone.Text = "Standalone Mode";
             this.chkStandalone.UseVisualStyleBackColor = true;
             this.chkStandalone.Click += new System.EventHandler(this.chkStandalone_Click_1);
@@ -386,7 +387,7 @@
             this.btnImportLogs.Location = new System.Drawing.Point(34, 108);
             this.btnImportLogs.Name = "btnImportLogs";
             this.btnImportLogs.Size = new System.Drawing.Size(121, 23);
-            this.btnImportLogs.TabIndex = 1;
+            this.btnImportLogs.TabIndex = 10;
             this.btnImportLogs.Text = "Import Logs";
             this.btnImportLogs.UseVisualStyleBackColor = true;
             this.btnImportLogs.Click += new System.EventHandler(this.btnImportLogs_Click);
@@ -396,7 +397,7 @@
             this.btnExportStandaloneFile.Location = new System.Drawing.Point(34, 29);
             this.btnExportStandaloneFile.Name = "btnExportStandaloneFile";
             this.btnExportStandaloneFile.Size = new System.Drawing.Size(121, 23);
-            this.btnExportStandaloneFile.TabIndex = 0;
+            this.btnExportStandaloneFile.TabIndex = 8;
             this.btnExportStandaloneFile.Text = "Export Standalone";
             this.btnExportStandaloneFile.UseVisualStyleBackColor = true;
             this.btnExportStandaloneFile.Click += new System.EventHandler(this.btnExportStandaloneFile_Click);
@@ -425,7 +426,7 @@
             this.chkAdminIncludeInactive.Location = new System.Drawing.Point(18, 36);
             this.chkAdminIncludeInactive.Name = "chkAdminIncludeInactive";
             this.chkAdminIncludeInactive.Size = new System.Drawing.Size(145, 17);
-            this.chkAdminIncludeInactive.TabIndex = 7;
+            this.chkAdminIncludeInactive.TabIndex = 2;
             this.chkAdminIncludeInactive.Text = "Include Inactive Records";
             this.chkAdminIncludeInactive.UseVisualStyleBackColor = true;
             this.chkAdminIncludeInactive.CheckedChanged += new System.EventHandler(this.chkAdminIncludeInactive_CheckedChanged);
@@ -435,7 +436,7 @@
             this.btnAccountAdminNew.Location = new System.Drawing.Point(475, 8);
             this.btnAccountAdminNew.Name = "btnAccountAdminNew";
             this.btnAccountAdminNew.Size = new System.Drawing.Size(75, 23);
-            this.btnAccountAdminNew.TabIndex = 6;
+            this.btnAccountAdminNew.TabIndex = 5;
             this.btnAccountAdminNew.Text = "Add New";
             this.btnAccountAdminNew.UseVisualStyleBackColor = true;
             this.btnAccountAdminNew.Click += new System.EventHandler(this.btnAccountAdminNew_Click);
@@ -454,7 +455,7 @@
             this.cboAccountAdminNew.Location = new System.Drawing.Point(556, 9);
             this.cboAccountAdminNew.Name = "cboAccountAdminNew";
             this.cboAccountAdminNew.Size = new System.Drawing.Size(121, 21);
-            this.cboAccountAdminNew.TabIndex = 5;
+            this.cboAccountAdminNew.TabIndex = 6;
             // 
             // btnAccountAdminSearch
             // 
@@ -488,7 +489,7 @@
             this.cboAccountAdminView.Location = new System.Drawing.Point(42, 9);
             this.cboAccountAdminView.Name = "cboAccountAdminView";
             this.cboAccountAdminView.Size = new System.Drawing.Size(121, 21);
-            this.cboAccountAdminView.TabIndex = 2;
+            this.cboAccountAdminView.TabIndex = 1;
             this.cboAccountAdminView.SelectedValueChanged += new System.EventHandler(this.adminEditViewLoad);
             // 
             // txtAccountAdminSearch
@@ -496,7 +497,7 @@
             this.txtAccountAdminSearch.Location = new System.Drawing.Point(224, 9);
             this.txtAccountAdminSearch.Name = "txtAccountAdminSearch";
             this.txtAccountAdminSearch.Size = new System.Drawing.Size(100, 20);
-            this.txtAccountAdminSearch.TabIndex = 1;
+            this.txtAccountAdminSearch.TabIndex = 3;
             // 
             // dgvAdmin
             // 
@@ -507,7 +508,8 @@
             this.dgvAdmin.Name = "dgvAdmin";
             this.dgvAdmin.ReadOnly = true;
             this.dgvAdmin.Size = new System.Drawing.Size(671, 521);
-            this.dgvAdmin.TabIndex = 0;
+            this.dgvAdmin.TabIndex = 7;
+            this.dgvAdmin.TabStop = false;
             this.dgvAdmin.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.AdminDataGridView_CellDoubleClick);
             // 
             // tbpBilling
@@ -530,7 +532,7 @@
             this.grpManualEntries.Location = new System.Drawing.Point(6, 6);
             this.grpManualEntries.Name = "grpManualEntries";
             this.grpManualEntries.Size = new System.Drawing.Size(671, 220);
-            this.grpManualEntries.TabIndex = 11;
+            this.grpManualEntries.TabIndex = 0;
             this.grpManualEntries.TabStop = false;
             this.grpManualEntries.Text = "Manual Entries";
             // 
@@ -546,7 +548,7 @@
             this.grpBillingSupplies.Location = new System.Drawing.Point(339, 15);
             this.grpBillingSupplies.Name = "grpBillingSupplies";
             this.grpBillingSupplies.Size = new System.Drawing.Size(326, 199);
-            this.grpBillingSupplies.TabIndex = 18;
+            this.grpBillingSupplies.TabIndex = 2;
             this.grpBillingSupplies.TabStop = false;
             this.grpBillingSupplies.Text = "Supplies";
             // 
@@ -555,7 +557,7 @@
             this.btnBillingSupplyAdd.Location = new System.Drawing.Point(199, 88);
             this.btnBillingSupplyAdd.Name = "btnBillingSupplyAdd";
             this.btnBillingSupplyAdd.Size = new System.Drawing.Size(75, 23);
-            this.btnBillingSupplyAdd.TabIndex = 11;
+            this.btnBillingSupplyAdd.TabIndex = 10;
             this.btnBillingSupplyAdd.Text = "Add";
             this.btnBillingSupplyAdd.UseVisualStyleBackColor = true;
             this.btnBillingSupplyAdd.Click += new System.EventHandler(this.btnBillingSupplyAdd_Click);
@@ -565,7 +567,7 @@
             this.txtBillingSupplyQuantity.Location = new System.Drawing.Point(126, 90);
             this.txtBillingSupplyQuantity.Name = "txtBillingSupplyQuantity";
             this.txtBillingSupplyQuantity.Size = new System.Drawing.Size(67, 20);
-            this.txtBillingSupplyQuantity.TabIndex = 10;
+            this.txtBillingSupplyQuantity.TabIndex = 9;
             // 
             // lblQuantity
             // 
@@ -583,7 +585,7 @@
             this.cboBillingSupplyFunding.Location = new System.Drawing.Point(126, 63);
             this.cboBillingSupplyFunding.Name = "cboBillingSupplyFunding";
             this.cboBillingSupplyFunding.Size = new System.Drawing.Size(148, 21);
-            this.cboBillingSupplyFunding.TabIndex = 7;
+            this.cboBillingSupplyFunding.TabIndex = 8;
             // 
             // lblSupplyFunding
             // 
@@ -601,7 +603,7 @@
             this.cboBillingSupplyName.Location = new System.Drawing.Point(126, 37);
             this.cboBillingSupplyName.Name = "cboBillingSupplyName";
             this.cboBillingSupplyName.Size = new System.Drawing.Size(148, 21);
-            this.cboBillingSupplyName.TabIndex = 5;
+            this.cboBillingSupplyName.TabIndex = 7;
             // 
             // lblSupplyName
             // 
@@ -627,7 +629,7 @@
             this.grpManualTimeLog.Location = new System.Drawing.Point(7, 15);
             this.grpManualTimeLog.Name = "grpManualTimeLog";
             this.grpManualTimeLog.Size = new System.Drawing.Size(314, 199);
-            this.grpManualTimeLog.TabIndex = 17;
+            this.grpManualTimeLog.TabIndex = 1;
             this.grpManualTimeLog.TabStop = false;
             this.grpManualTimeLog.Text = "Time Log";
             // 
@@ -636,7 +638,7 @@
             this.dtpManualLog.Location = new System.Drawing.Point(34, 118);
             this.dtpManualLog.Name = "dtpManualLog";
             this.dtpManualLog.Size = new System.Drawing.Size(236, 20);
-            this.dtpManualLog.TabIndex = 3;
+            this.dtpManualLog.TabIndex = 4;
             // 
             // lblManualLogInstrument
             // 
@@ -663,7 +665,7 @@
             this.cboManualLogInstrument.Location = new System.Drawing.Point(122, 90);
             this.cboManualLogInstrument.Name = "cboManualLogInstrument";
             this.cboManualLogInstrument.Size = new System.Drawing.Size(148, 21);
-            this.cboManualLogInstrument.TabIndex = 2;
+            this.cboManualLogInstrument.TabIndex = 3;
             // 
             // cboManualLogUser
             // 
@@ -677,7 +679,7 @@
             this.cboManualLogUser.Location = new System.Drawing.Point(122, 35);
             this.cboManualLogUser.Name = "cboManualLogUser";
             this.cboManualLogUser.Size = new System.Drawing.Size(148, 21);
-            this.cboManualLogUser.TabIndex = 13;
+            this.cboManualLogUser.TabIndex = 1;
             // 
             // cboManualLogFunding
             // 
@@ -686,21 +688,21 @@
             this.cboManualLogFunding.Location = new System.Drawing.Point(122, 62);
             this.cboManualLogFunding.Name = "cboManualLogFunding";
             this.cboManualLogFunding.Size = new System.Drawing.Size(148, 21);
-            this.cboManualLogFunding.TabIndex = 1;
+            this.cboManualLogFunding.TabIndex = 2;
             // 
             // txtManualLogDuration
             // 
             this.txtManualLogDuration.Location = new System.Drawing.Point(122, 146);
             this.txtManualLogDuration.Name = "txtManualLogDuration";
             this.txtManualLogDuration.Size = new System.Drawing.Size(67, 20);
-            this.txtManualLogDuration.TabIndex = 12;
+            this.txtManualLogDuration.TabIndex = 5;
             // 
             // btnAdd
             // 
             this.btnAdd.Location = new System.Drawing.Point(195, 144);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(75, 23);
-            this.btnAdd.TabIndex = 0;
+            this.btnAdd.TabIndex = 6;
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
@@ -732,7 +734,7 @@
             this.grpTimeLogExceptions.Location = new System.Drawing.Point(6, 232);
             this.grpTimeLogExceptions.Name = "grpTimeLogExceptions";
             this.grpTimeLogExceptions.Size = new System.Drawing.Size(671, 354);
-            this.grpTimeLogExceptions.TabIndex = 8;
+            this.grpTimeLogExceptions.TabIndex = 3;
             this.grpTimeLogExceptions.TabStop = false;
             this.grpTimeLogExceptions.Text = "Usage Exceptions";
             // 
@@ -746,7 +748,7 @@
             this.cboBillingExceptions.Location = new System.Drawing.Point(7, 326);
             this.cboBillingExceptions.Name = "cboBillingExceptions";
             this.cboBillingExceptions.Size = new System.Drawing.Size(121, 21);
-            this.cboBillingExceptions.TabIndex = 10;
+            this.cboBillingExceptions.TabIndex = 11;
             this.cboBillingExceptions.SelectedIndexChanged += new System.EventHandler(this.cboBillingExceptions_SelectedIndexChanged);
             // 
             // btnRefresh
@@ -754,7 +756,7 @@
             this.btnRefresh.Location = new System.Drawing.Point(509, 325);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(75, 23);
-            this.btnRefresh.TabIndex = 9;
+            this.btnRefresh.TabIndex = 12;
             this.btnRefresh.Text = "Refresh";
             this.btnRefresh.UseVisualStyleBackColor = true;
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
@@ -769,6 +771,7 @@
             this.dgvTimeLogRequests.Name = "dgvTimeLogRequests";
             this.dgvTimeLogRequests.Size = new System.Drawing.Size(658, 299);
             this.dgvTimeLogRequests.TabIndex = 8;
+            this.dgvTimeLogRequests.TabStop = false;
             this.dgvTimeLogRequests.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTimeLogRequests_CellEndEdit);
             // 
             // btnSubmit
@@ -776,7 +779,7 @@
             this.btnSubmit.Location = new System.Drawing.Point(590, 325);
             this.btnSubmit.Name = "btnSubmit";
             this.btnSubmit.Size = new System.Drawing.Size(75, 23);
-            this.btnSubmit.TabIndex = 7;
+            this.btnSubmit.TabIndex = 13;
             this.btnSubmit.Text = "Submit";
             this.btnSubmit.UseVisualStyleBackColor = true;
             this.btnSubmit.Click += new System.EventHandler(this.btnSubmit_Click);
@@ -793,6 +796,7 @@
             this.tabControlMain.SelectedIndex = 0;
             this.tabControlMain.Size = new System.Drawing.Size(691, 615);
             this.tabControlMain.TabIndex = 0;
+            this.tabControlMain.TabStop = false;
             // 
             // tbpTracking
             // 
@@ -842,7 +846,7 @@
             this.grpAccountSettings.Controls.Add(this.txtAcctManagementConfirmPw);
             this.grpAccountSettings.Controls.Add(this.txtAcctManagementNewPw);
             this.grpAccountSettings.Controls.Add(this.txtAcctManagementPassword);
-            this.grpAccountSettings.Controls.Add(this.txtAcctManagementUserame);
+            this.grpAccountSettings.Controls.Add(this.txtAcctManagementUsername);
             this.grpAccountSettings.Location = new System.Drawing.Point(6, 253);
             this.grpAccountSettings.Name = "grpAccountSettings";
             this.grpAccountSettings.Size = new System.Drawing.Size(671, 330);
@@ -885,15 +889,6 @@
             this.label13.TabIndex = 20;
             this.label13.Text = "( - all fields are optional - )";
             // 
-            // lineSeparator1
-            // 
-            this.lineSeparator1.Location = new System.Drawing.Point(48, 126);
-            this.lineSeparator1.MaximumSize = new System.Drawing.Size(2000, 2);
-            this.lineSeparator1.MinimumSize = new System.Drawing.Size(0, 2);
-            this.lineSeparator1.Name = "lineSeparator1";
-            this.lineSeparator1.Size = new System.Drawing.Size(578, 2);
-            this.lineSeparator1.TabIndex = 19;
-            // 
             // label11
             // 
             this.label11.AutoSize = true;
@@ -935,21 +930,21 @@
             this.txtAcctManagementPhone.Location = new System.Drawing.Point(164, 253);
             this.txtAcctManagementPhone.Name = "txtAcctManagementPhone";
             this.txtAcctManagementPhone.Size = new System.Drawing.Size(144, 20);
-            this.txtAcctManagementPhone.TabIndex = 5;
+            this.txtAcctManagementPhone.TabIndex = 21;
             // 
             // txtAcctManagementEmail
             // 
             this.txtAcctManagementEmail.Location = new System.Drawing.Point(164, 226);
             this.txtAcctManagementEmail.Name = "txtAcctManagementEmail";
             this.txtAcctManagementEmail.Size = new System.Drawing.Size(144, 20);
-            this.txtAcctManagementEmail.TabIndex = 4;
+            this.txtAcctManagementEmail.TabIndex = 20;
             // 
             // txtAcctManagementZip
             // 
             this.txtAcctManagementZip.Location = new System.Drawing.Point(390, 241);
             this.txtAcctManagementZip.Name = "txtAcctManagementZip";
             this.txtAcctManagementZip.Size = new System.Drawing.Size(188, 20);
-            this.txtAcctManagementZip.TabIndex = 9;
+            this.txtAcctManagementZip.TabIndex = 25;
             // 
             // cboAcctManagementState
             // 
@@ -958,28 +953,28 @@
             this.cboAcctManagementState.Location = new System.Drawing.Point(390, 215);
             this.cboAcctManagementState.Name = "cboAcctManagementState";
             this.cboAcctManagementState.Size = new System.Drawing.Size(188, 21);
-            this.cboAcctManagementState.TabIndex = 8;
+            this.cboAcctManagementState.TabIndex = 24;
             // 
             // txtAcctManagementCity
             // 
             this.txtAcctManagementCity.Location = new System.Drawing.Point(390, 189);
             this.txtAcctManagementCity.Name = "txtAcctManagementCity";
             this.txtAcctManagementCity.Size = new System.Drawing.Size(188, 20);
-            this.txtAcctManagementCity.TabIndex = 7;
+            this.txtAcctManagementCity.TabIndex = 23;
             // 
             // txtAcctManagementStreet
             // 
             this.txtAcctManagementStreet.Location = new System.Drawing.Point(390, 163);
             this.txtAcctManagementStreet.Name = "txtAcctManagementStreet";
             this.txtAcctManagementStreet.Size = new System.Drawing.Size(188, 20);
-            this.txtAcctManagementStreet.TabIndex = 6;
+            this.txtAcctManagementStreet.TabIndex = 22;
             // 
             // bnAcctManagementSubmit
             // 
             this.bnAcctManagementSubmit.Location = new System.Drawing.Point(503, 267);
             this.bnAcctManagementSubmit.Name = "bnAcctManagementSubmit";
             this.bnAcctManagementSubmit.Size = new System.Drawing.Size(75, 23);
-            this.bnAcctManagementSubmit.TabIndex = 10;
+            this.bnAcctManagementSubmit.TabIndex = 26;
             this.bnAcctManagementSubmit.Text = "Submit";
             this.bnAcctManagementSubmit.UseVisualStyleBackColor = true;
             this.bnAcctManagementSubmit.Click += new System.EventHandler(this.bnAcctManagementSubmit_Click);
@@ -1026,7 +1021,7 @@
             this.txtAcctManagementConfirmPw.Name = "txtAcctManagementConfirmPw";
             this.txtAcctManagementConfirmPw.PasswordChar = '*';
             this.txtAcctManagementConfirmPw.Size = new System.Drawing.Size(144, 20);
-            this.txtAcctManagementConfirmPw.TabIndex = 3;
+            this.txtAcctManagementConfirmPw.TabIndex = 19;
             this.txtAcctManagementConfirmPw.TextChanged += new System.EventHandler(this.txtAcctManagementConfirmPw_TextChanged);
             // 
             // txtAcctManagementNewPw
@@ -1035,7 +1030,7 @@
             this.txtAcctManagementNewPw.Name = "txtAcctManagementNewPw";
             this.txtAcctManagementNewPw.PasswordChar = '*';
             this.txtAcctManagementNewPw.Size = new System.Drawing.Size(144, 20);
-            this.txtAcctManagementNewPw.TabIndex = 2;
+            this.txtAcctManagementNewPw.TabIndex = 18;
             this.txtAcctManagementNewPw.TextChanged += new System.EventHandler(this.txtAcctManagementNewPw_TextChanged);
             // 
             // txtAcctManagementPassword
@@ -1044,14 +1039,14 @@
             this.txtAcctManagementPassword.Name = "txtAcctManagementPassword";
             this.txtAcctManagementPassword.PasswordChar = '*';
             this.txtAcctManagementPassword.Size = new System.Drawing.Size(144, 20);
-            this.txtAcctManagementPassword.TabIndex = 1;
+            this.txtAcctManagementPassword.TabIndex = 17;
             // 
-            // txtAcctManagementUserame
+            // txtAcctManagementUsername
             // 
-            this.txtAcctManagementUserame.Location = new System.Drawing.Point(270, 46);
-            this.txtAcctManagementUserame.Name = "txtAcctManagementUserame";
-            this.txtAcctManagementUserame.Size = new System.Drawing.Size(144, 20);
-            this.txtAcctManagementUserame.TabIndex = 0;
+            this.txtAcctManagementUsername.Location = new System.Drawing.Point(270, 46);
+            this.txtAcctManagementUsername.Name = "txtAcctManagementUsername";
+            this.txtAcctManagementUsername.Size = new System.Drawing.Size(144, 20);
+            this.txtAcctManagementUsername.TabIndex = 16;
             // 
             // groupBox7
             // 
@@ -1101,7 +1096,7 @@
             this.btnManualSupplyValidate.Location = new System.Drawing.Point(201, 75);
             this.btnManualSupplyValidate.Name = "btnManualSupplyValidate";
             this.btnManualSupplyValidate.Size = new System.Drawing.Size(75, 23);
-            this.btnManualSupplyValidate.TabIndex = 22;
+            this.btnManualSupplyValidate.TabIndex = 11;
             this.btnManualSupplyValidate.Text = "Validate";
             this.btnManualSupplyValidate.UseVisualStyleBackColor = true;
             this.btnManualSupplyValidate.Click += new System.EventHandler(this.btnManualSupplyValidate_Click);
@@ -1112,7 +1107,7 @@
             this.txtManualSupplyPassword.Name = "txtManualSupplyPassword";
             this.txtManualSupplyPassword.PasswordChar = '*';
             this.txtManualSupplyPassword.Size = new System.Drawing.Size(148, 20);
-            this.txtManualSupplyPassword.TabIndex = 21;
+            this.txtManualSupplyPassword.TabIndex = 10;
             // 
             // label9
             // 
@@ -1128,7 +1123,7 @@
             this.txtManualSupplyUsername.Location = new System.Drawing.Point(128, 25);
             this.txtManualSupplyUsername.Name = "txtManualSupplyUsername";
             this.txtManualSupplyUsername.Size = new System.Drawing.Size(148, 20);
-            this.txtManualSupplyUsername.TabIndex = 19;
+            this.txtManualSupplyUsername.TabIndex = 9;
             // 
             // label10
             // 
@@ -1144,7 +1139,7 @@
             this.btnManualSupplyAdd.Location = new System.Drawing.Point(201, 155);
             this.btnManualSupplyAdd.Name = "btnManualSupplyAdd";
             this.btnManualSupplyAdd.Size = new System.Drawing.Size(75, 23);
-            this.btnManualSupplyAdd.TabIndex = 11;
+            this.btnManualSupplyAdd.TabIndex = 15;
             this.btnManualSupplyAdd.Text = "Add";
             this.btnManualSupplyAdd.UseVisualStyleBackColor = true;
             this.btnManualSupplyAdd.Click += new System.EventHandler(this.btnManualSupplyAdd_Click);
@@ -1154,7 +1149,7 @@
             this.txtManualSupplyQuantity.Location = new System.Drawing.Point(128, 157);
             this.txtManualSupplyQuantity.Name = "txtManualSupplyQuantity";
             this.txtManualSupplyQuantity.Size = new System.Drawing.Size(67, 20);
-            this.txtManualSupplyQuantity.TabIndex = 10;
+            this.txtManualSupplyQuantity.TabIndex = 14;
             // 
             // label2
             // 
@@ -1172,7 +1167,7 @@
             this.cboManualSupplyAccount.Location = new System.Drawing.Point(128, 130);
             this.cboManualSupplyAccount.Name = "cboManualSupplyAccount";
             this.cboManualSupplyAccount.Size = new System.Drawing.Size(148, 21);
-            this.cboManualSupplyAccount.TabIndex = 7;
+            this.cboManualSupplyAccount.TabIndex = 13;
             // 
             // label3
             // 
@@ -1190,7 +1185,7 @@
             this.cboManualSupplyItem.Location = new System.Drawing.Point(128, 104);
             this.cboManualSupplyItem.Name = "cboManualSupplyItem";
             this.cboManualSupplyItem.Size = new System.Drawing.Size(148, 21);
-            this.cboManualSupplyItem.TabIndex = 5;
+            this.cboManualSupplyItem.TabIndex = 12;
             // 
             // label4
             // 
@@ -1239,7 +1234,7 @@
             this.btnManualTimeValidate.Location = new System.Drawing.Point(193, 75);
             this.btnManualTimeValidate.Name = "btnManualTimeValidate";
             this.btnManualTimeValidate.Size = new System.Drawing.Size(75, 23);
-            this.btnManualTimeValidate.TabIndex = 18;
+            this.btnManualTimeValidate.TabIndex = 3;
             this.btnManualTimeValidate.Text = "Validate";
             this.btnManualTimeValidate.UseVisualStyleBackColor = true;
             this.btnManualTimeValidate.Click += new System.EventHandler(this.btnManualTimeValidate_Click);
@@ -1250,7 +1245,7 @@
             this.txtManualTimePassword.Name = "txtManualTimePassword";
             this.txtManualTimePassword.PasswordChar = '*';
             this.txtManualTimePassword.Size = new System.Drawing.Size(148, 20);
-            this.txtManualTimePassword.TabIndex = 17;
+            this.txtManualTimePassword.TabIndex = 2;
             // 
             // lblPassword
             // 
@@ -1266,7 +1261,7 @@
             this.txtManualTimeUsername.Location = new System.Drawing.Point(120, 25);
             this.txtManualTimeUsername.Name = "txtManualTimeUsername";
             this.txtManualTimeUsername.Size = new System.Drawing.Size(148, 20);
-            this.txtManualTimeUsername.TabIndex = 15;
+            this.txtManualTimeUsername.TabIndex = 1;
             // 
             // dtpManualTimeDate
             // 
@@ -1275,7 +1270,7 @@
             this.dtpManualTimeDate.Location = new System.Drawing.Point(32, 160);
             this.dtpManualTimeDate.Name = "dtpManualTimeDate";
             this.dtpManualTimeDate.Size = new System.Drawing.Size(236, 20);
-            this.dtpManualTimeDate.TabIndex = 3;
+            this.dtpManualTimeDate.TabIndex = 6;
             // 
             // lblInstrument
             // 
@@ -1302,7 +1297,7 @@
             this.cboManualTimeInstrument.Location = new System.Drawing.Point(120, 132);
             this.cboManualTimeInstrument.Name = "cboManualTimeInstrument";
             this.cboManualTimeInstrument.Size = new System.Drawing.Size(148, 21);
-            this.cboManualTimeInstrument.TabIndex = 2;
+            this.cboManualTimeInstrument.TabIndex = 5;
             // 
             // cboManualTimeAccount
             // 
@@ -1311,21 +1306,21 @@
             this.cboManualTimeAccount.Location = new System.Drawing.Point(120, 104);
             this.cboManualTimeAccount.Name = "cboManualTimeAccount";
             this.cboManualTimeAccount.Size = new System.Drawing.Size(148, 21);
-            this.cboManualTimeAccount.TabIndex = 1;
+            this.cboManualTimeAccount.TabIndex = 4;
             // 
             // txtManualTimeDuration
             // 
             this.txtManualTimeDuration.Location = new System.Drawing.Point(120, 186);
             this.txtManualTimeDuration.Name = "txtManualTimeDuration";
             this.txtManualTimeDuration.Size = new System.Drawing.Size(67, 20);
-            this.txtManualTimeDuration.TabIndex = 12;
+            this.txtManualTimeDuration.TabIndex = 7;
             // 
             // btnManualTimeAdd
             // 
             this.btnManualTimeAdd.Location = new System.Drawing.Point(193, 184);
             this.btnManualTimeAdd.Name = "btnManualTimeAdd";
             this.btnManualTimeAdd.Size = new System.Drawing.Size(75, 23);
-            this.btnManualTimeAdd.TabIndex = 0;
+            this.btnManualTimeAdd.TabIndex = 8;
             this.btnManualTimeAdd.Text = "Add";
             this.btnManualTimeAdd.UseVisualStyleBackColor = true;
             this.btnManualTimeAdd.Click += new System.EventHandler(this.btnManualTimeAdd_Click);
@@ -1347,6 +1342,16 @@
             this.lblFundingSource.Size = new System.Drawing.Size(85, 13);
             this.lblFundingSource.TabIndex = 4;
             this.lblFundingSource.Text = "Funding Source:";
+            // 
+            // lineSeparator1
+            // 
+            this.lineSeparator1.Location = new System.Drawing.Point(48, 126);
+            this.lineSeparator1.MaximumSize = new System.Drawing.Size(2000, 2);
+            this.lineSeparator1.MinimumSize = new System.Drawing.Size(0, 2);
+            this.lineSeparator1.Name = "lineSeparator1";
+            this.lineSeparator1.Size = new System.Drawing.Size(578, 2);
+            this.lineSeparator1.TabIndex = 19;
+            this.lineSeparator1.TabStop = false;
             // 
             // frmCUITAdminMain
             // 
@@ -1435,7 +1440,7 @@
         private System.Windows.Forms.TabControl tabControlMain;
         private System.Windows.Forms.TabPage tbpTracking;
         private System.Windows.Forms.DataGridView dgvTimeLogRequests;
-        private System.Windows.Forms.Button btnInvoiceExport;
+        private System.Windows.Forms.Button btnExportSingle;
         private System.Windows.Forms.FolderBrowserDialog InvoiceExportPath;
         private System.Windows.Forms.GroupBox grpInvoiceExport;
         private System.Windows.Forms.TabPage tbpManualRequests;
@@ -1484,7 +1489,7 @@
         private System.Windows.Forms.TextBox txtAcctManagementConfirmPw;
         private System.Windows.Forms.TextBox txtAcctManagementNewPw;
         private System.Windows.Forms.TextBox txtAcctManagementPassword;
-        private System.Windows.Forms.TextBox txtAcctManagementUserame;
+        private System.Windows.Forms.TextBox txtAcctManagementUsername;
         private System.Windows.Forms.TextBox txtAcctManagementCity;
         private System.Windows.Forms.TextBox txtAcctManagementStreet;
         private System.Windows.Forms.Button bnAcctManagementSubmit;

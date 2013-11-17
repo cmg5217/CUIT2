@@ -422,18 +422,6 @@ namespace CUITAdmin {
 
         #endregion Admin Tab
 
-        #region Settings Tab
-
-        private void InitializeSettingsTab() {
-            if (standalone) {
-                chkStandalone.Checked = true;
-            }
-        }
-
-
-
-        #endregion Settings Tab
-
         #region Export Tab
 
         private void InitializeExportTab() {
@@ -441,6 +429,12 @@ namespace CUITAdmin {
                 comboBoxSelectAccount.DataSource = dbManager.GetAccounts();
                 comboBoxSelectAccount.DisplayMember = "Name";
                 comboBoxSelectAccount.ValueMember = "Account_Number";
+            }
+        }
+
+        private void InitializeSettingsTab() {
+            if (standalone) {
+                chkStandalone.Checked = true;
             }
         }
 
@@ -458,6 +452,7 @@ namespace CUITAdmin {
             }
 
         }
+
 
         private void btnExportAll_Click(object sender, EventArgs e) {
 
@@ -497,14 +492,15 @@ namespace CUITAdmin {
 
                 int invoiceID;
 
-                dbManager.GenerateInvoice(comboBoxSelectAccount.SelectedValue.ToString(), datetime, endtime, out invoiceID);
+                //dbManager.GenerateInvoice(comboBoxSelectAccount.SelectedValue.ToString(), datetime, endtime, out invoiceID);
 
-                //invoiceID = 396;
+                invoiceID = 405;
 
                 ExportSingleInvoice(invoiceID);
             }
 
         }
+
 
         private void ExportSingleInvoice(int invoiceID) {
             PDFManager pdfManager = new PDFManager();
@@ -519,7 +515,6 @@ namespace CUITAdmin {
                 //ExcelManager.generateExcel(invoice);
             }
         }
-
 
         private void chkGLSU_Click(object sender, EventArgs e) {
             if (chkGLSU.Checked) {
@@ -760,13 +755,12 @@ namespace CUITAdmin {
                     cboManualSupplyAccount.DisplayMember = "Name";
                     cboManualSupplyAccount.ValueMember = "Value";
                 } else {
-                    DataTable accounts = dbManager.GetUserAccounts(txtManualTimeUsername.Text);
-                    if (accounts.Rows.Count == 0) {
+                    DataTable timeAcctTable = dbManager.GetUserAccounts(txtManualSupplyUsername.Text);
+                    if (timeAcctTable.Rows.Count == 0) {
                         MessageBox.Show("There are no accounts tied to this username.");
                         return;
                     }
-                    cboManualSupplyAccount.DataSource = accounts;
-
+                    cboManualSupplyAccount.DataSource = timeAcctTable;
                     cboManualSupplyAccount.DisplayMember = "Name";
                     cboManualSupplyAccount.ValueMember = "Account_Number";
                 }
@@ -911,7 +905,7 @@ namespace CUITAdmin {
         private void bnAcctManagementSubmit_Click(object sender, EventArgs e) {
             bool error = false;
             string errorMessage = "";
-            if (!dbManager.CheckPassword(txtAcctManagementUserame.Text, txtAcctManagementPassword.Text)) {
+            if (!dbManager.CheckPassword(txtAcctManagementUsername.Text, txtAcctManagementPassword.Text)) {
                 error = true;
                 errorMessage += "Username or password invalid. \r\n\r\n";
             }
@@ -922,7 +916,7 @@ namespace CUITAdmin {
             }
 
             if (!error) {
-                int userID = dbManager.GetUserID(txtAcctManagementUserame.Text);
+                int userID = dbManager.GetUserID(txtAcctManagementUsername.Text);
 
                 string state;
                 if (cboAcctManagementState.SelectedItem == null) state = "";
@@ -938,6 +932,7 @@ namespace CUITAdmin {
         }
 
         private void ClearAcctManagementFields() {
+            txtAcctManagementUsername.Clear();
             txtAcctManagementStreet.Clear();
             txtAcctManagementPassword.Clear();
             txtAcctManagementStreet.Clear();
@@ -1080,6 +1075,5 @@ namespace CUITAdmin {
         private void chkAdminIncludeInactive_CheckedChanged(object sender, EventArgs e) {
             updateAdminDGV();
         }
-
     }
 }
