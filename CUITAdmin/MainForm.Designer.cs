@@ -380,7 +380,7 @@
             this.chkStandalone.TabIndex = 11;
             this.chkStandalone.Text = "Standalone Mode";
             this.chkStandalone.UseVisualStyleBackColor = true;
-            this.chkStandalone.Click += new System.EventHandler(this.chkStandalone_Click_1);
+            this.chkStandalone.Click += new System.EventHandler(this.chkStandalone_Click);
             // 
             // btnImportLogs
             // 
@@ -465,6 +465,7 @@
             this.btnAccountAdminSearch.TabIndex = 4;
             this.btnAccountAdminSearch.Text = "Search";
             this.btnAccountAdminSearch.UseVisualStyleBackColor = true;
+            this.btnAccountAdminSearch.Click += new System.EventHandler(this.btnAccountAdminSearch_Click);
             // 
             // lblAccountAdminView
             // 

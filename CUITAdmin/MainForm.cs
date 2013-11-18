@@ -419,7 +419,44 @@ namespace CUITAdmin {
 
         }
 
+        private void chkAdminIncludeInactive_CheckedChanged(object sender, EventArgs e) {
+            updateAdminDGV();
+        }
 
+        private void btnAccountAdminSearch_Click(object sender, EventArgs e) {
+
+            List<int> rowsFound = new List<int>();
+
+            for (int i = 0; i < dgvAdmin.Rows.Count; i++) {
+                for (int j = 0; j < dgvAdmin.ColumnCount; j++) {
+                    string cellValue = dgvAdmin.Rows[i].Cells[j].Value.ToString();
+                    int index = cellValue.IndexOf(txtAccountAdminSearch.Text);
+                    if ( index != -1) {
+                        rowsFound.Add(i);
+                        break;
+                    }
+                }
+            }
+
+            DataTable ds = (DataTable)dgvAdmin.DataSource;
+            bool breakFlag = false;
+            int removeIndex = 0;
+            int loopCount = ds.Rows.Count;
+            for (int i = 0; i < loopCount; i++) {
+                breakFlag = false;
+                while (removeIndex < rowsFound.Count && i == rowsFound[removeIndex]) {
+
+                    removeIndex++;
+                    breakFlag = true;
+                    break;
+                }
+                if (breakFlag) continue;
+                ds.Rows.RemoveAt(removeIndex);
+            }
+
+
+        }
+       
         #endregion Admin Tab
 
         #region Export Tab
@@ -435,13 +472,18 @@ namespace CUITAdmin {
         private void InitializeSettingsTab() {
             if (standalone) {
                 chkStandalone.Checked = true;
+                btnExportSingle.Enabled = false;
+                btnExportAll.Enabled = false;
+                btnExportStandaloneFile.Enabled = false;
+                btnImportLogs.Enabled = false;
+                comboBoxSelectAccount.Enabled = false;
+                comboBoxSelectMonth.Enabled = false;
             }
         }
 
         private void genPDF(int invoiceID) {
 
         }
-
 
         private void btnSetInvoiceExportPath_Click(object sender, EventArgs e) {
             if (InvoiceExportPath.ShowDialog() == DialogResult.OK) {
@@ -452,7 +494,6 @@ namespace CUITAdmin {
             }
 
         }
-
 
         private void btnExportAll_Click(object sender, EventArgs e) {
 
@@ -480,27 +521,30 @@ namespace CUITAdmin {
         }
 
         private void btnExportSingle_Click(object sender, EventArgs e) {
-            if (Settings.Default["InvoicePath"].ToString() == "") {
-                MessageBox.Show("You have not selected the export path. Please select an export path first.");
+
+            if (standalone) {
 
             } else {
-                //parse the date in the combobox and calculate the end of the month
-                string date = comboBoxSelectMonth.Text;
-                DateTime datetime = DateTime.ParseExact(date, "MMMMMMMM", CultureInfo.InvariantCulture);
-                DateTime endtime = datetime.AddMonths(1);
-                endtime = endtime.AddSeconds(-1);
+                if (Settings.Default["InvoicePath"].ToString() == "") {
+                    MessageBox.Show("You have not selected the export path. Please select an export path first.");
 
-                int invoiceID;
+                } else {
+                    //parse the date in the combobox and calculate the end of the month
+                    string date = comboBoxSelectMonth.Text;
+                    DateTime datetime = DateTime.ParseExact(date, "MMMMMMMM", CultureInfo.InvariantCulture);
+                    DateTime endtime = datetime.AddMonths(1);
+                    endtime = endtime.AddSeconds(-1);
 
-                //dbManager.GenerateInvoice(comboBoxSelectAccount.SelectedValue.ToString(), datetime, endtime, out invoiceID);
+                    int invoiceID;
 
-                invoiceID = 405;
+                    dbManager.GenerateInvoice(comboBoxSelectAccount.SelectedValue.ToString(), datetime, endtime, out invoiceID);
 
-                ExportSingleInvoice(invoiceID);
+                    //invoiceID = 405;
+
+                    ExportSingleInvoice(invoiceID);
+                }
             }
-
         }
-
 
         private void ExportSingleInvoice(int invoiceID) {
             PDFManager pdfManager = new PDFManager();
@@ -526,7 +570,7 @@ namespace CUITAdmin {
             }
         }
 
-        private void chkStandalone_Click_1(object sender, EventArgs e) {
+        private void chkStandalone_Click(object sender, EventArgs e) {
             //standalone mode on
             if (chkStandalone.Checked) {
                 //
@@ -589,9 +633,68 @@ namespace CUITAdmin {
 
         }
 
+        private void btnImportLogs_Click(object sender, EventArgs e) {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Multiselect = true;
+            DialogResult result = dialog.ShowDialog();
 
+            if (result == DialogResult.OK) {
+
+                // Create the 2 tables that you will send to the server
+                DataTable timeLogs = new DataTable();
+                DataTable supplyUses = new DataTable();
+
+                foreach (string currentFile in dialog.FileNames) {
+
+                    // Create the 2 tables that you will send to the server
+                    DataTable currentTimeLogs = xmlManager.ImportTimeLogs(currentFile);
+                    DataTable currentSupplyUses = xmlManager.ImportSupplyUse(currentFile);
+
+                    // Get the additional information to fill in all rows
+                    DataTable timeLogImportData = dbManager.GetImportDataTimeLog();
+                    DataTable supplyUseImportData = dbManager.GetImportDataSupplyUse();
+
+                    // Loop through and add the rate and time increment to each timelog
+                    foreach (DataRow row in currentTimeLogs.Rows) {
+                        foreach (DataRow importRow in timeLogImportData.Rows) {
+                            if (importRow["Account_Number"].ToString() == row["Account_Number"].ToString() &&
+                                importRow["InstrumentID"].ToString() == row["InstrumentID"].ToString()) {
+                                row["Current_Rate"] = importRow["Rate"];
+                                row["Time_Increment"] = importRow["Time_Increment"];
+                            }
+                        }
+                    }
+
+                    // Loop through and add the cost to each supply use
+                    foreach (DataRow row in currentSupplyUses.Rows) {
+                        foreach (DataRow importRow in supplyUseImportData.Rows) {
+                            if (importRow["Supply_Name"].ToString() == row["Supply_Name"].ToString()) {
+                                row["Current_Cost"] = importRow["Cost"];
+                            }
+                        }
+                    }
+
+                    timeLogs.Merge(currentTimeLogs);
+                    supplyUses.Merge(currentSupplyUses);
+                }
+
+                // send the imports to the server
+                dbManager.AddTimeLogBulk(timeLogs);
+                dbManager.AddSupplyUseBulk(supplyUses);
+            }
+        }
+
+        private void btnExportStandaloneFile_Click(object sender, EventArgs e) {
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
+            DialogResult result = dialog.ShowDialog();
+
+            if (result == DialogResult.OK) {
+                xmlManager.CreateLogFile(dialog.SelectedPath);
+            }
+        }
 
         #endregion Export Tab
+
 
         #region Request Tab
 
@@ -614,6 +717,21 @@ namespace CUITAdmin {
             List<string> states = new List<string> { "", "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming" };
             foreach (string s in states) {
                 cboAcctManagementState.Items.Add(s);
+            }
+
+            if (standalone) {
+                txtAcctManagementUsername.Enabled = false;
+                txtAcctManagementStreet.Enabled = false;
+                txtAcctManagementPassword.Enabled = false;
+                txtAcctManagementStreet.Enabled = false;
+                txtAcctManagementCity.Enabled = false;
+                txtAcctManagementZip.Enabled = false;
+                txtAcctManagementPhone.Enabled = false;
+                txtAcctManagementEmail.Enabled = false;
+                txtAcctManagementNewPw.Enabled = false;
+                txtAcctManagementConfirmPw.Enabled = false;
+                cboAcctManagementState.Enabled = false;
+                bnAcctManagementSubmit.Enabled = false;
             }
 
             cboAcctManagementState.SelectedIndex = 0;
@@ -1012,68 +1130,6 @@ namespace CUITAdmin {
         }
 
 
-        private void btnExportStandaloneFile_Click(object sender, EventArgs e) {
-            FolderBrowserDialog dialog = new FolderBrowserDialog();
-            DialogResult result = dialog.ShowDialog();
 
-            if (result == DialogResult.OK) {
-                xmlManager.CreateLogFile(dialog.SelectedPath);
-            }
-        }
-
-        private void btnImportLogs_Click(object sender, EventArgs e) {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Multiselect = true;
-            DialogResult result = dialog.ShowDialog();
-
-            if (result == DialogResult.OK) {
-
-                // Create the 2 tables that you will send to the server
-                DataTable timeLogs = new DataTable();
-                DataTable supplyUses = new DataTable();
-
-                foreach (string currentFile in dialog.FileNames) {
-
-                    // Create the 2 tables that you will send to the server
-                    DataTable currentTimeLogs = xmlManager.ImportTimeLogs(currentFile);
-                    DataTable currentSupplyUses = xmlManager.ImportSupplyUse(currentFile);
-
-                    // Get the additional information to fill in all rows
-                    DataTable timeLogImportData = dbManager.GetImportDataTimeLog();
-                    DataTable supplyUseImportData = dbManager.GetImportDataSupplyUse();
-
-                    // Loop through and add the rate and time increment to each timelog
-                    foreach (DataRow row in currentTimeLogs.Rows) {
-                        foreach (DataRow importRow in timeLogImportData.Rows) {
-                            if (importRow["Account_Number"].ToString() == row["Account_Number"].ToString() &&
-                                importRow["InstrumentID"].ToString() == row["InstrumentID"].ToString()) {
-                                row["Current_Rate"] = importRow["Rate"];
-                                row["Time_Increment"] = importRow["Time_Increment"];
-                            }
-                        }
-                    }
-
-                    // Loop through and add the cost to each supply use
-                    foreach (DataRow row in currentSupplyUses.Rows) {
-                        foreach (DataRow importRow in supplyUseImportData.Rows) {
-                            if (importRow["Supply_Name"].ToString() == row["Supply_Name"].ToString()) {
-                                row["Current_Cost"] = importRow["Cost"];
-                            }
-                        }
-                    }
-
-                    timeLogs.Merge(currentTimeLogs);
-                    supplyUses.Merge(currentSupplyUses);
-                }
-
-                // send the imports to the server
-                dbManager.AddTimeLogBulk(timeLogs);
-                dbManager.AddSupplyUseBulk(supplyUses);
-            }
-        }
-
-        private void chkAdminIncludeInactive_CheckedChanged(object sender, EventArgs e) {
-            updateAdminDGV();
-        }
     }
 }

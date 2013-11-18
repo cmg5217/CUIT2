@@ -685,5 +685,16 @@ namespace CUITAdmin {
                 }
          */
 
+
+        internal char GetUserType(string username) {
+            XmlNode users = xmlDoc.SelectSingleNode("//root/users");
+            foreach (XmlElement currentUser in users.ChildNodes) {
+                if (currentUser.SelectSingleNode("username").InnerText == username) {
+                    return currentUser.SelectSingleNode("type").InnerText[0];
+                }
+            }
+
+            return 'U';
+        }
     }
 }

@@ -11,7 +11,7 @@ using CUITAdmin.Properties;
 namespace CUITAdmin {
     public partial class Login : Form {
 
-        DBManager dbManager;
+
 
 
         public Login() {
@@ -20,15 +20,24 @@ namespace CUITAdmin {
 
 
         private void Login_Load(object sender, EventArgs e) {
-            dbManager = DBManager.Instance;
+            
             this.AcceptButton = btnLogin;
             txtPassword.PasswordChar = '*';
         }
 
         private void btnLogin_Click(object sender, EventArgs e) {
             if (Settings.Default.StandaloneMode == "true") {
+                XmlManager xmlManager = XmlManager.Instance;
+
+                if (xmlManager.CheckPassword(txtUsername.Text, txtPassword.Text)){
+                    Program.userType = xmlManager.GetUserType(txtUsername.Text);
+                } else {
+                    MessageBox.Show("Username or password did not match, please try again.");
+                }
 
             } else {
+                DBManager dbManager = DBManager.Instance;
+
                 if (dbManager.CheckPassword(txtUsername.Text, txtPassword.Text)) {
                     Program.userType = dbManager.GetUserType(txtUsername.Text);
                     this.Close();

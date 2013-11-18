@@ -703,13 +703,14 @@ namespace CUITAdmin
 
         }
 
-        public DataTable GetInstruments() {
+        public DataTable GetInstruments(bool excludePerUse = false) {
             SqlConnection myConnection = DBConnect();
             if (myConnection == null) {
                 return new DataTable();
             }
 
-            string myCommand = "SELECT Name, Billing_Unit, Time_Increment, InstrumentID FROM Instrument";
+            string myCommand = "SELECT Name, Billing_Unit, Time_Increment, InstrumentID FROM Instrument" + 
+                ((excludePerUse) ? " Where Billing_Unit != 'Per Use'" : "");
 
             DataTable table = new DataTable();
             try{
@@ -778,7 +779,7 @@ namespace CUITAdmin
             }
 
             SqlCommand myCommand = new SqlCommand(
-                "Select tl.Account_Number, tl.UserID, acct.Name, i.InstrumentID, i.Name, tl.Start_Time, tl.End_Time, tl.Current_Rate, tl.Time_Increment " +
+                "Select tl.Account_Number, tl.UserID, acct.Name, i.InstrumentID, i.Name, tl.Start_Time, tl.End_Time, tl.Current_Rate, tl.Time_Increment, i.Billing_Unit " +
                 "From Time_Log tl INNER JOIN Account acct on tl.Account_Number = acct.Account_Number INNER JOIN Instrument i on tl.InstrumentID = i.InstrumentID " +
                 "WHERE tl.Account_Number = @accountNumber and tl.Start_Time between @startDate and @endDate and tl.Billed IS NULL" + ((!includeExceptions) ? " and tl.End_Time IS NOT NULL and tl.Approved = 'Y'" : "")
                 , myConnection);
@@ -1029,7 +1030,7 @@ namespace CUITAdmin
             return GetUserAccounts(username, false);
         }
 
-        public DataTable GetUserAccounts(string username, bool includeInvalid) {
+        public DataTable GetUserAccounts(string username, bool includeInvalid, bool includePerUse = true) {
             SqlConnection myConnection = DBConnect();
             if (myConnection == null) {
                 return new DataTable();
@@ -1055,31 +1056,6 @@ namespace CUITAdmin
         
             myConnection.Close();
             return table;
-        }
-
-        public BindingList<Data> GetInstrumentsData() {
-            SqlDataReader myReader = null;
-            SqlConnection myConnection = DBConnect();
-            SqlCommand myCommand = new SqlCommand("SELECT * FROM Instrument", myConnection);
-
-            try {
-                myReader = myCommand.ExecuteReader();
-            } catch (Exception e) {
-                Debug.WriteLine(e.Message);
-            }
-
-            BindingList<Data> instruments = new BindingList<Data>();
-
-            while (myReader.Read()) {
-                instruments.Add(new Data {
-                    Value = myReader["InstrumentID"].ToString(),
-                    Name = myReader["Name"].ToString()
-                }
-                );
-            }
-
-            myConnection.Close();
-            return instruments;
         }
 
         public DataTable GetRateTypes()
@@ -1321,8 +1297,12 @@ namespace CUITAdmin
                     instrumentToUpdate.hours = duration.TotalHours;
                     instrumentToUpdate.rate = Convert.ToDouble(currentRow["Current_Rate"]);
                     instrumentToUpdate.timeIncrement = Convert.ToInt32(currentRow["Time_Increment"]);
+                    instrumentToUpdate.billingUnit = currentRow["Billing_Unit"].ToString();
+                    instrumentToUpdate.uses = 1;
                     invoice.instrumets.Add(instrumentToUpdate);
+
                 } else {
+                    instrumentToUpdate.uses++;
                     instrumentToUpdate.hours += duration.TotalHours;
                 }
 
@@ -1334,12 +1314,17 @@ namespace CUITAdmin
             }
 
             foreach (InvoiceInstrumentLine currentLine in invoice.instrumets) {
-
-                double lineMin = currentLine.hours * 60;
-                int timeIncrements = (int)lineMin / currentLine.timeIncrement;
-                currentLine.charges = timeIncrements * currentLine.rate;
-                currentLine.hours = (double) timeIncrements * (double) currentLine.timeIncrement / 60;
-                invoice.totalBalance += currentLine.charges;
+                if (currentLine.billingUnit == "Time") {
+                    double lineMin = currentLine.hours * 60;
+                    int timeIncrements = (int)lineMin / currentLine.timeIncrement;
+                    currentLine.charges = timeIncrements * currentLine.rate;
+                    currentLine.hours = (double)timeIncrements * (double)currentLine.timeIncrement / 60;
+                    invoice.totalBalance += currentLine.charges;
+                } else {
+                    currentLine.charges = currentLine.uses * currentLine.rate;
+                    currentLine.hours = currentLine.uses;
+                    invoice.totalBalance += currentLine.charges;
+                }
             }
 
         }
@@ -1573,6 +1558,8 @@ namespace CUITAdmin
             public double hours { get; set; }
             public double charges { get; set; }
             public double rate { get; set; }
+            public string billingUnit { get; set; }
+            public int uses { get; set; }
             public int timeIncrement { get; set; }
         }
         #endregion

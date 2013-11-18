@@ -83,7 +83,7 @@ namespace CUITAdmin {
             } else {
                 standalone = false;
 
-                cboInstrument.DataSource = dbManager.GetInstruments();
+                cboInstrument.DataSource = dbManager.GetInstruments(true);
                 cboInstrument.DisplayMember = "Name";
                 cboInstrument.ValueMember = "InstrumentID";
             }
@@ -310,7 +310,9 @@ namespace CUITAdmin {
                 valid = xmlManager.CheckPassword(username, password);
 
             } else { // ------------------------------------ Server Section ----------------------------------------- //
+                passwordTimer.Stop();
                 valid = dbManager.CheckPassword(username, password);
+                passwordTimer.Start();
             }
 
             if (logStarted) { // ----------------------------- End Log ----------------------------------------------- //

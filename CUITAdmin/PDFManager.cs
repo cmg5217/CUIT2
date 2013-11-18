@@ -227,7 +227,11 @@ namespace CUITAdmin
                 File.Delete(pathname + exportFileName);
 
             File.Move("merge.pdf", pathname + exportFileName);
+
             File.Delete("merge.pdf");
+            foreach (string currentPath in filesToMerge) {
+                File.Delete(currentPath);
+            }
         }
         
 
@@ -269,7 +273,7 @@ namespace CUITAdmin
                     currentRow["Name"].ToString(), //insert time into the invoice
                     Convert.ToDouble(currentRow["Hours"]).ToString("#.0"), //insert hours into invoice
                     computedRate.ToString("#.00"), //insert dollars per hour into invoice
-                    "hour");// unit of biling displayed on invoice
+                    ((currentRow["Billing_Unit"].ToString() == "Time") ? "hour" : "use"));// unit of biling displayed on invoice
 
                 // Add the charge for the corresponding instrument
                 AddCharge(acroFields, currentRow["Line_Amount"].ToString()); //add charge to invoice
@@ -308,6 +312,7 @@ namespace CUITAdmin
             AddBalance(acroFields, offset + "$" + invoice.Rows[0]["Total_Balance"].ToString()); // add balance to invoice
 
             pdfStamper.FormFlattening = true;
+
             //close the file stream
             pdfStamper.Close();
         }
