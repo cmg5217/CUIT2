@@ -1529,6 +1529,7 @@ namespace CUITAdmin
             myConnection.Close();
         }
 
+
         public void UpdateInstrument(int instrumentID, string name, string billingUnit, int timeIncrement, char active) {
             string tableName = "Instrument";
             string tableKeyName = "InstrumentID";
@@ -1630,6 +1631,29 @@ namespace CUITAdmin
             } catch (Exception e) {
                 Debug.WriteLine(e.Message);
             }
+
+            myConnection.Close();
+        }
+
+        public void UpdateUserAccounts(DataTable userAccounts, int personID)
+        {
+            SqlConnection myConnection = DBConnect();
+
+            SqlCommand myCommand = new SqlCommand("DELETE FROM User_Account " +
+                                                  "WHERE PersonID = @personID", myConnection);
+
+            myCommand.Parameters.AddWithValue("@personID", personID);
+
+            try
+            {
+                myCommand.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+
+            AddUserAccounts(userAccounts);
 
             myConnection.Close();
         }
