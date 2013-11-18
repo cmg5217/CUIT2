@@ -679,7 +679,6 @@ namespace CUITAdmin
             return table;
         }
 
-
         public List<string> GetAccountNumberList() {
 
             SqlDataReader myReader = null;
@@ -900,7 +899,6 @@ namespace CUITAdmin
             myConnection.Close();
             return table;
         }
-
 
         public DataTable GetUsers() {
             return GetUsers(false);
@@ -1375,7 +1373,6 @@ namespace CUITAdmin
             }
         }
 
-
         private void GenerateInstrumentUse(DataTable timeLogsTable, int invoiceID)
         {
             //string to save the instrument use
@@ -1522,6 +1519,111 @@ namespace CUITAdmin
             myCommand.Parameters.AddWithValue("@instrumentID", instrumentID);
             myCommand.Parameters.AddWithValue("@startTime", startTime);
             myCommand.Parameters.AddWithValue("@approval", approval);
+
+            try {
+                myCommand.ExecuteNonQuery();
+            } catch (Exception e) {
+                Debug.WriteLine(e.Message);
+            }
+
+            myConnection.Close();
+        }
+
+        public void UpdateInstrument(int instrumentID, string name, string billingUnit, int timeIncrement, char active) {
+            string tableName = "Instrument";
+            string tableKeyName = "InstrumentID";
+
+            string[] colNames = new string[]{
+                "Name", "Billing_Unit", "Time_Increment", "Active"
+            };
+
+            object[] paramValues = new object[]{
+                name, billingUnit, timeIncrement, active
+            };
+
+            UpdateTable(tableName, tableKeyName, instrumentID, colNames, paramValues);
+        }
+
+        public void UpdateSupply(string supplyName, double cost, string unit, char active) {
+            string tableName = "Supply";
+            string tableKeyName = "Supply_Name";
+
+            string[] colNames = new string[]{
+              "Cost", "Unit", "Active"  
+            };
+
+            object[] paramValues = new object[]{
+                cost, unit, active
+            };
+
+            UpdateTable(tableName, tableKeyName, supplyName, colNames, paramValues);
+        }
+
+        public void UpdateAccount(string accountNumber, string name, double maxCharge, DateTime accountExpiration,
+            string rateType, int pointOfContactID, string notes, string costCenter, string wbsNumber, double balance,
+            string street, string city, string state, int zip, string taxID, char Active) {
+            
+            string tableName = "Account";
+            string tableKeyName = "Account_Number";
+
+
+            string[] colNames = new string[]{
+                "Name", "Max_Charge_Limit", "Account_Expiration",
+                "Rate_Type", "PointOfContactID", "Notes", "Cost_Center", "WBS_Number",
+                "Balance", "Street", "City", "State", "Zip", "Tax_ID", "Active"
+            };
+
+            object[] paramValues = new object[]{
+                name, maxCharge, accountExpiration,
+                rateType, pointOfContactID, notes, costCenter, wbsNumber,
+                balance, street, city, state, zip, taxID, Active
+            };
+
+            UpdateTable(tableName, tableKeyName, accountNumber, colNames, paramValues);
+
+        }
+
+        private void UpdateTable(string tableName, string tableKeyName, object tableKeyValue, string[] colNames, object[] paramValues) {
+            UpdateTable(tableName, new string[] { tableKeyName }, new object[] { tableKeyValue }, colNames, paramValues);
+        }
+
+        private void UpdateTable(string tableName, string[] tableKeyNames, object[] tableKeyValues, string[] colNames, object[] paramValues) {
+            
+            // don't execute if the # of columns doesn't match the number of values
+            if (paramValues.Length != colNames.Length && tableKeyNames.Length != tableKeyValues.Length)
+                return;
+
+            // used for debugging, remove in production
+            int earlyCut = 0;
+
+            SqlConnection myConnection = DBConnect();
+            string commandString = "UPDATE " + tableName + " SET ";
+            for (int i = 0; i + earlyCut < colNames.Length; i++ ) {
+                if (paramValues[i] != "") {
+                    commandString += colNames[i] + " = @param" + i;
+                    if (i + 1 + earlyCut < colNames.Length) commandString += ", ";
+                }
+            }
+            commandString += " WHERE ";
+
+            for (int i = 0; i < tableKeyNames.Length; i++) {
+                commandString += tableKeyNames[i] + " = @filterparam" + i;
+            }
+
+            
+
+            SqlCommand myCommand = new SqlCommand(commandString, myConnection);
+
+            for (int i = 0; i + earlyCut < colNames.Length; i++) {
+                if (paramValues[i] != "") {
+                    myCommand.Parameters.AddWithValue("@param" + i, paramValues[i]);
+                }
+            }
+
+            for (int i = 0; i < tableKeyNames.Length; i++) {
+                myCommand.Parameters.AddWithValue("@filterparam" + i, tableKeyValues[i]);
+            }
+
 
             try {
                 myCommand.ExecuteNonQuery();

@@ -388,11 +388,23 @@ namespace CUITAdmin {
 
             string primaryKey = "";
             string addNewCase = "";
+
+            DataGridViewRow row = dgvAdmin.Rows[e.RowIndex];
+
             switch (cboAccountAdminView.Text) {
                 case "Users":
-                    primaryKey = dgvAdmin.Rows[e.RowIndex].Cells["PersonID"].Value.ToString();
+                    primaryKey = row.Cells["PersonID"].Value.ToString();
                     addNewCase = "Edit User";
-
+                    break;
+                case "Accounts":
+                    primaryKey = row.Cells["Account_Number"].Value.ToString();
+                    addNewCase = "Edit Account";
+                    break;
+                case "Instruments":
+                    primaryKey = row.Cells["InstrumentID"].Value.ToString();
+                    addNewCase = "Edit Instrument";
+                    break;
+                case "Supplies":
                     break;
                 default:
                     return;

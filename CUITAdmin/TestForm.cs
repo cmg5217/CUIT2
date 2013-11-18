@@ -28,7 +28,16 @@ namespace CUITAdmin {
             DBManager dbManager = DBManager.Instance;
             Random rand = new Random();
 
+            dbManager.UpdateAccount("1", "testAccount", 50000.00, DateTime.Now.AddMonths(6), "Internal Academic",
+                17, "test edit", "cost center test edit", "wbs test edit", 500.13, "edit street", "edit city",
+                "edit state", 99999, "eit tax ID", 'N');
+            Debug.WriteLine("----");
+            dbManager.UpdateInstrument(10, "Tazer", "Time", 2, 'Y');
+            Debug.WriteLine("----");
+            dbManager.UpdateSupply("Beaker", 80000, "vehicle", 'Y');
+            Debug.WriteLine("----");
 
+            /*
             xmlManager.CreateLogFile();
 
             xmlManager.AddPartialLog("cmg5217", "1", "10", DateTime.Now.ToString());
@@ -68,7 +77,7 @@ namespace CUITAdmin {
             // send the imports to the server
             dbManager.AddTimeLogBulk(timeLogs);
             dbManager.AddSupplyUseBulk(supplyUses);
-
+            */
 
             Debug.Write("");
             /*

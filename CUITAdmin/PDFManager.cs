@@ -230,13 +230,13 @@ namespace CUITAdmin
 
             File.Delete("merge.pdf");
             foreach (string currentPath in filesToMerge) {
-                File.Delete(currentPath);
+                //File.Delete(currentPath);
             }
         }
         
 
         private void CreateInvoicePage(DataTable invoice, DataTable invoiceTime, DataTable invoiceSupply, int page, List<string> filesToMerge) {
-            string filePath = pathname + page + "temp.pdf";
+            string filePath = page + "temp.pdf";
             filesToMerge.Add(filePath);
 
 
