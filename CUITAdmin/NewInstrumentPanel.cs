@@ -184,16 +184,17 @@ namespace CUITAdmin
             DataTable ratesTable = (DataTable)dgvInstrumentRates.DataSource;
             foreach (DataRow row in ratesTable.Rows)
             {
-                if (!System.Text.RegularExpressions.Regex.IsMatch(row["Rate"].ToString(), ratePattern))
+                if (!System.Text.RegularExpressions.Regex.IsMatch(row["Rate"].ToString(), ratePattern) || int.Parse(row["Rate"].ToString()) < 0)
                 {
                     lblInstrumentRates.BackColor = System.Drawing.Color.Red;
                     error = true;
                 }
             }
+
             if (cboBillingType.SelectedItem == "Time")
             { 
                 string timePattern = "^[0-9]+$";
-                if (!System.Text.RegularExpressions.Regex.IsMatch(txtTimeIncrement.Text, timePattern))
+                if (!System.Text.RegularExpressions.Regex.IsMatch(txtTimeIncrement.Text, timePattern) || int.Parse(txtTimeIncrement.Text) <= 0)
                 {
                     txtTimeIncrement.BackColor = System.Drawing.Color.Red;
                     error = true;

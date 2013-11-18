@@ -1547,6 +1547,29 @@ namespace CUITAdmin
             myConnection.Close();
         }
 
+        public void UpdateUserAccounts(DataTable userAccounts, int personID)
+        {
+            SqlConnection myConnection = DBConnect();
+
+            SqlCommand myCommand = new SqlCommand("DELETE FROM User_Account " +
+                                                  "WHERE PersonID = @personID", myConnection);
+
+            myCommand.Parameters.AddWithValue("@personID", personID);
+
+            try
+            {
+                myCommand.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+
+            AddUserAccounts(userAccounts);
+
+            myConnection.Close();
+        }
+
         #endregion
 
         #region Invoice Classes

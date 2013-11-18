@@ -467,11 +467,33 @@ namespace CUITAdmin
 
                 } else if (mode == "edit") {
                     int contactID;
-                    if (!int.TryParse(cboContacts.SelectedValue.ToString(), out contactID)) contactID = 0;
+                    if (!int.TryParse(cboContacts.SelectedValue.ToString(), out contactID)) 
+                        contactID = 0;
 
                     dbManager.UpdateUser(int.Parse(user["PersonID"].ToString()), txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text,
                         cboState.Text, txtZipCode.Text, txtPhone.Text, txtEmail.Text, "", txtPassword.Text, txtDepartment.Text,
                         "", rtbNotes.Text, contactID);
+
+                    if (accountsEdited)
+                    {
+                        for (int i = 0; i < userAccounts.Columns.Count; i++)
+                        {
+                            if (userAccounts.Columns[i].ColumnName != "Account_Number")
+                            {
+                                userAccounts.Columns.RemoveAt(i);
+                            }
+                        }
+
+                        userAccounts.Columns.Add("PersonID", System.Type.GetType("System.Int32"));
+                        userAccounts.Columns[1].SetOrdinal(0);
+
+                        foreach (DataRow row in userAccounts.Rows)
+                        {
+                            row["PersonID"] = int.Parse(user["PersonID"].ToString());
+                        }
+
+                        dbManager.UpdateUserAccounts(userAccounts, int.Parse(user["PersonID"].ToString()));
+                    }
                 }
 
                 containingForm.updateAdminDGV();

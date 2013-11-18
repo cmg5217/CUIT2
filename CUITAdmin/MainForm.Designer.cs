@@ -104,7 +104,7 @@
             this.cboAcctManagementState = new System.Windows.Forms.ComboBox();
             this.txtAcctManagementCity = new System.Windows.Forms.TextBox();
             this.txtAcctManagementStreet = new System.Windows.Forms.TextBox();
-            this.bnAcctManagementSubmit = new System.Windows.Forms.Button();
+            this.btnAcctManagementSubmit = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.lblAcctManagementPw = new System.Windows.Forms.Label();
@@ -115,7 +115,7 @@
             this.txtAcctManagementUserame = new System.Windows.Forms.TextBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.label12 = new System.Windows.Forms.Label();
+            this.lblManualSuppliesValidated = new System.Windows.Forms.Label();
             this.btnManualSupplyValidate = new System.Windows.Forms.Button();
             this.txtManualSupplyPassword = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -664,6 +664,7 @@
             this.cboManualLogInstrument.Name = "cboManualLogInstrument";
             this.cboManualLogInstrument.Size = new System.Drawing.Size(148, 21);
             this.cboManualLogInstrument.TabIndex = 2;
+            this.cboManualLogInstrument.SelectedIndexChanged += new System.EventHandler(this.cboManualLogInstrument_SelectedIndexChanged);
             // 
             // cboManualLogUser
             // 
@@ -834,7 +835,7 @@
             this.grpAccountSettings.Controls.Add(this.cboAcctManagementState);
             this.grpAccountSettings.Controls.Add(this.txtAcctManagementCity);
             this.grpAccountSettings.Controls.Add(this.txtAcctManagementStreet);
-            this.grpAccountSettings.Controls.Add(this.bnAcctManagementSubmit);
+            this.grpAccountSettings.Controls.Add(this.btnAcctManagementSubmit);
             this.grpAccountSettings.Controls.Add(this.label5);
             this.grpAccountSettings.Controls.Add(this.label1);
             this.grpAccountSettings.Controls.Add(this.lblAcctManagementPw);
@@ -974,15 +975,15 @@
             this.txtAcctManagementStreet.Size = new System.Drawing.Size(188, 20);
             this.txtAcctManagementStreet.TabIndex = 6;
             // 
-            // bnAcctManagementSubmit
+            // btnAcctManagementSubmit
             // 
-            this.bnAcctManagementSubmit.Location = new System.Drawing.Point(503, 267);
-            this.bnAcctManagementSubmit.Name = "bnAcctManagementSubmit";
-            this.bnAcctManagementSubmit.Size = new System.Drawing.Size(75, 23);
-            this.bnAcctManagementSubmit.TabIndex = 10;
-            this.bnAcctManagementSubmit.Text = "Submit";
-            this.bnAcctManagementSubmit.UseVisualStyleBackColor = true;
-            this.bnAcctManagementSubmit.Click += new System.EventHandler(this.bnAcctManagementSubmit_Click);
+            this.btnAcctManagementSubmit.Location = new System.Drawing.Point(503, 267);
+            this.btnAcctManagementSubmit.Name = "btnAcctManagementSubmit";
+            this.btnAcctManagementSubmit.Size = new System.Drawing.Size(75, 23);
+            this.btnAcctManagementSubmit.TabIndex = 10;
+            this.btnAcctManagementSubmit.Text = "Submit";
+            this.btnAcctManagementSubmit.UseVisualStyleBackColor = true;
+            this.btnAcctManagementSubmit.Click += new System.EventHandler(this.btnAcctManagementSubmit_Click);
             // 
             // label5
             // 
@@ -1066,7 +1067,7 @@
             // 
             // groupBox8
             // 
-            this.groupBox8.Controls.Add(this.label12);
+            this.groupBox8.Controls.Add(this.lblManualSuppliesValidated);
             this.groupBox8.Controls.Add(this.btnManualSupplyValidate);
             this.groupBox8.Controls.Add(this.txtManualSupplyPassword);
             this.groupBox8.Controls.Add(this.label9);
@@ -1086,15 +1087,15 @@
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Supplies";
             // 
-            // label12
+            // lblManualSuppliesValidated
             // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(144, 80);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(51, 13);
-            this.label12.TabIndex = 23;
-            this.label12.Text = "Validated";
-            this.label12.Visible = false;
+            this.lblManualSuppliesValidated.AutoSize = true;
+            this.lblManualSuppliesValidated.Location = new System.Drawing.Point(144, 80);
+            this.lblManualSuppliesValidated.Name = "lblManualSuppliesValidated";
+            this.lblManualSuppliesValidated.Size = new System.Drawing.Size(51, 13);
+            this.lblManualSuppliesValidated.TabIndex = 23;
+            this.lblManualSuppliesValidated.Text = "Validated";
+            this.lblManualSuppliesValidated.Visible = false;
             // 
             // btnManualSupplyValidate
             // 
@@ -1303,6 +1304,7 @@
             this.cboManualTimeInstrument.Name = "cboManualTimeInstrument";
             this.cboManualTimeInstrument.Size = new System.Drawing.Size(148, 21);
             this.cboManualTimeInstrument.TabIndex = 2;
+            this.cboManualTimeInstrument.SelectedIndexChanged += new System.EventHandler(this.cboManualTimeInstrument_SelectedIndexChanged);
             // 
             // cboManualTimeAccount
             // 
@@ -1468,7 +1470,7 @@
         private System.Windows.Forms.Button btnManualSupplyValidate;
         private System.Windows.Forms.Button btnManualTimeValidate;
         private System.Windows.Forms.Label lblValidate;
-        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label lblManualSuppliesValidated;
         private System.Windows.Forms.ComboBox comboBoxSelectMonth;
         private System.Windows.Forms.ComboBox comboBoxSelectAccount;
         private System.Windows.Forms.Label txtAccount;
@@ -1487,7 +1489,7 @@
         private System.Windows.Forms.TextBox txtAcctManagementUserame;
         private System.Windows.Forms.TextBox txtAcctManagementCity;
         private System.Windows.Forms.TextBox txtAcctManagementStreet;
-        private System.Windows.Forms.Button bnAcctManagementSubmit;
+        private System.Windows.Forms.Button btnAcctManagementSubmit;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtAcctManagementZip;
         private System.Windows.Forms.ComboBox cboAcctManagementState;

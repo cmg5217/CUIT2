@@ -35,17 +35,13 @@ namespace CUITAdmin {
 
         ExcelManager ExcelManager;
 
-
-
         public frmCUITAdminMain(char userType) {
             this.userType = userType;
             InitializeComponent();
         }
 
-
         private void Main_Load(object sender, EventArgs e)
         {
-
             tabControlMain.Location = new Point((this.Size.Width / 2) - (tabControlMain.Size.Width/2) - 7, 
                                                 (this.Size.Height / 2) - (tabControlMain.Size.Height/2) - 19);
                                       //new Point(0, 0);
@@ -84,7 +80,6 @@ namespace CUITAdmin {
             InitializeGLSUCheckbox();
             // Sets up the return keys for the manual entry tab
 
-
             InitializeRequestTab();
 
             if (userType == 'A' && !standalone) {
@@ -104,11 +99,11 @@ namespace CUITAdmin {
             BindReturnKeys();
         }
 
-
-
         #region Billing Tab
 
         DataTable BillingExceptions;
+        bool logPerUse = false;
+
         private void InitializeBillingTab() {
             editedRows = new List<int>();
 
@@ -121,6 +116,7 @@ namespace CUITAdmin {
                 cboManualLogInstrument.DataSource = dbManager.GetInstruments();
                 cboManualLogInstrument.DisplayMember = "Name";
                 cboManualLogInstrument.ValueMember = "InstrumentID";
+                cboManualLogInstrument.SelectedIndex = 0;
 
                 cboManualLogFunding.DataSource = dbManager.GetAccounts();
                 cboManualLogFunding.DisplayMember = "Name";
@@ -201,13 +197,13 @@ namespace CUITAdmin {
                     }
                 }
             }
-
         }
 
         private void btnAdd_Click(object sender, EventArgs e) {
             int duration;
-            if (!(int.TryParse(txtManualLogDuration.Text, out duration))) {
+            if ((!(int.TryParse(txtManualLogDuration.Text, out duration)) || int.Parse(txtManualLogDuration.Text) <= 0) && !logPerUse) {
                 txtManualLogDuration.BackColor = Color.Red;
+                txtManualLogDuration.Focus();
                 return;
             }
 
@@ -217,14 +213,19 @@ namespace CUITAdmin {
             }
 
             cboManualLogFunding.BackColor = Color.White;
-            txtManualTimeDuration.BackColor = Color.White;
+            txtManualLogDuration.BackColor = Color.White;
 
             string accountNumber = cboManualLogFunding.SelectedValue.ToString();
             int instrumentID = int.Parse(cboManualLogInstrument.SelectedValue.ToString());
             int userID = int.Parse(cboManualLogUser.SelectedValue.ToString());
             DateTime startTime = dtpManualLog.Value;
             dtpManualLog.Value = DateTime.Now;
-            DateTime endTime = startTime.AddMinutes(int.Parse(txtManualLogDuration.Text));
+
+            DateTime endTime;
+            if (!logPerUse)
+                endTime = startTime.AddMinutes(int.Parse(txtManualLogDuration.Text));
+            else
+                endTime = startTime;
 
             if (dbManager.AddTimeLog(accountNumber, userID, 'Y', instrumentID, startTime, endTime)) {
                 MessageBox.Show("Time log successfully added");
@@ -232,14 +233,16 @@ namespace CUITAdmin {
                 MessageBox.Show("There was an error executing your request. \r\n" +
                                 "Please check your connection or contact your server admin");
             }
+            txtManualLogDuration.Clear();
         }
 
         private void btnBillingSupplyAdd_Click(object sender, EventArgs e) {
 
             int quantity;
 
-            if (!(int.TryParse(txtBillingSupplyQuantity.Text, out quantity))) {
+            if (!(int.TryParse(txtBillingSupplyQuantity.Text, out quantity)) || int.Parse(txtBillingSupplyQuantity.Text) <= 0) {
                 txtBillingSupplyQuantity.BackColor = Color.Red;
+                txtBillingSupplyQuantity.Focus();
                 return;
             }
             txtBillingSupplyQuantity.BackColor = Color.White;
@@ -254,8 +257,9 @@ namespace CUITAdmin {
                 MessageBox.Show("There was an error executing your request. \r\n" +
                 "Please check your connection or contact your server admin");
             }
-        }
 
+            txtBillingSupplyQuantity.Clear();
+        }
 
         List<int> editedRows;
         private void dgvTimeLogRequests_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
@@ -404,7 +408,6 @@ namespace CUITAdmin {
             newForm.ShowDialog(); //Displays forms modally
 
         }
-
 
         private void InitializeGLSUCheckbox() {
             if (Properties.Settings.Default.GLSUexport == "false") {
@@ -606,7 +609,7 @@ namespace CUITAdmin {
                 cboManualTimeInstrument.DataSource = dbManager.GetInstruments();
                 cboManualTimeInstrument.DisplayMember = "Name";
                 cboManualTimeInstrument.ValueMember = "InstrumentID";
-
+                cboManualTimeInstrument.SelectedIndex = 0;
 
                 cboManualSupplyItem.DataSource = dbManager.GetSupplies();
                 cboManualSupplyItem.DisplayMember = "Supply_Name";
@@ -625,6 +628,8 @@ namespace CUITAdmin {
         }
 
         private bool timeValid = false;
+        private bool requestPerUse = false;
+
         private void btnManualTimeValidate_Click(object sender, EventArgs e) {
             bool pwValid = false;
 
@@ -668,10 +673,7 @@ namespace CUITAdmin {
 
                 }
 
-
                 lblValidate.Visible = true;
-
-
 
                 timeValid = true;
             } else {
@@ -690,25 +692,31 @@ namespace CUITAdmin {
             if (!timeValid) {
                 MessageBox.Show("Your log in information is not valid.  Please log in to continue.");
                 txtManualTimeUsername.Focus();
-            } else if (!System.Text.RegularExpressions.Regex.IsMatch(txtManualTimeDuration.Text, durationPattern)) {
+            } else if ((!System.Text.RegularExpressions.Regex.IsMatch(txtManualTimeDuration.Text, durationPattern) || int.Parse(txtManualTimeDuration.Text) <= 0) && !requestPerUse ) {
                 txtManualTimeDuration.BackColor = System.Drawing.Color.Red;
-                MessageBox.Show("Please input a simple integer to represent the durations in minutes.");
+                MessageBox.Show("Please input a simple integer (greater than 0) to represent the durations in minutes.");
             } else {
-
                 //adds the time log
                 string username = txtManualTimeUsername.Text;
                 string account = cboManualTimeAccount.SelectedValue.ToString();
                 string instrument = cboManualTimeInstrument.SelectedValue.ToString();
 
-
                 if (standalone) {
                     string startTime = dtpManualTimeDate.Value.ToString();
-                    string endTime = (dtpManualTimeDate.Value.AddMinutes(int.Parse(txtManualTimeDuration.Text))).ToString();
+                    string endTime;
+                    if (!requestPerUse)
+                        endTime = (dtpManualTimeDate.Value.AddMinutes(int.Parse(txtManualTimeDuration.Text))).ToString();
+                    else
+                        endTime = startTime;
                     xmlManager.AddLog(username, account, instrument, startTime, endTime);
                 } else {
                     int instrumentId = int.Parse(instrument);
                     DateTime startTime = dtpManualTimeDate.Value;
-                    DateTime endTime = dtpManualTimeDate.Value.AddMinutes(int.Parse(txtManualTimeDuration.Text));
+                    DateTime endTime;
+                    if (!requestPerUse)
+                        endTime = (dtpManualTimeDate.Value.AddMinutes(int.Parse(txtManualTimeDuration.Text)));
+                    else
+                        endTime = startTime;
                     dbManager.AddTimeLog(account, dbManager.GetUserID(username), ' ', instrumentId, startTime, endTime);
                 }
                 //confirms the add to the user and resets the time log form.
@@ -729,10 +737,15 @@ namespace CUITAdmin {
         private void btnManualSupplyValidate_Click(object sender, EventArgs e) {
             bool pwValid = false;
 
-
             string username = txtManualSupplyUsername.Text;
             string password = txtManualSupplyPassword.Text;
             //supplies manual request log in validation
+
+            txtManualSupplyQuantity.Clear();
+            lblManualSuppliesValidated.Visible = false;
+            supplyValid = false;
+            cboManualSupplyAccount.DataSource = null;
+            cboManualSupplyAccount.Items.Clear();
 
             if (standalone) {
                 pwValid = xmlManager.CheckPassword(username, password);
@@ -740,16 +753,8 @@ namespace CUITAdmin {
                 pwValid = dbManager.CheckPassword(username, password);
             }
 
-
-
             if (pwValid) {
                 if (standalone) {
-                    txtManualSupplyQuantity.Clear();
-                    label12.Visible = false;
-                    supplyValid = false;
-                    cboManualSupplyAccount.DataSource = null;
-                    cboManualSupplyAccount.Items.Clear();
-
                     //code for populating the funding source combobox
                     BindingList<Data> comboItems = new BindingList<Data>();
                     if (!xmlManager.GetUserAccounts(txtManualSupplyUsername.Text, out comboItems)) {
@@ -760,7 +765,7 @@ namespace CUITAdmin {
                     cboManualSupplyAccount.DisplayMember = "Name";
                     cboManualSupplyAccount.ValueMember = "Value";
                 } else {
-                    DataTable accounts = dbManager.GetUserAccounts(txtManualTimeUsername.Text);
+                    DataTable accounts = dbManager.GetUserAccounts(txtManualSupplyUsername.Text);
                     if (accounts.Rows.Count == 0) {
                         MessageBox.Show("There are no accounts tied to this username.");
                         return;
@@ -771,9 +776,7 @@ namespace CUITAdmin {
                     cboManualSupplyAccount.ValueMember = "Account_Number";
                 }
 
-
-
-                label12.Visible = true;
+                lblManualSuppliesValidated.Visible = true;
                 supplyValid = true;
 
             } else {
@@ -792,9 +795,9 @@ namespace CUITAdmin {
             if (!supplyValid) {
                 MessageBox.Show("Your log in information is not valid.  Please log in to continue.");
                 txtManualSupplyUsername.Focus();
-            } else if (!System.Text.RegularExpressions.Regex.IsMatch(txtManualSupplyQuantity.Text, quantityPattern)) {
+            } else if (!System.Text.RegularExpressions.Regex.IsMatch(txtManualSupplyQuantity.Text, quantityPattern) || int.Parse(txtManualSupplyQuantity.Text) <= 0) {
                 txtManualSupplyQuantity.BackColor = System.Drawing.Color.Red;
-                MessageBox.Show("Please input a simple integer to represent the quantity in the unit of measurement appropriate.");
+                MessageBox.Show("Please input a simple integer (greater than 0) to represent the quantity used in the appropriate unit of measurement .");
                 txtManualSupplyQuantity.Focus();
             } else {
                 string username = txtManualSupplyUsername.Text;
@@ -816,7 +819,7 @@ namespace CUITAdmin {
                 txtManualSupplyUsername.Clear();
                 txtManualSupplyPassword.Clear();
                 txtManualSupplyQuantity.Clear();
-                label12.Visible = false;
+                lblManualSuppliesValidated.Visible = false;
                 supplyValid = false;
                 cboManualSupplyAccount.DataSource = null;
                 cboManualSupplyAccount.Items.Clear();
@@ -885,10 +888,12 @@ namespace CUITAdmin {
                 error = true;
             }
 
-            if (txtAcctManagementConfirmPw.Text != txtAcctManagementNewPw.Text) error = true;
+            if (txtAcctManagementConfirmPw.Text != txtAcctManagementNewPw.Text)
+            { 
+                error = true;
+            }
 
             return error;
-
         }
 
         private void txtAcctManagementConfirmPw_TextChanged(object sender, EventArgs e) {
@@ -908,7 +913,7 @@ namespace CUITAdmin {
             }
         }
 
-        private void bnAcctManagementSubmit_Click(object sender, EventArgs e) {
+        private void btnAcctManagementSubmit_Click(object sender, EventArgs e) {
             bool error = false;
             string errorMessage = "";
             if (!dbManager.CheckPassword(txtAcctManagementUserame.Text, txtAcctManagementPassword.Text)) {
@@ -953,8 +958,6 @@ namespace CUITAdmin {
         #endregion Request Tab
 
 
-
-
         private void FindAndRenameDGVColumn(string searchName, string newHeader, DataGridView dgv) {
             foreach (DataGridViewColumn col in dgv.Columns) {
                 if (col.Name == searchName) {
@@ -962,11 +965,45 @@ namespace CUITAdmin {
                     return;
                 }
             }
-
         }
 
-
         private void BindReturnKeys() {
+
+            //Account Admin Tab search field clicks search button on enter key pressed
+            txtAccountAdminSearch.KeyDown += (sender1, args) => {
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnAccountAdminSearch.PerformClick();
+                }
+            };
+
+            //Export tab path field clicks browse button on enter key pressed
+            txtInvoiceExportPath.KeyDown += (sender1, args) =>
+            {
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnSetInvoiceExportPath.PerformClick();
+                }
+            };
+
+            //Billing Tab log duration field clicks add button on enter key pressed
+            txtManualLogDuration.KeyDown += (sender1, args) =>
+            {
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnAdd.PerformClick();
+                }
+            };
+
+            //Billing Tab supply quantity field clicks add button on enter key pressed
+            txtBillingSupplyQuantity.KeyDown += (sender1, args) =>
+            {
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnBillingSupplyAdd.PerformClick();
+                }
+            };
+
             //Time Log manual request username field clicks validate on enter key pressed
             txtManualTimeUsername.KeyDown += (sender1, args) => {
                 if (args.KeyCode == Keys.Return) {
@@ -1010,12 +1047,10 @@ namespace CUITAdmin {
             };
         }
 
-
         private void frmCUITAdminMain_Resize(object sender, EventArgs e) {
             tabControlMain.Location = new Point((this.Size.Width / 2) - (tabControlMain.Size.Width / 2) - 7,
                                     (this.Size.Height / 2) - (tabControlMain.Size.Height / 2) - 19);
         }
-
 
         private void btnExportStandaloneFile_Click(object sender, EventArgs e) {
             FolderBrowserDialog dialog = new FolderBrowserDialog();
@@ -1081,5 +1116,30 @@ namespace CUITAdmin {
             updateAdminDGV();
         }
 
+        private void cboManualTimeInstrument_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            requestPerUse = false;
+            DataTable instrumentTable = (DataTable)cboManualTimeInstrument.DataSource;
+            int index = cboManualTimeInstrument.SelectedIndex;
+            if (instrumentTable.Rows[index].ItemArray[1].ToString() == "Per Use")
+            {
+                txtManualTimeDuration.Enabled = false;
+                txtManualTimeDuration.Clear();
+                requestPerUse = true;
+            }
+        }
+
+        private void cboManualLogInstrument_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            logPerUse = false;
+            DataTable instrumentTable = (DataTable)cboManualLogInstrument.DataSource; 
+            int index = cboManualLogInstrument.SelectedIndex;
+            if (instrumentTable.Rows[index].ItemArray[1].ToString() == "Per Use")
+            {
+                txtManualLogDuration.Enabled = false; 
+                txtManualLogDuration.Clear();
+                logPerUse = true;
+            }
+        }
     }
 }
