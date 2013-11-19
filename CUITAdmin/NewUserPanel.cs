@@ -19,6 +19,7 @@ namespace CUITAdmin
         Button btnNewContact = new Button();
         Button btnUserAccounts = new Button();
         Button btnUserInstruments = new Button();
+        CheckBox ckbActive = new CheckBox();
         ComboBox cboContacts = new ComboBox();
         RichTextBox rtbNotes = new RichTextBox();
         TextBox txtPhone = new TextBox();
@@ -65,6 +66,11 @@ namespace CUITAdmin
             populateControls();
             accountsEdited = false;
             instrumentsEdited = false;
+
+            //CheckBox ckbActive = new CheckBox();
+            ckbActive.Text = "Active";
+            ckbActive.Location = new Point(550, 310);
+            this.Controls.Add(ckbActive);
         }
 
         private NewUserPanel(NewEntryForm pForm, string mode) {
@@ -102,6 +108,12 @@ namespace CUITAdmin
             txtStreet.Text = user["Street"].ToString();
             txtEmail.Text = user["Email"].ToString();
             txtDepartment.Text = user["Department"].ToString();
+            char active = char.Parse(user["Active"].ToString());
+
+            if (active == 'Y')
+                ckbActive.Checked = true;
+            else
+                ckbActive.Checked = false;
 
         }
 
@@ -504,7 +516,7 @@ namespace CUITAdmin
                     }
 
                     dbManager.AddUserAccounts(userAccounts);
-                    dbManager.addUserInstruments(userInstruments);
+                    dbManager.AddUserInstruments(userInstruments);
 
                 } else if (mode == "edit") {
                     int contactID;
@@ -554,7 +566,7 @@ namespace CUITAdmin
                             row["PersonID"] = int.Parse(user["PersonID"].ToString());
                         }
 
-                        //dbManager.UpdateUserInstruments(userInstruments, int.Parse(user["PersonID"].ToString()));
+                        dbManager.UpdateUserInstruments(userInstruments, int.Parse(user["PersonID"].ToString()));
                     }
                 }
 

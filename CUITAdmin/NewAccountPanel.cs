@@ -15,6 +15,7 @@ namespace CUITAdmin
         string accountNumber;
 
         NewEntryForm containingForm;
+        CheckBox ckbActive = new CheckBox();
         TextBox txtAccountName = new TextBox();
         TextBox txtAccountNumber = new TextBox();
         TextBox txtMaxCharge = new TextBox();
@@ -65,6 +66,11 @@ namespace CUITAdmin
             this.accountNumber = accountNumber;
             populateControls();
             instrumentsEdited = false;
+
+            //CheckBox ckbActive = new CheckBox();
+            ckbActive.Text = "Active";
+            ckbActive.Location = new Point(550, 310);
+            this.Controls.Add(ckbActive);
         }
 
         public NewAccountPanel(NewEntryForm pForm, char mode)
@@ -80,7 +86,7 @@ namespace CUITAdmin
         }
 
         private void addControls()
-        {
+        {            
             //Label lblAccountName = new Label();
             lblAccountName.Text = "Account Name:";
             lblAccountName.Location = new Point(10, 10);
@@ -298,17 +304,24 @@ namespace CUITAdmin
             account = dbManager.GetAccount(accountNumber).Rows[0];
 
             txtAccountNumber.Text = account["Account_Number"].ToString();
-            txtAccountName.Text = account["Account_Name"].ToString();
+            txtAccountName.Text = account["Name"].ToString();
             txtBalance.Text = account["Balance"].ToString();
             txtCostCenter.Text = account["Cost_Center"].ToString();
             txtMaxCharge.Text = account["Max_Charge_Limit"].ToString();
             txtTaxID.Text = account["Tax_ID"].ToString();
             txtWBSNumber.Text = account["WBS_Number"].ToString();
+            char active = char.Parse(account["Active"].ToString());
+
+            if (active == 'Y')
+                ckbActive.Checked = true;
+            else
+                ckbActive.Checked = false;
+
 
             for (int i = 0; i < cboContacts.Items.Count; i++)
             {
                 cboContacts.SelectedIndex = i;
-                if (cboContacts.SelectedValue.ToString() == account["ContactID"].ToString())
+                if (cboContacts.SelectedValue.ToString() == account["PointOfContactID"].ToString())
                 {
                     break;
                 }
@@ -385,7 +398,8 @@ namespace CUITAdmin
                     if (!int.TryParse(cboContacts.SelectedValue.ToString(), out contactID))
                         contactID = 0;
 
-                    //dbManager.UpdateAccount();
+                    dbManager.UpdateAccount(txtAccountNumber.Text, txtAccountName.Text, double.Parse(txtMaxCharge.Text), dtpAccountExpiration.Value, 
+                        cboRateType.SelectedValue.ToString(), int.Parse(cboContacts.SelectedValue.ToString()), rtbNotes.Text, txtCostCenter.Text, txtWBSNumber.Text, double.Parse(txtBalance.Text), txtStreet.Text, txtCity.Text, cboState.SelectedItem.ToString(), int.Parse(txtZipCode.Text), txtTaxID.Text, (ckbActive.Checked == true) ? 'Y' : 'N');
 
                     if (instrumentsEdited)
                     {
@@ -405,7 +419,7 @@ namespace CUITAdmin
                             row["Account_Number"] = txtAccountNumber.Text;
                         }
 
-                        //dbManager.UpdateAccountInstruments(accountInstruments, txtAccountNumber.Text);
+                        dbManager.UpdateAccountInstruments(accountInstruments, txtAccountNumber.Text);
                     }
                 }
 

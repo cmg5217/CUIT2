@@ -35,11 +35,12 @@ namespace CUITAdmin
             {
                 DataTable userInstrumentsDataSource = dbManager.GetUserInstruments(username);
                 List<DataRow> rowsToBeRemoved = new List<DataRow>(userInstrumentsDataSource.Rows.Count);
+                userInstrumentsDataSource.Columns[1].SetOrdinal(0);
                 for (int i = 0; i < userInstrumentsDataSource.Rows.Count; i++)
                 {
                     foreach (DataRow row in allInstrumentsDataSource.Rows)
                     {
-                        bool whatthefuck = userInstrumentsDataSource.Rows[i][0].ToString() == row[0].ToString();
+                         bool whatthefuck = userInstrumentsDataSource.Rows[i][0].ToString() == row[0].ToString();
                         if (whatthefuck)
                             rowsToBeRemoved.Add(row);
                     }
@@ -47,17 +48,17 @@ namespace CUITAdmin
 
                 foreach (DataRow row in rowsToBeRemoved)
                     allInstrumentsDataSource.Rows.Remove(row);
-
                 dgvUserInstruments.DataSource = userInstrumentsDataSource;
             }
             else
             {
-                DataTable dataSource = new DataTable();
+                DataTable userInstrumentsDataSource = new DataTable();
                 foreach (DataColumn col in allInstrumentsDataSource.Columns)
                 {
-                    dataSource.Columns.Add(col.ColumnName);
+                    userInstrumentsDataSource.Columns.Add(col.ColumnName);
                 }
-                dgvUserInstruments.DataSource = dataSource;
+                
+                dgvUserInstruments.DataSource = userInstrumentsDataSource;
             }
 
             dgvAllInstruments.DataSource = allInstrumentsDataSource;
@@ -79,7 +80,7 @@ namespace CUITAdmin
             {
                 columnContents[i] = dgvAllInstruments.Rows[e.RowIndex].Cells[i].Value.ToString();
             }
-            columnContents.Reverse();
+
             ((DataTable)dgvUserInstruments.DataSource).Rows.Add(columnContents);
 
             ((DataTable)dgvAllInstruments.DataSource).Rows.RemoveAt(e.RowIndex);
@@ -93,7 +94,6 @@ namespace CUITAdmin
                 columnContents[i] = dgvUserInstruments.Rows[e.RowIndex].Cells[i].Value.ToString();
             }
 
-            columnContents.Reverse();
             ((DataTable)dgvAllInstruments.DataSource).Rows.Add(columnContents);
 
             ((DataTable)dgvUserInstruments.DataSource).Rows.RemoveAt(e.RowIndex);

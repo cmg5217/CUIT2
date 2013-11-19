@@ -204,7 +204,7 @@ namespace CUITAdmin
             myConnection.Close();
         }
 
-        public void addUserInstruments(DataTable userInstruments)
+        public void AddUserInstruments(DataTable userInstruments)
         {
             SendDataTable(userInstruments, "User_Instrument");
         }
@@ -1244,8 +1244,9 @@ namespace CUITAdmin
                 return new DataTable();
             }
 
-            SqlCommand myCommand = new SqlCommand("SELECT Account_Number, InstrumentID " +
-                "FROM Account_Instrument WHERE Account_Number = @accountNumber", myConnection);
+            SqlCommand myCommand = new SqlCommand("SELECT i.Name, ai.InstrumentID " +
+                "FROM Account_Instrument ai INNER JOIN Instrument i on ai.InstrumentID = i.InstrumentID " +
+                "WHERE Account_Number = @accountNumber", myConnection);
 
             myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
 
@@ -1940,6 +1941,7 @@ namespace CUITAdmin
             myConnection.Close();
         }
 
+
         public void UpdateInstrumentRates(DataTable rates, int instrumentID) {
 
             SqlConnection myConnection = DBConnect();
@@ -1962,6 +1964,52 @@ namespace CUITAdmin
             }
 
             SendDataTable(rates, "Instrument_Rate");
+        }
+
+        public void UpdateUserInstruments(DataTable userInstruments, int personID)
+        {
+            SqlConnection myConnection = DBConnect();
+
+            SqlCommand myCommand = new SqlCommand("DELETE FROM User_Instrument " +
+                                                  "WHERE PersonID = @personID", myConnection);
+
+            myCommand.Parameters.AddWithValue("@personID", personID);
+
+            try
+            {
+                myCommand.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+
+            AddUserInstruments(userInstruments);
+
+            myConnection.Close();
+        }
+
+        public void UpdateAccountInstruments(DataTable accountInstruments, string accountNumber)
+        {
+            SqlConnection myConnection = DBConnect();
+
+            SqlCommand myCommand = new SqlCommand("DELETE FROM Account_Instrument " +
+                                                  "WHERE Account_Number = @accountNumber", myConnection);
+
+            myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
+
+            try
+            {
+                myCommand.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+
+            AddAccountInstruments(accountInstruments);
+
+            myConnection.Close();
         }
 
         #endregion
