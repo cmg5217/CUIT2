@@ -57,6 +57,7 @@ namespace CUITAdmin {
 
 
             xmlManager = XmlManager.Instance;
+
             dbManager = DBManager.Instance;
             dbManager.BindForm(this);
             startPanel = new LogPanel(tbpTracking, new Point(5,5));
@@ -649,7 +650,7 @@ namespace CUITAdmin {
             DialogResult dialogResult = MessageBox.Show("You must restart for these settings to take effect. Any current sessions will be lost. Would you like to restart now?", "Full Screen", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes) {
                 System.Diagnostics.Process.Start(Application.ExecutablePath); // to start new instance of application
-                this.Close();
+                Exit();
             }
         }
 
@@ -1193,6 +1194,7 @@ namespace CUITAdmin {
         private void cboManualTimeInstrument_SelectedIndexChanged(object sender, EventArgs e)
         {
             requestPerUse = false;
+            txtManualTimeDuration.Enabled = true;
             DataTable instrumentTable = (DataTable)cboManualTimeInstrument.DataSource;
             int index = cboManualTimeInstrument.SelectedIndex;
             if (instrumentTable.Rows[index].ItemArray[1].ToString() == "Per Use")
@@ -1206,6 +1208,7 @@ namespace CUITAdmin {
         private void cboManualLogInstrument_SelectedIndexChanged(object sender, EventArgs e)
         {
             logPerUse = false;
+            txtManualLogDuration.Enabled = true;
             DataTable instrumentTable = (DataTable)cboManualLogInstrument.DataSource; 
             int index = cboManualLogInstrument.SelectedIndex;
             if (instrumentTable.Rows[index].ItemArray[1].ToString() == "Per Use")
@@ -1241,9 +1244,13 @@ namespace CUITAdmin {
             if (Settings.Default.FullScreen) e.Cancel = true;
         }
 
-        internal void Exit() {
-            this.FormClosing -= new System.Windows.Forms.FormClosingEventHandler(this.frmCUITAdminMain_FormClosing);
+        public void Exit() {
+            UnbindFormClosingEvent();
             this.Close();
+        }
+
+        public void UnbindFormClosingEvent() {
+            this.FormClosing -= new System.Windows.Forms.FormClosingEventHandler(this.frmCUITAdminMain_FormClosing);
         }
 
         private void btnImportStandalone_Click(object sender, EventArgs e) {

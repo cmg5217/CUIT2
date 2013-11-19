@@ -27,7 +27,7 @@ namespace CUITAdmin
     class DBManager {
 
         static DBManager globalManager;
-        private Form mainForm;
+        private frmCUITAdminMain mainForm;
 
 
         private DBManager() {
@@ -55,6 +55,10 @@ namespace CUITAdmin
             try {
                 myConnection.Open();
             } catch (Exception e) {
+                if (mainForm != null && Settings.Default.FullScreen) {
+                    mainForm.UnbindFormClosingEvent();
+                }
+
                 Debug.WriteLine(e.Message);
                 DialogResult dialogResult = MessageBox.Show("There was an error connecting to the server, please try again or contact your system administrator.\r\n\r\n" + 
                                                             "Would you like to go into offline mode?", "Error", MessageBoxButtons.YesNo);
@@ -150,6 +154,60 @@ namespace CUITAdmin
             SendDataTable(userAccounts, "User_Account");
         }
 
+        public void AddAccountInstrument(string accountNumber, string instrumentID)
+        {
+            SqlConnection myConnection = DBConnect();
+
+            SqlCommand myCommand = new SqlCommand("INSERT INTO Account_Instrument (Account_Number, InstrumentID) " +
+                                                  "VALUES (@accountNumber, @instrumentID)", myConnection);
+
+           
+            myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
+            myCommand.Parameters.AddWithValue("@instrumentID", instrumentID);
+
+            try
+            {
+                myCommand.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+
+            myConnection.Close();
+        }
+
+        public void AddAccountInstruments(DataTable accountInstruments)
+        {
+            SendDataTable(accountInstruments, "Account_Instrument");
+        }
+
+        public void AddUserInstrument(int personID, string instrumentID)
+        {
+            SqlConnection myConnection = DBConnect();
+
+            SqlCommand myCommand = new SqlCommand("INSERT INTO User_Instrument (PersonID, InstrumentID) " +
+                                                  "VALUES (@personID, @instrumentID)", myConnection);
+
+            myCommand.Parameters.AddWithValue("@personID", personID);
+            myCommand.Parameters.AddWithValue("@instrumentID", instrumentID);
+
+            try
+            {
+                myCommand.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+
+            myConnection.Close();
+        }
+
+        public void addUserInstruments(DataTable userInstruments)
+        {
+            SendDataTable(userInstruments, "User_Instrument");
+        }
 
         public void AddPointOfContact(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email, string notes) {
             string throwaway;
@@ -451,7 +509,6 @@ namespace CUITAdmin
             myConnection.Close();
         }
 
-
         public void AddRateType(string name) {
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand("INSERT INTO Rate_Type(Name) " +
@@ -594,6 +651,31 @@ namespace CUITAdmin
             return (count == 0);
         }
 
+        public bool CheckAccountNumber(string accountNumber)
+        {
+            SqlConnection myConnection = DBConnect();
+
+            SqlCommand myCommand = new SqlCommand(
+                "SELECT COUNT(Account_Number) FROM Account " +
+                "WHERE Account_Number = @accountNumber", myConnection);
+
+            myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
+
+            int count = 0;
+
+            try
+            {
+                count = (int)myCommand.ExecuteScalar();
+            }
+            catch (Exception e)
+            {
+                Debug.Write(e.ToString());
+            }
+
+            myConnection.Close();
+            return (count == 0);
+        }
+
         #region Get Functions
         
         public int GetUserID(string username) {
@@ -630,6 +712,34 @@ namespace CUITAdmin
 
             myConnection.Close();
             return true;
+        }
+
+        public DataTable GetAccount(string accountNumber)
+        {
+            SqlConnection myConnection = DBConnect();
+            if (myConnection == null)
+            {
+                return new DataTable();
+            }
+
+            SqlCommand myCommand = new SqlCommand(
+                "SELECT * FROM Account WHERE Account_Number = @accountNumber", myConnection);
+
+            myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
+
+            DataTable table = new DataTable();
+            try
+            {
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+                dataAdapter.Fill(table);
+            }
+            catch (Exception e)
+            {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
+
+            myConnection.Close();
+            return table;
         }
 
         public DataTable GetAccounts() {
@@ -1057,6 +1167,90 @@ namespace CUITAdmin
             return table;
         }
 
+        public DataTable GetAccountInstruments(string accountNumber)
+        {
+            SqlConnection myConnection = DBConnect();
+            if (myConnection == null)
+            {
+                return new DataTable();
+            }
+
+            SqlCommand myCommand = new SqlCommand("SELECT Account_Number, InstrumentID " +
+                "FROM Account_Instrument WHERE Account_Number = @accountNumber", myConnection);
+
+            myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
+
+            DataTable table = new DataTable();
+            try
+            {
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+                dataAdapter.Fill(table);
+            }
+            catch (Exception e)
+            {
+                Debug.Write(e.Message);
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administrator.");
+            }
+
+            myConnection.Close();
+            return table;
+        }
+
+        public DataTable GetUserInstruments(string username)
+        {
+            SqlConnection myConnection = DBConnect();
+            if (myConnection == null)
+            {
+                return new DataTable();
+            }
+
+            SqlCommand myCommand = new SqlCommand("SELECT ui.InstrumentID, i.Name " +
+                    "FROM User_Instrument ui INNER JOIN Users u on ui.PersonID = u.PersonID INNER JOIN Instrument i on ui.InstrumentID = i.InstrumentID " +
+                    " WHERE Username = @username", myConnection);
+
+            myCommand.Parameters.AddWithValue("@username", username);
+
+            DataTable table = new DataTable();
+            try
+            {
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+                dataAdapter.Fill(table);
+            }
+            catch (Exception e)
+            {
+                Debug.Write(e.Message);
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administrator.");
+            }
+
+            myConnection.Close();
+            return table;
+        }
+
+        public BindingList<Data> GetInstrumentsData() {
+            SqlDataReader myReader = null;
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand("SELECT * FROM Instrument", myConnection);
+
+            try {
+                myReader = myCommand.ExecuteReader();
+            } catch (Exception e) {
+                Debug.WriteLine(e.Message);
+            }
+
+            BindingList<Data> instruments = new BindingList<Data>();
+
+            while (myReader.Read()) {
+                instruments.Add(new Data {
+                    Value = myReader["InstrumentID"].ToString(),
+                    Name = myReader["Name"].ToString()
+                }
+                );
+            }
+
+            myConnection.Close();
+            return instruments;
+        }
+
         public DataTable GetRateTypes()
         {
             SqlConnection myConnection = DBConnect();
@@ -1469,7 +1663,6 @@ namespace CUITAdmin
         public void UpdateUser(int userID, string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email,
             string username, string password, string department, string type, string notes, int contactID = -1) {
 
-
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand();
             myCommand.Connection = myConnection;
@@ -1505,7 +1698,6 @@ namespace CUITAdmin
             }
 
             myConnection.Close();
-
         }
 
         public void UpdateTimeLogApproval(string accountNumber, int userID, int instrumentID, DateTime startTime, char approval) {
@@ -1691,7 +1883,7 @@ namespace CUITAdmin
         }
         #endregion
 
-        internal void BindForm(Form pmainForm) {
+        internal void BindForm(frmCUITAdminMain pmainForm) {
             this.mainForm = pmainForm;
         }
 

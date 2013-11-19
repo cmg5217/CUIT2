@@ -18,6 +18,7 @@ namespace CUITAdmin
         Button btnSubmit = new Button();
         Button btnNewContact = new Button();
         Button btnUserAccounts = new Button();
+        Button btnUserInstruments = new Button();
         ComboBox cboContacts = new ComboBox();
         RichTextBox rtbNotes = new RichTextBox();
         TextBox txtPhone = new TextBox();
@@ -45,6 +46,7 @@ namespace CUITAdmin
         Label lblPassword = new Label();
         Label lblUsername = new Label();
         DataTable userAccounts = new DataTable();
+        DataTable userInstruments = new DataTable();
         NewEntryForm containingForm;
         DBManager dbManager;
 
@@ -52,7 +54,7 @@ namespace CUITAdmin
 
         string acctNum;
 
-        bool userAccountsAdded = false, accountsEdited = true;
+        bool userAccountsAdded = false, userInstrumentsAdded = false, accountsEdited = true, instrumentsEdited = true;
   
         public NewUserPanel(NewEntryForm pForm)
             :this(pForm, "add") { }
@@ -62,6 +64,7 @@ namespace CUITAdmin
             this.userID = userID;
             populateControls();
             accountsEdited = false;
+            instrumentsEdited = false;
         }
 
         private NewUserPanel(NewEntryForm pForm, string mode) {
@@ -82,6 +85,7 @@ namespace CUITAdmin
             txtFirstName.Text = user["First_Name"].ToString();
             txtLastName.Text = user["Last_Name"].ToString();
             txtUsername.Text = user["Username"].ToString();
+            txtPassword.Clear();
 
             for (int i = 0; i < cboContacts.Items.Count; i++ ) {
                 cboContacts.SelectedIndex = i;
@@ -110,10 +114,20 @@ namespace CUITAdmin
                 userAccountsAdded = false;
         }
 
+        public void setUserInstrumentsTable(DataTable table)
+        {
+            userInstruments = table;
+            if (userInstruments.Rows.Count >= 1)
+                userInstrumentsAdded = true;
+            else
+                userInstrumentsAdded = false;
+        }
+
         private void addControls()
         {
             this.Controls.Add(this.btnUserAccounts);
             this.Controls.Add(this.btnSubmit);
+            this.Controls.Add(this.btnUserInstruments);
             this.Controls.Add(this.btnNewContact);
             this.Controls.Add(this.cboContacts);
             this.Controls.Add(this.rtbNotes);
@@ -151,7 +165,7 @@ namespace CUITAdmin
             this.btnSubmit.Location = new System.Drawing.Point(420, 250);
             this.btnSubmit.Name = "btnSubmit";
             this.btnSubmit.Size = new System.Drawing.Size(85, 23);
-            this.btnSubmit.TabIndex = 27;
+            this.btnSubmit.TabIndex = 29;
             this.btnSubmit.Text = "Submit";
             this.btnSubmit.UseVisualStyleBackColor = true;
             this.btnSubmit.Click += new EventHandler(this.btnSubmit_Click);
@@ -161,10 +175,20 @@ namespace CUITAdmin
             this.btnUserAccounts.Location = new System.Drawing.Point(310, 250);
             this.btnUserAccounts.Name = "btnUserAccounts";
             this.btnUserAccounts.Size = new System.Drawing.Size(100, 23);
-            this.btnUserAccounts.TabIndex = 26;
+            this.btnUserAccounts.TabIndex = 28;
             this.btnUserAccounts.Text = "Account Access";
             this.btnUserAccounts.UseVisualStyleBackColor = true;
             this.btnUserAccounts.Click += new EventHandler(this.btnUserAccounts_Click);
+            //
+            // btnUserInstruments
+            //
+            this.btnUserInstruments.Location = new System.Drawing.Point(200, 250);
+            this.btnUserInstruments.Name = "btnUserInstruments";
+            this.btnUserInstruments.Size = new System.Drawing.Size(100, 23);
+            this.btnUserInstruments.TabIndex = 27;
+            this.btnUserInstruments.Text = "Instrument Access";
+            this.btnUserInstruments.UseVisualStyleBackColor = true;
+            this.btnUserInstruments.Click += new EventHandler(this.btnUserInstruments_Click);
             // 
             // btnNewContact
             // 
@@ -274,7 +298,7 @@ namespace CUITAdmin
             this.txtPassword.Size = new System.Drawing.Size(134, 20);
             this.txtPassword.TabIndex = 14;
             Random rand = new Random();
-            this.txtPassword.Text = "tp" + rand.Next(1000000, 9999999);
+            this.txtPassword.Text = "CARIPD";
             // 
             // txtUsername
             // 
@@ -432,7 +456,7 @@ namespace CUITAdmin
         private void btnSubmit_Click(object sender, EventArgs e)
         {
             if (errorCheck())
-                MessageBox.Show("There were errors on the form or the user does not have access to any accounts.  Please correct errors and submit again.");
+                MessageBox.Show("There were errors on the form or the user does not have access to any accounts or instruments.  Please correct errors and submit again.");
             else
             {
                 if (mode == "add") {
@@ -463,7 +487,24 @@ namespace CUITAdmin
                         row["PersonID"] = personID;
                     }
 
+                    for (int i = 0; i < userInstruments.Columns.Count; i++)
+                    {
+                        if (userInstruments.Columns[i].ColumnName != "InstrumentID")
+                        {
+                            userInstruments.Columns.RemoveAt(i);
+                        }
+                    }
+
+                    userInstruments.Columns.Add("PersonID", System.Type.GetType("System.Int32"));
+                    userInstruments.Columns[1].SetOrdinal(0);
+
+                    foreach (DataRow row in userInstruments.Rows)
+                    {
+                        row["PersonID"] = personID;
+                    }
+
                     dbManager.AddUserAccounts(userAccounts);
+                    dbManager.addUserInstruments(userInstruments);
 
                 } else if (mode == "edit") {
                     int contactID;
@@ -493,6 +534,27 @@ namespace CUITAdmin
                         }
 
                         dbManager.UpdateUserAccounts(userAccounts, int.Parse(user["PersonID"].ToString()));
+                    }
+
+                    if (instrumentsEdited)
+                    {
+                        for (int i = 0; i < userInstruments.Columns.Count; i++)
+                        {
+                            if (userInstruments.Columns[i].ColumnName != "InstrumentID")
+                            {
+                                userInstruments.Columns.RemoveAt(i);
+                            }
+                        }
+
+                        userInstruments.Columns.Add("PersonID", System.Type.GetType("System.Int32"));
+                        userInstruments.Columns[1].SetOrdinal(0);
+
+                        foreach (DataRow row in userInstruments.Rows)
+                        {
+                            row["PersonID"] = int.Parse(user["PersonID"].ToString());
+                        }
+
+                        //dbManager.UpdateUserInstruments(userInstruments, int.Parse(user["PersonID"].ToString()));
                     }
                 }
 
@@ -529,14 +591,14 @@ namespace CUITAdmin
                 error = true;
             }
 
-            string cityPattern = "^[A-Za-z\\s-\\.]+$";
+            string cityPattern = "^[\\w\\W]+$";
             if (!System.Text.RegularExpressions.Regex.IsMatch(txtCity.Text, cityPattern))
             {
                 txtCity.BackColor = System.Drawing.Color.Red;
                 error = true;
             }
 
-            string streetPattern = "^[\\w\\s-\\.]+$";
+            string streetPattern = "^[\\w\\W]+$";
             if (!System.Text.RegularExpressions.Regex.IsMatch(txtStreet.Text, streetPattern))
             {
                 txtStreet.BackColor = System.Drawing.Color.Red;
@@ -550,7 +612,7 @@ namespace CUITAdmin
                 error = true;
             }
 
-            string departmentPattern = "^[\\w\\s-\\.]+$";
+            string departmentPattern = "^[\\w\\W]+$";
             if (!System.Text.RegularExpressions.Regex.IsMatch(txtDepartment.Text, departmentPattern))
             {
                 txtDepartment.BackColor = System.Drawing.Color.Red;
@@ -571,11 +633,15 @@ namespace CUITAdmin
                 error = true;
             }
 
-            string passwordPattern = "^([1-zA-Z0-1@.\\s]{5,20})$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtPassword.Text, passwordPattern))
+            if (mode == "Add" || (mode == "Edit" && txtPassword.Text != ""))
             {
-                txtPassword.BackColor = System.Drawing.Color.Red;
-                error = true;
+                //ew regex
+                string passwordPattern = "^([1-zA-Z0-1@.\\s\\$\\%\\(\\)\\!\\^\\+\\~\\@\\#]{5,20})$";
+                if (!System.Text.RegularExpressions.Regex.IsMatch(txtPassword.Text, passwordPattern))
+                {
+                    txtPassword.BackColor = System.Drawing.Color.Red;
+                    error = true;
+                }
             }
 
             string usernamePattern = "^([1-zA-Z0-1@.]{5,20})$";
@@ -596,6 +662,9 @@ namespace CUITAdmin
             if (!userAccountsAdded && accountsEdited)
                 error = true;
 
+            if (!userInstrumentsAdded && instrumentsEdited)
+                error = true;
+
             return error;
         }
 
@@ -610,6 +679,13 @@ namespace CUITAdmin
             accountsEdited = true;
             UserAccountsForm userAccounts = new UserAccountsForm(this, txtUsername.Text);
             userAccounts.ShowDialog();
+        }
+
+        private void btnUserInstruments_Click(object sender, EventArgs e)
+        {
+            instrumentsEdited = true;
+            UserInstrumentsForm userInstruments = new UserInstrumentsForm(this, txtUsername.Text);
+            userInstruments.ShowDialog();
         }
     }
 }

@@ -9,8 +9,11 @@ using System.Data;
 
 namespace CUITAdmin
 {
-    class NewAccountPanel : Panel
+    public class NewAccountPanel : Panel
     {
+        char mode;
+        string accountNumber;
+
         NewEntryForm containingForm;
         TextBox txtAccountName = new TextBox();
         TextBox txtAccountNumber = new TextBox();
@@ -41,18 +44,43 @@ namespace CUITAdmin
         Label lblCostCenter = new Label();
         Label lblWBSNumber = new Label();
         Label lblTaxID = new Label();
+        Label lblInstructions = new Label();
         RichTextBox rtbNotes = new RichTextBox();
         Button btnSubmit = new Button();
         Button btnNewContact = new Button();
+        Button btnInstrumentAccess = new Button();
         DBManager dbManager;
 
+        DataTable accountInstruments = new DataTable();
+
+        DataRow account;
+
+        bool accountInstrumentsAdded = false, instrumentsEdited = true;
+
         public NewAccountPanel(NewEntryForm pForm)
+            :this(pForm, 'a') { }
+
+        public NewAccountPanel(NewEntryForm pForm, string accountNumber)
+            : this(pForm, 'e') {
+            this.accountNumber = accountNumber;
+            populateControls();
+            instrumentsEdited = false;
+        }
+
+        public NewAccountPanel(NewEntryForm pForm, char mode)
         {
             dbManager = DBManager.Instance;
             containingForm = pForm;
             pForm.Controls.Add(this);
             this.SetBounds(10, 10, 680, 380);
 
+            addControls();
+            containingForm.AcceptButton = btnSubmit;
+            this.mode = mode;
+        }
+
+        private void addControls()
+        {
             //Label lblAccountName = new Label();
             lblAccountName.Text = "Account Name:";
             lblAccountName.Location = new Point(10, 10);
@@ -62,6 +90,7 @@ namespace CUITAdmin
             txtAccountName.SetBounds(110, 10, 200, 20);
             this.Controls.Add(txtAccountName);
             txtAccountName.TabIndex = 0;
+
             //Label lblAccountNumber = new Label();
             lblAccountNumber.Text = "Account Number:";
             lblAccountNumber.Location = new Point(10, 40);
@@ -88,6 +117,7 @@ namespace CUITAdmin
             //DateTimePicker dtpAccountExpiration = new DateTimePicker();
             dtpAccountExpiration.Location = new Point(110, 130);
             this.Controls.Add(dtpAccountExpiration);
+            dtpAccountExpiration.Value = dtpAccountExpiration.Value.AddYears(1);
 
             //Label lblZipCode = new Label();
             this.Controls.Add(this.lblZipCode);
@@ -101,11 +131,11 @@ namespace CUITAdmin
             //Label lblState = new Label();
             this.Controls.Add(this.lblState);
             lblState.Text = "State:";
-            lblState.Location = new Point(10, 220);
+            lblState.Location = new Point(10, 280);
 
             //ComboBox cboState = new ComboBox();
             this.Controls.Add(this.cboState);
-            this.cboState.Location = new Point(110, 220);
+            this.cboState.Location = new Point(110, 280);
             this.cboState.Name = "cboState";
             this.cboState.Size = new System.Drawing.Size(200, 20);
             List<string> states = new List<string> { "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming" };
@@ -119,20 +149,34 @@ namespace CUITAdmin
             //Label lblCity = new Label();
             this.Controls.Add(this.lblCity);
             lblCity.Text = "City:";
-            lblCity.Location = new Point(10, 190);
+            lblCity.Location = new Point(10, 220);
 
             //TextBox txtCity = new TextBox();
             this.Controls.Add(this.txtCity);
-            txtCity.SetBounds(110, 190, 200, 20);
+            txtCity.SetBounds(110, 220, 200, 20);
+
+            LineSeparator ls1 = new LineSeparator();
+            ls1.SetBounds(10, 159, 375, 20);
+            this.Controls.Add(ls1);
+
+            LineSeparator ls2 = new LineSeparator();
+            ls2.SetBounds(10, 179, 375, 20);
+            this.Controls.Add(ls2);
+
+
+            //Label lblInstructions = new Label();
+            this.Controls.Add(this.lblInstructions);
+            lblInstructions.Text = "Billing Address";
+            lblInstructions.SetBounds(165, 162, 250, 20);
 
             //Label lblStreet = new Label();
             this.Controls.Add(this.lblStreet);
             lblStreet.Text = "Street:";
-            lblStreet.Location = new Point(10, 160);
+            lblStreet.Location = new Point(10, 190);
 
             //TextBox txtStreet = new TextBox();
             this.Controls.Add(this.txtStreet);
-            txtStreet.SetBounds(110, 160, 200, 20);
+            txtStreet.SetBounds(110, 190, 200, 20);
 
             //Label lblRateType = new Label();
             lblRateType.Text = "Rate Type:";
@@ -160,11 +204,11 @@ namespace CUITAdmin
 
             //Label lblContacts = new Label();
             lblContacts.Text = "Contacts:";
-            lblContacts.Location = new Point(10, 280);
+            lblContacts.Location = new Point(10, 310);
             this.Controls.Add(lblContacts);
-            
+
             //ComboBox cboContacts = new ComboBox();
-            cboContacts.SetBounds(110, 280, 200, 20);
+            cboContacts.SetBounds(110, 310, 200, 20);
             this.Controls.Add(cboContacts);
             this.cboContacts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboContacts.Click += new EventHandler(cboContact_Click);
@@ -212,8 +256,14 @@ namespace CUITAdmin
             this.Controls.Add(btnSubmit);
             btnSubmit.Click += new EventHandler(this.btnSubmit_Click);
 
+            //Button btnInstrumentAccess = new Button();
+            btnInstrumentAccess.Text = "Instruments";
+            btnInstrumentAccess.Location = new Point(465, 280);
+            this.Controls.Add(btnInstrumentAccess);
+            btnInstrumentAccess.Click += new EventHandler(this.btnInstrumentAccess_Click);
+
             //Button btnNewContact = new Button();
-            btnNewContact.Location = new Point(315,280);
+            btnNewContact.Location = new Point(315, 310);
             btnNewContact.Name = "btnNewContact";
             btnNewContact.Size = new System.Drawing.Size(24, 21);
             btnNewContact.Text = "...";
@@ -239,9 +289,36 @@ namespace CUITAdmin
             cboRateType.TabIndex = 13;
             txtTaxID.TabIndex = 14;
             rtbNotes.TabIndex = 15;
-            btnSubmit.TabIndex = 16;
+            btnInstrumentAccess.TabIndex = 16;
+            btnSubmit.TabIndex = 17;
+        }
 
-            containingForm.AcceptButton = btnSubmit;
+        private void populateControls()
+        {
+            account = dbManager.GetAccount(accountNumber).Rows[0];
+
+            txtAccountNumber.Text = account["Account_Number"].ToString();
+            txtAccountName.Text = account["Account_Name"].ToString();
+            txtBalance.Text = account["Balance"].ToString();
+            txtCostCenter.Text = account["Cost_Center"].ToString();
+            txtMaxCharge.Text = account["Max_Charge_Limit"].ToString();
+            txtTaxID.Text = account["Tax_ID"].ToString();
+            txtWBSNumber.Text = account["WBS_Number"].ToString();
+
+            for (int i = 0; i < cboContacts.Items.Count; i++)
+            {
+                cboContacts.SelectedIndex = i;
+                if (cboContacts.SelectedValue.ToString() == account["ContactID"].ToString())
+                {
+                    break;
+                }
+            }
+
+            rtbNotes.Text = account["Notes"].ToString();
+            txtZipCode.Text = account["Zip"].ToString();
+            cboState.Text = account["State"].ToString();
+            txtCity.Text = account["City"].ToString();
+            txtStreet.Text = account["Street"].ToString();
         }
 
         private void updateContactList()
@@ -271,15 +348,67 @@ namespace CUITAdmin
         {
             if (errorCheck())
             {
-                MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
+                MessageBox.Show("There were errors on the form or the account doesn't have any instruments tied to it.  Please correct them and submit again.");
             }
 
             else
             {
-                dbManager.AddAccount(txtAccountNumber.Text, txtAccountName.Text, double.Parse(txtMaxCharge.Text), dtpAccountExpiration.Value, 
+                if (mode == 'a')
+                {
+
+                    dbManager.AddAccount(txtAccountNumber.Text, txtAccountName.Text, double.Parse(txtMaxCharge.Text), dtpAccountExpiration.Value,
                     cboRateType.SelectedValue.ToString(), int.Parse(cboContacts.SelectedValue.ToString()), rtbNotes.Text, txtCostCenter.Text, txtWBSNumber.Text, double.Parse(txtBalance.Text),
                     txtStreet.Text, txtCity.Text, cboState.SelectedItem.ToString(), int.Parse(txtZipCode.Text), txtTaxID.Text);
-                
+
+                    for (int i = 0; i < accountInstruments.Columns.Count; i++)
+                    {
+                        if (accountInstruments.Columns[i].ColumnName != "InstrumentID")
+                        {
+                            accountInstruments.Columns.RemoveAt(i);
+                        }
+                    }
+
+                    accountInstruments.Columns.Add("Account_Number", System.Type.GetType("System.String"));
+                    accountInstruments.Columns[1].SetOrdinal(0);
+
+                    foreach (DataRow row in accountInstruments.Rows)
+                    {
+                        row["Account_Number"] = txtAccountNumber.Text;
+                    }
+
+                    dbManager.AddAccountInstruments(accountInstruments);
+
+                }
+                else if (mode == 'e')
+                {
+                    int contactID;
+                    if (!int.TryParse(cboContacts.SelectedValue.ToString(), out contactID))
+                        contactID = 0;
+
+                    //dbManager.UpdateAccount();
+
+                    if (instrumentsEdited)
+                    {
+                        for (int i = 0; i < accountInstruments.Columns.Count; i++)
+                        {
+                            if (accountInstruments.Columns[i].ColumnName != "InstrumentID")
+                            {
+                                accountInstruments.Columns.RemoveAt(i);
+                            }
+                        }
+
+                        accountInstruments.Columns.Add("Account_Number", System.Type.GetType("System.String"));
+                        accountInstruments.Columns[1].SetOrdinal(0);
+
+                        foreach (DataRow row in accountInstruments.Rows)
+                        {
+                            row["Account_Number"] = txtAccountNumber.Text;
+                        }
+
+                        //dbManager.UpdateAccountInstruments(accountInstruments, txtAccountNumber.Text);
+                    }
+                }
+
                 containingForm.updateAdminDGV();
                 containingForm.Close();
             }
@@ -312,6 +441,13 @@ namespace CUITAdmin
                 error = true;
             }
 
+            if (mode == 'a' && !dbManager.CheckAccountNumber(txtAccountNumber.Text))
+            {
+                error = true;
+                MessageBox.Show("The account number you entered is already in use.  Please enter a unique account number.");
+                txtAccountNumber.Focus();
+            }
+
             string chargePattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$";
             if (!System.Text.RegularExpressions.Regex.IsMatch(txtMaxCharge.Text, chargePattern))
             {
@@ -326,14 +462,14 @@ namespace CUITAdmin
                 error = true;
             }
 
-            string cityPattern = "^[A-Za-z\\s-\\.]+$";
+            string cityPattern = "^[\\w\\W]+$";
             if (!System.Text.RegularExpressions.Regex.IsMatch(txtCity.Text, cityPattern))
             {
                 txtCity.BackColor = System.Drawing.Color.Red;
                 error = true;
             }
 
-            string streetPattern = "^[\\w\\s-\\.]+$";
+            string streetPattern = "^[\\w\\W]+$";
             if (!System.Text.RegularExpressions.Regex.IsMatch(txtStreet.Text, streetPattern))
             {
                 txtStreet.BackColor = System.Drawing.Color.Red;
@@ -347,6 +483,9 @@ namespace CUITAdmin
                 error = true;
             }
 
+            if (!accountInstrumentsAdded && instrumentsEdited)
+                error = true;
+
             return error;
         }
 
@@ -354,6 +493,22 @@ namespace CUITAdmin
         {
             NewEntryForm newContact = new NewEntryForm("Point of Contact", null);
             newContact.ShowDialog();
+        }
+
+        private void btnInstrumentAccess_Click(object sender, EventArgs e)
+        {
+            instrumentsEdited = true;
+            AccountInstrumentsForm accountInstrumentsForm = new AccountInstrumentsForm(this, txtAccountNumber.Text);
+            accountInstrumentsForm.ShowDialog();
+        }
+
+        public void setAccountInstrumentsTable(DataTable dataTable)
+        {
+            accountInstruments = dataTable;
+            if (accountInstruments.Rows.Count >= 1)
+                accountInstrumentsAdded = true;
+            else
+                accountInstrumentsAdded = false;
         }
     }
 }

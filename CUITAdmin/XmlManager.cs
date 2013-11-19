@@ -14,7 +14,7 @@ namespace CUITAdmin {
         List<XmlElement> startedLogs;
 
         private static XmlManager globalManager;
-
+        frmCUITAdminMain mainForm;
         private const string FILE_LOCATION = "records.xml";
         private XmlDocument xmlDoc;
 
