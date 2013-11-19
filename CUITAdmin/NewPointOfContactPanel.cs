@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Data;
 
 namespace CUITAdmin
 {
@@ -29,8 +30,17 @@ namespace CUITAdmin
         Label lblLastName = new Label();
         Label lblFirstName = new Label();
         NewEntryForm containingForm;
+        string mode = "add";
+        int primaryKey;
 
         DBManager dbManager;
+
+        public NewPointOfContactPanel(NewEntryForm pForm, int primaryKey)
+        :this (pForm){
+            this.primaryKey = primaryKey;
+            mode = "edit";
+            populateControls();
+        }
 
         public NewPointOfContactPanel(NewEntryForm pForm)
         {
@@ -42,6 +52,20 @@ namespace CUITAdmin
 
             addControls();
             containingForm.AcceptButton = btnSubmit;
+        }
+
+        private void populateControls() {
+            DataTable pointOfContact = dbManager.GetPointOfContact(primaryKey);
+
+            this.rtbNotes.Text = pointOfContact.Rows[0]["Notes"].ToString();
+            this.txtPhone.Text = pointOfContact.Rows[0]["Phone_Number"].ToString();
+            this.txtZipCode.Text = pointOfContact.Rows[0]["Zip"].ToString();
+            this.cboState.Text = pointOfContact.Rows[0]["State"].ToString();
+            this.txtCity.Text = pointOfContact.Rows[0]["City"].ToString();
+            this.txtStreet.Text = pointOfContact.Rows[0]["Street"].ToString();
+            this.txtEmail.Text = pointOfContact.Rows[0]["Email"].ToString();
+            this.txtLastName.Text = pointOfContact.Rows[0]["Last_Name"].ToString();
+            this.txtFirstName.Text = pointOfContact.Rows[0]["First_Name"].ToString();
         }
 
         private void addControls()
@@ -243,8 +267,14 @@ namespace CUITAdmin
                 MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
             else
             {
-                dbManager.AddPointOfContact(txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text, 
-                    cboState.SelectedItem.ToString(), txtZipCode.Text, txtPhone.Text, txtEmail.Text, rtbNotes.Text);
+                if (mode == "add") {
+                    dbManager.AddPointOfContact(txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text,
+                        cboState.SelectedItem.ToString(), txtZipCode.Text, txtPhone.Text, txtEmail.Text, rtbNotes.Text);
+                } else {
+                    dbManager.UpdatePointOfContact(primaryKey, txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text,
+                        cboState.SelectedItem.ToString(), txtZipCode.Text, txtPhone.Text, txtEmail.Text, rtbNotes.Text);
+                }
+
 
                 containingForm.updateAdminDGV();
                 containingForm.Close();

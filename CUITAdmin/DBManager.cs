@@ -834,6 +834,28 @@ namespace CUITAdmin
             return table;
         }
 
+        public DataTable GetSupply(string supplyName) {
+            SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+
+            SqlCommand myCommand = new SqlCommand("SELECT * FROM Supply WHERE Supply_Name = @supplyName", myConnection);
+
+            myCommand.Parameters.AddWithValue("@supplyName", supplyName);
+
+            DataTable table = new DataTable();
+            try {
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
+
+            myConnection.Close();
+            return table;
+        }
+
         public DataTable GetSupplies() {
             SqlConnection myConnection = DBConnect();
             if (myConnection == null) {
@@ -1037,6 +1059,29 @@ namespace CUITAdmin
             return table;
         }
 
+        public DataTable GetInstrument(int instrumentID) {
+            SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+
+            SqlCommand myCommand = new SqlCommand("SELECT * FROM Instrument WHERE InstrumentID = @instrumentID", myConnection);
+
+            myCommand.Parameters.AddWithValue("@instrumentID", instrumentID);
+
+            DataTable table = new DataTable();
+            try {
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
+
+
+            myConnection.Close();
+            return table;
+        }
+
         public DataTable GetInvoice(int invoiceID)
         {
             SqlConnection myConnection = DBConnect();
@@ -1104,6 +1149,30 @@ namespace CUITAdmin
 
             DataTable table = new DataTable();
             try{
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
+
+
+            myConnection.Close();
+            return table;
+        }
+
+        public DataTable GetPointOfContact(int personID) {
+            SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+
+            SqlCommand myCommand = new SqlCommand("SELECT * From Point_of_Contact pc INNER JOIN Person psn on psn.PersonID = pc.PersonID " +
+                "Where psn.PersonID = @personID", myConnection);
+
+            myCommand.Parameters.AddWithValue("@personID", personID);
+
+            DataTable table = new DataTable();
+            try {
                 SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
                 dataAdapter.Fill(table);
             } catch (Exception e) {
@@ -1273,18 +1342,20 @@ namespace CUITAdmin
             return table;
         }
 
-        public DataTable GetInstrumentRates()
+        public DataTable GetInstrumentRates( int instrumentID)
         {
             SqlConnection myConnection = DBConnect();
             if (myConnection == null) {
                 return new DataTable();
             }
 
-            string myCommand = "SELECT * FROM Instrument_Rate";
+            SqlCommand myCommand = new SqlCommand("SELECT * FROM Instrument_Rate WHERE InstrumentID = @instrumentID", myConnection);
+
+            myCommand.Parameters.AddWithValue("@instrumentID", instrumentID);
 
             DataTable table = new DataTable();
             try{
-                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
                 dataAdapter.Fill(table);
             } catch (Exception e) {
                 System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
@@ -1294,6 +1365,7 @@ namespace CUITAdmin
             myConnection.Close();
             return table;
         }
+
 
         public DataTable GetImportDataTimeLog() {
             SqlConnection myConnection = DBConnect();
@@ -1777,6 +1849,23 @@ namespace CUITAdmin
 
         }
 
+        public void UpdatePointOfContact(int personID, string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email,
+            string notes) {
+            string tableName = "Person";
+            string tableKeyName = "PersonID";
+
+            string[] colNames = new string[]{
+                "First_Name", "Last_Name", "Street", "City", "State", "Zip", "Phone_Number", "Email", "Notes"
+            };
+
+            object[] paramValues = new object[]{
+                firstName, lastName, street, city, state, zip, phoneNumber, email, notes
+            };
+
+            UpdateTable(tableName, tableKeyName, personID, colNames, paramValues);
+        }
+
+
         private void UpdateTable(string tableName, string tableKeyName, object tableKeyValue, string[] colNames, object[] paramValues) {
             UpdateTable(tableName, new string[] { tableKeyName }, new object[] { tableKeyValue }, colNames, paramValues);
         }
@@ -1849,6 +1938,30 @@ namespace CUITAdmin
             AddUserAccounts(userAccounts);
 
             myConnection.Close();
+        }
+
+        public void UpdateInstrumentRates(DataTable rates, int instrumentID) {
+
+            SqlConnection myConnection = DBConnect();
+
+            SqlCommand myCommand = new SqlCommand("DELETE FROM Instrument_Rate " +
+                                                  "WHERE InstrumentID = @instrumentID", myConnection);
+
+            myCommand.Parameters.AddWithValue("@instrumentID", instrumentID);
+
+            try {
+                myCommand.ExecuteNonQuery();
+            } catch (Exception e) {
+                Debug.WriteLine(e.Message);
+            }
+
+            rates.Columns.Add("InstrumentID", Type.GetType("System.Int32"));
+
+            foreach (DataRow row in rates.Rows) {
+                row["InstrumentID"] = instrumentID;
+            }
+
+            SendDataTable(rates, "Instrument_Rate");
         }
 
         #endregion

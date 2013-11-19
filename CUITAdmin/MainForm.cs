@@ -426,7 +426,18 @@ namespace CUITAdmin {
                     addNewCase = "Edit Instrument";
                     break;
                 case "Supplies":
+                    primaryKey = row.Cells["Supply_Name"].Value.ToString();
+                    addNewCase = "Edit Supply";
                     break;
+                case "Contacts":
+                    primaryKey = row.Cells["PersonID"].Value.ToString();
+                    addNewCase = "Edit Point of Contact";
+                    break;
+                    /*
+                case "Rate Types":
+                    primaryKey = row.Cells["Name"].Value.ToString();
+                    addNewCase = "Edit Rate Type";
+                    break;*/
                 default:
                     return;
 

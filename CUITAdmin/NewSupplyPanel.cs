@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Data;
 
 namespace CUITAdmin
 {
@@ -24,9 +25,17 @@ namespace CUITAdmin
         Label lblSupplyName = new Label();
         NewEntryForm containingForm;
         DBManager dbManager;
+        string primaryKey;
+        string mode = "add";
 
-        public NewSupplyPanel(NewEntryForm pForm)
-        {
+        public NewSupplyPanel(NewEntryForm pForm, string primaryKey)
+            : this(pForm) {
+            this.primaryKey = primaryKey;
+            populateControls();
+            mode = "edit";
+        }
+
+        public NewSupplyPanel(NewEntryForm pForm) {
             dbManager = DBManager.Instance;
             containingForm = pForm;
             pForm.Controls.Add(this);
@@ -35,6 +44,14 @@ namespace CUITAdmin
 
             addControls();
             containingForm.AcceptButton = btnSubmit;
+        }
+
+        private void populateControls() {
+            DataTable supply = dbManager.GetSupply(primaryKey);
+            this.txtUnit.Text = supply.Rows[0]["Unit"].ToString();
+            this.txtSupplyCost.Text = supply.Rows[0]["Cost"].ToString();
+            this.txtSupplyName.Text = supply.Rows[0]["Supply_Name"].ToString();
+            txtSupplyName.Enabled = false;
         }
 
         private void addControls()
@@ -173,8 +190,13 @@ namespace CUITAdmin
                 MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
             else
             {
-                dbManager.AddSupply(txtSupplyName.Text, Double.Parse(txtSupplyCost.Text), txtUnit.Text);
+                if (mode == "add") {
+                    dbManager.AddSupply(txtSupplyName.Text, Double.Parse(txtSupplyCost.Text), txtUnit.Text);
 
+                } else {
+                    // TO-DO add checkbox for active
+                    dbManager.UpdateSupply(txtSupplyName.Text, Convert.ToDouble(txtSupplyCost.Text), txtUnit.Text, 'Y');
+                }
                 containingForm.updateAdminDGV();
                 containingForm.Close();
             }

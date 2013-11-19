@@ -29,13 +29,19 @@ namespace CUITAdmin
 
                 // TO-DO: actually set up the panel to edit accounts
                 case "Edit Account":
-                    NewAccountPanel myAcctEditForm = new NewAccountPanel(this);
+                    NewAccountPanel myAcctEditForm = new NewAccountPanel(this, primaryKey);
                     this.SetBounds(350, 350, 680, 410);
                     this.Text = "New Account";
                     break;
 
                 case "Instrument":
                     NewInstrumentPanel myInstrumentForm = new NewInstrumentPanel(this);
+                    this.SetBounds(350, 350, 340, 320);
+                    this.Text = "New Instrument";
+                    break;
+
+                case "Edit Instrument":
+                    NewInstrumentPanel myInstrumentEditForm = new NewInstrumentPanel(this, int.Parse(primaryKey));
                     this.SetBounds(350, 350, 340, 320);
                     this.Text = "New Instrument";
                     break;
@@ -48,6 +54,12 @@ namespace CUITAdmin
 
                 case "Supply":
                     NewSupplyPanel mySupplyForm = new NewSupplyPanel(this);
+                    this.SetBounds(350, 350, 270, 250);
+                    this.Text = "New Supply";
+                    break;
+
+                case "Edit Supply":
+                    NewSupplyPanel myEditSupplyForm = new NewSupplyPanel(this, primaryKey);
                     this.SetBounds(350, 350, 270, 250);
                     this.Text = "New Supply";
                     break;
@@ -66,6 +78,12 @@ namespace CUITAdmin
 
                 case "Point of Contact":
                     NewPointOfContactPanel myContactPanel = new NewPointOfContactPanel(this);
+                    this.SetBounds(350, 350, 555, 250);
+                    this.Text = "New Contact";
+                    break;
+
+                case "Edit Point of Contact":
+                    NewPointOfContactPanel myContactEditPanel = new NewPointOfContactPanel(this, int.Parse(primaryKey));
                     this.SetBounds(350, 350, 555, 250);
                     this.Text = "New Contact";
                     break;

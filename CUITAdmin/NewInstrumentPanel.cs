@@ -21,7 +21,17 @@ namespace CUITAdmin
         Label lblInstrumentName = new Label();
         NewEntryForm containingForm;
         DBManager dbManager;
+        int primaryKey;
+        string mode = "add";
 
+
+        public NewInstrumentPanel(NewEntryForm pForm, int primaryKey) 
+        :this(pForm){
+            
+            this.primaryKey = primaryKey;
+            mode = "edit";
+            populateControls();
+        }
 
         public NewInstrumentPanel(NewEntryForm pForm)
         {
@@ -33,6 +43,21 @@ namespace CUITAdmin
 
             addControls();
             containingForm.AcceptButton = btnSubmit;
+        }
+
+        public void populateControls(){
+            dbManager = DBManager.Instance;
+            DataTable instrument = dbManager.GetInstrument(primaryKey);
+            DataTable instrumentRates = dbManager.GetInstrumentRates(primaryKey);
+            if (instrument.Rows[0]["Billing_Unit"].ToString() == "Per Use") cboBillingType.SelectedIndex = 1;
+            this.txtInstrumentName.Text = instrument.Rows[0]["Name"].ToString();
+            this.txtTimeIncrement.Text = instrument.Rows[0]["Time_Increment"].ToString();
+            foreach (DataGridViewRow row in dgvInstrumentRates.Rows) {
+                foreach (DataRow tableRow in instrumentRates.Rows) {
+                    if (row.Cells[0].Value.ToString() == tableRow["Rate_Type"].ToString())
+                        row.Cells[1].Value = tableRow["Rate"].ToString();
+                }
+            }
         }
 
         private void addControls()
@@ -156,15 +181,24 @@ namespace CUITAdmin
                 MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
             else
             {
-                int instrumentID;
+                if (mode == "add") {
+                    int instrumentID;
 
-                dbManager.AddInstrument(txtInstrumentName.Text, cboBillingType.SelectedItem.ToString(), 
-                    (txtTimeIncrement.Text == "") ? 0 : int.Parse(txtTimeIncrement.Text), out instrumentID);
-                            //I hate you chris ^^^
-                DataTable ratesTable = (DataTable)dgvInstrumentRates.DataSource;
-                foreach (DataRow row in ratesTable.Rows)
-                {
-                    dbManager.AddInstrumentRate(row["Name"].ToString(), int.Parse(row["Rate"].ToString()), instrumentID);
+                    dbManager.AddInstrument(txtInstrumentName.Text, cboBillingType.SelectedItem.ToString(),
+                        (txtTimeIncrement.Text == "") ? 0 : int.Parse(txtTimeIncrement.Text), out instrumentID);
+                    //I hate you chris ^^^
+                    DataTable ratesTable = (DataTable)dgvInstrumentRates.DataSource;
+                    foreach (DataRow row in ratesTable.Rows) {
+                        dbManager.AddInstrumentRate(row["Name"].ToString(), int.Parse(row["Rate"].ToString()), instrumentID);
+                    }
+
+                } else {
+                    //TO-DO: add chkbox for approved
+                    dbManager.UpdateInstrument(primaryKey, txtInstrumentName.Text, cboBillingType.SelectedItem.ToString(),
+                        (txtTimeIncrement.Text == "") ? 0 : int.Parse(txtTimeIncrement.Text), 'Y');
+
+                    DataTable ratesTable = (DataTable)dgvInstrumentRates.DataSource;
+                    dbManager.UpdateInstrumentRates(ratesTable, primaryKey);
                 }
 
                 containingForm.updateAdminDGV();
@@ -184,7 +218,7 @@ namespace CUITAdmin
             DataTable ratesTable = (DataTable)dgvInstrumentRates.DataSource;
             foreach (DataRow row in ratesTable.Rows)
             {
-                if (!System.Text.RegularExpressions.Regex.IsMatch(row["Rate"].ToString(), ratePattern) || int.Parse(row["Rate"].ToString()) < 0)
+                if (!System.Text.RegularExpressions.Regex.IsMatch(row["Rate"].ToString(), ratePattern) || Double.Parse(row["Rate"].ToString()) < 0)
                 {
                     lblInstrumentRates.BackColor = System.Drawing.Color.Red;
                     error = true;
