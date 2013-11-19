@@ -27,9 +27,8 @@ namespace CUITAdmin
                     this.Text = "New Account";
                     break;
 
-                // TO-DO: actually set up the panel to edit accounts
                 case "Edit Account":
-                    NewAccountPanel myAcctEditForm = new NewAccountPanel(this);
+                    NewAccountPanel myAcctEditForm = new NewAccountPanel(this, primaryKey);
                     this.SetBounds(350, 350, 680, 410);
                     this.Text = "New Account";
                     break;
@@ -73,8 +72,8 @@ namespace CUITAdmin
         }
         
         public void updateAdminDGV()
-            {
-                containingForm.updateAdminDGV();
-            }
+        {
+            containingForm.updateAdminDGV();
+        }
     }
 }

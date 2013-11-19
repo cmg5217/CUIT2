@@ -406,10 +406,10 @@ namespace CUITAdmin {
             Rate Types
             Supplies
              */
-
+            if (e.RowIndex < 0) return;
             string primaryKey = "";
             string addNewCase = "";
-
+            
             DataGridViewRow row = dgvAdmin.Rows[e.RowIndex];
 
             switch (cboAccountAdminView.Text) {

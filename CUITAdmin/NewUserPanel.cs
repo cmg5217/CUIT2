@@ -504,7 +504,7 @@ namespace CUITAdmin
                     }
 
                     dbManager.AddUserAccounts(userAccounts);
-                    dbManager.addUserInstruments(userInstruments);
+                    dbManager.AddUserInstruments(userInstruments);
 
                 } else if (mode == "edit") {
                     int contactID;
@@ -554,7 +554,7 @@ namespace CUITAdmin
                             row["PersonID"] = int.Parse(user["PersonID"].ToString());
                         }
 
-                        //dbManager.UpdateUserInstruments(userInstruments, int.Parse(user["PersonID"].ToString()));
+                        dbManager.UpdateUserInstruments(userInstruments, int.Parse(user["PersonID"].ToString()));
                     }
                 }
 

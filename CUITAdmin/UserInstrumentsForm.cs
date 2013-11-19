@@ -47,17 +47,18 @@ namespace CUITAdmin
 
                 foreach (DataRow row in rowsToBeRemoved)
                     allInstrumentsDataSource.Rows.Remove(row);
-
+                userInstrumentsDataSource.Columns[1].SetOrdinal(0);
                 dgvUserInstruments.DataSource = userInstrumentsDataSource;
             }
             else
             {
-                DataTable dataSource = new DataTable();
+                DataTable userInstrumentsDataSource = new DataTable();
                 foreach (DataColumn col in allInstrumentsDataSource.Columns)
                 {
-                    dataSource.Columns.Add(col.ColumnName);
+                    userInstrumentsDataSource.Columns.Add(col.ColumnName);
                 }
-                dgvUserInstruments.DataSource = dataSource;
+                
+                dgvUserInstruments.DataSource = userInstrumentsDataSource;
             }
 
             dgvAllInstruments.DataSource = allInstrumentsDataSource;
@@ -79,7 +80,7 @@ namespace CUITAdmin
             {
                 columnContents[i] = dgvAllInstruments.Rows[e.RowIndex].Cells[i].Value.ToString();
             }
-            columnContents.Reverse();
+
             ((DataTable)dgvUserInstruments.DataSource).Rows.Add(columnContents);
 
             ((DataTable)dgvAllInstruments.DataSource).Rows.RemoveAt(e.RowIndex);
@@ -93,7 +94,6 @@ namespace CUITAdmin
                 columnContents[i] = dgvUserInstruments.Rows[e.RowIndex].Cells[i].Value.ToString();
             }
 
-            columnContents.Reverse();
             ((DataTable)dgvAllInstruments.DataSource).Rows.Add(columnContents);
 
             ((DataTable)dgvUserInstruments.DataSource).Rows.RemoveAt(e.RowIndex);
