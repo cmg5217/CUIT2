@@ -23,7 +23,7 @@ namespace CUITAdmin {
             startedLogs = new List<XmlElement>();
         }
 
-        private void LoadFile() {
+        public void LoadFile() {
 
             MemoryStream streamToLoad = LoadEncryptedFile(FILE_LOCATION);
             xmlDoc = new XmlDocument();
@@ -36,10 +36,14 @@ namespace CUITAdmin {
             }
         }
 
+        public void Close() {
+        }
+
         private MemoryStream LoadEncryptedFile(string filePath){
 
             StreamReader encryptedReader = new StreamReader(filePath);
             string encryptedFile = encryptedReader.ReadToEnd();
+            encryptedReader.Close();
 
             SimpleAES aesEncryptor = new SimpleAES();
             string decryptedFile = aesEncryptor.DecryptString(encryptedFile);
@@ -630,6 +634,8 @@ namespace CUITAdmin {
                 foreach (DataRow accountRow in userAccounts.Rows) {
                     xmlWriter.WriteElementString("account_number", accountRow["Account_Number"].ToString());
                 }
+
+               
 
                 xmlWriter.WriteEndElement(); //End account_numbers node
 

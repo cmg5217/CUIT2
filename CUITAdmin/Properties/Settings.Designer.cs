@@ -48,10 +48,10 @@ namespace CUITAdmin.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("false")]
-        public string StandaloneMode {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool StandaloneMode {
             get {
-                return ((string)(this["StandaloneMode"]));
+                return ((bool)(this["StandaloneMode"]));
             }
             set {
                 this["StandaloneMode"] = value;

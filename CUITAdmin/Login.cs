@@ -16,6 +16,7 @@ namespace CUITAdmin {
 
         public Login() {
             InitializeComponent();
+            this.CenterToScreen();
         }
 
 
@@ -26,11 +27,12 @@ namespace CUITAdmin {
         }
 
         private void btnLogin_Click(object sender, EventArgs e) {
-            if (Settings.Default.StandaloneMode == "true") {
+            if (Settings.Default.StandaloneMode) {
                 XmlManager xmlManager = XmlManager.Instance;
 
                 if (xmlManager.CheckPassword(txtUsername.Text, txtPassword.Text)){
                     Program.userType = xmlManager.GetUserType(txtUsername.Text);
+                    this.Close();
                 } else {
                     MessageBox.Show("Username or password did not match, please try again.");
                 }
@@ -39,6 +41,10 @@ namespace CUITAdmin {
                 DBManager dbManager = DBManager.Instance;
 
                 if (dbManager.CheckPassword(txtUsername.Text, txtPassword.Text)) {
+                    if (txtPassword.Text == "CARIPD") {
+                        ChangePassword cp = new ChangePassword(txtUsername.Text);
+                        cp.ShowDialog();
+                    }
                     Program.userType = dbManager.GetUserType(txtUsername.Text);
                     this.Close();
                 } else {

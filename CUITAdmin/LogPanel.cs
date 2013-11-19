@@ -70,7 +70,7 @@ namespace CUITAdmin {
             
 
 
-            if (Properties.Settings.Default.StandaloneMode == "true") {
+            if (Properties.Settings.Default.StandaloneMode) {
                 standalone = true;
 
                 BindingList<Data> instruments;

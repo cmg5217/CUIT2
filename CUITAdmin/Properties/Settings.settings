@@ -13,8 +13,8 @@
     <Setting Name="InvoicePath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="StandaloneMode" Type="System.String" Scope="User">
-      <Value Profile="(Default)">false</Value>
+    <Setting Name="StandaloneMode" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="FullScreen" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>

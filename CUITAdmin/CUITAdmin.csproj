@@ -82,8 +82,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AdminLogin.Designer.cs">
+      <DependentUpon>AdminLogin.cs</DependentUpon>
+    </Compile>
     <Compile Include="BillingTab.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ChangePassword.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChangePassword.Designer.cs">
+      <DependentUpon>ChangePassword.cs</DependentUpon>
     </Compile>
     <Compile Include="DBManager.cs" />
     <Compile Include="Data.cs" />
@@ -153,8 +165,20 @@
     <Compile Include="UserAccountsForm.Designer.cs">
       <DependentUpon>UserAccountsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControl1.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControl1.Designer.cs">
+      <DependentUpon>UserControl1.cs</DependentUpon>
+    </Compile>
     <Compile Include="XmlManager.cs" />
     <Compile Include="XMLTestingClass.cs" />
+    <EmbeddedResource Include="AdminLogin.resx">
+      <DependentUpon>AdminLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ChangePassword.resx">
+      <DependentUpon>ChangePassword.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Login.resx">
       <DependentUpon>Login.cs</DependentUpon>
     </EmbeddedResource>
@@ -188,6 +212,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserAccountsForm.resx">
       <DependentUpon>UserAccountsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControl1.resx">
+      <DependentUpon>UserControl1.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config">
       <SubType>Designer</SubType>

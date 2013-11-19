@@ -59,7 +59,7 @@ namespace CUITAdmin
                 DialogResult dialogResult = MessageBox.Show("There was an error connecting to the server, please try again or contact your system administrator.\r\n\r\n" + 
                                                             "Would you like to go into offline mode?", "Error", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes) {
-                    Properties.Settings.Default.StandaloneMode = "true";
+                    Properties.Settings.Default.StandaloneMode = true;
                     Properties.Settings.Default.Save();
                     System.Diagnostics.Process.Start(Application.ExecutablePath); // to start new instance of application
                     Application.Exit();
@@ -189,10 +189,10 @@ namespace CUITAdmin
 
             SqlCommand myCommand = new SqlCommand("INSERT into Account " +
             "(Account_Number, Name, Max_Charge_Limit, Account_Expiration, Rate_Type, PointOfContactID, Notes, Cost_Center, " +
-            "WBS_Number, Balance, Street, City, State, Zip, Tax_ID) " +
+            "WBS_Number, Balance, Street, City, State, Zip, Tax_ID, Active) " +
 
             "VALUES (@accountNumber, @name, @maxChargeLimit, @accountExpiration, @rateType, @pointOfContact, " +
-            "@notes, @costCenter, @wbsNumber, @balance, @street, @city, @state, @zip, @taxID)", myConnection);
+            "@notes, @costCenter, @wbsNumber, @balance, @street, @city, @state, @zip, @taxID, @active)", myConnection);
 
 
             myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
@@ -210,6 +210,7 @@ namespace CUITAdmin
             myCommand.Parameters.AddWithValue("@state", state);
             myCommand.Parameters.AddWithValue("@zip", zip);
             myCommand.Parameters.AddWithValue("@taxID", taxID);
+            myCommand.Parameters.AddWithValue("@active", 'Y');
 
             try {
                 myCommand.ExecuteNonQuery();
@@ -228,7 +229,7 @@ namespace CUITAdmin
         public void AddPerson(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email, string notes, bool isUser, bool isPointOfContact, out string personID) {
 
             string personColumn = (isUser) ? ", IsUser" : ", IsPoint_of_Contact";
-            string personParameter = (isUser) ? "@isUser" : "@isPointOfContact";
+            string personParameter = (isUser) ? ((isUser) ? "@isUser" : "@isPointofContact") : ((isUser) ? "@isUser" : "@isPointofContact");
 
             SqlConnection myConnection = DBConnect();
 
@@ -1600,7 +1601,7 @@ namespace CUITAdmin
             SqlConnection myConnection = DBConnect();
             string commandString = "UPDATE " + tableName + " SET ";
             for (int i = 0; i + earlyCut < colNames.Length; i++ ) {
-                if (paramValues[i] != "") {
+                if (paramValues[i].ToString() != "") {
                     commandString += colNames[i] + " = @param" + i;
                     if (i + 1 + earlyCut < colNames.Length) commandString += ", ";
                 }
@@ -1616,7 +1617,7 @@ namespace CUITAdmin
             SqlCommand myCommand = new SqlCommand(commandString, myConnection);
 
             for (int i = 0; i + earlyCut < colNames.Length; i++) {
-                if (paramValues[i] != "") {
+                if (paramValues[i].ToString() != "") {
                     myCommand.Parameters.AddWithValue("@param" + i, paramValues[i]);
                 }
             }

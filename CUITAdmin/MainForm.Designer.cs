@@ -359,6 +359,7 @@
             this.btnImportStandalone.TabIndex = 9;
             this.btnImportStandalone.Text = "Import Standalone";
             this.btnImportStandalone.UseVisualStyleBackColor = true;
+            this.btnImportStandalone.Click += new System.EventHandler(this.btnImportStandalone_Click);
             // 
             // chkFullScreen
             // 
@@ -667,9 +668,7 @@
             this.cboManualLogInstrument.Name = "cboManualLogInstrument";
             this.cboManualLogInstrument.Size = new System.Drawing.Size(148, 21);
             this.cboManualLogInstrument.TabIndex = 3;
-
             this.cboManualLogInstrument.SelectedIndexChanged += new System.EventHandler(this.cboManualLogInstrument_SelectedIndexChanged);
-
             // 
             // cboManualLogUser
             // 
@@ -801,6 +800,7 @@
             this.tabControlMain.Size = new System.Drawing.Size(691, 615);
             this.tabControlMain.TabIndex = 0;
             this.tabControlMain.TabStop = false;
+            this.tabControlMain.SelectedIndexChanged += new System.EventHandler(this.tabControlMain_SelectedIndexChanged);
             // 
             // tbpTracking
             // 
@@ -1303,7 +1303,6 @@
             this.cboManualTimeInstrument.Size = new System.Drawing.Size(148, 21);
             this.cboManualTimeInstrument.TabIndex = 5;
             this.cboManualTimeInstrument.SelectedIndexChanged += new System.EventHandler(this.cboManualTimeInstrument_SelectedIndexChanged);
-
             // 
             // cboManualTimeAccount
             // 
@@ -1364,11 +1363,12 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(712, 639);
+            this.ClientSize = new System.Drawing.Size(712, 667);
             this.Controls.Add(this.tabControlMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "frmCUITAdminMain";
             this.Text = "CUIT - Clarion University Instrument Tracking";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmCUITAdminMain_FormClosing);
             this.Load += new System.EventHandler(this.Main_Load);
             this.Resize += new System.EventHandler(this.frmCUITAdminMain_Resize);
             this.tbpExports.ResumeLayout(false);

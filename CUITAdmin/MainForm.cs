@@ -29,10 +29,10 @@ namespace CUITAdmin {
         private char userType;
 
         LogPanel startPanel;
-
         XmlManager xmlManager;
         DBManager dbManager;
-
+        Button adminLogin;
+        TabPage export;
         ExcelManager ExcelManager;
 
         public frmCUITAdminMain(char userType) {
@@ -42,20 +42,19 @@ namespace CUITAdmin {
 
         private void Main_Load(object sender, EventArgs e)
         {
+            this.CenterToScreen();
             tabControlMain.Location = new Point((this.Size.Width / 2) - (tabControlMain.Size.Width/2) - 7, 
                                                 (this.Size.Height / 2) - (tabControlMain.Size.Height/2) - 19);
                                       //new Point(0, 0);
             /// manually setting standalone to true so that we can test
             /// To-DO:: Make sure to remove this to work on the server
-            if (Properties.Settings.Default.StandaloneMode == "true")
-            {
-                standalone = true;
-            }
 
-            else standalone = false;
+             standalone = Settings.Default.StandaloneMode;
+            
 
             chkFullScreen.Checked = Settings.Default.FullScreen;
             ToggleScreenMode();
+
 
             xmlManager = XmlManager.Instance;
             dbManager = DBManager.Instance;
@@ -82,11 +81,30 @@ namespace CUITAdmin {
 
             InitializeRequestTab();
 
+            InitializeTabs();
+
+            if (Settings.Default.FullScreen) {
+                adminLogin = new Button();
+                adminLogin.Text = "Exit";
+                adminLogin.Width = 100;
+                positionAdminButton();
+                adminLogin.Click += new System.EventHandler(btnAdminLogin_Click);
+                this.Controls.Add(adminLogin);
+            }
+            
+            BindReturnKeys();
+        }
+
+        private void positionAdminButton() {
+            adminLogin.Location = new Point(this.Width - 120, 20);
+        }
+
+        private void InitializeTabs() {
             if (userType == 'A' && !standalone) {
                 InitializeBillingTab();
                 InitializeSettingsTab();
                 InitializeExportTab();
-            } else if(userType == 'A' && standalone){
+            } else if (userType == 'A' && standalone) {
                 InitializeSettingsTab();
                 tabControlMain.TabPages.Remove(tabControlMain.TabPages["tbpBilling"]);
                 tabControlMain.TabPages.Remove(tabControlMain.TabPages["tbpAccountAdmin"]);
@@ -95,8 +113,6 @@ namespace CUITAdmin {
                 tabControlMain.TabPages.Remove(tabControlMain.TabPages["tbpAccountAdmin"]);
                 tabControlMain.TabPages.Remove(tabControlMain.TabPages["tbpExports"]);
             }
-
-            BindReturnKeys();
         }
 
         #region Billing Tab
@@ -591,7 +607,7 @@ namespace CUITAdmin {
                 //
                 DialogResult dialogResult = MessageBox.Show("In order to enable standalone mode, the application must restart. Any logs in progress will be lost. Do you want to continue?", "Standalone mode", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes) {
-                    Properties.Settings.Default.StandaloneMode = "true";
+                    Properties.Settings.Default.StandaloneMode = true;
                     Properties.Settings.Default.Save();
                     System.Diagnostics.Process.Start(Application.ExecutablePath); // to start new instance of application
                     this.Close();
@@ -607,7 +623,7 @@ namespace CUITAdmin {
             else {
                 DialogResult dialogResult = MessageBox.Show("In order to disable standalone mode, the application must restart. Any logs in progress will be lost. Do you want to continue?", "Standalone mode", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes) {
-                    Properties.Settings.Default.StandaloneMode = "false";
+                    Properties.Settings.Default.StandaloneMode = false;
                     Properties.Settings.Default.Save();
                     System.Diagnostics.Process.Start(Application.ExecutablePath); // to start new instance of application
                     this.Close();
@@ -637,7 +653,7 @@ namespace CUITAdmin {
             }
         }
 
-        private void ToggleScreenMode() {
+        public void ToggleScreenMode() {
             if (Settings.Default.FullScreen) {
                 this.FormBorderStyle = FormBorderStyle.None;
                 WindowState = FormWindowState.Maximized;
@@ -710,12 +726,12 @@ namespace CUITAdmin {
 
         #endregion Export Tab
 
-
         #region Request Tab
 
         private void InitializeRequestTab() {
-            if (Settings.Default.StandaloneMode == "false") {
+            if (Settings.Default.StandaloneMode) {
 
+            } else {   
                 cboManualTimeInstrument.DataSource = dbManager.GetInstruments();
                 cboManualTimeInstrument.DisplayMember = "Name";
                 cboManualTimeInstrument.ValueMember = "InstrumentID";
@@ -724,9 +740,6 @@ namespace CUITAdmin {
                 cboManualSupplyItem.DataSource = dbManager.GetSupplies();
                 cboManualSupplyItem.DisplayMember = "Supply_Name";
                 cboManualSupplyItem.ValueMember = "Supply_Name";
-            } else {
-                //TO-DO Add XML to load     
-
             }
 
             List<string> states = new List<string> { "", "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming" };
@@ -1200,6 +1213,50 @@ namespace CUITAdmin {
                 txtManualLogDuration.Enabled = false; 
                 txtManualLogDuration.Clear();
                 logPerUse = true;
+            }
+        }
+
+        private void tabControlMain_SelectedIndexChanged(object sender, EventArgs e) {
+            switch (((TabControl)sender).SelectedTab.Name) {
+                case "tbpBilling":
+                    updateAdminDGV();
+                    break;
+                case "tbpAccountAdmin":
+                    break;
+                case "tbpExports":
+                    break;
+                case "tbpTracking":
+                    break;
+                case "tbpManualRequests":
+                    break;
+            }
+        }
+
+        private void btnAdminLogin_Click(object sender, EventArgs e) {
+            AdminLogin login = new AdminLogin(this);
+            login.ShowDialog();
+        }
+
+        private void frmCUITAdminMain_FormClosing(object sender, FormClosingEventArgs e) {
+            if (Settings.Default.FullScreen) e.Cancel = true;
+        }
+
+        internal void Exit() {
+            this.FormClosing -= new System.Windows.Forms.FormClosingEventHandler(this.frmCUITAdminMain_FormClosing);
+            this.Close();
+        }
+
+        private void btnImportStandalone_Click(object sender, EventArgs e) {
+            OpenFileDialog dialog = new OpenFileDialog();
+            DialogResult result = dialog.ShowDialog();
+
+            if (result == DialogResult.OK){
+                if (File.Exists("records.xml")) {
+                    File.Delete("records.xml");
+                    File.Copy(dialog.FileName, "records.xml");
+                } else {
+                    File.Copy(dialog.FileName, "records.xml");
+                }
             }
         }
     }
