@@ -40,6 +40,10 @@ namespace CUITAdmin
         :this (pForm){
             this.primaryKey = primaryKey;
             mode = "edit";
+            ckbActive.Text = "Active";
+            ckbActive.Location = new Point(370, 174);
+            ckbActive.Visible = true;
+            this.Controls.Add(ckbActive);
             populateControls();
         }
 
@@ -49,25 +53,10 @@ namespace CUITAdmin
             containingForm = pForm;
             pForm.Controls.Add(this);
             this.Location = new Point(10, 10);
-            this.Size = new Size(650, 400);
 
             addControls();
+            this.Size = new Size(650, 400);
             containingForm.AcceptButton = btnSubmit;
-
-            //this should just go into the constructor for edit mode but it doesnt exist yet.
-            //CheckBox ckbActive = new CheckBox();
-            ckbActive.Text = "Active";
-            ckbActive.Location = new Point(550, 310);
-            this.Controls.Add(ckbActive);
-
-
-            //this should go into populate controls, but that also doesnt exist yet.
-            //char active = char.Parse(user["Active"].ToString());
-
-            //if (active == 'Y')
-            //    ckbActive.Checked = true;
-            //else
-            //    ckbActive.Checked = false;
         }
 
         private void populateControls() {
@@ -82,6 +71,16 @@ namespace CUITAdmin
             this.txtEmail.Text = pointOfContact.Rows[0]["Email"].ToString();
             this.txtLastName.Text = pointOfContact.Rows[0]["Last_Name"].ToString();
             this.txtFirstName.Text = pointOfContact.Rows[0]["First_Name"].ToString();
+
+
+            char active = 'N';
+            if (pointOfContact.Rows[0]["Active"].ToString() != "")
+                 active = Char.Parse(pointOfContact.Rows[0]["Active"].ToString());
+
+            if (active == 'Y')
+                ckbActive.Checked = true;
+            else
+                ckbActive.Checked = false;
         }
 
         private void addControls()
@@ -110,7 +109,7 @@ namespace CUITAdmin
             this.Controls.Add(this.lblFirstName);
             this.Location = new System.Drawing.Point(3, 2);
             this.Name = "newUserContactPanel";
-            this.Size = new System.Drawing.Size(526, 209);
+            this.Size = new System.Drawing.Size(526, 400);
             // 
             // lblFirstName
             // 
@@ -288,7 +287,8 @@ namespace CUITAdmin
                         cboState.SelectedItem.ToString(), txtZipCode.Text, txtPhone.Text, txtEmail.Text, rtbNotes.Text);
                 } else {
                     dbManager.UpdatePointOfContact(primaryKey, txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text,
-                        cboState.SelectedItem.ToString(), txtZipCode.Text, txtPhone.Text, txtEmail.Text, rtbNotes.Text);
+                        cboState.SelectedItem.ToString(), txtZipCode.Text, txtPhone.Text, txtEmail.Text, rtbNotes.Text, 
+                        (ckbActive.Checked) ? 'Y' : 'N');
                 }
 
 

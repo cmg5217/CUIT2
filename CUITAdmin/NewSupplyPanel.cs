@@ -31,6 +31,9 @@ namespace CUITAdmin
 
         public NewSupplyPanel(NewEntryForm pForm, string primaryKey)
             : this(pForm) {
+            ckbActive.Text = "Active";
+            ckbActive.Location = new Point(550, 310);
+            this.Controls.Add(ckbActive);
             this.primaryKey = primaryKey;
             populateControls();
             mode = "edit";
@@ -48,18 +51,11 @@ namespace CUITAdmin
 
             //this should just go into the constructor for edit mode but it doesnt exist yet.
             //CheckBox ckbActive = new CheckBox();
-            ckbActive.Text = "Active";
-            ckbActive.Location = new Point(550, 310);
-            this.Controls.Add(ckbActive);
 
 
             //this should go into populate controls, but that also doesnt exist yet.
             //char active = char.Parse(user["Active"].ToString());
 
-            //if (active == 'Y')
-            //    ckbActive.Checked = true;
-            //else
-            //    ckbActive.Checked = false;
 
         }
 
@@ -69,6 +65,14 @@ namespace CUITAdmin
             this.txtSupplyCost.Text = supply.Rows[0]["Cost"].ToString();
             this.txtSupplyName.Text = supply.Rows[0]["Supply_Name"].ToString();
             txtSupplyName.Enabled = false;
+
+            char active = Convert.ToChar(supply.Rows[0]["Active"]);
+
+
+            if (active == 'Y')
+                ckbActive.Checked = true;
+            else
+                ckbActive.Checked = false;
         }
 
         private void addControls()
@@ -211,8 +215,8 @@ namespace CUITAdmin
                     dbManager.AddSupply(txtSupplyName.Text, Double.Parse(txtSupplyCost.Text), txtUnit.Text);
 
                 } else {
-                    // TO-DO add checkbox for active
-                    dbManager.UpdateSupply(txtSupplyName.Text, Convert.ToDouble(txtSupplyCost.Text), txtUnit.Text, 'Y');
+                    
+                    dbManager.UpdateSupply(txtSupplyName.Text, Convert.ToDouble(txtSupplyCost.Text), txtUnit.Text, (ckbActive.Checked) ? 'Y' : 'N');
                 }
                 containingForm.updateAdminDGV();
                 containingForm.Close();

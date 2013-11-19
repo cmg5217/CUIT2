@@ -1,4 +1,7 @@
-﻿using System;
+﻿// TO-DO: make an edit mode for this
+
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

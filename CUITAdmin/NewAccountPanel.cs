@@ -310,7 +310,11 @@ namespace CUITAdmin
             txtMaxCharge.Text = account["Max_Charge_Limit"].ToString();
             txtTaxID.Text = account["Tax_ID"].ToString();
             txtWBSNumber.Text = account["WBS_Number"].ToString();
-            char active = char.Parse(account["Active"].ToString());
+
+
+            char active = 'N';
+            if (account["Active"].ToString() != "")
+                active = char.Parse(account["Active"].ToString());
 
             if (active == 'Y')
                 ckbActive.Checked = true;

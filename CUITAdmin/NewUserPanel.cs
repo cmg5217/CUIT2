@@ -1,4 +1,6 @@
-﻿using System;
+﻿//TO-DO: fix checkbox location.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -108,7 +110,10 @@ namespace CUITAdmin
             txtStreet.Text = user["Street"].ToString();
             txtEmail.Text = user["Email"].ToString();
             txtDepartment.Text = user["Department"].ToString();
-            char active = char.Parse(user["Active"].ToString());
+
+            char active = 'N';
+            if (user["Active"].ToString() != "")
+                active = char.Parse(user["Active"].ToString());
 
             if (active == 'Y')
                 ckbActive.Checked = true;

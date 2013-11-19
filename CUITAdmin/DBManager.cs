@@ -1851,16 +1851,16 @@ namespace CUITAdmin
         }
 
         public void UpdatePointOfContact(int personID, string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email,
-            string notes) {
+            string notes, char active) {
             string tableName = "Person";
             string tableKeyName = "PersonID";
 
             string[] colNames = new string[]{
-                "First_Name", "Last_Name", "Street", "City", "State", "Zip", "Phone_Number", "Email", "Notes"
+                "First_Name", "Last_Name", "Street", "City", "State", "Zip", "Phone_Number", "Email", "Notes", "Active"
             };
 
             object[] paramValues = new object[]{
-                firstName, lastName, street, city, state, zip, phoneNumber, email, notes
+                firstName, lastName, street, city, state, zip, phoneNumber, email, notes, active
             };
 
             UpdateTable(tableName, tableKeyName, personID, colNames, paramValues);

@@ -27,8 +27,10 @@ namespace CUITAdmin
 
 
         public NewInstrumentPanel(NewEntryForm pForm, int primaryKey) 
-        :this(pForm){
-            
+        :this(pForm){            
+            ckbActive.Text = "Active";
+            ckbActive.Location = new Point(550, 310);
+            this.Controls.Add(ckbActive);
             this.primaryKey = primaryKey;
             mode = "edit";
             populateControls();
@@ -44,21 +46,7 @@ namespace CUITAdmin
 
             addControls();
             containingForm.AcceptButton = btnSubmit;
-
-            //this should just go into the constructor for edit mode but it doesnt exist yet.
-            //CheckBox ckbActive = new CheckBox();
-            ckbActive.Text = "Active";
-            ckbActive.Location = new Point(550, 310);
-            this.Controls.Add(ckbActive);
-
-
-            //this should go into populate controls, but that also doesnt exist yet.
-            //char active = char.Parse(user["Active"].ToString());
-
-            //if (active == 'Y')
-            //    ckbActive.Checked = true;
-            //else
-            //    ckbActive.Checked = false;
+            
         }
 
         public void populateControls(){
@@ -74,6 +62,14 @@ namespace CUITAdmin
                         row.Cells[1].Value = tableRow["Rate"].ToString();
                 }
             }
+
+
+            char active = char.Parse(instrument.Rows[0]["Active"].ToString());
+
+            if (active == 'Y')
+                ckbActive.Checked = true;
+            else
+                ckbActive.Checked = false;
         }
 
         private void addControls()
@@ -209,9 +205,8 @@ namespace CUITAdmin
                     }
 
                 } else {
-                    //TO-DO: add chkbox for approved
                     dbManager.UpdateInstrument(primaryKey, txtInstrumentName.Text, cboBillingType.SelectedItem.ToString(),
-                        (txtTimeIncrement.Text == "") ? 0 : int.Parse(txtTimeIncrement.Text), 'Y');
+                        (txtTimeIncrement.Text == "") ? 0 : int.Parse(txtTimeIncrement.Text), (ckbActive.Checked) ? 'Y' : 'N');
 
                     DataTable ratesTable = (DataTable)dgvInstrumentRates.DataSource;
                     dbManager.UpdateInstrumentRates(ratesTable, primaryKey);
