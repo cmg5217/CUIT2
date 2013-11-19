@@ -1119,6 +1119,7 @@ namespace CUITAdmin {
         private void cboManualTimeInstrument_SelectedIndexChanged(object sender, EventArgs e)
         {
             requestPerUse = false;
+            txtManualTimeDuration.Enabled = true;
             DataTable instrumentTable = (DataTable)cboManualTimeInstrument.DataSource;
             int index = cboManualTimeInstrument.SelectedIndex;
             if (instrumentTable.Rows[index].ItemArray[1].ToString() == "Per Use")
@@ -1132,6 +1133,7 @@ namespace CUITAdmin {
         private void cboManualLogInstrument_SelectedIndexChanged(object sender, EventArgs e)
         {
             logPerUse = false;
+            txtManualLogDuration.Enabled = true;
             DataTable instrumentTable = (DataTable)cboManualLogInstrument.DataSource; 
             int index = cboManualLogInstrument.SelectedIndex;
             if (instrumentTable.Rows[index].ItemArray[1].ToString() == "Per Use")

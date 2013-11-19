@@ -277,14 +277,14 @@ namespace CUITAdmin
                 error = true;
             }
 
-            string cityPattern = "^[A-Za-z\\s-\\.]+$";
+            string cityPattern = "^[\\w\\W]+$";
             if (!System.Text.RegularExpressions.Regex.IsMatch(txtCity.Text, cityPattern))
             {
                 txtCity.BackColor = System.Drawing.Color.Red;
                 error = true;
             }
 
-            string streetPattern = "^[\\w\\s-\\.]+$";
+            string streetPattern = "^[\\w\\W]+$";
             if (!System.Text.RegularExpressions.Regex.IsMatch(txtStreet.Text, streetPattern))
             {
                 txtStreet.BackColor = System.Drawing.Color.Red;
