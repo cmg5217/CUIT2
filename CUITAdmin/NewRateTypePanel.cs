@@ -125,7 +125,7 @@ namespace CUITAdmin
                 DataTable ratesTable = (DataTable)dgvInstrumentRates.DataSource;
                 foreach (DataRow row in ratesTable.Rows)
                 {
-                    dbManager.AddInstrumentRate(txtRateName.Text, int.Parse(row["Rate"].ToString()), int.Parse(row["InstrumentID"].ToString()));
+                    dbManager.AddInstrumentRate(txtRateName.Text, double.Parse(row["Rate"].ToString()), int.Parse(row["InstrumentID"].ToString()));
                 }
 
                 containingForm.updateAdminDGV();
@@ -146,7 +146,7 @@ namespace CUITAdmin
                 error = true;
             }
 
-            string ratePattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$";
+            string ratePattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9]{1,2})?$";
             DataTable ratesTable = (DataTable)dgvInstrumentRates.DataSource;
             foreach (DataRow row in ratesTable.Rows)
             {

@@ -388,6 +388,7 @@ namespace CUITAdmin {
                 dgvAdmin.DataSource = dbManager.GetRateTypes();
             } else if (cboAccountAdminView.SelectedItem == "Supplies") {
                 dgvAdmin.DataSource = dbManager.GetSupplies();
+                dgvAdmin.Columns["Cost"].HeaderText = "Charge/Unit";
             }
         }
 
@@ -442,7 +443,6 @@ namespace CUITAdmin {
                     return;
 
             }
-
 
             Form newForm = new NewEntryForm(addNewCase, this, primaryKey);
             newForm.ShowDialog(); //Displays forms modally
@@ -1083,7 +1083,7 @@ namespace CUITAdmin {
                 else state = cboAcctManagementState.SelectedItem.ToString();
 
                 dbManager.UpdateUser(userID, "", "", txtAcctManagementStreet.Text, txtAcctManagementCity.Text, state,
-                    txtAcctManagementZip.Text, txtAcctManagementPhone.Text, txtAcctManagementEmail.Text, "", txtAcctManagementNewPw.Text, "", "", "");
+                    txtAcctManagementZip.Text, txtAcctManagementPhone.Text, txtAcctManagementEmail.Text, "", txtAcctManagementNewPw.Text, "", "", "", 'Y');
 
                 ClearAcctManagementFields();
             } else {

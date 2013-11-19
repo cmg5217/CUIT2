@@ -109,7 +109,7 @@ namespace CUITAdmin
             this.dgvInstrumentRates.TabIndex = 9;
             this.dgvInstrumentRates.RowHeadersVisible = false;
             DataTable sourceTable = dbManager.GetRateTypes();
-
+            sourceTable.Columns.Remove("Active");
             sourceTable.Columns.Add(new DataColumn("Rate"));
 
             this.dgvInstrumentRates.DataSource = sourceTable;

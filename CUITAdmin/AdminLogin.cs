@@ -16,6 +16,8 @@ namespace CUITAdmin {
         public AdminLogin(frmCUITAdminMain mainForm) {
             this.mainForm = mainForm;
             InitializeComponent();
+
+            this.AcceptButton = btnSubmit;
         }
 
         private void btnSubmit_Click(object sender, EventArgs e) {
@@ -24,7 +26,7 @@ namespace CUITAdmin {
                 if (xmlManager.CheckPassword(txtUsername.Text, txtPassword.Text)) {
                     char usertype = xmlManager.GetUserType(txtUsername.Text);
                     if (usertype != 'A') {
-                        MessageBox.Show("This username entered is not an admin");
+                        MessageBox.Show("The username entered is not an admin.");
                         this.Close();
                     } else {
                         mainForm.Exit();
