@@ -379,15 +379,16 @@ namespace CUITAdmin {
             if (cboAccountAdminView.SelectedItem == "Accounts") {
                 dgvAdmin.DataSource = dbManager.GetAccounts(inactive);
             } else if (cboAccountAdminView.SelectedItem == "Contacts") {
-                dgvAdmin.DataSource = dbManager.GetContacts();
+                dgvAdmin.DataSource = dbManager.GetContacts(inactive);
             } else if (cboAccountAdminView.SelectedItem == "Users") {
-                dgvAdmin.DataSource = dbManager.GetUsers();
+                dgvAdmin.DataSource = dbManager.GetUsers(false, inactive);
             } else if (cboAccountAdminView.SelectedItem == "Instruments") {
-                dgvAdmin.DataSource = dbManager.GetInstruments();
+                dgvAdmin.DataSource = dbManager.GetInstruments(true, inactive);
             } else if (cboAccountAdminView.SelectedItem == "Rate Types") {
-                dgvAdmin.DataSource = dbManager.GetRateTypes();
+                dgvAdmin.DataSource = dbManager.GetRateTypes(inactive);
             } else if (cboAccountAdminView.SelectedItem == "Supplies") {
-                dgvAdmin.DataSource = dbManager.GetSupplies();
+                dgvAdmin.DataSource = dbManager.GetSupplies(inactive);
+                dgvAdmin.Columns["Cost"].HeaderText = "Charge/Unit";
             }
         }
 
@@ -442,7 +443,6 @@ namespace CUITAdmin {
 
             }
 
-
             Form newForm = new NewEntryForm(addNewCase, this, primaryKey);
             newForm.ShowDialog(); //Displays forms modally
 
@@ -466,7 +466,7 @@ namespace CUITAdmin {
         }
 
         private void btnAccountAdminSearch_Click(object sender, EventArgs e) {
-
+            btnAdminClear.Visible = true;
             List<int> rowsFound = new List<int>();
 
             for (int i = 0; i < dgvAdmin.Rows.Count; i++) {
@@ -1082,7 +1082,7 @@ namespace CUITAdmin {
                 else state = cboAcctManagementState.SelectedItem.ToString();
 
                 dbManager.UpdateUser(userID, "", "", txtAcctManagementStreet.Text, txtAcctManagementCity.Text, state,
-                    txtAcctManagementZip.Text, txtAcctManagementPhone.Text, txtAcctManagementEmail.Text, "", txtAcctManagementNewPw.Text, "", "", "");
+                    txtAcctManagementZip.Text, txtAcctManagementPhone.Text, txtAcctManagementEmail.Text, "", txtAcctManagementNewPw.Text, "", "", "", 'Y');
 
                 ClearAcctManagementFields();
             } else {
@@ -1275,6 +1275,13 @@ namespace CUITAdmin {
                     File.Copy(dialog.FileName, "records.xml");
                 }
             }
+        }
+
+        private void btnAdminClear_Click(object sender, EventArgs e) {
+            btnAdminClear.Visible = false;
+            txtAccountAdminSearch.Clear();
+            txtAccountAdminSearch.Focus();
+            updateAdminDGV();
         }
     }
 }

@@ -81,11 +81,15 @@ namespace CUITAdmin {
                 cboInstrument.ValueMember = "Value";
 
             } else {
+
+
+                /* TO-DO: FILL ON LOGIN
                 standalone = false;
 
-                cboInstrument.DataSource = dbManager.GetInstruments(true);
+                cboInstrument.DataSource = dbManager.GetInstruments(true, false);
                 cboInstrument.DisplayMember = "Name";
                 cboInstrument.ValueMember = "InstrumentID";
+                 * */
             }
 
         }

@@ -530,7 +530,7 @@ namespace CUITAdmin
 
                     dbManager.UpdateUser(int.Parse(user["PersonID"].ToString()), txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text,
                         cboState.Text, txtZipCode.Text, txtPhone.Text, txtEmail.Text, "", txtPassword.Text, txtDepartment.Text,
-                        "", rtbNotes.Text, contactID);
+                        "", rtbNotes.Text, (ckbActive.Checked == true) ? 'Y' : 'N', contactID);
 
                     if (accountsEdited)
                     {

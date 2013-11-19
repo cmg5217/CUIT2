@@ -105,6 +105,7 @@ namespace CUITAdmin
             myCommand.Parameters.AddWithValue("@phoneNumber", phoneNumber);
             myCommand.Parameters.AddWithValue("@email", email);
             myCommand.Parameters.AddWithValue("@userName", username);
+            myCommand.Parameters.AddWithValue("@active", 'Y');
 
             password = PasswordHash.getHashSha512(password);
 
@@ -230,6 +231,7 @@ namespace CUITAdmin
             myCommand.Parameters.AddWithValue("@phoneNumber", phoneNumber);
             myCommand.Parameters.AddWithValue("@email", email);
             myCommand.Parameters.AddWithValue("@notes", notes);
+            myCommand.Parameters.AddWithValue("@active", 'Y');
 
             try {
                 myCommand.ExecuteNonQuery();
@@ -279,60 +281,15 @@ namespace CUITAdmin
 
         }
 
-        // TESTED 11-4
-        public void AddPerson(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email, string notes, bool isUser, bool isPointOfContact) {
-            string throwaway;
-            AddPerson(firstName, lastName, street, city, state, zip, phoneNumber, email, notes, isUser, isPointOfContact, out throwaway);
-        }
-        public void AddPerson(string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email, string notes, bool isUser, bool isPointOfContact, out string personID) {
-
-            string personColumn = (isUser) ? ", IsUser" : ", IsPoint_of_Contact";
-            string personParameter = (isUser) ? ((isUser) ? "@isUser" : "@isPointofContact") : ((isUser) ? "@isUser" : "@isPointofContact");
-
+        public void AddSupply(string supplyName, double cost, string unit, char active = 'Y') {
             SqlConnection myConnection = DBConnect();
-
-            SqlCommand myCommand = new SqlCommand(
-                "INSERT INTO Person (First_Name, Last_Name, Street, City, State, Zip, Phone_Number, Email, Notes" + personColumn + ")" +
-                "VALUES (@firstName, @lastName, @street, @city, @state, @zip, @phoneNumber, @email, @notes " + personParameter + ")" +
-                "SELECT SCOPE_IDENTITY() As TheId",
-                myConnection);
-
-
-
-            myCommand.Parameters.AddWithValue("@firstName", firstName);
-            myCommand.Parameters.AddWithValue("@lastName", lastName);
-            myCommand.Parameters.AddWithValue("@street", street);
-            myCommand.Parameters.AddWithValue("@city", city);
-            myCommand.Parameters.AddWithValue("@state", state);
-            myCommand.Parameters.AddWithValue("@zip", zip);
-            myCommand.Parameters.AddWithValue("@phoneNumber", phoneNumber);
-            myCommand.Parameters.AddWithValue("@email", email);
-            myCommand.Parameters.AddWithValue("@notes", notes);
-
-            myCommand.Parameters.AddWithValue(personParameter, 1);
-
-
-            string newID = "";
-            try {
-                newID = myCommand.ExecuteScalar().ToString();
-                Debug.WriteLine("Insert ID: " + newID);
-            } catch (Exception e) {
-                Debug.WriteLine(e.Message);
-            }
-
-            personID = newID;
-
-            myConnection.Close();
-        }
-
-        public void AddSupply(string supplyName, double cost, string unit) {
-            SqlConnection myConnection = DBConnect();
-            SqlCommand myCommand = new SqlCommand("INSERT INTO Supply(Supply_Name, Cost, Unit)" +
-                "VALUES(@supplyName, @cost, @unit)", myConnection);
+            SqlCommand myCommand = new SqlCommand("INSERT INTO Supply(Supply_Name, Cost, Unit, Active)" +
+                "VALUES(@supplyName, @cost, @unit, @active)", myConnection);
 
             myCommand.Parameters.AddWithValue("@supplyName", supplyName);
             myCommand.Parameters.AddWithValue("@cost", cost);
             myCommand.Parameters.AddWithValue("@unit", unit);
+            myCommand.Parameters.AddWithValue("@active", active);
 
             try {
                 myCommand.ExecuteNonQuery();
@@ -511,10 +468,11 @@ namespace CUITAdmin
 
         public void AddRateType(string name) {
             SqlConnection myConnection = DBConnect();
-            SqlCommand myCommand = new SqlCommand("INSERT INTO Rate_Type(Name) " +
-                "VALUES(@name)", myConnection);
+            SqlCommand myCommand = new SqlCommand("INSERT INTO Rate_Type(Name, Active) " +
+                "VALUES(@name, @active)", myConnection);
 
             myCommand.Parameters.AddWithValue("@name", name);
+            myCommand.Parameters.AddWithValue("@active", 'Y');
 
             try {
                 myCommand.ExecuteNonQuery();
@@ -535,14 +493,15 @@ namespace CUITAdmin
             SqlConnection myConnection = DBConnect();
 
             SqlCommand myCommand = new SqlCommand(
-                "INSERT INTO Instrument(Name, Billing_Unit, Time_Increment)" +
-                "VALUES (@name, @billingUnit, @timeIncrement)" +
+                "INSERT INTO Instrument(Name, Billing_Unit, Time_Increment, Active)" +
+                "VALUES (@name, @billingUnit, @timeIncrement, @active)" +
                 "SELECT SCOPE_IDENTITY() As TheId",
                 myConnection);
 
             myCommand.Parameters.AddWithValue("@name", name);
             myCommand.Parameters.AddWithValue("@billingUnit", billingUnit);
             myCommand.Parameters.AddWithValue("@timeIncrement", timeIncrement);
+            myCommand.Parameters.AddWithValue("@active", 'Y');
 
             int newID = 0;
             try
@@ -834,14 +793,19 @@ namespace CUITAdmin
 
         }
 
-        public DataTable GetInstruments(bool excludePerUse = false) {
+        public DataTable GetInstruments(bool excludePerUse = false, bool includeInactive = false) {
+
+
             SqlConnection myConnection = DBConnect();
             if (myConnection == null) {
                 return new DataTable();
             }
 
-            string myCommand = "SELECT Name, Billing_Unit, Time_Increment, InstrumentID FROM Instrument" + 
-                ((excludePerUse) ? " Where Billing_Unit != 'Per Use'" : "");
+            string myCommand = "SELECT Name, Billing_Unit, Time_Increment, InstrumentID FROM Instrument " + 
+                ((excludePerUse || !includeInactive) ? "WHERE " : "") +
+                ((excludePerUse) ? " Billing_Unit != 'Per Use' " : "") + 
+                ((!includeInactive && excludePerUse) ? " and " : "") +  
+                ((!includeInactive) ? "Active = 'Y'" : "" );
 
             DataTable table = new DataTable();
             try{
@@ -877,13 +841,13 @@ namespace CUITAdmin
             return table;
         }
 
-        public DataTable GetSupplies() {
+        public DataTable GetSupplies( bool includeInactive = false) {
             SqlConnection myConnection = DBConnect();
             if (myConnection == null) {
                 return new DataTable();
             }
 
-            string myCommand = "SELECT * FROM Supply";
+            string myCommand = "SELECT * FROM Supply " + ((!includeInactive) ? "WHERE Active = 'Y'" : "");
 
             DataTable table = new DataTable();
             try{
@@ -1058,14 +1022,15 @@ namespace CUITAdmin
             return GetUsers(false);
         }
 
-        public DataTable GetUsers(bool includeAll) {
+        public DataTable GetUsers(bool includeAll, bool includeInactive = false) {
             SqlConnection myConnection = DBConnect();
             if (myConnection == null) {
                 return new DataTable();
             }
 
             string myCommand = "SELECT First_Name, Last_Name, Username, psn.PersonID, Department " + ((includeAll) ? ", Password, Type ":"") + 
-                "FROM Users usr left outer join Person psn on usr.PersonID = psn.PersonID";
+                "FROM Users usr left outer join Person psn on usr.PersonID = psn.PersonID " + 
+                ((!includeInactive) ? "WHERE Active = 'Y'" : "");
 
             DataTable table = new DataTable();
             try{
@@ -1205,13 +1170,14 @@ namespace CUITAdmin
             return table;
         }
 
-        public DataTable GetContacts() {
+        public DataTable GetContacts(bool includeAll = false) {
             SqlConnection myConnection = DBConnect();
             if (myConnection == null) {
                 return new DataTable();
             }
 
-            string myCommand = "SELECT First_Name, Last_Name, psn.PersonID, Email FROM Point_of_Contact poc left outer join Person psn on poc.PersonID = psn.PersonID";
+            string myCommand = "SELECT First_Name, Last_Name, psn.PersonID, Email FROM Point_of_Contact poc left outer join Person psn on poc.PersonID = psn.PersonID " +
+                ((includeAll)? "":"WHERE Active = 'Y'");
 
             DataTable table = new DataTable();
             try{
@@ -1342,14 +1308,14 @@ namespace CUITAdmin
             return instruments;
         }
 
-        public DataTable GetRateTypes()
+        public DataTable GetRateTypes(bool includeInactive = false)
         {
             SqlConnection myConnection = DBConnect();
             if (myConnection == null) {
                 return new DataTable();
             }
 
-            string myCommand = "SELECT * FROM Rate_Type";
+            string myCommand = "SELECT * FROM Rate_Type " + ((!includeInactive) ? "WHERE Active = 'Y'" : "");
 
             DataTable table = new DataTable();
             try{
@@ -1768,7 +1734,7 @@ namespace CUITAdmin
         }
 
         public void UpdateUser(int userID, string firstName, string lastName, string street, string city, string state, string zip, string phoneNumber, string email,
-            string username, string password, string department, string type, string notes, int contactID = -1) {
+            string username, string password, string department, string type, string notes, char active, int contactID = -1) {
 
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand();
@@ -1797,6 +1763,8 @@ namespace CUITAdmin
             if (type != "" ) myCommand.Parameters.AddWithValue("@type", type);
             myCommand.Parameters.AddWithValue("@notes", notes);
             if (contactID > 0) myCommand.Parameters.AddWithValue("@contactID", contactID);
+
+            myCommand.Parameters.AddWithValue("@active", active);
 
             try {
                 myCommand.ExecuteNonQuery();

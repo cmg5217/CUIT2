@@ -59,13 +59,13 @@ namespace CUITAdmin
 
                 case "Supply":
                     NewSupplyPanel mySupplyForm = new NewSupplyPanel(this);
-                    this.SetBounds(350, 350, 270, 250);
+                    this.SetBounds(350, 350, 270, 175);
                     this.Text = "New Supply";
                     break;
 
                 case "Edit Supply":
                     NewSupplyPanel myEditSupplyForm = new NewSupplyPanel(this, primaryKey);
-                    this.SetBounds(350, 350, 270, 250);
+                    this.SetBounds(350, 350, 270, 175);
                     this.Text = "New Supply";
                     break;
 

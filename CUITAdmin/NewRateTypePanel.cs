@@ -189,7 +189,7 @@ namespace CUITAdmin
                 error = true;
             }
 
-            string ratePattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$";
+            string ratePattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9]{1,2})?$";
             DataTable ratesTable = (DataTable)dgvInstrumentRates.DataSource;
             foreach (DataRow row in ratesTable.Rows)
             {

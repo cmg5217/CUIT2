@@ -18,14 +18,22 @@ namespace CUITAdmin {
         }
 
         private void btnSubmit_Click(object sender, EventArgs e) {
+
+            string passwordPattern = "^([1-zA-Z0-1@.\\s\\$\\%\\(\\)\\!\\^\\+\\~\\@\\#]{5,20})$";
+
             if (txtConfirmPassword.Text != txtPassword.Text) {
                 lblMessage.Text = "Passwords do not match...";
-            } else {
+            } 
+            else if (!System.Text.RegularExpressions.Regex.IsMatch(txtPassword.Text, passwordPattern))
+            {
+                lblMessage.Text = "Password is not valid. Please enter a valid password.";
+                txtPassword.Focus();
+            }
+            else {
                 DBManager dbManager = DBManager.Instance;
-                dbManager.UpdateUser(dbManager.GetUserID(username), "", "", "", "", "", "", "", "", "", txtPassword.Text,  "", "", "");
+                dbManager.UpdateUser(dbManager.GetUserID(username), "", "", "", "", "", "", "", "", "", txtPassword.Text,  "", "", "", 'Y');
                 this.Close();
             }
-            // TO-DO match against regex
         }
     }
 }

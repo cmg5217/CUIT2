@@ -93,6 +93,7 @@
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
+            this.lineSeparator1 = new CUITAdmin.LineSeparator();
             this.label11 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
@@ -142,7 +143,7 @@
             this.btnManualTimeAdd = new System.Windows.Forms.Button();
             this.lblDuration = new System.Windows.Forms.Label();
             this.lblFundingSource = new System.Windows.Forms.Label();
-            this.lineSeparator1 = new CUITAdmin.LineSeparator();
+            this.btnAdminClear = new System.Windows.Forms.Button();
             this.tbpExports.SuspendLayout();
             this.grpExportPath.SuspendLayout();
             this.grpInvoiceExport.SuspendLayout();
@@ -405,6 +406,7 @@
             // 
             // tbpAccountAdmin
             // 
+            this.tbpAccountAdmin.Controls.Add(this.btnAdminClear);
             this.tbpAccountAdmin.Controls.Add(this.chkAdminIncludeInactive);
             this.tbpAccountAdmin.Controls.Add(this.btnAccountAdminNew);
             this.tbpAccountAdmin.Controls.Add(this.cboAccountAdminNew);
@@ -893,6 +895,16 @@
             this.label13.TabIndex = 20;
             this.label13.Text = "( - all fields are optional - )";
             // 
+            // lineSeparator1
+            // 
+            this.lineSeparator1.Location = new System.Drawing.Point(48, 126);
+            this.lineSeparator1.MaximumSize = new System.Drawing.Size(2000, 2);
+            this.lineSeparator1.MinimumSize = new System.Drawing.Size(0, 2);
+            this.lineSeparator1.Name = "lineSeparator1";
+            this.lineSeparator1.Size = new System.Drawing.Size(578, 2);
+            this.lineSeparator1.TabIndex = 19;
+            this.lineSeparator1.TabStop = false;
+            // 
             // label11
             // 
             this.label11.AutoSize = true;
@@ -1348,15 +1360,16 @@
             this.lblFundingSource.TabIndex = 4;
             this.lblFundingSource.Text = "Funding Source:";
             // 
-            // lineSeparator1
+            // btnAdminClear
             // 
-            this.lineSeparator1.Location = new System.Drawing.Point(48, 126);
-            this.lineSeparator1.MaximumSize = new System.Drawing.Size(2000, 2);
-            this.lineSeparator1.MinimumSize = new System.Drawing.Size(0, 2);
-            this.lineSeparator1.Name = "lineSeparator1";
-            this.lineSeparator1.Size = new System.Drawing.Size(578, 2);
-            this.lineSeparator1.TabIndex = 19;
-            this.lineSeparator1.TabStop = false;
+            this.btnAdminClear.Location = new System.Drawing.Point(331, 36);
+            this.btnAdminClear.Name = "btnAdminClear";
+            this.btnAdminClear.Size = new System.Drawing.Size(75, 23);
+            this.btnAdminClear.TabIndex = 8;
+            this.btnAdminClear.Text = "Clear";
+            this.btnAdminClear.UseVisualStyleBackColor = true;
+            this.btnAdminClear.Visible = false;
+            this.btnAdminClear.Click += new System.EventHandler(this.btnAdminClear_Click);
             // 
             // frmCUITAdminMain
             // 
@@ -1523,6 +1536,7 @@
         private System.Windows.Forms.CheckBox chkGLSU;
         private System.Windows.Forms.Button btnImportStandalone;
         private System.Windows.Forms.CheckBox chkAdminIncludeInactive;
+        private System.Windows.Forms.Button btnAdminClear;
     }
 }
 

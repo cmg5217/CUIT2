@@ -12,15 +12,9 @@ namespace CUITAdmin
     {
         Button btnSubmit = new Button();
         CheckBox ckbActive = new CheckBox();
-        TextBox txtIndustryRate = new TextBox();
-        TextBox txtExternalRate = new TextBox();
-        TextBox txtInternalRate = new TextBox();
         TextBox txtUnit = new TextBox();
         TextBox txtSupplyCost = new TextBox();
         TextBox txtSupplyName = new TextBox();
-        Label lblIndustryRate = new Label();
-        Label lblExternalRate = new Label();
-        Label lblInternalRate = new Label();
         Label lblSupplyCost = new Label();
         Label lblUnit = new Label();
         Label lblSupplyName = new Label();
@@ -31,8 +25,9 @@ namespace CUITAdmin
 
         public NewSupplyPanel(NewEntryForm pForm, string primaryKey)
             : this(pForm) {
+            //CheckBox ckbActive = new CheckBox();
             ckbActive.Text = "Active";
-            ckbActive.Location = new Point(93, 172);
+            ckbActive.Location = new Point(93, 100);
             this.Controls.Add(ckbActive);
             this.primaryKey = primaryKey;
             populateControls();
@@ -48,15 +43,6 @@ namespace CUITAdmin
 
             addControls();
             containingForm.AcceptButton = btnSubmit;
-
-            //this should just go into the constructor for edit mode but it doesnt exist yet.
-            //CheckBox ckbActive = new CheckBox();
-
-
-            //this should go into populate controls, but that also doesnt exist yet.
-            //char active = char.Parse(user["Active"].ToString());
-
-
         }
 
         private void populateControls() {
@@ -85,15 +71,9 @@ namespace CUITAdmin
             // pnlNewSupply
             // 
             this.Controls.Add(this.btnSubmit);
-            this.Controls.Add(this.txtIndustryRate);
-            this.Controls.Add(this.txtExternalRate);
-            this.Controls.Add(this.txtInternalRate);
             this.Controls.Add(this.txtUnit);
             this.Controls.Add(this.txtSupplyCost);
             this.Controls.Add(this.txtSupplyName);
-            this.Controls.Add(this.lblIndustryRate);
-            this.Controls.Add(this.lblExternalRate);
-            this.Controls.Add(this.lblInternalRate);
             this.Controls.Add(this.lblSupplyCost);
             this.Controls.Add(this.lblUnit);
             this.Controls.Add(this.lblSupplyName);
@@ -102,15 +82,6 @@ namespace CUITAdmin
             this.Size = new System.Drawing.Size(249, 214);
             this.TabIndex = 0;
             // 
-            // lblInternalRate
-            // 
-            this.lblInternalRate.AutoSize = true;
-            this.lblInternalRate.Location = new System.Drawing.Point(11, 94);
-            this.lblInternalRate.Name = "lblInternalRate";
-            this.lblInternalRate.Size = new System.Drawing.Size(95, 13);
-            this.lblInternalRate.TabIndex = 3;
-            this.lblInternalRate.Text = "Internal Rate/Unit:";
-            // 
             // lblSupplyCost
             // 
             this.lblSupplyCost.AutoSize = true;
@@ -118,7 +89,7 @@ namespace CUITAdmin
             this.lblSupplyCost.Name = "lblSupplyCost";
             this.lblSupplyCost.Size = new System.Drawing.Size(66, 13);
             this.lblSupplyCost.TabIndex = 2;
-            this.lblSupplyCost.Text = "Supply Cost:";
+            this.lblSupplyCost.Text = "Charge/Unit:";
             // 
             // lblUnit
             // 
@@ -137,24 +108,6 @@ namespace CUITAdmin
             this.lblSupplyName.Size = new System.Drawing.Size(73, 13);
             this.lblSupplyName.TabIndex = 0;
             this.lblSupplyName.Text = "Supply Name:";
-            // 
-            // lblExternalRate
-            // 
-            this.lblExternalRate.AutoSize = true;
-            this.lblExternalRate.Location = new System.Drawing.Point(11, 121);
-            this.lblExternalRate.Name = "lblExternalRate";
-            this.lblExternalRate.Size = new System.Drawing.Size(98, 13);
-            this.lblExternalRate.TabIndex = 4;
-            this.lblExternalRate.Text = "External Rate/Unit:";
-            // 
-            // lblIndustryRate
-            // 
-            this.lblIndustryRate.AutoSize = true;
-            this.lblIndustryRate.Location = new System.Drawing.Point(11, 148);
-            this.lblIndustryRate.Name = "lblIndustryRate";
-            this.lblIndustryRate.Size = new System.Drawing.Size(97, 13);
-            this.lblIndustryRate.TabIndex = 5;
-            this.lblIndustryRate.Text = "Industry Rate/Unit:";
             // 
             // txtSupplyName
             // 
@@ -177,30 +130,9 @@ namespace CUITAdmin
             this.txtUnit.Size = new System.Drawing.Size(100, 20);
             this.txtUnit.TabIndex = 8;
             // 
-            // txtInternalRate
-            // 
-            this.txtInternalRate.Location = new System.Drawing.Point(129, 91);
-            this.txtInternalRate.Name = "txtInternalRate";
-            this.txtInternalRate.Size = new System.Drawing.Size(100, 20);
-            this.txtInternalRate.TabIndex = 9;
-            // 
-            // txtExternalRate
-            // 
-            this.txtExternalRate.Location = new System.Drawing.Point(129, 118);
-            this.txtExternalRate.Name = "txtExternalRate";
-            this.txtExternalRate.Size = new System.Drawing.Size(100, 20);
-            this.txtExternalRate.TabIndex = 10;
-            // 
-            // txtIndustryRate
-            // 
-            this.txtIndustryRate.Location = new System.Drawing.Point(129, 145);
-            this.txtIndustryRate.Name = "txtIndustryRate";
-            this.txtIndustryRate.Size = new System.Drawing.Size(100, 20);
-            this.txtIndustryRate.TabIndex = 11;
-            // 
             // btnSubmit
             // 
-            this.btnSubmit.Location = new System.Drawing.Point(153, 172);
+            this.btnSubmit.Location = new System.Drawing.Point(153, 100);
             this.btnSubmit.Name = "btnSubmit";
             this.btnSubmit.Size = new System.Drawing.Size(75, 23);
             this.btnSubmit.TabIndex = 12;
@@ -229,35 +161,11 @@ namespace CUITAdmin
 
         private Boolean errorChecked()
         {
-            txtIndustryRate.BackColor = System.Drawing.Color.White;
-            txtExternalRate.BackColor = System.Drawing.Color.White;
-            txtInternalRate.BackColor = System.Drawing.Color.White;
             txtUnit.BackColor = System.Drawing.Color.White;
             txtSupplyCost.BackColor = System.Drawing.Color.White;
             txtSupplyName.BackColor = System.Drawing.Color.White;
 
             bool error = false;
-
-            string industryPattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtIndustryRate.Text, industryPattern))
-            {
-                txtIndustryRate.BackColor = System.Drawing.Color.Red;
-                error = true;
-            }
-
-            string externalPattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtExternalRate.Text, externalPattern))
-            {
-                txtExternalRate.BackColor = System.Drawing.Color.Red;
-                error = true;
-            }
-
-            string internalPattern = "^\\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtInternalRate.Text, internalPattern))
-            {
-                txtInternalRate.BackColor = System.Drawing.Color.Red;
-                error = true;
-            }
 
             string unitPattern = "^[\\w]+$";
             if (!System.Text.RegularExpressions.Regex.IsMatch(txtUnit.Text, unitPattern))
@@ -273,7 +181,7 @@ namespace CUITAdmin
                 error = true;
             }
 
-            string namePattern = "^[A-Za-z\\s-\\.]+$";
+            string namePattern = "^[\\w\\W]+$";
             if (!System.Text.RegularExpressions.Regex.IsMatch(txtSupplyName.Text, namePattern))
             {
                 txtSupplyName.BackColor = System.Drawing.Color.Red;
