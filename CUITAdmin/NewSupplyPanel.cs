@@ -32,7 +32,7 @@ namespace CUITAdmin
         public NewSupplyPanel(NewEntryForm pForm, string primaryKey)
             : this(pForm) {
             ckbActive.Text = "Active";
-            ckbActive.Location = new Point(550, 310);
+            ckbActive.Location = new Point(93, 172);
             this.Controls.Add(ckbActive);
             this.primaryKey = primaryKey;
             populateControls();
@@ -66,7 +66,11 @@ namespace CUITAdmin
             this.txtSupplyName.Text = supply.Rows[0]["Supply_Name"].ToString();
             txtSupplyName.Enabled = false;
 
-            char active = Convert.ToChar(supply.Rows[0]["Active"]);
+            char active = 'N';
+            if(supply.Rows[0]["Active"].ToString() != ""){
+                active = Char.Parse(supply.Rows[0]["Active"].ToString());
+            }
+
 
 
             if (active == 'Y')

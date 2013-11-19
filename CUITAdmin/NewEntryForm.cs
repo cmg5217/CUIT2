@@ -51,6 +51,12 @@ namespace CUITAdmin
                     this.Text = "New Rate Type";
                     break;
 
+                case "Edit Rate Type":
+                    NewRateTypePanel myRateEditForm = new NewRateTypePanel(this, primaryKey);
+                    this.SetBounds(350, 350, 300, 300);
+                    this.Text = "New Rate Type";
+                    break;
+
                 case "Supply":
                     NewSupplyPanel mySupplyForm = new NewSupplyPanel(this);
                     this.SetBounds(350, 350, 270, 250);

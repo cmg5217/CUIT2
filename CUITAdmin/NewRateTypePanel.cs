@@ -21,6 +21,19 @@ namespace CUITAdmin
         DataGridView dgvInstrumentRates = new DataGridView();
         NewEntryForm containingForm;
         DBManager dbManager;
+        string mode = "add";
+        string primaryKey;
+
+
+        public NewRateTypePanel(NewEntryForm pform, string primaryKey)
+        :this(pform){
+            ckbActive.Text = "Active";
+            ckbActive.Location = new Point(119, 210);
+            this.Controls.Add(ckbActive);
+            mode = "edit";
+            this.primaryKey = primaryKey;
+            populateControls();
+        }
 
         public NewRateTypePanel(NewEntryForm pForm)
         {
@@ -35,18 +48,32 @@ namespace CUITAdmin
 
             //this should just go into the constructor for edit mode but it doesnt exist yet.
             //CheckBox ckbActive = new CheckBox();
-            ckbActive.Text = "Active";
-            ckbActive.Location = new Point(550, 310);
-            this.Controls.Add(ckbActive);
 
 
             //this should go into populate controls, but that also doesnt exist yet.
-            //char active = char.Parse(user["Active"].ToString());
 
-            //if (active == 'Y')
-            //    ckbActive.Checked = true;
-            //else
-            //    ckbActive.Checked = false;
+        }
+
+        private void populateControls() {
+            this.txtRateName.Text = primaryKey;
+            char active = dbManager.GetRateActive(primaryKey);
+            DataTable instrumentRates = dbManager.GetInstrumentRates(1, primaryKey);
+
+            foreach (DataGridViewRow row in dgvInstrumentRates.Rows) {
+                foreach (DataRow dtRow in instrumentRates.Rows) {
+                    if (row.Cells[0].Value.ToString() == dtRow["Name"].ToString()) {
+                        row.Cells[4].Value = dtRow["Rate"].ToString();
+                        string test = dtRow["Rate"].ToString();
+                        break;
+                    }
+                }
+            }
+
+            if (active == 'Y')
+                ckbActive.Checked = true;
+            else
+                ckbActive.Checked = false;
+
         }
 
         private void addControls()
@@ -61,7 +88,7 @@ namespace CUITAdmin
             this.Controls.Add(this.lblInstruments);
             this.Location = new System.Drawing.Point(12, 12);
             this.Name = "pnlRateType";
-            this.Size = new System.Drawing.Size(272, 240);
+            this.Size = new System.Drawing.Size(272, 340);
             // 
             // btnSubmit
             // 
@@ -121,13 +148,29 @@ namespace CUITAdmin
                 MessageBox.Show("There were errors on the form.  Please correct them and submit again.");
             else
             {
-                dbManager.AddRateType(txtRateName.Text);
-                DataTable ratesTable = (DataTable)dgvInstrumentRates.DataSource;
-                foreach (DataRow row in ratesTable.Rows)
-                {
-                    dbManager.AddInstrumentRate(txtRateName.Text, int.Parse(row["Rate"].ToString()), int.Parse(row["InstrumentID"].ToString()));
-                }
+                if (mode == "add") {
+                    dbManager.AddRateType(txtRateName.Text);
+                    DataTable ratesTable = (DataTable)dgvInstrumentRates.DataSource;
+                    foreach (DataRow row in ratesTable.Rows) {
+                        dbManager.AddInstrumentRate(txtRateName.Text, int.Parse(row["Rate"].ToString()), int.Parse(row["InstrumentID"].ToString()));
+                    }
+                } else {
+                    DataTable ratesTable = (DataTable)dgvInstrumentRates.DataSource;
 
+                    DataTable sendTable = new DataTable();
+                    sendTable.Columns.AddRange(new DataColumn[]{
+                        new DataColumn ("Rate_Type", Type.GetType("System.String")),
+                        new DataColumn ("Rate", Type.GetType("System.Double")),
+                        new DataColumn ("InstrumentID", Type.GetType("System.Int32"))
+                    });
+
+                    foreach (DataRow row in ratesTable.Rows) {
+                        sendTable.Rows.Add(txtRateName.Text, Double.Parse(row["Rate"].ToString()), int.Parse(row["InstrumentID"].ToString()));
+                    }
+
+                    dbManager.UpdateRate(primaryKey, (ckbActive.Checked) ? 'Y' : 'N');
+                    dbManager.UpdateRates(sendTable, primaryKey);
+                }
                 containingForm.updateAdminDGV();
                 containingForm.Close();
             }

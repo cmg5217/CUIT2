@@ -433,11 +433,10 @@ namespace CUITAdmin {
                     primaryKey = row.Cells["PersonID"].Value.ToString();
                     addNewCase = "Edit Point of Contact";
                     break;
-                    /*
                 case "Rate Types":
                     primaryKey = row.Cells["Name"].Value.ToString();
                     addNewCase = "Edit Rate Type";
-                    break;*/
+                    break;
                 default:
                     return;
 

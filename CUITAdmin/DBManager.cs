@@ -677,7 +677,28 @@ namespace CUITAdmin
         }
 
         #region Get Functions
-        
+
+        public char GetRateActive(string name) {
+            SqlConnection myConnection = DBConnect();
+            SqlCommand myCommand = new SqlCommand("SELECT Active FROM Rate_Type " +
+                                                  "WHERE Name = @name", myConnection);
+
+            myCommand.Parameters.AddWithValue("@name", name);
+
+            char active = 'N';
+
+            try {
+                string output = myCommand.ExecuteScalar().ToString();
+                if (output != "")
+                    active = char.Parse(output);
+            } catch (Exception e) {
+                Debug.Write(e.ToString());
+            }
+
+            myConnection.Close();
+            return active;
+        }
+
         public int GetUserID(string username) {
             SqlConnection myConnection = DBConnect();
             SqlCommand myCommand = new SqlCommand("SELECT PersonID FROM Users " +
@@ -1343,16 +1364,29 @@ namespace CUITAdmin
             return table;
         }
 
-        public DataTable GetInstrumentRates( int instrumentID)
+        public DataTable GetInstrumentRates(int keyType, object keyValue)
         {
             SqlConnection myConnection = DBConnect();
             if (myConnection == null) {
                 return new DataTable();
             }
 
-            SqlCommand myCommand = new SqlCommand("SELECT * FROM Instrument_Rate WHERE InstrumentID = @instrumentID", myConnection);
+            string search = "";
+            switch(keyType){
+                case 0:
+                    search = "ir.InstrumentID";
+                    break;
+                case 1:
+                    search = "ir.Rate_Type";
+                    break;
+                default:
+                    search = "InstrumentID";
+                    break;
+            }
 
-            myCommand.Parameters.AddWithValue("@instrumentID", instrumentID);
+            SqlCommand myCommand = new SqlCommand("SELECT * FROM Instrument_Rate ir INNER JOIN Instrument i on ir.InstrumentID = i.InstrumentID WHERE " + search + " = @param", myConnection);
+
+            myCommand.Parameters.AddWithValue("@param", keyValue);
 
             DataTable table = new DataTable();
             try{
@@ -1941,6 +1975,39 @@ namespace CUITAdmin
             myConnection.Close();
         }
 
+        public void UpdateRate(string rateName, char approved) {
+            string tableName = "Rate_Type";
+            string tableKeyName = "Name";
+
+            string[] colNames = new string[]{
+                "Active"
+            };
+
+            object[] paramValues = new object[]{
+                approved    
+            };
+
+            UpdateTable(tableName, tableKeyName, rateName, colNames, paramValues);
+        }
+
+        public void UpdateRates(DataTable instrumentRates, string rateType) {
+            SqlConnection myConnection = DBConnect();
+
+            SqlCommand myCommand = new SqlCommand("DELETE FROM Instrument_Rate " +
+                                                  "WHERE Rate_Type = @rateType", myConnection);
+
+            myCommand.Parameters.AddWithValue("@rateType", rateType);
+
+            try {
+                myCommand.ExecuteNonQuery();
+            } catch (Exception e) {
+                Debug.WriteLine(e.Message);
+            }
+
+            SendDataTable(instrumentRates, "Instrument_Rate");
+
+            myConnection.Close();
+        }
 
         public void UpdateInstrumentRates(DataTable rates, int instrumentID) {
 

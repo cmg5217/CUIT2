@@ -34,7 +34,19 @@ namespace CUITAdmin {
                     this.Close();
                 }
             } else {
-
+                DBManager dbManager = DBManager.Instance;
+                if (dbManager.CheckPassword(txtUsername.Text, txtPassword.Text)) {
+                    char usertype = dbManager.GetUserType(txtUsername.Text);
+                    if (usertype != 'A') {
+                        MessageBox.Show("This username entered is not an admin");
+                        this.Close();
+                    } else {
+                        mainForm.Exit();
+                    }
+                } else {
+                    MessageBox.Show("Username and password did not match");
+                    this.Close();
+                }
             }
         }
     }

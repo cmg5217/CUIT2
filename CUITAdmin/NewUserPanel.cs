@@ -71,7 +71,7 @@ namespace CUITAdmin
 
             //CheckBox ckbActive = new CheckBox();
             ckbActive.Text = "Active";
-            ckbActive.Location = new Point(550, 310);
+            ckbActive.Location = new Point(140, 250);
             this.Controls.Add(ckbActive);
         }
 

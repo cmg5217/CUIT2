@@ -29,7 +29,7 @@ namespace CUITAdmin
         public NewInstrumentPanel(NewEntryForm pForm, int primaryKey) 
         :this(pForm){            
             ckbActive.Text = "Active";
-            ckbActive.Location = new Point(550, 310);
+            ckbActive.Location = new Point(115, 230);
             this.Controls.Add(ckbActive);
             this.primaryKey = primaryKey;
             mode = "edit";
@@ -52,7 +52,8 @@ namespace CUITAdmin
         public void populateControls(){
             dbManager = DBManager.Instance;
             DataTable instrument = dbManager.GetInstrument(primaryKey);
-            DataTable instrumentRates = dbManager.GetInstrumentRates(primaryKey);
+            DataTable instrumentRates = dbManager.GetInstrumentRates(0, primaryKey);
+
             if (instrument.Rows[0]["Billing_Unit"].ToString() == "Per Use") cboBillingType.SelectedIndex = 1;
             this.txtInstrumentName.Text = instrument.Rows[0]["Name"].ToString();
             this.txtTimeIncrement.Text = instrument.Rows[0]["Time_Increment"].ToString();
@@ -63,8 +64,12 @@ namespace CUITAdmin
                 }
             }
 
+            char active = 'N';
 
-            char active = char.Parse(instrument.Rows[0]["Active"].ToString());
+            if (instrument.Rows[0]["Active"].ToString() != "") {
+                active = char.Parse(instrument.Rows[0]["Active"].ToString());
+            }
+
 
             if (active == 'Y')
                 ckbActive.Checked = true;
@@ -109,6 +114,8 @@ namespace CUITAdmin
             this.dgvInstrumentRates.TabIndex = 9;
             this.dgvInstrumentRates.RowHeadersVisible = false;
             DataTable sourceTable = dbManager.GetRateTypes();
+
+            sourceTable.Columns.Remove("Active");
 
             sourceTable.Columns.Add(new DataColumn("Rate"));
 
