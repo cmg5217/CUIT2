@@ -11,6 +11,7 @@ namespace CUITAdmin
     {
         Button btnSubmit = new Button();
         RichTextBox rtbNotes = new RichTextBox();
+        CheckBox ckbActive = new CheckBox();
         TextBox txtPhone = new TextBox();
         TextBox txtZipCode = new TextBox();
         ComboBox cboState = new ComboBox();
@@ -42,6 +43,21 @@ namespace CUITAdmin
 
             addControls();
             containingForm.AcceptButton = btnSubmit;
+
+            //this should just go into the constructor for edit mode but it doesnt exist yet.
+            //CheckBox ckbActive = new CheckBox();
+            ckbActive.Text = "Active";
+            ckbActive.Location = new Point(550, 310);
+            this.Controls.Add(ckbActive);
+
+
+            //this should go into populate controls, but that also doesnt exist yet.
+            //char active = char.Parse(user["Active"].ToString());
+
+            //if (active == 'Y')
+            //    ckbActive.Checked = true;
+            //else
+            //    ckbActive.Checked = false;
         }
 
         private void addControls()

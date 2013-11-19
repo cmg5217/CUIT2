@@ -11,6 +11,7 @@ namespace CUITAdmin
     class NewRateTypePanel : Panel
     {
         Button btnSubmit = new Button();
+        CheckBox ckbActive = new CheckBox();
         Label lblRateName = new Label();
         Label lblInstruments = new Label();
         TextBox txtRateName = new TextBox();
@@ -28,6 +29,21 @@ namespace CUITAdmin
 
             addControls();
             containingForm.AcceptButton = btnSubmit;
+
+            //this should just go into the constructor for edit mode but it doesnt exist yet.
+            //CheckBox ckbActive = new CheckBox();
+            ckbActive.Text = "Active";
+            ckbActive.Location = new Point(550, 310);
+            this.Controls.Add(ckbActive);
+
+
+            //this should go into populate controls, but that also doesnt exist yet.
+            //char active = char.Parse(user["Active"].ToString());
+
+            //if (active == 'Y')
+            //    ckbActive.Checked = true;
+            //else
+            //    ckbActive.Checked = false;
         }
 
         private void addControls()

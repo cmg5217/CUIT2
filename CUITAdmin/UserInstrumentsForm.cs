@@ -35,11 +35,12 @@ namespace CUITAdmin
             {
                 DataTable userInstrumentsDataSource = dbManager.GetUserInstruments(username);
                 List<DataRow> rowsToBeRemoved = new List<DataRow>(userInstrumentsDataSource.Rows.Count);
+                userInstrumentsDataSource.Columns[1].SetOrdinal(0);
                 for (int i = 0; i < userInstrumentsDataSource.Rows.Count; i++)
                 {
                     foreach (DataRow row in allInstrumentsDataSource.Rows)
                     {
-                        bool whatthefuck = userInstrumentsDataSource.Rows[i][0].ToString() == row[0].ToString();
+                         bool whatthefuck = userInstrumentsDataSource.Rows[i][0].ToString() == row[0].ToString();
                         if (whatthefuck)
                             rowsToBeRemoved.Add(row);
                     }
@@ -47,7 +48,6 @@ namespace CUITAdmin
 
                 foreach (DataRow row in rowsToBeRemoved)
                     allInstrumentsDataSource.Rows.Remove(row);
-                userInstrumentsDataSource.Columns[1].SetOrdinal(0);
                 dgvUserInstruments.DataSource = userInstrumentsDataSource;
             }
             else
