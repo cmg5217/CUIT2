@@ -635,8 +635,6 @@ namespace CUITAdmin {
                     xmlWriter.WriteElementString("account_number", accountRow["Account_Number"].ToString());
                 }
 
-               
-
                 xmlWriter.WriteEndElement(); //End account_numbers node
 
                 xmlWriter.WriteEndElement(); //End user node

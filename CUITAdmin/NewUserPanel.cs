@@ -661,7 +661,7 @@ namespace CUITAdmin
                 }
             }
 
-            string usernamePattern = "^([1-zA-Z0-1@.]{5,20})$";
+            string usernamePattern = "^([0-9A-Za-z\\s-\\.]{5,20})$";
             if (!System.Text.RegularExpressions.Regex.IsMatch(txtUsername.Text, usernamePattern))
             {
                 txtUsername.BackColor = System.Drawing.Color.Red;

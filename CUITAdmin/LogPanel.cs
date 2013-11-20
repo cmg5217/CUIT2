@@ -13,7 +13,7 @@ using System.Timers;
 namespace CUITAdmin {
     public partial class LogPanel : Panel {
 
-        
+
 
         const int BOTTOM_PADDING = 10;
 
@@ -34,14 +34,13 @@ namespace CUITAdmin {
         private Label lblLoading = new Label();
         private Label lblUsername = new Label();
         private Label lblTimeElapsed = new Label();
+        private Label lblMessage = new Label();
         private TextBox txtPassword = new TextBox();
         private TextBox txtUsername = new TextBox();
         private Button btnStartLog = new Button();
+        private Button btnValidate = new Button();
         private DateTime logTime = new DateTime();
-
-
-        private System.Timers.Timer timeElapsed;
-        private System.Timers.Timer passwordTimer;     // Timer for when the user pauses while typing in their password
+        DataTable userInstruments;
 
         bool logStarted = false;
         bool passwordValidated = false;
@@ -54,7 +53,7 @@ namespace CUITAdmin {
         DBManager dbManager;
 
         /////////////////////////////////////////// CONSTRUCTORS & DESTRUCTORS /////////////////////////////////////////////////////
-        
+
         public LogPanel(Control container) {
             InitializeComponent();
             this.container = container;
@@ -62,12 +61,11 @@ namespace CUITAdmin {
             this.Visible = true;
             AddControls();
 
-            passwordTimer = new System.Timers.Timer(600);
-            passwordTimer.Elapsed += new ElapsedEventHandler(pauseTimer_Elapsed);
+
 
             xmlManager = XmlManager.Instance;
             dbManager = DBManager.Instance;
-            
+
 
 
             if (Properties.Settings.Default.StandaloneMode) {
@@ -81,22 +79,14 @@ namespace CUITAdmin {
                 cboInstrument.ValueMember = "Value";
 
             } else {
-
-
-                /* TO-DO: FILL ON LOGIN
                 standalone = false;
-
-                cboInstrument.DataSource = dbManager.GetInstruments(true, false);
-                cboInstrument.DisplayMember = "Name";
-                cboInstrument.ValueMember = "InstrumentID";
-                 * */
             }
 
         }
 
-        public LogPanel(Control container, Point location) 
-            :this(container){
-                this.Location = location;
+        public LogPanel(Control container, Point location)
+            : this(container) {
+            this.Location = location;
         }
 
         // only called by other instances of LogPanel when adding children
@@ -131,16 +121,34 @@ namespace CUITAdmin {
             this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.txtUsername);
             this.Controls.Add(this.btnStartLog);
+            this.Controls.Add(this.btnValidate);
+            this.Controls.Add(this.lblMessage);
             this.Name = "panel1";
             this.Size = new System.Drawing.Size(655, 177);
             this.TabIndex = 0;
+
+
+
+            this.btnValidate.Location = new System.Drawing.Point(200, 106);
+            this.btnValidate.Name = "btnValidate";
+            this.btnValidate.Size = new System.Drawing.Size(75, 23);
+            this.btnValidate.TabIndex = 3;
+            this.btnValidate.Text = "Validate";
+            this.btnValidate.UseVisualStyleBackColor = true;
+            this.btnValidate.Click += new EventHandler(btnValidate_Clicked);
+            //
+            // lblMessage
+            //
+            this.lblMessage.Location = new System.Drawing.Point((this.Width / 2) - 50, 10);
+            this.lblMessage.Text = "";
+
             // 
             // btnStartLog
             // 
             this.btnStartLog.Location = new System.Drawing.Point(462, 106);
             this.btnStartLog.Name = "btnStartLog";
             this.btnStartLog.Size = new System.Drawing.Size(75, 23);
-            this.btnStartLog.TabIndex = 5;
+            this.btnStartLog.TabIndex = 6;
             this.btnStartLog.Text = "Start";
             this.btnStartLog.UseVisualStyleBackColor = true;
             this.btnStartLog.Enabled = false;
@@ -159,9 +167,13 @@ namespace CUITAdmin {
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.Size = new System.Drawing.Size(100, 20);
             this.txtPassword.TabIndex = 2;
-            this.txtPassword.TextChanged += txtPassword_TextChanged;
-            this.txtPassword.Enter += txtPassword_Enter;
             this.txtPassword.PasswordChar = '*';
+
+            txtPassword.KeyDown += (sender1, args) => {
+                if (args.KeyCode == Keys.Return) {
+                    btnValidate.PerformClick();
+                }
+            };
             //
             // lblTimeElapsed
             //
@@ -184,11 +196,12 @@ namespace CUITAdmin {
             this.lblPassword.Size = new System.Drawing.Size(56, 13);
             this.lblPassword.TabIndex = 4;
             this.lblPassword.Text = "Password:";
+
             // 
             // lblAuthenticating
             // 
             this.lblAuthenticating.AutoSize = true;
-            this.lblAuthenticating.Location = new System.Drawing.Point(174, 111);
+            this.lblAuthenticating.Location = new System.Drawing.Point(150, 30);
             this.lblAuthenticating.Name = "lblAuthenticating";
             this.lblAuthenticating.Size = new System.Drawing.Size(75, 13);
             this.lblAuthenticating.TabIndex = 5;
@@ -198,15 +211,16 @@ namespace CUITAdmin {
             // 
             this.cboFundingSource.FormattingEnabled = true;
             this.cboFundingSource.Enabled = false;
-            this.cboFundingSource.Location = new System.Drawing.Point(416, 51);
+            this.cboFundingSource.Location = new System.Drawing.Point(416, 77);
             this.cboFundingSource.Name = "cboFundingSource";
             this.cboFundingSource.Size = new System.Drawing.Size(121, 21);
-            this.cboFundingSource.TabIndex = 3;
+            this.cboFundingSource.TabIndex = 4;
+            this.cboFundingSource.DropDownStyle = ComboBoxStyle.DropDownList;
             // 
             // lblFundingSource
             // 
             this.lblFundingSource.AutoSize = true;
-            this.lblFundingSource.Location = new System.Drawing.Point(326, 55);
+            this.lblFundingSource.Location = new System.Drawing.Point(329, 81);
             this.lblFundingSource.Name = "lblFundingSource";
             this.lblFundingSource.Size = new System.Drawing.Size(85, 13);
             this.lblFundingSource.TabIndex = 7;
@@ -215,7 +229,7 @@ namespace CUITAdmin {
             // lblInstrument
             // 
             this.lblInstrument.AutoSize = true;
-            this.lblInstrument.Location = new System.Drawing.Point(329, 81);
+            this.lblInstrument.Location = new System.Drawing.Point(326, 55);
             this.lblInstrument.Name = "lblInstrument";
             this.lblInstrument.Size = new System.Drawing.Size(59, 13);
             this.lblInstrument.Text = "Instrument:";
@@ -224,18 +238,26 @@ namespace CUITAdmin {
             // 
             this.cboInstrument.FormattingEnabled = true;
             this.cboInstrument.Enabled = false;
-            this.cboInstrument.Location = new System.Drawing.Point(416, 77);
+            this.cboInstrument.Location = new System.Drawing.Point(416, 51);
             this.cboInstrument.Name = "cboInstrument";
             this.cboInstrument.Size = new System.Drawing.Size(121, 21);
             this.cboInstrument.TabIndex = 4;
+            this.cboInstrument.DropDownStyle = ComboBoxStyle.DropDownList;
+            this.cboInstrument.SelectedIndexChanged += new EventHandler(cboInstrument_SelectedIndexChanged);
+
         }
 
         // Adjust the controls for an active log, called on btnStart_Clicked
         private void StartLog() {
 
+            if (cboFundingSource.Items.Count == 0) {
+                MessageBox.Show("There was no account selected. Please make sure you have access to the account, and that it is asigned to the selected instrument.");
+                DisableStartControls();
+                return;
+            }
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // Start Standalone Section
-            
+
             //if (invalid) return;
 
             childPanel = new LogPanel(container, this);
@@ -246,8 +268,8 @@ namespace CUITAdmin {
             // --Adjust Controls--
             cboInstrument.Enabled = false;
             instrument = cboInstrument.SelectedValue.ToString();
-            
-            
+
+
             cboFundingSource.Enabled = false;
             account = cboFundingSource.SelectedValue.ToString();
             cboFundingSource.DataSource = null;
@@ -256,18 +278,15 @@ namespace CUITAdmin {
 
             txtUsername.Enabled = false;
             txtPassword.Clear();
-            
-            btnStartLog.Text = "End";
 
-            timeElapsed = new System.Timers.Timer();
-            timeElapsed.Start();
+            btnStartLog.Text = "End";
 
             passwordValidated = false; // Set passwordValidated back to false, used to validate before ending the log
 
 
             if (standalone) {
-                xmlManager.AddPartialLog(txtUsername.Text, 
-                    account, 
+                xmlManager.AddPartialLog(txtUsername.Text,
+                    account,
                     instrument,
                     DateTime.Now.ToString());
             } else {
@@ -279,10 +298,10 @@ namespace CUITAdmin {
                     MessageBox.Show("Error: Could not connect to server. \r\nCheck connection or contact your server administrater");
                 }
             }
-            
+
         }
 
-       
+
         // Disposes of the this panel and moves it's children
         private void EndLog() {
             // To-Do:: Add database interactions to add an end time to the created log
@@ -314,39 +333,52 @@ namespace CUITAdmin {
                 valid = xmlManager.CheckPassword(username, password);
 
             } else { // ------------------------------------ Server Section ----------------------------------------- //
-                passwordTimer.Stop();
                 valid = dbManager.CheckPassword(username, password);
-                passwordTimer.Start();
             }
 
             if (logStarted) { // ----------------------------- End Log ----------------------------------------------- //
                 if (valid) {
                     passwordValidated = true;
-                    CustomInvoke(btnStartLog, delegate { btnStartLog.Enabled = true; });
+                    btnStartLog.Enabled = true;
                 } else {
-                    CustomInvoke(btnStartLog, delegate { btnStartLog.Enabled = false; });
+                    btnStartLog.Enabled = false;
                 }
             } else { // ------------------------------------- Start Log ---------------------------------------------- //
                 if (valid) {
                     passwordValidated = true;
 
                     // Adjust form controls to allow user to start the log
-                    passwordTimer.Stop();
                     LoadStartLogControls();
 
                 } else {
                     // Prevent the user from starting the log
-                    CustomInvoke(lblAuthenticating, delegate { lblAuthenticating.Text = "Error: Password Invalid"; });
-                    CustomInvoke(cboFundingSource, delegate {
-                        cboFundingSource.Enabled = false;
-                        cboFundingSource.DataSource = null;
-                    });
-                    CustomInvoke(cboInstrument, delegate {
-                        cboInstrument.Enabled = false;
-                    });
+                    lblAuthenticating.Text = "Error: Password Invalid";
+
+                    DisableStartControls();
+
                 }
             }
-            passwordTimer.Stop();
+        }
+
+
+
+
+
+        // Control Management functions
+        private void DisableStartControls() {
+
+            txtUsername.Clear();
+            txtPassword.Clear();
+            lblAuthenticating.Text = "";
+
+            cboFundingSource.Enabled = false;
+            cboInstrument.Enabled = false;
+
+            cboFundingSource.DataSource = null;
+            cboInstrument.DataSource = null;
+
+            txtUsername.Focus();
+
         }
 
         public void LoadStartLogControls() {
@@ -355,56 +387,60 @@ namespace CUITAdmin {
                 BindingList<Data> accounts = new BindingList<Data>();
                 xmlManager.GetUserAccounts(txtUsername.Text, out accounts);
                 if (accounts.Count == 0) {
-                    DisplayNoAccounts();
+                    StartErrorMsg("No accounts were found for this username");
+                    return;
+
+                }
+
+
+                cboFundingSource.DataSource = dbManager.GetUserAccounts(username);
+                cboFundingSource.DisplayMember = "Name";
+                cboFundingSource.ValueMember = "Account_Number";
+                cboFundingSource.Refresh();
+                cboFundingSource.Focus();
+
+            } else {
+
+                DataTable userInstruments = dbManager.GetUserInstruments(txtUsername.Text);
+                if (userInstruments.Rows.Count == 0) {
+                    StartErrorMsg("There are no instruments assigned to your username");
                     return;
                 }
-                CustomInvoke(cboFundingSource,
-                    delegate {
-                        
-                        cboFundingSource.DataSource = dbManager.GetUserAccounts(username);
-                        cboFundingSource.DisplayMember = "Name";
-                        cboFundingSource.ValueMember = "Account_Number";
-                        cboFundingSource.Focus();
-                    });
-            } else {
-                DataTable accounts = dbManager.GetUserAccounts(username);
-                if (accounts.Rows.Count == 0) {
-                    DisplayNoAccounts();
-                    return;
-                }
-                CustomInvoke(cboFundingSource,
-                    delegate {
-                        cboFundingSource.DataSource = accounts;
-                        cboFundingSource.DisplayMember = "Name";
-                        cboFundingSource.ValueMember = "Account_Number";
-                    });
+
+
+                cboInstrument.DataSource = userInstruments;
+                cboInstrument.DisplayMember = "Name";
+                cboInstrument.ValueMember = "InstrumentID";
+
+                LoadFunding();
+
             }
 
-            CustomInvoke(cboFundingSource, delegate {cboFundingSource.Enabled = true;});
-            CustomInvoke(cboInstrument, delegate { cboInstrument.Enabled = true; });
-            CustomInvoke(btnStartLog, delegate { btnStartLog.Enabled = true; });
-            CustomInvoke(lblAuthenticating, delegate { lblAuthenticating.Text = "Authentication Successful"; });
+            cboFundingSource.Enabled = true;
+            cboInstrument.Enabled = true;
+            btnStartLog.Enabled = true;
+            lblAuthenticating.Text = "Authentication Successful";
         }
 
-        // This prevents me from writing about 15 if statements, it's kinda like $() in javascript
-        // Checks to see if invoke is needed before performing methods on the control
-        private void CustomInvoke(Control control, Action action){
-            // check to see if invoke is required
-            if (control.InvokeRequired) {
-                // if it is, use invoke on the control
-                control.Invoke(new MethodInvoker(action.Invoke));
-            } else {
-                // if it isn't let the function passed in be executed
-                action.Invoke();
+        private void LoadFunding() {
+            DataTable accounts = dbManager.GetFilteredUserAccounts(username, int.Parse(cboInstrument.SelectedValue.ToString()));
+            if (accounts.Rows.Count == 0) {
             }
+
+            cboFundingSource.DataSource = accounts;
+            cboFundingSource.DisplayMember = "Name";
+            cboFundingSource.ValueMember = "Account_Number";
         }
 
-        private void DisplayNoAccounts() {
-            MessageBox.Show("No accounts were found for this username");
+
+
+
+
+        private void StartErrorMsg(string message) {
+            MessageBox.Show(message);
             passwordValidated = false;
-            CustomInvoke(txtUsername, delegate { txtUsername.Text = ""; });
-            CustomInvoke(txtPassword, delegate { txtPassword.Text = ""; });
-            passwordTimer.Stop();
+            txtUsername.Text = "";
+            txtPassword.Text = "";
         }
 
         private void MoveChildren(int yOffset) {
@@ -424,47 +460,25 @@ namespace CUITAdmin {
             return this.childPanel;
         }
 
-        protected override void OnPaint(PaintEventArgs pe) {
-            base.OnPaint(pe);
+        private void cboInstrument_SelectedIndexChanged(object sender, EventArgs e) {
+            if (cboFundingSource.Enabled) LoadFunding();
+        }
+
+        private void btnValidate_Clicked(object sender, EventArgs e) {
+            ValidatePassword();
+            cboInstrument.Focus();
         }
 
         private void btnStartLog_Clicked(object sender, EventArgs e) {
             if (logStarted) {
-                if(passwordValidated) EndLog();
+                if (passwordValidated) EndLog();
             } else {
                 StartLog();
+                lblAuthenticating.Text = "";
                 btnStartLog.Enabled = false;
             }
 
         }
 
-        // Used so that this only gets called once
-        bool firstEnter = true;
-        private void txtPassword_Enter(object sender, EventArgs e) {
-            if (firstEnter) {
-                firstEnter = false;
-                txtUsername.TextChanged += txtPassword_TextChanged;
-            }
-        }
-
-
-        private void txtPassword_TextChanged(object sender, EventArgs e) {
-            passwordTimer.Stop();
-            passwordTimer.Start();
-        }
-
-        // Uses a background worker to change the authentification lbls text
-        // background worker needed for threadsafe calls to the form
-        
-        private void pauseTimer_Elapsed(object sender, EventArgs e) {
-            this.ValidatePassword();
-            //this.verifyPasswordBGW.RunWorkerAsync();
-        }
-
-        private void timeElapsed_Elapsed(object sender, EventArgs e) {
-            // lblTimeElapsed.Text = int.Parse(lblTimeElapsed) + 1
-        }
     }
-
-
 }

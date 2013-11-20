@@ -184,7 +184,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ChangePassword.resx">
       <DependentUpon>ChangePassword.cs</DependentUpon>
-	</EmbeddedResource>
+    </EmbeddedResource>
     <Compile Include="UserInstrumentsForm.cs">
       <SubType>Form</SubType>
     </Compile>

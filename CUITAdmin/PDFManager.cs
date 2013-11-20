@@ -320,6 +320,7 @@ namespace CUITAdmin
         public void GenerateInstrumentUsePDF(List<string[]> logs)
         {
 
+
             foreach (string[] currentLine in logs) {
 
                 /*AddInstrument(
@@ -329,6 +330,10 @@ namespace CUITAdmin
                     currentLine[2]
                     );*/
             }
+        }
+
+        public void GenerateInstrumentPage(){
+        
         }
 
         public void GenerateSupplyUsePDF()

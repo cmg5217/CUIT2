@@ -567,7 +567,7 @@ namespace CUITAdmin
             SqlConnection myConnection = DBConnect();
 
             SqlCommand myCommand = new SqlCommand(
-                "SELECT COUNT(Username) FROM Users " +
+                "SELECT COUNT(Username) FROM Users us INNER JOIN Person psn on psn.PersonID = us.PersonID " +
                 "WHERE Username = @username AND Password = @password AND Active = 'Y'", myConnection);
 
             myCommand.Parameters.AddWithValue("@username", username);
@@ -1594,6 +1594,8 @@ namespace CUITAdmin
         private void GenerateInvoiceInstrumentLines(Invoice invoice, DataTable timeLogs) {
 
             DataRowCollection rows = timeLogs.Rows;
+            List<string[]> instrumentLines = new List<string[]>();
+
             foreach (DataRow currentRow in rows) {
                 InvoiceInstrumentLine instrumentToUpdate = null;
                 bool foundFlag = false;
