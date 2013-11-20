@@ -101,5 +101,41 @@ namespace CUITAdmin
 
             ((DataTable)dgvUserAccounts.DataSource).Rows.RemoveAt(e.RowIndex);
         }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            if (dgvAllAccounts.SelectedCells.Count != 0)
+            {
+                int index = dgvAllAccounts.SelectedCells[0].RowIndex;
+                string[] columnContents = new string[dgvUserAccounts.Columns.Count];
+                for (int i = 0; i < dgvUserAccounts.Columns.Count; i++)
+                {
+
+                    columnContents[i] = dgvAllAccounts.Rows[index].Cells[i].Value.ToString();
+
+                }
+
+                ((DataTable)dgvUserAccounts.DataSource).Rows.Add(columnContents);
+
+                ((DataTable)dgvAllAccounts.DataSource).Rows.RemoveAt(index);
+            }
+        }
+
+        private void btnRemove_Click(object sender, EventArgs e)
+        {
+            if (dgvUserAccounts.SelectedCells.Count != 0)
+            {
+                int index = dgvUserAccounts.SelectedCells[0].RowIndex;
+                string[] columnContents = new string[dgvAllAccounts.Columns.Count];
+                for (int i = 0; i < dgvAllAccounts.Columns.Count; i++)
+                {
+                    columnContents[i] = dgvUserAccounts.Rows[index].Cells[i].Value.ToString();
+                }
+
+                ((DataTable)dgvAllAccounts.DataSource).Rows.Add(columnContents);
+
+                ((DataTable)dgvUserAccounts.DataSource).Rows.RemoveAt(index);
+            }
+        }
     }
 }

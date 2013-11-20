@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             this.lblInstructions = new System.Windows.Forms.Label();
-            this.lblLeftArrow = new System.Windows.Forms.Label();
-            this.lblRightArrow = new System.Windows.Forms.Label();
             this.lblUserInstruments = new System.Windows.Forms.Label();
             this.lblAllInstruments = new System.Windows.Forms.Label();
             this.btnSubmit = new System.Windows.Forms.Button();
             this.dgvUserInstruments = new System.Windows.Forms.DataGridView();
             this.dgvAllInstruments = new System.Windows.Forms.DataGridView();
+            this.btnAdd = new System.Windows.Forms.Button();
+            this.btnRemove = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvUserInstruments)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAllInstruments)).BeginInit();
             this.SuspendLayout();
@@ -49,24 +49,6 @@
             this.lblInstructions.TabIndex = 25;
             this.lblInstructions.Text = "Click on the button to the left of the Instrument row to move the instrument from" +
     " one table to the other.";
-            // 
-            // lblLeftArrow
-            // 
-            this.lblLeftArrow.AutoSize = true;
-            this.lblLeftArrow.Location = new System.Drawing.Point(270, 138);
-            this.lblLeftArrow.Name = "lblLeftArrow";
-            this.lblLeftArrow.Size = new System.Drawing.Size(19, 13);
-            this.lblLeftArrow.TabIndex = 24;
-            this.lblLeftArrow.Text = "<--";
-            // 
-            // lblRightArrow
-            // 
-            this.lblRightArrow.AutoSize = true;
-            this.lblRightArrow.Location = new System.Drawing.Point(270, 93);
-            this.lblRightArrow.Name = "lblRightArrow";
-            this.lblRightArrow.Size = new System.Drawing.Size(19, 13);
-            this.lblRightArrow.TabIndex = 23;
-            this.lblRightArrow.Text = "-->";
             // 
             // lblUserInstruments
             // 
@@ -118,14 +100,34 @@
             this.dgvAllInstruments.Size = new System.Drawing.Size(240, 150);
             this.dgvAllInstruments.TabIndex = 18;
             // 
+            // btnAdd
+            // 
+            this.btnAdd.Location = new System.Drawing.Point(262, 95);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.Size = new System.Drawing.Size(36, 23);
+            this.btnAdd.TabIndex = 26;
+            this.btnAdd.Text = "-->";
+            this.btnAdd.UseVisualStyleBackColor = true;
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            // 
+            // btnRemove
+            // 
+            this.btnRemove.Location = new System.Drawing.Point(262, 140);
+            this.btnRemove.Name = "btnRemove";
+            this.btnRemove.Size = new System.Drawing.Size(36, 23);
+            this.btnRemove.TabIndex = 27;
+            this.btnRemove.Text = "<--";
+            this.btnRemove.UseVisualStyleBackColor = true;
+            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
+            // 
             // UserInstrumentsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(557, 242);
+            this.Controls.Add(this.btnRemove);
+            this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.lblInstructions);
-            this.Controls.Add(this.lblLeftArrow);
-            this.Controls.Add(this.lblRightArrow);
             this.Controls.Add(this.lblUserInstruments);
             this.Controls.Add(this.lblAllInstruments);
             this.Controls.Add(this.btnSubmit);
@@ -143,12 +145,12 @@
         #endregion
 
         private System.Windows.Forms.Label lblInstructions;
-        private System.Windows.Forms.Label lblLeftArrow;
-        private System.Windows.Forms.Label lblRightArrow;
         private System.Windows.Forms.Label lblUserInstruments;
         private System.Windows.Forms.Label lblAllInstruments;
         private System.Windows.Forms.Button btnSubmit;
         private System.Windows.Forms.DataGridView dgvUserInstruments;
         private System.Windows.Forms.DataGridView dgvAllInstruments;
+        private System.Windows.Forms.Button btnAdd;
+        private System.Windows.Forms.Button btnRemove;
     }
 }

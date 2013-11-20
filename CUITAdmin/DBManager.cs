@@ -568,7 +568,7 @@ namespace CUITAdmin
 
             SqlCommand myCommand = new SqlCommand(
                 "SELECT COUNT(Username) FROM Users " +
-                "WHERE Username = @username AND Password = @password", myConnection);
+                "WHERE Username = @username AND Password = @password AND Active = 'Y'", myConnection);
 
             myCommand.Parameters.AddWithValue("@username", username);
             myCommand.Parameters.AddWithValue("@password", password);
@@ -1195,7 +1195,7 @@ namespace CUITAdmin
             return GetUserAccounts(username, false);
         }
 
-        public DataTable GetUserAccounts(string username, bool includeInvalid, bool includePerUse = true) {
+        public DataTable GetUserAccounts(string username, bool includeInvalid) {
             SqlConnection myConnection = DBConnect();
             if (myConnection == null) {
                 return new DataTable();
@@ -1236,6 +1236,36 @@ namespace CUITAdmin
                 "WHERE Account_Number = @accountNumber", myConnection);
 
             myCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
+
+            DataTable table = new DataTable();
+            try
+            {
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+                dataAdapter.Fill(table);
+            }
+            catch (Exception e)
+            {
+                Debug.Write(e.Message);
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administrator.");
+            }
+
+            myConnection.Close();
+            return table;
+        }
+
+        public DataTable GetAccountInstrumentsTable(string instrumentID)
+        {
+            SqlConnection myConnection = DBConnect();
+            if (myConnection == null)
+            {
+                return new DataTable();
+            }
+
+            SqlCommand myCommand = new SqlCommand("SELECT Account_Number, InstrumentID " +
+                "FROM Account_Instrument " +
+                "WHERE InstrumentID = @instrumentID", myConnection);
+
+            myCommand.Parameters.AddWithValue("@instrumentID", instrumentID);
 
             DataTable table = new DataTable();
             try
@@ -1412,6 +1442,37 @@ namespace CUITAdmin
             return table;
         }
 
+        internal DataTable GetFilteredUserAccounts(string username, int instrumentID)
+        {
+            SqlConnection myConnection = DBConnect();
+            if (myConnection == null)
+            {
+                return new DataTable();
+            }
+
+            SqlCommand myCommand = new SqlCommand(
+            "SELECT acct.Name, acct.Account_Number FROM Account acct INNER JOIN Account_Instrument ai on acct.Account_Number = ai.Account_Number INNER JOIN User_Account ua on ua.Account_Number = acct.Account_Number " +
+            "INNER JOIN Users us on us.PersonID = ua.PersonID " +
+            "WHERE ai.InstrumentID = @instrumentID and us.Username = @username AND acct.Active = 'Y' AND acct.Account_Expiration > GETDATE()", myConnection);
+
+            myCommand.Parameters.AddWithValue("@username", username);
+            myCommand.Parameters.AddWithValue("@instrumentID", instrumentID);
+
+            DataTable table = new DataTable();
+            try
+            {
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
+                dataAdapter.Fill(table);
+            }
+            catch (Exception e)
+            {
+                Debug.Write(e.Message);
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administrator.");
+            }
+
+            myConnection.Close();
+            return table;
+        }
         #endregion End Get Region
 
         public void GenerateAllInvoices(DateTime startDate, DateTime endDate, out List<int> invoicesGenerated) {
@@ -2103,7 +2164,6 @@ namespace CUITAdmin
 
             myConnection.Close();
         }
-
         internal DataTable GetHighBalanceAccounts() {
             SqlConnection myConnection = DBConnect();
             if (myConnection == null) {
