@@ -33,9 +33,9 @@
             this.btnSubmit = new System.Windows.Forms.Button();
             this.lblAllAccounts = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.lblRightArrow = new System.Windows.Forms.Label();
-            this.lblLeftArrow = new System.Windows.Forms.Label();
             this.lblInstructions = new System.Windows.Forms.Label();
+            this.btnAdd = new System.Windows.Forms.Button();
+            this.btnRemove = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAllAccounts)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvUserAccounts)).BeginInit();
             this.SuspendLayout();
@@ -90,24 +90,6 @@
             this.label2.TabIndex = 6;
             this.label2.Text = "Accounts with User Access";
             // 
-            // lblRightArrow
-            // 
-            this.lblRightArrow.AutoSize = true;
-            this.lblRightArrow.Location = new System.Drawing.Point(267, 93);
-            this.lblRightArrow.Name = "lblRightArrow";
-            this.lblRightArrow.Size = new System.Drawing.Size(19, 13);
-            this.lblRightArrow.TabIndex = 7;
-            this.lblRightArrow.Text = "-->";
-            // 
-            // lblLeftArrow
-            // 
-            this.lblLeftArrow.AutoSize = true;
-            this.lblLeftArrow.Location = new System.Drawing.Point(267, 138);
-            this.lblLeftArrow.Name = "lblLeftArrow";
-            this.lblLeftArrow.Size = new System.Drawing.Size(19, 13);
-            this.lblLeftArrow.TabIndex = 8;
-            this.lblLeftArrow.Text = "<--";
-            // 
             // lblInstructions
             // 
             this.lblInstructions.AutoSize = true;
@@ -118,14 +100,34 @@
             this.lblInstructions.Text = "Click on the button to the left of the Account Number to move the account from on" +
     "e table to the other.";
             // 
+            // btnAdd
+            // 
+            this.btnAdd.Location = new System.Drawing.Point(259, 91);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.Size = new System.Drawing.Size(36, 23);
+            this.btnAdd.TabIndex = 10;
+            this.btnAdd.Text = "-->";
+            this.btnAdd.UseVisualStyleBackColor = true;
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            // 
+            // btnRemove
+            // 
+            this.btnRemove.Location = new System.Drawing.Point(258, 139);
+            this.btnRemove.Name = "btnRemove";
+            this.btnRemove.Size = new System.Drawing.Size(36, 23);
+            this.btnRemove.TabIndex = 11;
+            this.btnRemove.Text = "<--";
+            this.btnRemove.UseVisualStyleBackColor = true;
+            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
+            // 
             // UserAccountsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(553, 241);
+            this.Controls.Add(this.btnRemove);
+            this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.lblInstructions);
-            this.Controls.Add(this.lblLeftArrow);
-            this.Controls.Add(this.lblRightArrow);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.lblAllAccounts);
             this.Controls.Add(this.btnSubmit);
@@ -147,8 +149,8 @@
         private System.Windows.Forms.Button btnSubmit;
         private System.Windows.Forms.Label lblAllAccounts;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label lblRightArrow;
-        private System.Windows.Forms.Label lblLeftArrow;
         private System.Windows.Forms.Label lblInstructions;
+        private System.Windows.Forms.Button btnAdd;
+        private System.Windows.Forms.Button btnRemove;
     }
 }

@@ -1,12 +1,4 @@
-﻿//////////////////////////////////////////////////////////////////////////////////////////
-/* 
- * TO-DO - Reorder tab stop on manual request, check tabstop for all pages
- * 
- * 
- */
-//////////////////////////////////////////////////////////////////////////////////////////
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
@@ -383,7 +375,7 @@ namespace CUITAdmin {
             } else if (cboAccountAdminView.SelectedItem == "Users") {
                 dgvAdmin.DataSource = dbManager.GetUsers(false, inactive);
             } else if (cboAccountAdminView.SelectedItem == "Instruments") {
-                dgvAdmin.DataSource = dbManager.GetInstruments(true, inactive);
+                dgvAdmin.DataSource = dbManager.GetInstruments(false, inactive);
             } else if (cboAccountAdminView.SelectedItem == "Rate Types") {
                 dgvAdmin.DataSource = dbManager.GetRateTypes(inactive);
             } else if (cboAccountAdminView.SelectedItem == "Supplies") {
@@ -743,10 +735,10 @@ namespace CUITAdmin {
             if (Settings.Default.StandaloneMode) {
 
             } else {   
-                cboManualTimeInstrument.DataSource = dbManager.GetInstruments();
-                cboManualTimeInstrument.DisplayMember = "Name";
-                cboManualTimeInstrument.ValueMember = "InstrumentID";
-                cboManualTimeInstrument.SelectedIndex = 0;
+                //cboManualTimeInstrument.DataSource = dbManager.GetInstruments();
+                //cboManualTimeInstrument.DisplayMember = "Name";
+                //cboManualTimeInstrument.ValueMember = "InstrumentID";
+                //cboManualTimeInstrument.SelectedIndex = 0;
 
                 cboManualSupplyItem.DataSource = dbManager.GetSupplies();
                 cboManualSupplyItem.DisplayMember = "Supply_Name";
@@ -811,12 +803,47 @@ namespace CUITAdmin {
                     cboManualTimeAccount.DisplayMember = "Name";
                     cboManualTimeAccount.ValueMember = "Value";
                 } else {
-                    DataTable timeAcctTable = dbManager.GetUserAccounts(txtManualTimeUsername.Text);
-                    if (timeAcctTable.Rows.Count == 0) {
-                        MessageBox.Show("There are no accounts tied to this username.");
+                    DataTable timeInstTable = dbManager.GetUserInstruments(txtManualTimeUsername.Text);
+                    if (timeInstTable.Rows.Count == 0) {
+                        MessageBox.Show("This username does not have access to any instruments.");
                         return;
                     }
-                    cboManualTimeAccount.DataSource = timeAcctTable;
+
+                    cboManualTimeInstrument.DataSource = timeInstTable;
+                    cboManualTimeInstrument.DisplayMember = "Name";
+                    cboManualTimeInstrument.ValueMember = "InstrumentID";
+
+                    DataTable timeAcctInstrumentsTable = dbManager.GetAccountInstrumentsTable(cboManualTimeInstrument.SelectedValue.ToString());
+                    DataTable timeUserAccountsTable = dbManager.GetUserAccounts(txtManualTimeUsername.Text);
+                    if (timeUserAccountsTable.Rows.Count == 0)
+                    {
+                        MessageBox.Show("This username does not have access to any accounts.");
+                        return;
+                    }
+
+                    DataTable manTimeAcctDataSource = dbManager.GetFilteredUserAccounts(txtManualTimeUsername.Text, int.Parse(cboManualTimeInstrument.SelectedValue.ToString()));
+                    //manTimeAcctDataSource.Columns.AddRange(new DataColumn[] {
+                    //    new DataColumn("Name", Type.GetType("System.String")),
+                    //    new DataColumn("Account_Number", Type.GetType("System.String"))
+                    //});
+
+                    //foreach (DataRow userAcctRow in timeUserAccountsTable.Rows)
+                    //{
+                    //    foreach (DataRow acctInstRow in timeAcctInstrumentsTable.Rows)
+                    //    {
+                    //        if (acctInstRow["Account_Number"].ToString() == userAcctRow["Account_Number"].ToString())
+                    //        {
+                    //            string[] parameters = new string[userAcctRow.ItemArray.Count()];
+                    //            parameters[0] = userAcctRow.ItemArray[0].ToString();
+                    //            parameters[1] = userAcctRow.ItemArray[1].ToString();
+                    //            manTimeAcctDataSource.Rows.Add(parameters);
+                    //        }
+                    //    }
+                    //}
+
+
+
+                    cboManualTimeAccount.DataSource = manTimeAcctDataSource;
                     cboManualTimeAccount.DisplayMember = "Name";
                     cboManualTimeAccount.ValueMember = "Account_Number";
 
@@ -1192,6 +1219,98 @@ namespace CUITAdmin {
             txtManualSupplyQuantity.KeyDown += (sender1, args) => {
                 if (args.KeyCode == Keys.Return) {
                     btnManualSupplyAdd.PerformClick();
+                }
+            };
+
+            //One of the text fields at the bottom of the requests page for updating user information that clicks the submit button on enter key pressed
+            txtAcctManagementCity.KeyDown += (sender1, args) =>
+            { 
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnAcctManagementSubmit.PerformClick();
+                    
+                }
+            };
+
+
+            //One of the text fields at the bottom of the requests page for updating user information that clicks the submit button on enter key pressed
+            txtAcctManagementConfirmPw.KeyDown += (sender1, args) =>
+            {
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnAcctManagementSubmit.PerformClick();
+                }
+            };
+            
+            //One of the text fields at the bottom of the requests page for updating user information that clicks the submit button on enter key pressed
+            txtAcctManagementEmail.KeyDown += (sender1, args) =>
+            {
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnAcctManagementSubmit.PerformClick();
+                }
+            };
+            
+            //One of the text fields at the bottom of the requests page for updating user information that clicks the submit button on enter key pressed
+            txtAcctManagementNewPw.KeyDown += (sender1, args) =>
+            {
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnAcctManagementSubmit.PerformClick();
+                }
+            };
+            
+            //One of the text fields at the bottom of the requests page for updating user information that clicks the submit button on enter key pressed
+            txtAcctManagementPassword.KeyDown += (sender1, args) =>
+            {
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnAcctManagementSubmit.PerformClick();
+                }
+            };
+            
+            //One of the text fields at the bottom of the requests page for updating user information that clicks the submit button on enter key pressed
+            txtAcctManagementPhone.KeyDown += (sender1, args) =>
+            {
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnAcctManagementSubmit.PerformClick();
+                }
+            };
+            
+            //One of the text fields at the bottom of the requests page for updating user information that clicks the submit button on enter key pressed
+            txtAcctManagementStreet.KeyDown += (sender1, args) =>
+            {
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnAcctManagementSubmit.PerformClick();
+                }
+            };
+
+            //One of the text fields at the bottom of the requests page for updating user information that clicks the submit button on enter key pressed
+            txtAcctManagementUsername.KeyDown += (sender1, args) =>
+            {
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnAcctManagementSubmit.PerformClick();
+                }
+            };
+            
+            //One of the text fields at the bottom of the requests page for updating user information that clicks the submit button on enter key pressed
+            txtAcctManagementZip.KeyDown += (sender1, args) =>
+            {
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnAcctManagementSubmit.PerformClick();
+                }
+            };
+            
+            //One of the text fields at the bottom of the requests page for updating user information that clicks the submit button on enter key pressed
+            cboAcctManagementState.KeyDown += (sender1, args) =>
+            {
+                if (args.KeyCode == Keys.Return)
+                {
+                    btnAcctManagementSubmit.PerformClick();
                 }
             };
         }

@@ -50,6 +50,7 @@
             this.btnImportLogs = new System.Windows.Forms.Button();
             this.btnExportStandaloneFile = new System.Windows.Forms.Button();
             this.tbpAccountAdmin = new System.Windows.Forms.TabPage();
+            this.btnAdminClear = new System.Windows.Forms.Button();
             this.chkAdminIncludeInactive = new System.Windows.Forms.CheckBox();
             this.btnAccountAdminNew = new System.Windows.Forms.Button();
             this.cboAccountAdminNew = new System.Windows.Forms.ComboBox();
@@ -143,7 +144,6 @@
             this.btnManualTimeAdd = new System.Windows.Forms.Button();
             this.lblDuration = new System.Windows.Forms.Label();
             this.lblFundingSource = new System.Windows.Forms.Label();
-            this.btnAdminClear = new System.Windows.Forms.Button();
             this.tbpExports.SuspendLayout();
             this.grpExportPath.SuspendLayout();
             this.grpInvoiceExport.SuspendLayout();
@@ -422,6 +422,17 @@
             this.tbpAccountAdmin.TabIndex = 1;
             this.tbpAccountAdmin.Text = "Account Admin";
             this.tbpAccountAdmin.UseVisualStyleBackColor = true;
+            // 
+            // btnAdminClear
+            // 
+            this.btnAdminClear.Location = new System.Drawing.Point(331, 36);
+            this.btnAdminClear.Name = "btnAdminClear";
+            this.btnAdminClear.Size = new System.Drawing.Size(75, 23);
+            this.btnAdminClear.TabIndex = 8;
+            this.btnAdminClear.Text = "Clear";
+            this.btnAdminClear.UseVisualStyleBackColor = true;
+            this.btnAdminClear.Visible = false;
+            this.btnAdminClear.Click += new System.EventHandler(this.btnAdminClear_Click);
             // 
             // chkAdminIncludeInactive
             // 
@@ -990,7 +1001,7 @@
             this.btnAcctManagementSubmit.Location = new System.Drawing.Point(503, 267);
             this.btnAcctManagementSubmit.Name = "btnAcctManagementSubmit";
             this.btnAcctManagementSubmit.Size = new System.Drawing.Size(75, 23);
-            this.btnAcctManagementSubmit.TabIndex = 10;
+            this.btnAcctManagementSubmit.TabIndex = 26;
             this.btnAcctManagementSubmit.Text = "Submit";
             this.btnAcctManagementSubmit.UseVisualStyleBackColor = true;
             this.btnAcctManagementSubmit.Click += new System.EventHandler(this.btnAcctManagementSubmit_Click);
@@ -1291,7 +1302,7 @@
             // lblInstrument
             // 
             this.lblInstrument.AutoSize = true;
-            this.lblInstrument.Location = new System.Drawing.Point(29, 135);
+            this.lblInstrument.Location = new System.Drawing.Point(29, 107);
             this.lblInstrument.Name = "lblInstrument";
             this.lblInstrument.Size = new System.Drawing.Size(59, 13);
             this.lblInstrument.TabIndex = 5;
@@ -1310,7 +1321,7 @@
             // 
             this.cboManualTimeInstrument.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboManualTimeInstrument.FormattingEnabled = true;
-            this.cboManualTimeInstrument.Location = new System.Drawing.Point(120, 132);
+            this.cboManualTimeInstrument.Location = new System.Drawing.Point(120, 104);
             this.cboManualTimeInstrument.Name = "cboManualTimeInstrument";
             this.cboManualTimeInstrument.Size = new System.Drawing.Size(148, 21);
             this.cboManualTimeInstrument.TabIndex = 5;
@@ -1320,7 +1331,7 @@
             // 
             this.cboManualTimeAccount.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboManualTimeAccount.FormattingEnabled = true;
-            this.cboManualTimeAccount.Location = new System.Drawing.Point(120, 104);
+            this.cboManualTimeAccount.Location = new System.Drawing.Point(120, 130);
             this.cboManualTimeAccount.Name = "cboManualTimeAccount";
             this.cboManualTimeAccount.Size = new System.Drawing.Size(148, 21);
             this.cboManualTimeAccount.TabIndex = 4;
@@ -1354,22 +1365,11 @@
             // lblFundingSource
             // 
             this.lblFundingSource.AutoSize = true;
-            this.lblFundingSource.Location = new System.Drawing.Point(29, 107);
+            this.lblFundingSource.Location = new System.Drawing.Point(29, 133);
             this.lblFundingSource.Name = "lblFundingSource";
             this.lblFundingSource.Size = new System.Drawing.Size(85, 13);
             this.lblFundingSource.TabIndex = 4;
             this.lblFundingSource.Text = "Funding Source:";
-            // 
-            // btnAdminClear
-            // 
-            this.btnAdminClear.Location = new System.Drawing.Point(331, 36);
-            this.btnAdminClear.Name = "btnAdminClear";
-            this.btnAdminClear.Size = new System.Drawing.Size(75, 23);
-            this.btnAdminClear.TabIndex = 8;
-            this.btnAdminClear.Text = "Clear";
-            this.btnAdminClear.UseVisualStyleBackColor = true;
-            this.btnAdminClear.Visible = false;
-            this.btnAdminClear.Click += new System.EventHandler(this.btnAdminClear_Click);
             // 
             // frmCUITAdminMain
             // 

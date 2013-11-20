@@ -195,7 +195,8 @@ namespace CUITAdmin
             cboRateType.DataSource = dbManager.GetRateTypes();
             cboRateType.DisplayMember = "Name";
             cboRateType.ValueMember = "Name";
-            cboRateType.SelectedIndex = 0;
+            if(cboRateType.Items.Count > 0)
+                cboRateType.SelectedIndex = 0;
             this.cboRateType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 
             //Label lblBalance = new Label();
