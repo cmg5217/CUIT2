@@ -561,6 +561,11 @@ namespace CUITAdmin {
 
                 dbManager.GenerateAllInvoices(datetime, endtime, out invoiceIDs);
 
+                if (invoiceIDs.Count == 0) {
+                    MessageBox.Show("There are not currently any items that need to be billed");
+                    return;
+                }
+
                 PDFManager pdfManager = new PDFManager();
                 foreach (int currentInvoice in invoiceIDs) {
                     ExportSingleInvoice(currentInvoice);
@@ -590,7 +595,8 @@ namespace CUITAdmin {
                     //invoiceID = 405;
 
                     if (invoiceID == 0) {
-                        MessageBox.Show("There isn't currently anything that needs to be billed");
+                        MessageBox.Show("There are not currently any items that need to be billed");
+                        return;
                     }
 
                     ExportSingleInvoice(invoiceID);
@@ -599,6 +605,7 @@ namespace CUITAdmin {
         }
 
         private void ExportSingleInvoice(int invoiceID) {
+            if (invoiceID == 0) return;
             PDFManager pdfManager = new PDFManager();
             pdfManager.GenerateInvoicePDF(invoiceID);
 
