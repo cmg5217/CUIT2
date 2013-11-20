@@ -55,9 +55,6 @@ namespace CUITAdmin
             try {
                 myConnection.Open();
             } catch (Exception e) {
-                if (mainForm != null && Settings.Default.FullScreen) {
-                    mainForm.UnbindFormClosingEvent();
-                }
 
                 Debug.WriteLine(e.Message);
                 DialogResult dialogResult = MessageBox.Show("There was an error connecting to the server, please try again or contact your system administrator.\r\n\r\n" + 
@@ -66,8 +63,10 @@ namespace CUITAdmin
                     Properties.Settings.Default.StandaloneMode = true;
                     Properties.Settings.Default.Save();
                     System.Diagnostics.Process.Start(Application.ExecutablePath); // to start new instance of application
+                    Environment.Exit(1);
                     Application.Exit();
-                } else if (dialogResult == DialogResult.No) {
+                } else {
+                    Environment.Exit(1);
                     Application.Exit();
                 }
                 return null;
@@ -607,7 +606,7 @@ namespace CUITAdmin
             }
 
             myConnection.Close();
-            return (count == 0);
+            return (count != 0);
         }
 
         public bool CheckAccountNumber(string accountNumber)

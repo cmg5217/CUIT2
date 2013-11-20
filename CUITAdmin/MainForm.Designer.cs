@@ -1405,7 +1405,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "frmCUITAdminMain";
             this.Text = "CUIT - Clarion University Instrument Tracking";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmCUITAdminMain_FormClosing);
             this.Load += new System.EventHandler(this.Main_Load);
             this.Resize += new System.EventHandler(this.frmCUITAdminMain_Resize);
             this.tbpExports.ResumeLayout(false);

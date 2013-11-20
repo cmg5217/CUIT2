@@ -1395,7 +1395,7 @@ namespace CUITAdmin {
         }
 
         private void frmCUITAdminMain_FormClosing(object sender, FormClosingEventArgs e) {
-            if (Settings.Default.FullScreen) e.Cancel = true;
+            //if (Settings.Default.FullScreen) e.Cancel = true;
         }
 
         public void Exit() {
