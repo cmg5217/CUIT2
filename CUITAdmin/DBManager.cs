@@ -1253,36 +1253,6 @@ namespace CUITAdmin
             return table;
         }
 
-        public DataTable GetAccountInstrumentsTable(string instrumentID)
-        {
-            SqlConnection myConnection = DBConnect();
-            if (myConnection == null)
-            {
-                return new DataTable();
-            }
-
-            SqlCommand myCommand = new SqlCommand("SELECT Account_Number, InstrumentID " +
-                "FROM Account_Instrument " +
-                "WHERE InstrumentID = @instrumentID", myConnection);
-
-            myCommand.Parameters.AddWithValue("@instrumentID", instrumentID);
-
-            DataTable table = new DataTable();
-            try
-            {
-                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand);
-                dataAdapter.Fill(table);
-            }
-            catch (Exception e)
-            {
-                Debug.Write(e.Message);
-                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administrator.");
-            }
-
-            myConnection.Close();
-            return table;
-        }
-
         public DataTable GetUserInstruments(string username)
         {
             SqlConnection myConnection = DBConnect();
