@@ -809,11 +809,14 @@ namespace CUITAdmin {
                         return;
                     }
 
+
                     cboManualTimeInstrument.DataSource = timeInstTable;
                     cboManualTimeInstrument.DisplayMember = "Name";
                     cboManualTimeInstrument.ValueMember = "InstrumentID";
+                    cboManualTimeInstrumentLoadFlag = true;
 
-                    DataTable timeAcctInstrumentsTable = dbManager.GetAccountInstrumentsTable(cboManualTimeInstrument.SelectedValue.ToString());
+
+
                     DataTable timeUserAccountsTable = dbManager.GetUserAccounts(txtManualTimeUsername.Text);
                     if (timeUserAccountsTable.Rows.Count == 0)
                     {
@@ -821,31 +824,9 @@ namespace CUITAdmin {
                         return;
                     }
 
-                    DataTable manTimeAcctDataSource = dbManager.GetFilteredUserAccounts(txtManualTimeUsername.Text, int.Parse(cboManualTimeInstrument.SelectedValue.ToString()));
-                    //manTimeAcctDataSource.Columns.AddRange(new DataColumn[] {
-                    //    new DataColumn("Name", Type.GetType("System.String")),
-                    //    new DataColumn("Account_Number", Type.GetType("System.String"))
-                    //});
 
-                    //foreach (DataRow userAcctRow in timeUserAccountsTable.Rows)
-                    //{
-                    //    foreach (DataRow acctInstRow in timeAcctInstrumentsTable.Rows)
-                    //    {
-                    //        if (acctInstRow["Account_Number"].ToString() == userAcctRow["Account_Number"].ToString())
-                    //        {
-                    //            string[] parameters = new string[userAcctRow.ItemArray.Count()];
-                    //            parameters[0] = userAcctRow.ItemArray[0].ToString();
-                    //            parameters[1] = userAcctRow.ItemArray[1].ToString();
-                    //            manTimeAcctDataSource.Rows.Add(parameters);
-                    //        }
-                    //    }
-                    //}
+                    cboManualTimeInstrumentLoad();
 
-
-
-                    cboManualTimeAccount.DataSource = manTimeAcctDataSource;
-                    cboManualTimeAccount.DisplayMember = "Name";
-                    cboManualTimeAccount.ValueMember = "Account_Number";
 
                 }
 
@@ -858,6 +839,40 @@ namespace CUITAdmin {
             }
         }
 
+        bool cboManualTimeInstrumentLoadFlag = false;
+
+        private void cboManualTimeInstrument_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboManualTimeInstrumentLoadFlag)
+            {
+                cboManualTimeInstrumentLoad();
+            }
+        }
+
+        private void cboManualTimeInstrumentLoad()
+        {
+            requestPerUse = false;
+            txtManualTimeDuration.Enabled = true;
+            DataTable allInstruments = dbManager.GetInstruments(); 
+            DataTable manualInstrumentData = (DataTable)cboManualTimeInstrument.DataSource;
+            int index = cboManualTimeInstrument.SelectedIndex;
+            foreach (DataRow row in allInstruments.Rows)
+            {
+                if ((manualInstrumentData.Rows[index]["InstrumentID"].ToString() == row["InstrumentID"].ToString()) && row["Billing_Unit"].ToString() == "Per Use")
+                {
+                   
+                    txtManualTimeDuration.Enabled = false;
+                    txtManualTimeDuration.Clear();
+                    requestPerUse = true;
+
+                }
+            }
+
+            DataTable manTimeAcctDataSource = dbManager.GetFilteredUserAccounts(txtManualTimeUsername.Text, int.Parse(cboManualTimeInstrument.SelectedValue.ToString()));
+            cboManualTimeAccount.DataSource = manTimeAcctDataSource;
+            cboManualTimeAccount.DisplayMember = "Name";
+            cboManualTimeAccount.ValueMember = "Account_Number";
+        }
         private void btnManualTimeAdd_Click(object sender, EventArgs e) {
             //this is for adding the time log user manual request log
             txtManualTimeDuration.BackColor = System.Drawing.Color.White;
@@ -871,7 +886,10 @@ namespace CUITAdmin {
             } else if ((!System.Text.RegularExpressions.Regex.IsMatch(txtManualTimeDuration.Text, durationPattern) || int.Parse(txtManualTimeDuration.Text) <= 0) && !requestPerUse ) {
                 txtManualTimeDuration.BackColor = System.Drawing.Color.Red;
                 MessageBox.Show("Please input a simple integer (greater than 0) to represent the durations in minutes.");
-            } else {
+            } else if(cboManualTimeAccount.Items.Count == 0){
+                MessageBox.Show("There was no account selected, make sure you have access to an account that allows use of the instrument you selected.");
+            }
+            else{
                 //adds the time log
                 string username = txtManualTimeUsername.Text;
                 string account = cboManualTimeAccount.SelectedValue.ToString();
@@ -904,6 +922,9 @@ namespace CUITAdmin {
                 timeValid = false;
                 cboManualTimeAccount.DataSource = null;
                 cboManualTimeAccount.Items.Clear();
+                cboManualTimeInstrumentLoadFlag = false;
+                cboManualTimeInstrument.DataSource = null;
+                cboManualTimeInstrument.Items.Clear();
                 dtpManualTimeDate.Value = DateTime.Now;
                 txtManualTimeUsername.Focus();
             }
@@ -1320,19 +1341,6 @@ namespace CUITAdmin {
                                     (this.Size.Height / 2) - (tabControlMain.Size.Height / 2) - 19);
         }
 
-        private void cboManualTimeInstrument_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            requestPerUse = false;
-            txtManualTimeDuration.Enabled = true;
-            DataTable instrumentTable = (DataTable)cboManualTimeInstrument.DataSource;
-            int index = cboManualTimeInstrument.SelectedIndex;
-            if (instrumentTable.Rows[index].ItemArray[1].ToString() == "Per Use")
-            {
-                txtManualTimeDuration.Enabled = false;
-                txtManualTimeDuration.Clear();
-                requestPerUse = true;
-            }
-        }
 
         private void cboManualLogInstrument_SelectedIndexChanged(object sender, EventArgs e)
         {
