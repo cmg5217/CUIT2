@@ -21,9 +21,20 @@ namespace CUITAdmin {
 
 
         private void Login_Load(object sender, EventArgs e) {
-            
+            ToggleScreenMode();
             this.AcceptButton = btnLogin;
             txtPassword.PasswordChar = '*';
+        }
+
+        public void ToggleScreenMode() {
+            if (Settings.Default.FullScreen) {
+                this.FormBorderStyle = FormBorderStyle.None;
+                WindowState = FormWindowState.Maximized;
+            } else {
+                this.WindowState = FormWindowState.Normal;
+                this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+            }
+
         }
 
         private void btnLogin_Click(object sender, EventArgs e) {

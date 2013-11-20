@@ -144,6 +144,8 @@
             this.btnManualTimeAdd = new System.Windows.Forms.Button();
             this.lblDuration = new System.Windows.Forms.Label();
             this.lblFundingSource = new System.Windows.Forms.Label();
+            this.btnLogout = new System.Windows.Forms.Button();
+            this.btnExportLogs = new System.Windows.Forms.Button();
             this.tbpExports.SuspendLayout();
             this.grpExportPath.SuspendLayout();
             this.grpInvoiceExport.SuspendLayout();
@@ -340,6 +342,7 @@
             // 
             // grpStandaloneFileExport
             // 
+            this.grpStandaloneFileExport.Controls.Add(this.btnExportLogs);
             this.grpStandaloneFileExport.Controls.Add(this.btnImportStandalone);
             this.grpStandaloneFileExport.Controls.Add(this.chkFullScreen);
             this.grpStandaloneFileExport.Controls.Add(this.chkStandalone);
@@ -354,7 +357,7 @@
             // 
             // btnImportStandalone
             // 
-            this.btnImportStandalone.Location = new System.Drawing.Point(34, 58);
+            this.btnImportStandalone.Location = new System.Drawing.Point(34, 100);
             this.btnImportStandalone.Name = "btnImportStandalone";
             this.btnImportStandalone.Size = new System.Drawing.Size(121, 23);
             this.btnImportStandalone.TabIndex = 9;
@@ -365,7 +368,7 @@
             // chkFullScreen
             // 
             this.chkFullScreen.AutoSize = true;
-            this.chkFullScreen.Location = new System.Drawing.Point(34, 183);
+            this.chkFullScreen.Location = new System.Drawing.Point(34, 188);
             this.chkFullScreen.Name = "chkFullScreen";
             this.chkFullScreen.Size = new System.Drawing.Size(79, 17);
             this.chkFullScreen.TabIndex = 12;
@@ -376,7 +379,7 @@
             // chkStandalone
             // 
             this.chkStandalone.AutoSize = true;
-            this.chkStandalone.Location = new System.Drawing.Point(34, 165);
+            this.chkStandalone.Location = new System.Drawing.Point(34, 170);
             this.chkStandalone.Name = "chkStandalone";
             this.chkStandalone.Size = new System.Drawing.Size(110, 17);
             this.chkStandalone.TabIndex = 11;
@@ -386,7 +389,7 @@
             // 
             // btnImportLogs
             // 
-            this.btnImportLogs.Location = new System.Drawing.Point(34, 108);
+            this.btnImportLogs.Location = new System.Drawing.Point(34, 129);
             this.btnImportLogs.Name = "btnImportLogs";
             this.btnImportLogs.Size = new System.Drawing.Size(121, 23);
             this.btnImportLogs.TabIndex = 10;
@@ -1371,12 +1374,33 @@
             this.lblFundingSource.TabIndex = 4;
             this.lblFundingSource.Text = "Funding Source:";
             // 
+            // btnLogout
+            // 
+            this.btnLogout.Location = new System.Drawing.Point(612, 5);
+            this.btnLogout.Name = "btnLogout";
+            this.btnLogout.Size = new System.Drawing.Size(75, 23);
+            this.btnLogout.TabIndex = 1;
+            this.btnLogout.Text = "button1";
+            this.btnLogout.UseVisualStyleBackColor = true;
+            this.btnLogout.Click += new System.EventHandler(this.btnAdminLogin_Click);
+            // 
+            // btnExportLogs
+            // 
+            this.btnExportLogs.Location = new System.Drawing.Point(34, 58);
+            this.btnExportLogs.Name = "btnExportLogs";
+            this.btnExportLogs.Size = new System.Drawing.Size(121, 23);
+            this.btnExportLogs.TabIndex = 13;
+            this.btnExportLogs.Text = "Export Logs";
+            this.btnExportLogs.UseVisualStyleBackColor = true;
+            this.btnExportLogs.Click += new System.EventHandler(this.btnExportLogs_Click);
+            // 
             // frmCUITAdminMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(712, 667);
+            this.Controls.Add(this.btnLogout);
             this.Controls.Add(this.tabControlMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "frmCUITAdminMain";
@@ -1537,6 +1561,8 @@
         private System.Windows.Forms.Button btnImportStandalone;
         private System.Windows.Forms.CheckBox chkAdminIncludeInactive;
         private System.Windows.Forms.Button btnAdminClear;
+        private System.Windows.Forms.Button btnLogout;
+        private System.Windows.Forms.Button btnExportLogs;
     }
 }
 

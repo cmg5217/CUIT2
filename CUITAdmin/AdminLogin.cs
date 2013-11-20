@@ -29,7 +29,7 @@ namespace CUITAdmin {
                         MessageBox.Show("The username entered is not an admin.");
                         this.Close();
                     } else {
-                        mainForm.Exit();
+                        mainForm.Logout();
                     }
                 } else {
                     MessageBox.Show("Username and password did not match");
@@ -43,7 +43,7 @@ namespace CUITAdmin {
                         MessageBox.Show("This username entered is not an admin");
                         this.Close();
                     } else {
-                        mainForm.Exit();
+                        mainForm.Logout();
                     }
                 } else {
                     MessageBox.Show("Username and password did not match");

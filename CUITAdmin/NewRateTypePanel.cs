@@ -56,6 +56,7 @@ namespace CUITAdmin
 
         private void populateControls() {
             this.txtRateName.Text = primaryKey;
+            this.txtRateName.Enabled = false;
             char active = dbManager.GetRateActive(primaryKey);
             DataTable instrumentRates = dbManager.GetInstrumentRates(1, primaryKey);
 

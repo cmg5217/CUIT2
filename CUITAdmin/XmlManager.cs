@@ -65,14 +65,9 @@ namespace CUITAdmin {
             }
         }
 
-        
+        #region Add Files
 
-        ////////////////////////////////////////////////// AddUser() ///////////////////////////////////////////////
-        //
-        // Adds a user to the records file. Returns false if user already exists and
-        // an optional XmlElement can be passed in to return it.
 
-        // AddUser() that accepts a single account number
         public bool AddUser(string username, string password, string accountNumber) {
             XmlElement nullElement = null;
             return AddUser(username, password, accountNumber, ref nullElement);
@@ -166,17 +161,17 @@ namespace CUITAdmin {
 
         public bool AddLogEndTime(string username, string accountNumber, string instrument, string startTime, string endTime)
         {
-            foreach (XmlElement currentElement in startedLogs) {
+            XmlNode logs = xmlDoc.SelectSingleNode("//root/logs");
+            foreach (XmlElement currentElement in logs) {
                 if (currentElement.SelectSingleNode("start_time").InnerText == startTime && 
                     currentElement.SelectSingleNode("username").InnerText == username &&
                     currentElement.SelectSingleNode("account_number").InnerText == accountNumber &&
                     currentElement.SelectSingleNode("instrument").InnerText == instrument
                     )
                 {
-                    XmlElement endTimeNode = xmlDoc.CreateElement("end_time");
+                    XmlNode endTimeNode = currentElement.SelectSingleNode("end_time");
                     endTimeNode.InnerText = endTime;
-                    currentElement.AppendChild(endTimeNode);
-                    xmlDoc.SelectSingleNode("logs").AppendChild(currentElement);
+                    EncryptedSave();
                     return true;
                 }
             }
@@ -235,6 +230,15 @@ namespace CUITAdmin {
             return true;
         }
 
+
+        #endregion
+
+        ////////////////////////////////////////////////// AddUser() ///////////////////////////////////////////////
+        //
+        // Adds a user to the records file. Returns false if user already exists and
+        // an optional XmlElement can be passed in to return it.
+
+        // AddUser() that accepts a single account number
 
 
 
@@ -303,6 +307,10 @@ namespace CUITAdmin {
             return FindElementByInnerElementValue("//root/users", "username", username, ref outElement);
         }
 
+        public bool FindAccount(string accountNumber, ref XmlElement outElement) {
+            return FindElementByInnerElementValue("//root/accounts", "account_number", accountNumber, ref outElement);
+        }
+
         public bool FindElementByInnerText(List<XmlElement> searchElementList, string innerText, XmlElement outElement) {
             foreach (XmlElement searchElement in searchElementList) {
                 if (searchElement.InnerText == innerText) {
@@ -346,6 +354,61 @@ namespace CUITAdmin {
             }
         }
 
+        public bool GetInstruments(out BindingList<Data> instrumentsOut) {
+
+            BindingList<Data> outInstruments = new BindingList<Data>();
+            XmlNode instruments = xmlDoc.SelectSingleNode("//root/instruments");
+                // loop through each account in the user
+            foreach (XmlElement currentInstrument in instruments)
+            {
+                outInstruments.Add(new Data
+                {
+                    Name = currentInstrument.SelectSingleNode("name").InnerText,
+                    Value = currentInstrument.SelectSingleNode("instrumentID").InnerText
+                });
+            }
+
+            instrumentsOut = outInstruments;
+
+            if (outInstruments.Count == 0)
+                return false;
+            return true;
+        }
+
+
+        public bool GetUserInstruments(string username, out BindingList<Data> instruments){
+            BindingList<Data> outAccounts = new BindingList<Data>();
+            XmlElement userElement = null;
+
+            // Find the user
+            if (FindUser(username, ref userElement))
+            {
+                XmlNode userInstruments = userElement.SelectSingleNode("instrumentIDs");
+                // loop through each account in the user
+                foreach (XmlElement currentInstrument in userInstruments)
+                {
+
+                    XmlElement currentInstrumentDetails = null;
+                    // Look up the account details in the //root/accounts node
+                    FindElementByInnerElementValue("//root/instruments",
+                        "instrumentID",
+                        currentInstrument.InnerText,
+                        ref currentInstrumentDetails);
+                    outAccounts.Add(new Data
+                    {
+                        Name = currentInstrumentDetails.SelectSingleNode("name").InnerText,
+                        Value = currentInstrumentDetails.SelectSingleNode("instrumentID").InnerText
+                    });
+                }
+            }
+
+            instruments = outAccounts;
+
+            if (instruments.Count == 0)
+                return false;
+            return true;
+        }
+
         public bool GetUserAccounts(string username, out BindingList<Data> accounts)
         {
             BindingList<Data> outAccounts = new BindingList<Data>();
@@ -380,23 +443,66 @@ namespace CUITAdmin {
             return true;
         }
 
-        public bool GetInstruments(out BindingList<Data> instrumentsOut) {
+        public bool GetAccountInstruments(string accountNumber, out BindingList<Data> instruments) {
+            BindingList<Data> outAccounts = new BindingList<Data>();
+            XmlElement accountElement = null;
 
-            BindingList<Data> outInstruments = new BindingList<Data>();
-            XmlNode instruments = xmlDoc.SelectSingleNode("//root/instruments");
+            // Find the user
+            if (FindAccount(accountNumber, ref accountElement)) {
+                XmlNode accountInstruments = accountElement.SelectSingleNode("instrumentIDs");
                 // loop through each account in the user
-            foreach (XmlElement currentInstrument in instruments)
-            {
-                outInstruments.Add(new Data
-                {
-                    Name = currentInstrument.SelectSingleNode("name").InnerText,
-                    Value = currentInstrument.SelectSingleNode("instrumentID").InnerText
-                });
+                foreach (XmlElement currentInstrument in accountInstruments) {
+
+                    XmlElement currentInstrumentDetails = null;
+                    // Look up the account details in the //root/accounts node
+                    FindElementByInnerElementValue("//root/instruments",
+                        "instrumentID",
+                        currentInstrument.InnerText,
+                        ref currentInstrumentDetails);
+                    outAccounts.Add(new Data {
+                        Name = currentInstrumentDetails.SelectSingleNode("name").InnerText,
+                        Value = currentInstrumentDetails.SelectSingleNode("instrumentID").InnerText
+                    });
+                }
             }
 
-            instrumentsOut = outInstruments;
+            instruments = outAccounts;
 
-            if (outInstruments.Count == 0)
+            if (instruments.Count == 0)
+                return false;
+            return true;
+        }
+
+        public bool GetFilteredUserAccounts(string username, string instrumentID, out BindingList<Data> filteredAccounts) {
+
+            BindingList<Data> userAccounts = new BindingList<Data>();
+            GetUserAccounts(username, out userAccounts);
+
+            BindingList<Data> outList = new BindingList<Data>();
+
+            XmlNode accountsNode = xmlDoc.SelectSingleNode("//root/accounts");
+            
+            foreach (Data currentAccount in userAccounts) {
+
+                XmlElement accountNode = null;
+                FindElementByInnerElementValue("//root/accounts", "account_number", currentAccount.Value, ref accountNode);
+
+                XmlNode accountInstuments = accountNode.SelectSingleNode("account_instruments");
+
+                foreach (XmlElement currentInstrument in accountInstuments) {
+                    if (currentInstrument.InnerText == instrumentID) {
+                        outList.Add(new Data {
+                            Name = currentAccount.Name,
+                            Value = currentAccount.Value
+                        });
+                    }
+                }
+
+                
+            }
+
+            filteredAccounts = outList;
+            if (outList.Count() == 0)
                 return false;
             return true;
         }
@@ -404,14 +510,19 @@ namespace CUITAdmin {
         public DataTable ImportTimeLogs(string filePath) {
             DataTable outTable = new DataTable();
 
-            outTable.Columns.Add("Username");
-            outTable.Columns.Add("Account_Number");
-            outTable.Columns.Add("InstrumentID", Type.GetType("System.Int32"));
-            outTable.Columns.Add("Start_Time", Type.GetType("System.DateTime"));
-            outTable.Columns.Add("End_Time", Type.GetType("System.DateTime"));
-            outTable.Columns.Add("Current_Rate", Type.GetType("System.Double"));
-            outTable.Columns.Add("Time_Increment", Type.GetType("System.Int32"));
-            outTable.Columns.Add("Approved", Type.GetType("System.Char"));
+            outTable.Columns.AddRange(new DataColumn[]{
+                        new DataColumn("Account_Number", Type.GetType("System.String")),
+                        new DataColumn("UserID", Type.GetType("System.Int32")),
+                        new DataColumn("Approved", Type.GetType("System.Char")),
+                        new DataColumn("Start_Time", Type.GetType("System.DateTime")),
+                        new DataColumn("End_Time", Type.GetType("System.DateTime")),
+                        new DataColumn("Current_Rate", Type.GetType("System.Double")),
+                        new DataColumn("InstrumentID", Type.GetType("System.Int32")),
+                        new DataColumn("Time_Increment", Type.GetType("System.Int32")),
+                        new DataColumn("Billed", Type.GetType("System.DateTime"))
+                    });
+
+            DBManager dbManager = DBManager.Instance;
 
             MemoryStream fileToLoad = LoadEncryptedFile(filePath);
 
@@ -421,6 +532,8 @@ namespace CUITAdmin {
 
             XmlNode logs = xmlImport.SelectSingleNode("//root/logs");
 
+
+
             foreach (XmlElement currentLog in logs.ChildNodes) {
 
                 Char approved = (currentLog.SelectSingleNode("end_time").InnerText == "") ? 'N' : 'Y';
@@ -429,14 +542,13 @@ namespace CUITAdmin {
 
                 DataRow rowToUpdate = outTable.Rows[outTable.Rows.Count - 1];
                                 
-                rowToUpdate[0] = currentLog.SelectSingleNode("username").InnerText;
-                rowToUpdate[1] = currentLog.SelectSingleNode("account_number").InnerText;
-                rowToUpdate[2] = int.Parse(currentLog.SelectSingleNode("instrument").InnerText);
-                rowToUpdate[3] = DateTime.Parse(currentLog.SelectSingleNode("start_time").InnerText);
-
+                rowToUpdate["UserID"] = dbManager.GetUserID(currentLog.SelectSingleNode("username").InnerText);
+                rowToUpdate["Account_Number"] = currentLog.SelectSingleNode("account_number").InnerText;
+                rowToUpdate["InstrumentID"] = int.Parse(currentLog.SelectSingleNode("instrument").InnerText);
+                rowToUpdate["Start_time"] = DateTime.Parse(currentLog.SelectSingleNode("start_time").InnerText);
                 string endTimeString = currentLog.SelectSingleNode("end_time").InnerText;
-                if (endTimeString != "") rowToUpdate[4] = DateTime.Parse(endTimeString);
-                rowToUpdate[7] = approved;
+                if (endTimeString != "") rowToUpdate["End_Time"] = DateTime.Parse(endTimeString);
+                rowToUpdate["Approved"] = approved;
 
             }
 
@@ -475,6 +587,9 @@ namespace CUITAdmin {
             return outTable;
         }
 
+
+        #region Creation Functions
+
         public void CreateLogFile(string fileDirectory = "") {
             MemoryStream unencryptedFile = new MemoryStream();
             
@@ -509,6 +624,13 @@ namespace CUITAdmin {
             xmlWriter.WriteEndDocument();
 
             xmlWriter.Close();
+
+            unencryptedFile.Position = 0;
+            StreamWriter testWriter = new StreamWriter("unencrypted.xml");
+            StreamReader testReader = new StreamReader(unencryptedFile);
+            string testOutput = testReader.ReadToEnd();
+            testWriter.Write(testOutput);
+            testWriter.Close();
 
             unencryptedFile.Position = 0;
             StreamReader reader = new StreamReader(unencryptedFile);
@@ -580,6 +702,9 @@ namespace CUITAdmin {
             writer.Close();
         }
 
+
+
+
         private void AddSuppliesToExport(DBManager dbManager, XmlWriter xmlWriter) {
             DataTable supplies = dbManager.GetSupplies();
             xmlWriter.WriteStartElement("supplies");
@@ -611,6 +736,18 @@ namespace CUITAdmin {
                 xmlWriter.WriteStartElement("account");
                 xmlWriter.WriteElementString("account_number", row["Account_Number"].ToString());
                 xmlWriter.WriteElementString("account_name", row["Name"].ToString());
+
+                xmlWriter.WriteStartElement("account_instruments");
+
+                DataTable accountInstruments = dbManager.GetAccountInstruments(row["Account_Number"].ToString());
+
+
+                foreach (DataRow instrumentRow in accountInstruments.Rows) {
+                    xmlWriter.WriteElementString("instrumentID", instrumentRow["InstrumentID"].ToString());
+                }
+
+                xmlWriter.WriteEndElement();
+
                 xmlWriter.WriteEndElement(); // end account node
             }
             xmlWriter.WriteEndElement(); // end accounts node
@@ -637,16 +774,35 @@ namespace CUITAdmin {
 
                 xmlWriter.WriteEndElement(); //End account_numbers node
 
+                DataTable userInstruments = dbManager.GetUserInstruments(row["Username"].ToString());
+
+                xmlWriter.WriteStartElement("instrumentIDs");
+
+                foreach (DataRow instrumentRow in userInstruments.Rows) {
+                    xmlWriter.WriteElementString("instrumentID", instrumentRow["InstrumentID"].ToString());
+                }
+
+                xmlWriter.WriteEndElement();
+
+
+
                 xmlWriter.WriteEndElement(); //End user node
             }
 
             xmlWriter.WriteEndElement(); //end users node
         }
 
+
+        #endregion
+
+
         private void EncryptedSave() {
+
 
             StringWriter stringWriter = new StringWriter();
             XmlTextWriter xmlTextWriter = new XmlTextWriter(stringWriter);
+
+            xmlDoc.Save("unencrypted.xml");
 
             xmlDoc.WriteTo(xmlTextWriter);
             string fileToEncrypt = stringWriter.ToString();
@@ -659,6 +815,9 @@ namespace CUITAdmin {
             writer.Write(encryptedFile);
             writer.Close();
         }
+
+
+
 
 
         /*

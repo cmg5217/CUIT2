@@ -23,6 +23,7 @@ namespace CUITAdmin
         Button btnUserInstruments = new Button();
         CheckBox ckbActive = new CheckBox();
         ComboBox cboContacts = new ComboBox();
+        CheckBox chkAdmin = new CheckBox();
         RichTextBox rtbNotes = new RichTextBox();
         TextBox txtPhone = new TextBox();
         TextBox txtZipCode = new TextBox();
@@ -90,6 +91,8 @@ namespace CUITAdmin
         private void populateControls() {
             user = dbManager.GetUser(userID).Rows[0];
 
+            txtUsername.Enabled = false;
+
             txtFirstName.Text = user["First_Name"].ToString();
             txtLastName.Text = user["Last_Name"].ToString();
             txtUsername.Text = user["Username"].ToString();
@@ -101,6 +104,8 @@ namespace CUITAdmin
                     break;
                 }
             }
+
+            if (user["Type"].ToString() == "A") chkAdmin.Checked = true;
 
             rtbNotes.Text = user["Notes"].ToString();
             txtPhone.Text = user["Phone_Number"].ToString();
@@ -172,6 +177,7 @@ namespace CUITAdmin
             this.Controls.Add(this.lblFirstName);
             this.Controls.Add(this.lblPassword);
             this.Controls.Add(this.lblUsername);
+            this.Controls.Add(this.chkAdmin);
             this.Location = new System.Drawing.Point(3, 2);
             this.Name = "pnlNewUser";
             this.Size = new System.Drawing.Size(526, 750);
@@ -440,7 +446,14 @@ namespace CUITAdmin
             this.lblUsername.Size = new System.Drawing.Size(58, 13);
             this.lblUsername.TabIndex = 0;
             this.lblUsername.Text = "Username:";
-            
+            //
+            // chkAdmin
+            //
+            this.chkAdmin.Location = new Point(80, 254);
+            this.chkAdmin.Text = "Admin";
+            this.chkAdmin.AutoSize = true;
+            //this.chkAdmin.Size = new System.Drawing.Size(56, 20); ;
+
         }
 
         private void updateContactList()
@@ -486,7 +499,7 @@ namespace CUITAdmin
 
                     dbManager.AddUser(txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text, 
                         cboState.SelectedItem.ToString(), txtZipCode.Text, txtPhone.Text, txtEmail.Text, txtUsername.Text, 
-                        txtPassword.Text, txtDepartment.Text, "U", rtbNotes.Text, contactID, out personID);
+                        txtPassword.Text, txtDepartment.Text, ((chkAdmin.Checked) ? "A" : "U") , rtbNotes.Text, contactID, out personID);
 
                     for (int i = 0; i < userAccounts.Columns.Count; i++)
                     {
@@ -530,7 +543,7 @@ namespace CUITAdmin
 
                     dbManager.UpdateUser(int.Parse(user["PersonID"].ToString()), txtFirstName.Text, txtLastName.Text, txtStreet.Text, txtCity.Text,
                         cboState.Text, txtZipCode.Text, txtPhone.Text, txtEmail.Text, "", txtPassword.Text, txtDepartment.Text,
-                        "", rtbNotes.Text, (ckbActive.Checked == true) ? 'Y' : 'N', contactID);
+                        (chkAdmin.Checked) ? "A" : "U", rtbNotes.Text, (ckbActive.Checked == true) ? 'Y' : 'N', contactID);
 
                     if (accountsEdited)
                     {

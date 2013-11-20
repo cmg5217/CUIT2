@@ -1696,7 +1696,7 @@ namespace CUITAdmin
             }
 
             PDFManager pdfManager = new PDFManager();
-            //pdfManager.GenerateInstrumentUsePDF();
+            //pdfManager.GenerateInstrumentUsePDF(;
 
         }
 
@@ -1785,7 +1785,7 @@ namespace CUITAdmin
             if (zip != "" ) myCommand.Parameters.AddWithValue("@zip", zip);
             if (phoneNumber != "" ) myCommand.Parameters.AddWithValue("@phoneNumber", phoneNumber);
             if (email != "" ) myCommand.Parameters.AddWithValue("@email", email);
-            if (username != "" ) myCommand.Parameters.AddWithValue("@userName", username);
+            if (username != "") myCommand.Parameters.AddWithValue("@userName", username);
 
             if (password != "") {
                 password = PasswordHash.getHashSha512(password);

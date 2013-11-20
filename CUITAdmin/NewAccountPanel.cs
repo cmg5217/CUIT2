@@ -303,7 +303,7 @@ namespace CUITAdmin
         private void populateControls()
         {
             account = dbManager.GetAccount(accountNumber).Rows[0];
-
+            txtAccountNumber.Enabled = false;
             txtAccountNumber.Text = account["Account_Number"].ToString();
             txtAccountName.Text = account["Name"].ToString();
             txtBalance.Text = account["Balance"].ToString();

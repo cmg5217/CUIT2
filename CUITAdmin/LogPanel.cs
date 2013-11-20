@@ -17,7 +17,7 @@ namespace CUITAdmin {
 
         const int BOTTOM_PADDING = 10;
 
-        private string username, password, account, instrument;
+        private string username, password, account, instrument, startTime;
         private DateTime currentTime;
 
         // an object reference to the control that this panel is contained in
@@ -251,7 +251,7 @@ namespace CUITAdmin {
         private void StartLog() {
 
             if (cboFundingSource.Items.Count == 0) {
-                MessageBox.Show("There was no account selected. Please make sure you have access to the account, and that it is asigned to the selected instrument.");
+                MessageBox.Show("There were no accounts for the selected instrument. Either you don't have access to the account or the account isn't assigned to this instrument.");
                 DisableStartControls();
                 return;
             }
@@ -283,12 +283,13 @@ namespace CUITAdmin {
 
             passwordValidated = false; // Set passwordValidated back to false, used to validate before ending the log
 
+            startTime = DateTime.Now.ToString();
 
             if (standalone) {
                 xmlManager.AddPartialLog(txtUsername.Text,
                     account,
                     instrument,
-                    DateTime.Now.ToString());
+                    startTime);
             } else {
 
                 if (dbManager.GetServerDateTime(out currentTime)) {
@@ -306,7 +307,7 @@ namespace CUITAdmin {
         private void EndLog() {
             // To-Do:: Add database interactions to add an end time to the created log
             if (standalone) {
-
+                xmlManager.AddLogEndTime(username, account, instrument, startTime, DateTime.Now.ToString());
 
             } else {
                 DateTime endTime;
@@ -361,9 +362,6 @@ namespace CUITAdmin {
         }
 
 
-
-
-
         // Control Management functions
         private void DisableStartControls() {
 
@@ -384,20 +382,19 @@ namespace CUITAdmin {
         public void LoadStartLogControls() {
 
             if (standalone) {
-                BindingList<Data> accounts = new BindingList<Data>();
-                xmlManager.GetUserAccounts(txtUsername.Text, out accounts);
-                if (accounts.Count == 0) {
-                    StartErrorMsg("No accounts were found for this username");
-                    return;
+                BindingList<Data> instruments = new BindingList<Data>();
 
+                if (!xmlManager.GetUserInstruments(txtUsername.Text, out instruments)) {
+                    StartErrorMsg("No instruments were found for this user");
                 }
 
+                cboInstrument.DataSource = instruments;
+                cboInstrument.DisplayMember = "Name";
+                cboInstrument.ValueMember = "Value";
 
-                cboFundingSource.DataSource = dbManager.GetUserAccounts(username);
-                cboFundingSource.DisplayMember = "Name";
-                cboFundingSource.ValueMember = "Account_Number";
-                cboFundingSource.Refresh();
-                cboFundingSource.Focus();
+                string currentID = instruments[0].Value;
+
+                LoadInstrumentAccounts(currentID);
 
             } else {
 
@@ -420,6 +417,18 @@ namespace CUITAdmin {
             cboInstrument.Enabled = true;
             btnStartLog.Enabled = true;
             lblAuthenticating.Text = "Authentication Successful";
+        }
+
+        private void LoadInstrumentAccounts(string currentID) {
+
+            BindingList<Data> accounts = new BindingList<Data>();
+            xmlManager.GetFilteredUserAccounts(txtUsername.Text, currentID, out accounts);
+
+            cboFundingSource.DataSource = accounts;
+            cboFundingSource.DisplayMember = "Name";
+            cboFundingSource.ValueMember = "Value";
+            cboFundingSource.Refresh();
+            cboFundingSource.Focus();
         }
 
         private void LoadFunding() {
@@ -461,7 +470,10 @@ namespace CUITAdmin {
         }
 
         private void cboInstrument_SelectedIndexChanged(object sender, EventArgs e) {
-            if (cboFundingSource.Enabled) LoadFunding();
+            if (cboFundingSource.Enabled)
+                if (standalone) {
+                    LoadInstrumentAccounts(cboInstrument.SelectedValue.ToString());
+                } else { LoadFunding(); }
         }
 
         private void btnValidate_Clicked(object sender, EventArgs e) {

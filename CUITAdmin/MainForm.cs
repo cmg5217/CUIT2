@@ -12,6 +12,8 @@ using System.IO;
 using CUITAdmin.Properties;
 using System.Globalization;
 
+//         adminLogin.Location = new Point(this.Width - 140, 10);
+
 namespace CUITAdmin {
     public partial class frmCUITAdminMain : Form {
 
@@ -41,7 +43,7 @@ namespace CUITAdmin {
 
             this.CenterToScreen();
             tabControlMain.Location = new Point((this.Size.Width / 2) - (tabControlMain.Size.Width/2) - 7, 
-                                                (this.Size.Height / 2) - (tabControlMain.Size.Height/2) - 19);
+                                                (this.Size.Height / 2) - (tabControlMain.Size.Height/2)-5);
                                       //new Point(0, 0);
             /// manually setting standalone to true so that we can test
             /// To-DO:: Make sure to remove this to work on the server
@@ -79,14 +81,9 @@ namespace CUITAdmin {
 
             InitializeTabs();
 
-            if (Settings.Default.FullScreen) {
-                adminLogin = new Button();
-                adminLogin.Text = "Exit";
-                adminLogin.Width = 100;
-                positionAdminButton();
-                adminLogin.Click += new System.EventHandler(btnAdminLogin_Click);
-                this.Controls.Add(adminLogin);
-            }
+            //if (Settings.Default.FullScreen) {
+
+            //}
             
             BindReturnKeys();
         }
@@ -106,7 +103,7 @@ namespace CUITAdmin {
         }
 
         private void positionAdminButton() {
-            adminLogin.Location = new Point(this.Width - 120, 20);
+            adminLogin.Location = new Point(this.Width - 140, 10);
         }
 
         private void InitializeTabs() {
@@ -506,7 +503,6 @@ namespace CUITAdmin {
                 ds.Rows.RemoveAt(removeIndex);
             }
 
-
         }
        
         #endregion Admin Tab
@@ -589,7 +585,7 @@ namespace CUITAdmin {
 
                     int invoiceID;
 
-                    dbManager.GenerateInvoice(comboBoxSelectAccount.SelectedValue.ToString(), datetime, endtime, out invoiceID);
+                    if (dbManager.GenerateInvoice(comboBoxSelectAccount.SelectedValue.ToString(), datetime, endtime, out invoiceID));
 
                     //invoiceID = 405;
 
@@ -679,8 +675,8 @@ namespace CUITAdmin {
                 this.FormBorderStyle = FormBorderStyle.None;
                 WindowState = FormWindowState.Maximized;
             } else {
+                this.FormBorderStyle = FormBorderStyle.Fixed3D;
                 this.WindowState = FormWindowState.Normal;
-                this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
             }
 
         }
@@ -705,6 +701,8 @@ namespace CUITAdmin {
                     // Get the additional information to fill in all rows
                     DataTable timeLogImportData = dbManager.GetImportDataTimeLog();
                     DataTable supplyUseImportData = dbManager.GetImportDataSupplyUse();
+
+
 
                     // Loop through and add the rate and time increment to each timelog
                     foreach (DataRow row in currentTimeLogs.Rows) {
@@ -1358,6 +1356,7 @@ namespace CUITAdmin {
         private void frmCUITAdminMain_Resize(object sender, EventArgs e) {
             tabControlMain.Location = new Point((this.Size.Width / 2) - (tabControlMain.Size.Width / 2) - 7,
                                     (this.Size.Height / 2) - (tabControlMain.Size.Height / 2) - 19);
+   
         }
 
 
@@ -1392,8 +1391,7 @@ namespace CUITAdmin {
         }
 
         private void btnAdminLogin_Click(object sender, EventArgs e) {
-            AdminLogin login = new AdminLogin(this);
-            login.ShowDialog();
+            Logout();
         }
 
         private void frmCUITAdminMain_FormClosing(object sender, FormClosingEventArgs e) {
@@ -1403,6 +1401,11 @@ namespace CUITAdmin {
         public void Exit() {
             UnbindFormClosingEvent();
             this.Close();
+        }
+
+        public void Logout() {
+            System.Diagnostics.Process.Start(Application.ExecutablePath);
+            Exit();
         }
 
         public void UnbindFormClosingEvent() {
@@ -1428,6 +1431,16 @@ namespace CUITAdmin {
             txtAccountAdminSearch.Clear();
             txtAccountAdminSearch.Focus();
             updateAdminDGV();
+        }
+
+        private void btnExportLogs_Click(object sender, EventArgs e) {
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
+            DialogResult result = dialog.ShowDialog();
+
+            if (result == DialogResult.OK) {
+                File.Copy("records.xml", dialog.SelectedPath + "/log - " + DateTime.Now.Ticks);
+            }
+
         }
     }
 }
