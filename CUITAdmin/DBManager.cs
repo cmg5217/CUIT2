@@ -2103,5 +2103,26 @@ namespace CUITAdmin
 
             myConnection.Close();
         }
+
+        internal DataTable GetHighBalanceAccounts() {
+            SqlConnection myConnection = DBConnect();
+            if (myConnection == null) {
+                return new DataTable();
+            }
+            //Account_Number, Name, Max_Charge_Limit, Balance, First_Name, Last_Name
+            string myCommand = "SELECT Name, Account_Number FROM Account " + 
+                "WHERE Account_Expiration > GETDATE() and Active = 'Y' and (Max_Charge_Limit * .95) < Balance";
+
+            DataTable table = new DataTable();
+            try {
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
+                dataAdapter.Fill(table);
+            } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
+
+            myConnection.Close();
+            return table;
+        }
     }
 }

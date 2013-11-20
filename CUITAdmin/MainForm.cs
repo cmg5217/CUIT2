@@ -42,6 +42,11 @@ namespace CUITAdmin {
 
         private void Main_Load(object sender, EventArgs e)
         {
+            xmlManager = XmlManager.Instance;
+            dbManager = DBManager.Instance;
+
+            if(userType == 'A') CheckMaxLimits();
+
             this.CenterToScreen();
             tabControlMain.Location = new Point((this.Size.Width / 2) - (tabControlMain.Size.Width/2) - 7, 
                                                 (this.Size.Height / 2) - (tabControlMain.Size.Height/2) - 19);
@@ -56,9 +61,7 @@ namespace CUITAdmin {
             ToggleScreenMode();
 
 
-            xmlManager = XmlManager.Instance;
 
-            dbManager = DBManager.Instance;
             dbManager.BindForm(this);
             startPanel = new LogPanel(tbpTracking, new Point(5,5));
 
@@ -94,6 +97,20 @@ namespace CUITAdmin {
             }
             
             BindReturnKeys();
+        }
+
+        private void CheckMaxLimits() {
+            DataTable highAccounts = dbManager.GetHighBalanceAccounts();
+
+            string warning = "";
+
+            foreach (DataRow row in highAccounts.Rows) {
+                warning += "Account Name: " + row["Name"].ToString() + " - Account Number: " + row["Account_Number"].ToString();
+            }
+
+            if (warning.Length > 0){
+                MessageBox.Show("-- WARNING -- \r\n\r\nThe following accounts have a current balance higher than 95% of their max charge limit.\r\n\r\n" + warning);
+            }
         }
 
         private void positionAdminButton() {
@@ -597,8 +614,8 @@ namespace CUITAdmin {
             bool excelgenar = (invoice.Rows[0]["Rate_Type"].ToString() == "Industry");
 
             if (chkGLSU.Checked == true) {
-                //ExcelManager.generateAR(excelgenar);
-                //ExcelManager.generateExcel(invoice);
+                ExcelManager.generateAR(excelgenar);
+                ExcelManager.generateExcel(invoice);
             }
         }
 
