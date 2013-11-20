@@ -859,5 +859,18 @@ namespace CUITAdmin {
 
             return 'U';
         }
+
+        internal BindingList<Data> GetSupplies() {
+            XmlNode supplies = xmlDoc.SelectSingleNode("//root/supplies");
+            BindingList<Data> outlist = new BindingList<Data>();
+            foreach(XmlElement currentSupply in supplies){
+                outlist.Add(new Data {
+                    Name = currentSupply.SelectSingleNode("name").InnerText
+                });
+            }
+
+
+            return outlist;
+        }
     }
 }

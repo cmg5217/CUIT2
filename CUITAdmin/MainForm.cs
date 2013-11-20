@@ -589,6 +589,10 @@ namespace CUITAdmin {
 
                     //invoiceID = 405;
 
+                    if (invoiceID == 0) {
+                        MessageBox.Show("There isn't currently anything that needs to be billed");
+                    }
+
                     ExportSingleInvoice(invoiceID);
                 }
             }
@@ -749,7 +753,7 @@ namespace CUITAdmin {
 
         private void InitializeRequestTab() {
             if (Settings.Default.StandaloneMode) {
-
+                BindingList<Data> items = xmlManager.GetSupplies();
             } else {   
                 //cboManualTimeInstrument.DataSource = dbManager.GetInstruments();
                 //cboManualTimeInstrument.DisplayMember = "Name";
@@ -947,6 +951,7 @@ namespace CUITAdmin {
         }
 
         private bool supplyValid = false;
+
         private void btnManualSupplyValidate_Click(object sender, EventArgs e) {
             bool pwValid = false;
 
