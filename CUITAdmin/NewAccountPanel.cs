@@ -95,7 +95,6 @@ namespace CUITAdmin
             //TextBox txtAccountName = new TextBox();
             txtAccountName.SetBounds(110, 10, 200, 20);
             this.Controls.Add(txtAccountName);
-            txtAccountName.TabIndex = 0;
 
             //Label lblAccountNumber = new Label();
             lblAccountNumber.Text = "Account Number:";
@@ -128,20 +127,20 @@ namespace CUITAdmin
             //Label lblZipCode = new Label();
             this.Controls.Add(this.lblZipCode);
             lblZipCode.Text = "Zip Code:";
-            lblZipCode.Location = new Point(10, 250);
+            lblZipCode.Location = new Point(10, 280);
 
             //TextBox txtZipCode = new TextBox();
             this.Controls.Add(this.txtZipCode);
-            txtZipCode.SetBounds(110, 250, 200, 20);
+            txtZipCode.SetBounds(110, 280, 200, 20);
 
             //Label lblState = new Label();
             this.Controls.Add(this.lblState);
             lblState.Text = "State:";
-            lblState.Location = new Point(10, 280);
+            lblState.Location = new Point(10, 250);
 
             //ComboBox cboState = new ComboBox();
             this.Controls.Add(this.cboState);
-            this.cboState.Location = new Point(110, 280);
+            this.cboState.Location = new Point(110, 250);
             this.cboState.Name = "cboState";
             this.cboState.Size = new System.Drawing.Size(200, 20);
             List<string> states = new List<string> { "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming" };
@@ -163,12 +162,13 @@ namespace CUITAdmin
 
             LineSeparator ls1 = new LineSeparator();
             ls1.SetBounds(10, 159, 375, 20);
+            ls1.TabStop = false;
             this.Controls.Add(ls1);
 
             LineSeparator ls2 = new LineSeparator();
             ls2.SetBounds(10, 179, 375, 20);
+            ls2.TabStop = false;
             this.Controls.Add(ls2);
-
 
             //Label lblInstructions = new Label();
             this.Controls.Add(this.lblInstructions);
@@ -280,6 +280,7 @@ namespace CUITAdmin
             btnNewContact.Click += new EventHandler(this.btnNewContact_Click);
 
             //sets all of the tab indexes
+            this.TabIndex = 300;
             txtAccountName.TabIndex = 0;
             txtAccountNumber.TabIndex = 1;
             txtMaxCharge.TabIndex = 2;

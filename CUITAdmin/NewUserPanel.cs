@@ -1,6 +1,4 @@
-﻿//TO-DO: fix checkbox location.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -682,10 +680,11 @@ namespace CUITAdmin
                 error = true;
             }
 
-            if (mode == "Add" && !dbManager.CheckUsername(txtUsername.Text))
+            if (mode == "add" && dbManager.CheckUsername(txtUsername.Text))
             {
                 error = true;
                 MessageBox.Show("The Username you entered was already taken.  Please enter a unique Username.");
+                txtUsername.BackColor = System.Drawing.Color.Red;
                 txtUsername.Focus();
             }
 

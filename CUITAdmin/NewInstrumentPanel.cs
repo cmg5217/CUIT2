@@ -253,7 +253,7 @@ namespace CUITAdmin
                 }
             }
             
-            string namePattern = "^[A-Za-z\\s-\\.]+$";
+            string namePattern = "^[A-Za-z0-9\\s-\\.]+$";
             if (!System.Text.RegularExpressions.Regex.IsMatch(txtInstrumentName.Text, namePattern))
             {
                 txtInstrumentName.BackColor = System.Drawing.Color.Red;

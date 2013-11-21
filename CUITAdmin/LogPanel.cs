@@ -41,6 +41,8 @@ namespace CUITAdmin {
         private Button btnValidate = new Button();
         private DateTime logTime = new DateTime();
         DataTable userInstruments;
+        System.Timers.Timer timer = new System.Timers.Timer();
+
 
         bool logStarted = false;
         bool passwordValidated = false;
@@ -123,11 +125,14 @@ namespace CUITAdmin {
             this.Controls.Add(this.btnStartLog);
             this.Controls.Add(this.btnValidate);
             this.Controls.Add(this.lblMessage);
+            this.Controls.Add(this.lblTimeElapsed);
             this.Name = "panel1";
             this.Size = new System.Drawing.Size(655, 177);
             this.TabIndex = 0;
 
-
+            //Initialize timer
+            timer.Interval = 1000;
+            timer.Elapsed += timer_Elapsed;
 
             this.btnValidate.Location = new System.Drawing.Point(200, 106);
             this.btnValidate.Name = "btnValidate";
@@ -177,7 +182,10 @@ namespace CUITAdmin {
             //
             // lblTimeElapsed
             //
-            this.lblTimeElapsed.Location = new System.Drawing.Point(416, 72);
+            this.lblTimeElapsed.AutoSize = true;
+            this.lblTimeElapsed.Location = new System.Drawing.Point(406, 110);
+            this.lblTimeElapsed.Name = "lblTimeElapsed";
+            this.lblTimeElapsed.Text = "";
             // 
             // lblUsername
             // 
@@ -247,6 +255,19 @@ namespace CUITAdmin {
 
         }
 
+        private void timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if (lblTimeElapsed.InvokeRequired)
+            {
+                TimeSpan span = (DateTime.Now - logTime);
+                lblTimeElapsed.Invoke(new MethodInvoker(() => { lblTimeElapsed.Text = span.ToString("hh") + ":" + span.ToString("mm") + ":" + span.ToString("ss"); }));
+            }
+            else
+            {
+                lblTimeElapsed.Text = (DateTime.Now - logTime).TotalMinutes.ToString();
+            }
+        }
+
         // Adjust the controls for an active log, called on btnStart_Clicked
         private void StartLog() {
 
@@ -283,7 +304,10 @@ namespace CUITAdmin {
 
             passwordValidated = false; // Set passwordValidated back to false, used to validate before ending the log
 
-            startTime = DateTime.Now.ToString();
+
+            logTime = DateTime.Now;
+            timer.Start();
+            startTime = logTime.ToString();
 
             if (standalone) {
                 xmlManager.AddPartialLog(txtUsername.Text,
@@ -305,7 +329,6 @@ namespace CUITAdmin {
 
         // Disposes of the this panel and moves it's children
         private void EndLog() {
-            // To-Do:: Add database interactions to add an end time to the created log
             if (standalone) {
                 xmlManager.AddLogEndTime(username, account, instrument, startTime, DateTime.Now.ToString());
 

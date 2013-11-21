@@ -1337,7 +1337,7 @@
             this.cboManualTimeInstrument.Location = new System.Drawing.Point(120, 104);
             this.cboManualTimeInstrument.Name = "cboManualTimeInstrument";
             this.cboManualTimeInstrument.Size = new System.Drawing.Size(148, 21);
-            this.cboManualTimeInstrument.TabIndex = 5;
+            this.cboManualTimeInstrument.TabIndex = 4;
             this.cboManualTimeInstrument.SelectedIndexChanged += new System.EventHandler(this.cboManualTimeInstrument_SelectedIndexChanged);
             // 
             // cboManualTimeAccount
@@ -1347,7 +1347,7 @@
             this.cboManualTimeAccount.Location = new System.Drawing.Point(120, 130);
             this.cboManualTimeAccount.Name = "cboManualTimeAccount";
             this.cboManualTimeAccount.Size = new System.Drawing.Size(148, 21);
-            this.cboManualTimeAccount.TabIndex = 4;
+            this.cboManualTimeAccount.TabIndex = 5;
             // 
             // txtManualTimeDuration
             // 
@@ -1405,7 +1405,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "frmCUITAdminMain";
             this.Text = "CUIT - Clarion University Instrument Tracking";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmCUITAdminMain_FormClosing);
             this.Load += new System.EventHandler(this.Main_Load);
             this.Resize += new System.EventHandler(this.frmCUITAdminMain_Resize);
             this.tbpExports.ResumeLayout(false);
