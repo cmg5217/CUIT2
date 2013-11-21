@@ -1377,15 +1377,18 @@ namespace CUITAdmin {
         private void tabControlMain_SelectedIndexChanged(object sender, EventArgs e) {
             switch (((TabControl)sender).SelectedTab.Name) {
                 case "tbpBilling":
-                    updateAdminDGV();
+                    InitializeBillingTab();
                     break;
                 case "tbpAccountAdmin":
+                    updateAdminDGV();
                     break;
                 case "tbpExports":
+                    InitializeExportTab();
                     break;
                 case "tbpTracking":
                     break;
                 case "tbpManualRequests":
+                    InitializeRequestTab();
                     break;
             }
         }
