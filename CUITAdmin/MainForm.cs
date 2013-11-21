@@ -36,6 +36,8 @@ namespace CUITAdmin {
 
         private void Main_Load(object sender, EventArgs e)
         {
+            btnLogout.Location = new Point(this.Width - 100, 10);
+
             xmlManager = XmlManager.Instance;
             dbManager = DBManager.Instance;
 
@@ -142,7 +144,7 @@ namespace CUITAdmin {
                 cboManualLogInstrument.DataSource = dbManager.GetInstruments();
                 cboManualLogInstrument.DisplayMember = "Name";
                 cboManualLogInstrument.ValueMember = "InstrumentID";
-                cboManualLogInstrument.SelectedIndex = 0;
+                //cboManualLogInstrument.SelectedIndex = 0;
 
                 cboManualLogFunding.DataSource = dbManager.GetAccounts();
                 cboManualLogFunding.DisplayMember = "Name";
@@ -828,15 +830,28 @@ namespace CUITAdmin {
             //time log manual request log in validation
             if (pwValid) {
                 if (standalone) {
+
+                    BindingList<Data> instruments;
+                    
+                    if( xmlManager.GetUserInstruments(txtManualTimeUsername.Text, out instruments));
+                    cboManualTimeInstrument.DataSource = instruments;
+                    cboManualTimeInstrument.DisplayMember = "Name";
+                    cboManualTimeInstrument.ValueMember = "Value";
+
+                    LoadInstrumentAccounts();
+                    cboManualTimeInstrumentLoadFlag = true;
                     //code for populating the funding source combobox
-                    BindingList<Data> comboItems = new BindingList<Data>();
-                    if (!xmlManager.GetUserAccounts(txtManualTimeUsername.Text, out comboItems)) {
-                        MessageBox.Show("There are no accounts tied to this username.");
-                        return;
-                    }
-                    cboManualTimeAccount.DataSource = comboItems;
-                    cboManualTimeAccount.DisplayMember = "Name";
-                    cboManualTimeAccount.ValueMember = "Value";
+                    //BindingList<Data> comboItems = new BindingList<Data>();
+                    //if (!xmlManager.GetUserAccounts(txtManualTimeUsername.Text, out comboItems)) {
+                    //    MessageBox.Show("There are no accounts tied to this username.");
+                    //    return;
+                    //}
+                    //cboManualTimeAccount.DataSource = comboItems;
+                    //cboManualTimeAccount.DisplayMember = "Name";
+                    //cboManualTimeAccount.ValueMember = "Value";
+
+
+
                 } else {
                     DataTable timeInstTable = dbManager.GetUserInstruments(txtManualTimeUsername.Text);
                     if (timeInstTable.Rows.Count == 0) {
@@ -874,13 +889,29 @@ namespace CUITAdmin {
             }
         }
 
+        private void LoadInstrumentAccounts() {
+
+            BindingList<Data> accounts = new BindingList<Data>();
+            xmlManager.GetFilteredUserAccounts(txtManualTimeUsername.Text, cboManualTimeInstrument.SelectedValue.ToString(), out accounts);
+
+            cboManualTimeAccount.DataSource = accounts;
+            cboManualTimeAccount.DisplayMember = "Name";
+            cboManualTimeAccount.ValueMember = "Value";
+            cboManualTimeAccount.Refresh();
+            cboManualTimeAccount.Focus();
+        }
+
         bool cboManualTimeInstrumentLoadFlag = false;
 
         private void cboManualTimeInstrument_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cboManualTimeInstrumentLoadFlag)
             {
-                cboManualTimeInstrumentLoad();
+                if (standalone) {
+                    LoadInstrumentAccounts();
+                } else {
+                    cboManualTimeInstrumentLoad();
+                }
             }
         }
 
@@ -949,6 +980,7 @@ namespace CUITAdmin {
                     dbManager.AddTimeLog(account, dbManager.GetUserID(username), ' ', instrumentId, startTime, endTime);
                 }
                 //confirms the add to the user and resets the time log form.
+            }
                 MessageBox.Show("Time Log Manual Request Added");
                 txtManualTimeUsername.Clear();
                 txtManualTimePassword.Clear();
@@ -962,7 +994,7 @@ namespace CUITAdmin {
                 cboManualTimeInstrument.Items.Clear();
                 dtpManualTimeDate.Value = DateTime.Now;
                 txtManualTimeUsername.Focus();
-            }
+                cboManualTimeInstrumentLoadFlag = false;
         }
 
         private bool supplyValid = false;
@@ -1380,7 +1412,7 @@ namespace CUITAdmin {
         private void frmCUITAdminMain_Resize(object sender, EventArgs e) {
             tabControlMain.Location = new Point((this.Size.Width / 2) - (tabControlMain.Size.Width / 2) - 7,
                                     (this.Size.Height / 2) - (tabControlMain.Size.Height / 2) - 19);
-   
+            btnLogout.Location = new Point(this.Width - 100, 10);
         }
 
 
@@ -1415,7 +1447,17 @@ namespace CUITAdmin {
         }
 
         private void btnAdminLogin_Click(object sender, EventArgs e) {
-            Logout();
+            DialogResult result = MessageBox.Show(
+                "Logging out will end all active time logs, are you sure you wish to continue?",
+                "Warning",
+                MessageBoxButtons.YesNo
+                );
+
+            if (DialogResult.OK == result) {
+                Logout();
+
+            }
+
         }
 
         private void frmCUITAdminMain_FormClosing(object sender, FormClosingEventArgs e) {
@@ -1465,6 +1507,7 @@ namespace CUITAdmin {
                 File.Copy("records.xml", dialog.SelectedPath + "/log - " + DateTime.Now.Ticks);
             }
 
+            xmlManager.ClearLogs();
         }
     }
 }

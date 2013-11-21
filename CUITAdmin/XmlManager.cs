@@ -25,6 +25,10 @@ namespace CUITAdmin {
 
         public void LoadFile() {
 
+            if (!File.Exists("records.xml")) {
+                CreateEmptyLogFile();
+            }
+
             MemoryStream streamToLoad = LoadEncryptedFile(FILE_LOCATION);
             xmlDoc = new XmlDocument();
             //TO-DO create empty records file if there isn't one
@@ -354,6 +358,8 @@ namespace CUITAdmin {
             }
         }
 
+
+
         public bool GetInstruments(out BindingList<Data> instrumentsOut) {
 
             BindingList<Data> outInstruments = new BindingList<Data>();
@@ -417,7 +423,7 @@ namespace CUITAdmin {
             // Find the user
             if (FindUser(username, ref userElement))
             {
-                XmlNode userAccounts = userElement.SelectSingleNode("account_numbers");
+                 XmlNode userAccounts = userElement.SelectSingleNode("account_numbers");
                 // loop through each account in the user
                 foreach (XmlElement currentAccount in userAccounts)
                 {
@@ -556,6 +562,12 @@ namespace CUITAdmin {
             return outTable;
         }
 
+        public void ClearLogs() {
+            xmlDoc.SelectSingleNode("//root/logs").RemoveAll();
+            xmlDoc.SelectSingleNode("//root/supply_uses").RemoveAll();
+            EncryptedSave();
+        }
+
         public DataTable ImportSupplyUse(string filePath) {
             DataTable outTable = new DataTable();
 
@@ -564,12 +576,15 @@ namespace CUITAdmin {
             XmlDocument xmlImport = new XmlDocument();
             xmlImport.Load(fileToLoad);
 
-            outTable.Columns.Add("Account_Number");
-            outTable.Columns.Add("Supply_Name");
-            outTable.Columns.Add("Date", Type.GetType("System.DateTime"));
-            outTable.Columns.Add("Quantity", Type.GetType("System.Int32"));
-            outTable.Columns.Add("Current_Cost", Type.GetType("System.Double"));
-
+            outTable.Columns.AddRange(new DataColumn[]{
+            new DataColumn("Account_Number", Type.GetType("System.String")),
+            new DataColumn("Supply_Name", Type.GetType("System.String")),
+            new DataColumn("Date", Type.GetType("System.DateTime")),
+            new DataColumn("Quantity", Type.GetType("System.Int32")),
+            new DataColumn("Current_Cost", Type.GetType("System.Double")),
+            new DataColumn("Approved", Type.GetType("System.Char")),
+            new DataColumn("Billed", Type.GetType("System.DateTime"))
+            });
 
 
             XmlNode supplies = xmlImport.SelectSingleNode("//root/supply_uses");

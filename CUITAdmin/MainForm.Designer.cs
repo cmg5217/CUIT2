@@ -44,6 +44,7 @@
             this.txtMonth = new System.Windows.Forms.Label();
             this.comboBoxSelectMonth = new System.Windows.Forms.ComboBox();
             this.grpStandaloneFileExport = new System.Windows.Forms.GroupBox();
+            this.btnExportLogs = new System.Windows.Forms.Button();
             this.btnImportStandalone = new System.Windows.Forms.Button();
             this.chkFullScreen = new System.Windows.Forms.CheckBox();
             this.chkStandalone = new System.Windows.Forms.CheckBox();
@@ -145,7 +146,6 @@
             this.lblDuration = new System.Windows.Forms.Label();
             this.lblFundingSource = new System.Windows.Forms.Label();
             this.btnLogout = new System.Windows.Forms.Button();
-            this.btnExportLogs = new System.Windows.Forms.Button();
             this.tbpExports.SuspendLayout();
             this.grpExportPath.SuspendLayout();
             this.grpInvoiceExport.SuspendLayout();
@@ -354,6 +354,16 @@
             this.grpStandaloneFileExport.TabIndex = 3;
             this.grpStandaloneFileExport.TabStop = false;
             this.grpStandaloneFileExport.Text = "Standalone Files";
+            // 
+            // btnExportLogs
+            // 
+            this.btnExportLogs.Location = new System.Drawing.Point(34, 58);
+            this.btnExportLogs.Name = "btnExportLogs";
+            this.btnExportLogs.Size = new System.Drawing.Size(121, 23);
+            this.btnExportLogs.TabIndex = 13;
+            this.btnExportLogs.Text = "Export Logs";
+            this.btnExportLogs.UseVisualStyleBackColor = true;
+            this.btnExportLogs.Click += new System.EventHandler(this.btnExportLogs_Click);
             // 
             // btnImportStandalone
             // 
@@ -1380,19 +1390,9 @@
             this.btnLogout.Name = "btnLogout";
             this.btnLogout.Size = new System.Drawing.Size(75, 23);
             this.btnLogout.TabIndex = 1;
-            this.btnLogout.Text = "button1";
+            this.btnLogout.Text = "Logout";
             this.btnLogout.UseVisualStyleBackColor = true;
             this.btnLogout.Click += new System.EventHandler(this.btnAdminLogin_Click);
-            // 
-            // btnExportLogs
-            // 
-            this.btnExportLogs.Location = new System.Drawing.Point(34, 58);
-            this.btnExportLogs.Name = "btnExportLogs";
-            this.btnExportLogs.Size = new System.Drawing.Size(121, 23);
-            this.btnExportLogs.TabIndex = 13;
-            this.btnExportLogs.Text = "Export Logs";
-            this.btnExportLogs.UseVisualStyleBackColor = true;
-            this.btnExportLogs.Click += new System.EventHandler(this.btnExportLogs_Click);
             // 
             // frmCUITAdminMain
             // 
