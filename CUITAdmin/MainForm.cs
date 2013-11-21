@@ -136,7 +136,7 @@ namespace CUITAdmin {
                 cboManualLogInstrument.DataSource = dbManager.GetInstruments();
                 cboManualLogInstrument.DisplayMember = "Name";
                 cboManualLogInstrument.ValueMember = "InstrumentID";
-                cboManualLogInstrument.SelectedIndex = 0;
+                //cboManualLogInstrument.SelectedIndex = 0;
 
                 cboManualLogFunding.DataSource = dbManager.GetAccounts();
                 cboManualLogFunding.DisplayMember = "Name";
@@ -566,6 +566,11 @@ namespace CUITAdmin {
 
                 dbManager.GenerateAllInvoices(datetime, endtime, out invoiceIDs);
 
+                if (invoiceIDs.Count == 0) {
+                    MessageBox.Show("There are not currently any items that need to be billed");
+                    return;
+                }
+
                 PDFManager pdfManager = new PDFManager();
                 foreach (int currentInvoice in invoiceIDs) {
                     ExportSingleInvoice(currentInvoice);
@@ -595,12 +600,18 @@ namespace CUITAdmin {
 
                     //invoiceID = 405;
 
+                    if (invoiceID == 0) {
+                        MessageBox.Show("There are not currently any items that need to be billed");
+                        return;
+                    }
+
                     ExportSingleInvoice(invoiceID);
                 }
             }
         }
 
         private void ExportSingleInvoice(int invoiceID) {
+            if (invoiceID == 0) return;
             PDFManager pdfManager = new PDFManager();
             pdfManager.GenerateInvoicePDF(invoiceID);
 
@@ -779,7 +790,7 @@ namespace CUITAdmin {
 
         private void InitializeRequestTab() {
             if (Settings.Default.StandaloneMode) {
-
+                BindingList<Data> items = xmlManager.GetSupplies();
             } else {   
                 //cboManualTimeInstrument.DataSource = dbManager.GetInstruments();
                 //cboManualTimeInstrument.DisplayMember = "Name";
@@ -977,6 +988,7 @@ namespace CUITAdmin {
         }
 
         private bool supplyValid = false;
+
         private void btnManualSupplyValidate_Click(object sender, EventArgs e) {
             bool pwValid = false;
 
