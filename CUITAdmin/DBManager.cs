@@ -1,14 +1,4 @@
-﻿/* TO-DO Take into account instrument increment 
- * 
- * 
- * 
- * 
- * 
- */
-
-
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -1183,6 +1173,31 @@ namespace CUITAdmin
                 SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
                 dataAdapter.Fill(table);
             } catch (Exception e) {
+                System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
+            }
+
+            myConnection.Close();
+            return table;
+        }
+
+        public DataTable GetAllUnbilledTimeLogs(bool includeAll = false)
+        {
+            SqlConnection myConnection = DBConnect();
+            if (myConnection == null)
+            {
+                return new DataTable();
+            }
+
+            string myCommand = "SELECT * FROM Time_Log WHERE Billed IS NULL and Approved != 'N'";
+
+            DataTable table = new DataTable();
+            try
+            {
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(myCommand, myConnection);
+                dataAdapter.Fill(table);
+            }
+            catch (Exception e)
+            {
                 System.Windows.Forms.MessageBox.Show("There was an error connecting to the server. Please try again or contact your system administator.");
             }
 

@@ -44,6 +44,7 @@
             this.txtMonth = new System.Windows.Forms.Label();
             this.comboBoxSelectMonth = new System.Windows.Forms.ComboBox();
             this.grpStandaloneFileExport = new System.Windows.Forms.GroupBox();
+            this.btnExportLogs = new System.Windows.Forms.Button();
             this.btnImportStandalone = new System.Windows.Forms.Button();
             this.chkFullScreen = new System.Windows.Forms.CheckBox();
             this.chkStandalone = new System.Windows.Forms.CheckBox();
@@ -145,7 +146,6 @@
             this.lblDuration = new System.Windows.Forms.Label();
             this.lblFundingSource = new System.Windows.Forms.Label();
             this.btnLogout = new System.Windows.Forms.Button();
-            this.btnExportLogs = new System.Windows.Forms.Button();
             this.tbpExports.SuspendLayout();
             this.grpExportPath.SuspendLayout();
             this.grpInvoiceExport.SuspendLayout();
@@ -354,6 +354,16 @@
             this.grpStandaloneFileExport.TabIndex = 3;
             this.grpStandaloneFileExport.TabStop = false;
             this.grpStandaloneFileExport.Text = "Standalone Files";
+            // 
+            // btnExportLogs
+            // 
+            this.btnExportLogs.Location = new System.Drawing.Point(34, 58);
+            this.btnExportLogs.Name = "btnExportLogs";
+            this.btnExportLogs.Size = new System.Drawing.Size(121, 23);
+            this.btnExportLogs.TabIndex = 13;
+            this.btnExportLogs.Text = "Export Logs";
+            this.btnExportLogs.UseVisualStyleBackColor = true;
+            this.btnExportLogs.Click += new System.EventHandler(this.btnExportLogs_Click);
             // 
             // btnImportStandalone
             // 
@@ -1327,7 +1337,7 @@
             this.cboManualTimeInstrument.Location = new System.Drawing.Point(120, 104);
             this.cboManualTimeInstrument.Name = "cboManualTimeInstrument";
             this.cboManualTimeInstrument.Size = new System.Drawing.Size(148, 21);
-            this.cboManualTimeInstrument.TabIndex = 5;
+            this.cboManualTimeInstrument.TabIndex = 4;
             this.cboManualTimeInstrument.SelectedIndexChanged += new System.EventHandler(this.cboManualTimeInstrument_SelectedIndexChanged);
             // 
             // cboManualTimeAccount
@@ -1337,7 +1347,7 @@
             this.cboManualTimeAccount.Location = new System.Drawing.Point(120, 130);
             this.cboManualTimeAccount.Name = "cboManualTimeAccount";
             this.cboManualTimeAccount.Size = new System.Drawing.Size(148, 21);
-            this.cboManualTimeAccount.TabIndex = 4;
+            this.cboManualTimeAccount.TabIndex = 5;
             // 
             // txtManualTimeDuration
             // 
@@ -1383,16 +1393,6 @@
             this.btnLogout.Text = "button1";
             this.btnLogout.UseVisualStyleBackColor = true;
             this.btnLogout.Click += new System.EventHandler(this.btnAdminLogin_Click);
-            // 
-            // btnExportLogs
-            // 
-            this.btnExportLogs.Location = new System.Drawing.Point(34, 58);
-            this.btnExportLogs.Name = "btnExportLogs";
-            this.btnExportLogs.Size = new System.Drawing.Size(121, 23);
-            this.btnExportLogs.TabIndex = 13;
-            this.btnExportLogs.Text = "Export Logs";
-            this.btnExportLogs.UseVisualStyleBackColor = true;
-            this.btnExportLogs.Click += new System.EventHandler(this.btnExportLogs_Click);
             // 
             // frmCUITAdminMain
             // 

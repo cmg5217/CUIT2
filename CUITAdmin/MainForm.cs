@@ -44,9 +44,6 @@ namespace CUITAdmin {
             this.CenterToScreen();
             tabControlMain.Location = new Point((this.Size.Width / 2) - (tabControlMain.Size.Width/2) - 7, 
                                                 (this.Size.Height / 2) - (tabControlMain.Size.Height/2)-5);
-                                      //new Point(0, 0);
-            /// manually setting standalone to true so that we can test
-            /// To-DO:: Make sure to remove this to work on the server
 
              standalone = Settings.Default.StandaloneMode;
             
@@ -157,7 +154,6 @@ namespace CUITAdmin {
 
                 InitializeExceptionDGV();
             } else {
-                //TO-DO Add XML to load accounts
 
             }
         }
@@ -395,7 +391,10 @@ namespace CUITAdmin {
             } else if (cboAccountAdminView.SelectedItem == "Supplies") {
                 dgvAdmin.DataSource = dbManager.GetSupplies(inactive);
                 dgvAdmin.Columns["Cost"].HeaderText = "Charge/Unit";
+            } else if (cboAccountAdminView.SelectedItem == "Time Logs") {
+                dgvAdmin.DataSource = dbManager.GetAllUnbilledTimeLogs();
             }
+
         }
 
         private void btnAccountAdminNew_Click(object sender, EventArgs e) {
@@ -460,7 +459,6 @@ namespace CUITAdmin {
             }
         }
 
-
         private void adminEditViewLoad(object sender, EventArgs e) {
 
             updateAdminDGV();
@@ -505,6 +503,13 @@ namespace CUITAdmin {
 
         }
        
+        private void btnAdminClear_Click(object sender, EventArgs e) {
+            btnAdminClear.Visible = false;
+            txtAccountAdminSearch.Clear();
+            txtAccountAdminSearch.Focus();
+            updateAdminDGV();
+        }
+
         #endregion Admin Tab
 
         #region Export Tab
@@ -565,6 +570,7 @@ namespace CUITAdmin {
                 foreach (int currentInvoice in invoiceIDs) {
                     ExportSingleInvoice(currentInvoice);
                 }
+
             }
         }
 
@@ -734,6 +740,20 @@ namespace CUITAdmin {
             }
         }
 
+        private void btnImportStandalone_Click(object sender, EventArgs e) {
+            OpenFileDialog dialog = new OpenFileDialog();
+            DialogResult result = dialog.ShowDialog();
+
+            if (result == DialogResult.OK){
+                if (File.Exists("records.xml")) {
+                    File.Delete("records.xml");
+                    File.Copy(dialog.FileName, "records.xml");
+                } else {
+                    File.Copy(dialog.FileName, "records.xml");
+                }
+            }
+        }
+
         private void btnExportStandaloneFile_Click(object sender, EventArgs e) {
             FolderBrowserDialog dialog = new FolderBrowserDialog();
             DialogResult result = dialog.ShowDialog();
@@ -741,6 +761,16 @@ namespace CUITAdmin {
             if (result == DialogResult.OK) {
                 xmlManager.CreateLogFile(dialog.SelectedPath);
             }
+        }
+
+        private void btnExportLogs_Click(object sender, EventArgs e) {
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
+            DialogResult result = dialog.ShowDialog();
+
+            if (result == DialogResult.OK) {
+                File.Copy("records.xml", dialog.SelectedPath + "/log - " + DateTime.Now.Ticks);
+            }
+
         }
 
         #endregion Export Tab
@@ -1153,6 +1183,20 @@ namespace CUITAdmin {
                 MessageBox.Show(errorMessage);
             }
         }
+        
+        private void cboManualLogInstrument_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            logPerUse = false;
+            txtManualLogDuration.Enabled = true;
+            DataTable instrumentTable = (DataTable)cboManualLogInstrument.DataSource; 
+            int index = cboManualLogInstrument.SelectedIndex;
+            if (instrumentTable.Rows[index].ItemArray[1].ToString() == "Per Use")
+            {
+                txtManualLogDuration.Enabled = false; 
+                txtManualLogDuration.Clear();
+                logPerUse = true;
+            }
+        }
 
         private void ClearAcctManagementFields() {
             txtAcctManagementUsername.Clear();
@@ -1359,21 +1403,6 @@ namespace CUITAdmin {
    
         }
 
-
-        private void cboManualLogInstrument_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            logPerUse = false;
-            txtManualLogDuration.Enabled = true;
-            DataTable instrumentTable = (DataTable)cboManualLogInstrument.DataSource; 
-            int index = cboManualLogInstrument.SelectedIndex;
-            if (instrumentTable.Rows[index].ItemArray[1].ToString() == "Per Use")
-            {
-                txtManualLogDuration.Enabled = false; 
-                txtManualLogDuration.Clear();
-                logPerUse = true;
-            }
-        }
-
         private void tabControlMain_SelectedIndexChanged(object sender, EventArgs e) {
             switch (((TabControl)sender).SelectedTab.Name) {
                 case "tbpBilling":
@@ -1415,35 +1444,29 @@ namespace CUITAdmin {
             this.FormClosing -= new System.Windows.Forms.FormClosingEventHandler(this.frmCUITAdminMain_FormClosing);
         }
 
-        private void btnImportStandalone_Click(object sender, EventArgs e) {
-            OpenFileDialog dialog = new OpenFileDialog();
-            DialogResult result = dialog.ShowDialog();
+        //TO-DO: implement way to 'delete' time logs
 
-            if (result == DialogResult.OK){
-                if (File.Exists("records.xml")) {
-                    File.Delete("records.xml");
-                    File.Copy(dialog.FileName, "records.xml");
-                } else {
-                    File.Copy(dialog.FileName, "records.xml");
-                }
-            }
-        }
-
-        private void btnAdminClear_Click(object sender, EventArgs e) {
-            btnAdminClear.Visible = false;
-            txtAccountAdminSearch.Clear();
-            txtAccountAdminSearch.Focus();
-            updateAdminDGV();
-        }
-
-        private void btnExportLogs_Click(object sender, EventArgs e) {
-            FolderBrowserDialog dialog = new FolderBrowserDialog();
-            DialogResult result = dialog.ShowDialog();
-
-            if (result == DialogResult.OK) {
-                File.Copy("records.xml", dialog.SelectedPath + "/log - " + DateTime.Now.Ticks);
-            }
-
-        }
+        //private void dgvAdmin_KeyDown(object sender, KeyEventArgs e)
+        //{
+        //    if (e.KeyCode == Keys.Delete && cboAccountAdminView.SelectedItem == "Time Logs")
+        //    {
+        //        DialogResult dialogResult = MessageBox.Show("Are you sure you want to delete the selected time logs? This is irreversible.", "", MessageBoxButtons.YesNo);
+        //        if (dialogResult == DialogResult.Yes) {
+        //            foreach (DataGridViewRow row in dgvAdmin.SelectedRows)
+        //            {
+        //                dbManager.UpdateTimeLogApproval(
+        //                    row.Cells["Account_Number"].Value.ToString(), 
+        //                    int.Parse(row.Cells["UserID"].Value.ToString()), 
+        //                    int.Parse(row.Cells["InstrumentID"].Value.ToString()), 
+        //                    DateTime.Parse(row.Cells["Start_Time"].Value.ToString()), 
+        //                    'N');
+        //            }
+        //        }
+        //        else if (dialogResult == DialogResult.No)
+        //        {
+                    
+        //        }
+        //    }
+        //}
     }
 }

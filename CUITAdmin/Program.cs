@@ -8,8 +8,8 @@ namespace CUITAdmin
     static class Program
     {
 
-        //TO-DO: Remove default value for product release
-        public static char userType;// = 'A';
+        //To-do: remove this for release and presention
+        public static char userType = 'A';
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -18,7 +18,7 @@ namespace CUITAdmin
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Login());
+            //Application.Run(new Login());
             if(userType != '\0') Application.Run(new frmCUITAdminMain(userType));
             //Application.Run(new TestForm());
         }
