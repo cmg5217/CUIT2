@@ -24,6 +24,17 @@ namespace CUITAdmin {
             ToggleScreenMode();
             this.AcceptButton = btnLogin;
             txtPassword.PasswordChar = '*';
+
+            if (Settings.Default.FullScreen)
+            {
+                this.FormBorderStyle = FormBorderStyle.None;
+                WindowState = FormWindowState.Maximized;
+            }
+            else
+            {
+                this.FormBorderStyle = FormBorderStyle.Fixed3D;
+                this.WindowState = FormWindowState.Normal;
+            }
         }
 
         public void ToggleScreenMode() {
@@ -62,6 +73,11 @@ namespace CUITAdmin {
                     MessageBox.Show("Username or password did not match, please try again.");
                 }
             }
+        }
+
+        private void Login_SizeChanged(object sender, EventArgs e)
+        {
+            pnlControls.Location = new Point(this.Width / 2 - pnlControls.Width / 2, this.Height / 2 - pnlControls.Height / 2);
         }
     }
 }

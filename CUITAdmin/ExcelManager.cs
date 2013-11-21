@@ -49,8 +49,8 @@ namespace CUITAdmin
 
             //if the excel process is open, kill it. This will not close excel documents which do not have changes saved to them.
             Process[] processes = Process.GetProcessesByName("EXCEL");
-            if (processes.Length > 0)
-                processes[0].Kill();
+            //if (processes.Length > 0) 
+                //processes[0].Kill();
 
 
             string invoiceid = invoiceArray[0].Rows[0]["InvoiceID"].ToString();

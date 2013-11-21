@@ -178,7 +178,7 @@
             this.tbpExports.Padding = new System.Windows.Forms.Padding(3);
             this.tbpExports.Size = new System.Drawing.Size(683, 589);
             this.tbpExports.TabIndex = 2;
-            this.tbpExports.Text = "Exports";
+            this.tbpExports.Text = "Exports/Settings";
             this.tbpExports.UseVisualStyleBackColor = true;
             // 
             // grpExportPath

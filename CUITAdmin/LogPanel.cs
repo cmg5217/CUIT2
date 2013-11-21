@@ -260,7 +260,12 @@ namespace CUITAdmin {
             if (lblTimeElapsed.InvokeRequired)
             {
                 TimeSpan span = (DateTime.Now - logTime);
-                lblTimeElapsed.Invoke(new MethodInvoker(() => { lblTimeElapsed.Text = span.ToString("hh") + ":" + span.ToString("mm") + ":" + span.ToString("ss"); }));
+                try
+                {
+                    lblTimeElapsed.Invoke(new MethodInvoker(() => { lblTimeElapsed.Text = span.ToString("hh") + ":" + span.ToString("mm") + ":" + span.ToString("ss"); }));
+                }
+                catch (Exception e2)
+                { }
             }
             else
             {

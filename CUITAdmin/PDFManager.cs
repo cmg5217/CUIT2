@@ -55,7 +55,7 @@ namespace CUITAdmin
         {
             if (!Directory.Exists(pathname))
             {
-                Directory.CreateDirectory(pathname);
+                Directory.CreateDirectory(pathname + @"Accounts Receivable\");
             }
         }
 
@@ -309,7 +309,9 @@ namespace CUITAdmin
 
             AddDate(acroFields, DateTime.Now.ToString()); //Add todays date to the invoice
             AddInvoiceID(acroFields, invoice.Rows[0]["InvoiceID"].ToString()); // add invoice id to invoice
-            AddBalance(acroFields, offset + "$" + invoice.Rows[0]["Total_Balance"].ToString()); // add balance to invoice
+            
+            
+            AddBalance(acroFields, "$" + invoice.Rows[0]["Total_Balance"].ToString()); // add balance to invoice
 
             pdfStamper.FormFlattening = true;
 

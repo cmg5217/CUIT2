@@ -969,6 +969,7 @@ namespace CUITAdmin {
             cboManualTimeAccount.DisplayMember = "Name";
             cboManualTimeAccount.ValueMember = "Account_Number";
         }
+
         private void btnManualTimeAdd_Click(object sender, EventArgs e) {
             //this is for adding the time log user manual request log
             txtManualTimeDuration.BackColor = System.Drawing.Color.White;
@@ -1010,8 +1011,8 @@ namespace CUITAdmin {
                     dbManager.AddTimeLog(account, dbManager.GetUserID(username), ' ', instrumentId, startTime, endTime);
                 }
                 //confirms the add to the user and resets the time log form.
-            }
                 MessageBox.Show("Time Log Manual Request Added");
+            }   
                 txtManualTimeUsername.Clear();
                 txtManualTimePassword.Clear();
                 txtManualTimeDuration.Clear();
@@ -1485,7 +1486,7 @@ namespace CUITAdmin {
                 MessageBoxButtons.YesNo
                 );
 
-            if (DialogResult.OK == result) {
+            if (DialogResult.Yes == result) {
                 Logout();
 
             }
