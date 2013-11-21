@@ -89,6 +89,9 @@ namespace CUITAdmin {
         }
 
         private void CheckMaxLimits() {
+
+            if (Settings.Default.StandaloneMode) return;
+
             DataTable highAccounts = dbManager.GetHighBalanceAccounts();
 
             string warning = "";
@@ -380,6 +383,8 @@ namespace CUITAdmin {
         // Called in the onload of the tab page to prevent unnecessary calls to the DB5
 
         public void updateAdminDGV() {
+            if (standalone) return;
+
             bool inactive = chkAdminIncludeInactive.Checked;
 
             if (cboAccountAdminView.SelectedItem == "Accounts") {
@@ -561,7 +566,7 @@ namespace CUITAdmin {
 
                 dbManager.GenerateAllInvoices(datetime, endtime, out invoiceIDs);
 
-                if (invoiceIDs.Count == 0) {
+                if (invoiceIDs.Count == 0 ) {
                     MessageBox.Show("There are not currently any items that need to be billed");
                     return;
                 }
@@ -761,6 +766,9 @@ namespace CUITAdmin {
         private void InitializeRequestTab() {
             if (Settings.Default.StandaloneMode) {
                 BindingList<Data> items = xmlManager.GetSupplies();
+                cboManualSupplyItem.DataSource = items;
+                cboManualSupplyItem.DisplayMember = "Name";
+                cboManualSupplyItem.ValueMember = "Name";
             } else {   
                 //cboManualTimeInstrument.DataSource = dbManager.GetInstruments();
                 //cboManualTimeInstrument.DisplayMember = "Name";
@@ -1026,18 +1034,22 @@ namespace CUITAdmin {
             } else {
                 string username = txtManualSupplyUsername.Text;
                 string account = cboManualSupplyAccount.SelectedValue.ToString();
+
+
                 if (standalone) {
 
                     //adds the supply use log 
                     cboManualSupplyItem.SelectedValue.ToString();
                     string quantity = txtManualSupplyQuantity.Text;
-                    string item = cboManualSupplyItem.SelectedItem.ToString();
+                    string item = cboManualSupplyItem.SelectedValue.ToString();
                     xmlManager.AddSupplyUse(DateTime.Now.ToString(), account, item, quantity);
                 } else {
                     DateTime serverTime;
                     dbManager.GetServerDateTime(out serverTime);
                     dbManager.AddSupplyUse(account, cboManualSupplyItem.SelectedValue.ToString(), serverTime, int.Parse(txtManualSupplyQuantity.Text));
                 }
+
+
                 //confirms the add with the user then resets the supply form
                 MessageBox.Show("Supply Manual Request Added");
                 txtManualSupplyUsername.Clear();
