@@ -305,7 +305,7 @@ namespace CUITAdmin {
             txtUsername.Enabled = false;
             txtPassword.Clear();
 
-            btnStartLog.Text = "End";
+            btnValidate.Text = "End";
 
             passwordValidated = false; // Set passwordValidated back to false, used to validate before ending the log
 
@@ -367,10 +367,10 @@ namespace CUITAdmin {
 
             if (logStarted) { // ----------------------------- End Log ----------------------------------------------- //
                 if (valid) {
-                    passwordValidated = true;
-                    btnStartLog.Enabled = true;
+                    EndLog();
                 } else {
                     btnStartLog.Enabled = false;
+                    txtPassword.Clear();
                 }
             } else { // ------------------------------------- Start Log ---------------------------------------------- //
                 if (valid) {
@@ -386,6 +386,10 @@ namespace CUITAdmin {
                     DisableStartControls();
 
                 }
+            }
+
+            if (!valid) {
+                MessageBox.Show("Username and password did not match.");
             }
         }
 
@@ -515,7 +519,7 @@ namespace CUITAdmin {
             } else {
                 StartLog();
                 lblAuthenticating.Text = "";
-                btnStartLog.Enabled = false;
+                btnStartLog.Visible = false;
             }
 
         }

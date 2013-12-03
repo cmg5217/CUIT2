@@ -513,7 +513,8 @@
             "Users",
             "Instruments",
             "Rate Types",
-            "Supplies"});
+            "Supplies",
+            "Time Logs"});
             this.cboAccountAdminView.Location = new System.Drawing.Point(42, 9);
             this.cboAccountAdminView.Name = "cboAccountAdminView";
             this.cboAccountAdminView.Size = new System.Drawing.Size(121, 21);

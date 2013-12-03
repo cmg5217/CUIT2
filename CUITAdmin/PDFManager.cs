@@ -271,7 +271,7 @@ namespace CUITAdmin
                 AddService(
                     acroFields,
                     currentRow["Name"].ToString(), //insert time into the invoice
-                    Convert.ToDouble(currentRow["Hours"]).ToString("#.0"), //insert hours into invoice
+                    Convert.ToDouble(currentRow["Hours"]).ToString("#.00"), //insert hours into invoice
                     computedRate.ToString("#.00"), //insert dollars per hour into invoice
                     ((currentRow["Billing_Unit"].ToString() == "Time") ? "hour" : "use"));// unit of biling displayed on invoice
 

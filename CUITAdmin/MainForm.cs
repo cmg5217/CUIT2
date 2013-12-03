@@ -194,15 +194,6 @@ namespace CUITAdmin {
                 dgvTimeLogRequests.Columns["Duration"].DisplayIndex = 4;
                 dgvTimeLogRequests.Columns["Duration"].HeaderText = "Duration (min)";
 
-
-                foreach (DataGridViewRow row in dgvTimeLogRequests.Rows) {
-                    if (!(row.Cells["Duration"].Value.ToString() == "")) {
-                        row.Cells["Duration"].ReadOnly = true;
-                    }
-                    if (!(row.Cells["Approved"].Value.ToString() == "")) {
-                        row.Cells["Approved"].ReadOnly = true;
-                    }
-                }
             } else {
                 BillingExceptions = dbManager.GetSupplyUseExceptions();
 
@@ -450,14 +441,29 @@ namespace CUITAdmin {
                     primaryKey = row.Cells["Name"].Value.ToString();
                     addNewCase = "Edit Rate Type";
                     break;
+                case "Time Logs":
+                    DialogResult result = MessageBox.Show("Would you like to remove this time log?\r\nWARNING: This can not be reversed.", "", MessageBoxButtons.YesNo);
+                    if (result == DialogResult.Yes) {
+                        DataRow editedRow = ((DataTable)dgvAdmin.DataSource).Rows[e.RowIndex];
+                        dbManager.UpdateTimeLogApproval(
+                            editedRow["Account_Number"].ToString(),
+                            int.Parse(editedRow["UserID"].ToString()),
+                            int.Parse(editedRow["InstrumentID"].ToString()),
+                            (DateTime)editedRow["Start_Time"],
+                            'N');
+                    }
+                    updateAdminDGV();
+                    break;
                 default:
                     return;
 
             }
 
-            Form newForm = new NewEntryForm(addNewCase, this, primaryKey);
-            newForm.ShowDialog(); //Displays forms modally
 
+            if (addNewCase != "") {
+                Form newForm = new NewEntryForm(addNewCase, this, primaryKey);
+                newForm.ShowDialog(); //Displays forms modally
+            }
         }
 
         private void InitializeGLSUCheckbox() {
