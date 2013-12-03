@@ -68,7 +68,7 @@ namespace CUITAdmin {
             txtInvoiceExportPath.Text = Settings.Default["InvoicePath"].ToString();
             //set the current month in the export pdf combobox
             DateTime now = DateTime.Now;
-            comboBoxSelectMonth.Text = ((now.ToString("MMMMMMMMM")));
+            cboSelectMonth.Text = ((now.ToString("MMMMMMMMM")));
             txtInvoiceExportPath.Text = Properties.Settings.Default.InvoicePath;
             //text export path
             txtInvoiceExportPath.Text = Properties.Settings.Default.InvoicePath;
@@ -532,6 +532,14 @@ namespace CUITAdmin {
                 comboBoxSelectAccount.DataSource = dbManager.GetAccounts();
                 comboBoxSelectAccount.DisplayMember = "Name";
                 comboBoxSelectAccount.ValueMember = "Account_Number";
+
+                cboSelectYear.Items.Clear();
+                for (int i = 0; i <= 10; i++)
+                {
+                    this.cboSelectYear.Items.Add(System.DateTime.Now.Year - i);
+                }
+
+                this.cboSelectYear.SelectedIndex = 0;
             }
         }
 
@@ -543,7 +551,7 @@ namespace CUITAdmin {
                 btnExportStandaloneFile.Enabled = false;
                 btnImportLogs.Enabled = false;
                 comboBoxSelectAccount.Enabled = false;
-                comboBoxSelectMonth.Enabled = false;
+                cboSelectMonth.Enabled = false;
             }
         }
 
@@ -568,8 +576,9 @@ namespace CUITAdmin {
 
             } else {
                 //parse the date in the combobox and calculate the end of the month
-                string date = comboBoxSelectMonth.Text;
-                DateTime datetime = DateTime.ParseExact(date, "MMMMMMMM", CultureInfo.InvariantCulture);
+
+                string date = cboSelectMonth.Text + " " + cboSelectYear.Text;
+                DateTime datetime = DateTime.ParseExact(date, "MMMMMMMM yyyy", CultureInfo.InvariantCulture);
                 DateTime endtime = datetime.AddMonths(1);
                 endtime = endtime.AddSeconds(-1);
 
@@ -579,16 +588,21 @@ namespace CUITAdmin {
 
                 dbManager.GenerateAllInvoices(datetime, endtime, out invoiceIDs);
 
-                if (invoiceIDs.Count == 0 ) {
+                if (invoiceIDs.Count == 0)
+                {
                     MessageBox.Show("There are not currently any items that need to be billed");
-                    return;
-                }
 
-                PDFManager pdfManager = new PDFManager();
-                foreach (int currentInvoice in invoiceIDs) {
-                    ExportSingleInvoice(currentInvoice);
                 }
+                else
+                {
+                    PDFManager pdfManager = new PDFManager();
+                    foreach (int currentInvoice in invoiceIDs)
+                    {
+                        ExportSingleInvoice(currentInvoice);
+                    }
 
+                    MessageBox.Show("Export complete, invoices can be found in a folder at the destination you specified.");
+                }
             }
         }
 
@@ -602,8 +616,9 @@ namespace CUITAdmin {
 
                 } else {
                     //parse the date in the combobox and calculate the end of the month
-                    string date = comboBoxSelectMonth.Text;
-                    DateTime datetime = DateTime.ParseExact(date, "MMMMMMMM", CultureInfo.InvariantCulture);
+                    string date = cboSelectMonth.Text + " " + cboSelectYear.Text;
+                    DateTime datetime = DateTime.ParseExact(date, "MMMMMMMM yyyy", CultureInfo.InvariantCulture);
+                    
                     DateTime endtime = datetime.AddMonths(1);
                     endtime = endtime.AddSeconds(-1);
 
@@ -613,12 +628,15 @@ namespace CUITAdmin {
 
                     //invoiceID = 405;
 
-                    if (invoiceID == 0) {
+                    if (invoiceID == 0)
+                    {
                         MessageBox.Show("There are not currently any items that need to be billed");
-                        return;
                     }
-
-                    ExportSingleInvoice(invoiceID);
+                    else
+                    {
+                        ExportSingleInvoice(invoiceID);
+                        MessageBox.Show("Export complete, invoices can be found in a folder at the destination you specified.");
+                    }
                 }
             }
         }

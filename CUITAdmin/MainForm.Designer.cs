@@ -42,7 +42,7 @@
             this.txtAccount = new System.Windows.Forms.Label();
             this.btnExportSingle = new System.Windows.Forms.Button();
             this.txtMonth = new System.Windows.Forms.Label();
-            this.comboBoxSelectMonth = new System.Windows.Forms.ComboBox();
+            this.cboSelectMonth = new System.Windows.Forms.ComboBox();
             this.grpStandaloneFileExport = new System.Windows.Forms.GroupBox();
             this.btnExportLogs = new System.Windows.Forms.Button();
             this.btnImportStandalone = new System.Windows.Forms.Button();
@@ -95,7 +95,6 @@
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.lineSeparator1 = new CUITAdmin.LineSeparator();
             this.label11 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
@@ -146,6 +145,8 @@
             this.lblDuration = new System.Windows.Forms.Label();
             this.lblFundingSource = new System.Windows.Forms.Label();
             this.btnLogout = new System.Windows.Forms.Button();
+            this.lineSeparator1 = new CUITAdmin.LineSeparator();
+            this.cboSelectYear = new System.Windows.Forms.ComboBox();
             this.tbpExports.SuspendLayout();
             this.grpExportPath.SuspendLayout();
             this.grpInvoiceExport.SuspendLayout();
@@ -221,11 +222,12 @@
             // 
             // grpInvoiceExport
             // 
+            this.grpInvoiceExport.Controls.Add(this.cboSelectYear);
             this.grpInvoiceExport.Controls.Add(this.chkGLSU);
             this.grpInvoiceExport.Controls.Add(this.groupBox1);
             this.grpInvoiceExport.Controls.Add(this.groupBox2);
             this.grpInvoiceExport.Controls.Add(this.txtMonth);
-            this.grpInvoiceExport.Controls.Add(this.comboBoxSelectMonth);
+            this.grpInvoiceExport.Controls.Add(this.cboSelectMonth);
             this.grpInvoiceExport.Location = new System.Drawing.Point(131, 230);
             this.grpInvoiceExport.Name = "grpInvoiceExport";
             this.grpInvoiceExport.Size = new System.Drawing.Size(243, 232);
@@ -318,11 +320,11 @@
             this.txtMonth.TabIndex = 4;
             this.txtMonth.Text = "Month:";
             // 
-            // comboBoxSelectMonth
+            // cboSelectMonth
             // 
-            this.comboBoxSelectMonth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxSelectMonth.FormattingEnabled = true;
-            this.comboBoxSelectMonth.Items.AddRange(new object[] {
+            this.cboSelectMonth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSelectMonth.FormattingEnabled = true;
+            this.cboSelectMonth.Items.AddRange(new object[] {
             "January",
             "February",
             "March",
@@ -335,10 +337,10 @@
             "October",
             "November",
             "December"});
-            this.comboBoxSelectMonth.Location = new System.Drawing.Point(79, 54);
-            this.comboBoxSelectMonth.Name = "comboBoxSelectMonth";
-            this.comboBoxSelectMonth.Size = new System.Drawing.Size(121, 21);
-            this.comboBoxSelectMonth.TabIndex = 4;
+            this.cboSelectMonth.Location = new System.Drawing.Point(79, 54);
+            this.cboSelectMonth.Name = "cboSelectMonth";
+            this.cboSelectMonth.Size = new System.Drawing.Size(86, 21);
+            this.cboSelectMonth.TabIndex = 4;
             // 
             // grpStandaloneFileExport
             // 
@@ -920,16 +922,6 @@
             this.label13.TabIndex = 20;
             this.label13.Text = "( - all fields are optional - )";
             // 
-            // lineSeparator1
-            // 
-            this.lineSeparator1.Location = new System.Drawing.Point(48, 126);
-            this.lineSeparator1.MaximumSize = new System.Drawing.Size(2000, 2);
-            this.lineSeparator1.MinimumSize = new System.Drawing.Size(0, 2);
-            this.lineSeparator1.Name = "lineSeparator1";
-            this.lineSeparator1.Size = new System.Drawing.Size(578, 2);
-            this.lineSeparator1.TabIndex = 19;
-            this.lineSeparator1.TabStop = false;
-            // 
             // label11
             // 
             this.label11.AutoSize = true;
@@ -1395,6 +1387,25 @@
             this.btnLogout.UseVisualStyleBackColor = true;
             this.btnLogout.Click += new System.EventHandler(this.btnAdminLogin_Click);
             // 
+            // lineSeparator1
+            // 
+            this.lineSeparator1.Location = new System.Drawing.Point(48, 126);
+            this.lineSeparator1.MaximumSize = new System.Drawing.Size(2000, 2);
+            this.lineSeparator1.MinimumSize = new System.Drawing.Size(0, 2);
+            this.lineSeparator1.Name = "lineSeparator1";
+            this.lineSeparator1.Size = new System.Drawing.Size(578, 2);
+            this.lineSeparator1.TabIndex = 19;
+            this.lineSeparator1.TabStop = false;
+            // 
+            // cboSelectYear
+            // 
+            this.cboSelectYear.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSelectYear.FormattingEnabled = true;
+            this.cboSelectYear.Location = new System.Drawing.Point(172, 54);
+            this.cboSelectYear.Name = "cboSelectYear";
+            this.cboSelectYear.Size = new System.Drawing.Size(65, 21);
+            this.cboSelectYear.TabIndex = 10;
+            // 
             // frmCUITAdminMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1517,7 +1528,7 @@
         private System.Windows.Forms.Button btnManualTimeValidate;
         private System.Windows.Forms.Label lblValidate;
         private System.Windows.Forms.Label lblManualSuppliesValidated;
-        private System.Windows.Forms.ComboBox comboBoxSelectMonth;
+        private System.Windows.Forms.ComboBox cboSelectMonth;
         private System.Windows.Forms.ComboBox comboBoxSelectAccount;
         private System.Windows.Forms.Label txtAccount;
         private System.Windows.Forms.Label txtMonth;
@@ -1563,6 +1574,7 @@
         private System.Windows.Forms.Button btnAdminClear;
         private System.Windows.Forms.Button btnLogout;
         private System.Windows.Forms.Button btnExportLogs;
+        private System.Windows.Forms.ComboBox cboSelectYear;
     }
 }
 
