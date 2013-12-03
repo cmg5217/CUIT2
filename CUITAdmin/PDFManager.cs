@@ -132,6 +132,7 @@ namespace CUITAdmin
              + Environment.NewLine + "(" + unitquantity + " " + unit + "s" + " @ $" + rate
              + "/" + unit + "" + ")" + Environment.NewLine + Environment.NewLine);
         }
+        
         //add charge////////////////////
         public void AddCharge(AcroFields acroFields, string chargeamount)
         {
@@ -139,6 +140,7 @@ namespace CUITAdmin
 
             acroFields.SetField("charges", field + "$" + chargeamount + "\r\n\r\n\r\n");
         }
+       
         //add balance/////////////////////
         public void AddBalance(AcroFields acroFields, string balance)
         {
@@ -149,18 +151,19 @@ namespace CUITAdmin
             acroFields.SetField("balance", "\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \r" + balance);
 
         }
+        
         //add date/////////////////////////
         public void AddDate(AcroFields acroFields, string Date)
         {
             acroFields.SetField("Date", Date);
         }
+        
         //add invoiceID/////////////////////////
         public void AddInvoiceID(AcroFields acroFields, string invoiceID)
         {
 
             acroFields.SetField("FillText1", "CARIPD-" + invoiceID + "-" + DateTime.Now.ToString("yy"));
         }
-
 
         private static void AppendToDocument(string sourcePdfPath, string outputPdfPath, List<int> neededPages) {
 
@@ -189,7 +192,7 @@ namespace CUITAdmin
             string accounttype = (invoice.Rows[0]["Rate_Type"].ToString());
 
             // make a name for the file
-            string exportFileName = "Invoice - " + invoiceID + ".pdf";
+            string exportFileName = "CARIPD-" + invoiceID + "-" + DateTime.Now.ToString("yy") + " " + invoice.Rows[0]["Name"] +  ".pdf";
             
             bool path = false;
 
@@ -234,7 +237,6 @@ namespace CUITAdmin
             }
         }
         
-
         private void CreateInvoicePage(DataTable invoice, DataTable invoiceTime, DataTable invoiceSupply, int page, List<string> filesToMerge) {
             string filePath = page + "temp.pdf";
             filesToMerge.Add(filePath);
@@ -271,7 +273,7 @@ namespace CUITAdmin
                 AddService(
                     acroFields,
                     currentRow["Name"].ToString(), //insert time into the invoice
-                    Convert.ToDouble(currentRow["Hours"]).ToString("#.0"), //insert hours into invoice
+                    Convert.ToDouble(currentRow["Hours"]).ToString("#.00"), //insert hours into invoice
                     computedRate.ToString("#.00"), //insert dollars per hour into invoice
                     ((currentRow["Billing_Unit"].ToString() == "Time") ? "hour" : "use"));// unit of biling displayed on invoice
 
