@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CUITAdmin", "CUITAdmin.csproj", "{C1B26EEC-DC42-4E6D-BCC9-9874D678B6D1}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "CUIT Setup", "..\CUIT Setup\CUIT Setup.vdproj", "{8AD07E57-FDF0-4B57-90AF-369A65330D6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -13,6 +15,8 @@ Global
 		{C1B26EEC-DC42-4E6D-BCC9-9874D678B6D1}.Debug|x86.Build.0 = Debug|x86
 		{C1B26EEC-DC42-4E6D-BCC9-9874D678B6D1}.Release|x86.ActiveCfg = Release|x86
 		{C1B26EEC-DC42-4E6D-BCC9-9874D678B6D1}.Release|x86.Build.0 = Release|x86
+		{8AD07E57-FDF0-4B57-90AF-369A65330D6D}.Debug|x86.ActiveCfg = Debug
+		{8AD07E57-FDF0-4B57-90AF-369A65330D6D}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

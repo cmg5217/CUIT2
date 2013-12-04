@@ -640,13 +640,6 @@ namespace CUITAdmin
                 error = true;
             }
 
-            string departmentPattern = "^[\\w\\W]+$";
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtDepartment.Text, departmentPattern))
-            {
-                txtDepartment.BackColor = System.Drawing.Color.Red;
-                error = true;
-            }
-
             string lastnamePattern = "^[A-Za-z\\s-\\.]+$";
             if (!System.Text.RegularExpressions.Regex.IsMatch(txtLastName.Text, lastnamePattern))
             {

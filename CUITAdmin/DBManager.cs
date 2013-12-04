@@ -38,7 +38,7 @@ namespace CUITAdmin
         }
 
         public SqlConnection DBConnect() {
-            SqlConnection myConnection = new SqlConnection("Data Source=CUITS\\CUITS;" +
+            SqlConnection myConnection = new SqlConnection("Data Source=CUIT\\CUITS;" +
                "Initial Catalog=CUIT;" +
                "User ID=DataAdmin;" +
                "Password=JazBarne$411");
