@@ -30,7 +30,7 @@ namespace CUITAdmin
                 case "Edit Account":
                     NewAccountPanel myAcctEditForm = new NewAccountPanel(this, primaryKey);
                     this.SetBounds(350, 350, 680, 410);
-                    this.Text = "New Account";
+                    this.Text = "Edit Account";
                     break;
 
                 case "Instrument":
@@ -42,7 +42,7 @@ namespace CUITAdmin
                 case "Edit Instrument":
                     NewInstrumentPanel myInstrumentEditForm = new NewInstrumentPanel(this, int.Parse(primaryKey));
                     this.SetBounds(350, 350, 340, 320);
-                    this.Text = "New Instrument";
+                    this.Text = "Edit Instrument";
                     break;
 
                 case "Rate Type":
@@ -54,7 +54,7 @@ namespace CUITAdmin
                 case "Edit Rate Type":
                     NewRateTypePanel myRateEditForm = new NewRateTypePanel(this, primaryKey);
                     this.SetBounds(350, 350, 300, 300);
-                    this.Text = "New Rate Type";
+                    this.Text = "Edit Rate Type";
                     break;
 
                 case "Supply":
@@ -66,7 +66,7 @@ namespace CUITAdmin
                 case "Edit Supply":
                     NewSupplyPanel myEditSupplyForm = new NewSupplyPanel(this, primaryKey);
                     this.SetBounds(350, 350, 270, 175);
-                    this.Text = "New Supply";
+                    this.Text = "Edit Supply";
                     break;
 
                 case "User":
@@ -90,7 +90,7 @@ namespace CUITAdmin
                 case "Edit Point of Contact":
                     NewPointOfContactPanel myContactEditPanel = new NewPointOfContactPanel(this, int.Parse(primaryKey));
                     this.SetBounds(350, 350, 555, 250);
-                    this.Text = "New Contact";
+                    this.Text = "Edit Contact";
                     break;
             }
         }
